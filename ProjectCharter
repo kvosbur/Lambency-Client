@@ -1,8 +1,12 @@
-Lambency
+#Lambency
 Team 2: Brian Johncox, Evan Honeysett, Farhan Shafi, Kevin Vosburgh, Lucas Shanker, Zack Swartz
 Project Charter
 
-Problem Statement: Our mission is to connect the people who desire to give back to the community with the organizations looking for help. There is an inexplicable miscommunication between the two groups and we are bridging the gap with a state of the art app and support system. Our app will improve upon the existing solutions by providing a method for users to track hours spent volunteering and for organizations to endorse events created by others. Our app beats the competition by adding more connecting features such as better tracking among organizations and easily sharing events.
+Problem Statement: Our mission is to connect the people who desire to give back to the community with the organizations looking for help. 
+There is an inexplicable miscommunication between the two groups and we are bridging the gap with a state of the art app and support system.
+Our app will improve upon the existing solutions by providing a method for users to track hours spent volunteering and for organizations 
+to endorse events created by others. Our app beats the competition by adding more connecting features such as better tracking among
+organizations and easily sharing events.
 
 Project Objectives: 
 Build an Android app that allows community service leaders to create events which anyone can easily find and join
