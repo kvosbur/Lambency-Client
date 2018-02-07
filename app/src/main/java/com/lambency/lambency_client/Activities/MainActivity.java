@@ -7,7 +7,6 @@ import com.lambency.lambency_client.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    //Farhan test
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
