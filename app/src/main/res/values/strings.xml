@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Lambency-Client</string>
+    <string name="facebook_app_id">328340941006039</string>
+    <string name="fb_login_protocol_scheme">fb328340941006039</string>
+</resources>
