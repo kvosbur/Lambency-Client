@@ -40,7 +40,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.ProfileActivity"></activity>
+        <activity android:name=".Activities.ProfileActivity" />
+        <activity
+            android:name=".Activities.EventDetailsActivity"
+            android:exported="true"></activity>
     </application>
 
 </manifest>
