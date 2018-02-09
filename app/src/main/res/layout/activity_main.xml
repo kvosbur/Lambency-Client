@@ -4,6 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.lambency.lambency_client.Activities.LoginActivity">
+    tools:context="com.lambency.lambency_client.Activities.MainActivity">
+
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/disconnect_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Logout"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="173dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <TextView
+        android:id="@+id/signInOutStatus"
+        android:layout_width="210dp"
+        android:layout_height="63dp"
+        android:text="TextView"
+        android:textSize="25dp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="51dp"
+        tools:layout_editor_absoluteY="96dp" />
+
 
 </android.support.constraint.ConstraintLayout>
