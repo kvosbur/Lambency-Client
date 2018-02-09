@@ -71,7 +71,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+
                     android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp"
                     >
 
                     <TextView
@@ -85,17 +87,45 @@
                         android:textColor="#000000"
                         android:textSize="25sp" />
 
-                    <ImageButton
+                    <LinearLayout
+                        android:id="@+id/joinButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_join"
-                        android:background="@null"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:clickable="true"
-                        android:focusable="true"
-                        />
 
+                        android:layout_marginLeft="25dp"
+                        android:paddingTop="1dp"
+                        android:paddingBottom="1dp"
+
+                        android:background="@drawable/button_background"
+                        android:foreground="?android:attr/selectableItemBackground"
+
+                        android:clickable="true"
+                        android:orientation="horizontal"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/date"
+
+                        android:padding="8dp">
+
+
+                        <ImageView
+                            android:id="@+id/check"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+
+                            android:src="@drawable/ic_check_green_24dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+
+                            android:layout_marginRight="5dp"
+                            android:layout_marginLeft="5dp"
+
+                            android:textSize="18sp"
+                            android:text="Join Event" />
+                    </LinearLayout>
 
 
                 </RelativeLayout>
