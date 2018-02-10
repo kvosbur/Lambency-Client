@@ -12,11 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Activities.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <meta-data
@@ -40,11 +36,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.LoginActivity"
-            android:exported="true"/>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Activities.ProfileActivity" />
-        <activity
-            android:name=".Activities.EventDetailsActivity"
-            android:exported="true" />
         <activity android:name=".Activities.EventCreationActivity"></activity>
     </application>
 
