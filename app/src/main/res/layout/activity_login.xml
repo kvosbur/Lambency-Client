@@ -26,5 +26,4 @@ tools:context="com.lambency.lambency_client.Activities.MainActivity">
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toTopOf="parent"/>
-
 </android.support.constraint.ConstraintLayout>

@@ -15,6 +15,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.lambency.lambency_client.R;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
@@ -25,7 +26,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager,
@@ -44,7 +44,21 @@ public class LoginActivity extends AppCompatActivity {
                                             JSONObject object,
                                             GraphResponse response) {
                                         // Application code
-                                        System.out.println(object.toString());
+
+                                        try {
+                                            String id = (String) object.get("id");
+                                            String firstName = (String) object.get("first_name");
+                                            String lastName = (String) object.get("last_name");
+                                            String email = (String) object.get("email");
+
+                                            System.out.println("Hello " + firstName + " " + lastName + " with email " + email + " id: "+ id);
+                                            //JSONObject idObj = arr.getJSONObject(0);
+                                            //System.out.print(idObj.getString("id"));
+
+                                        } catch (Exception e )
+                                        {
+                                            System.out.println("Messed up");
+                                        }
                                     }
                                 });
                         Bundle parameters = new Bundle();
