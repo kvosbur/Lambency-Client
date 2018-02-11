@@ -21,6 +21,7 @@ android {
 }
 
 dependencies {
+    compile 'com.android.support:design:27.0.2'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -37,5 +38,10 @@ dependencies {
     //compile 'com.google.api-client:google-api-client:1.22.0'
     //compile 'com.google.api-client:google-api-client-android:1.22.0'
     //compile 'com.google.apis:google-api-services-people:v1-rev139-1.22.0'
+
+    implementation 'com.jakewharton:butterknife:8.8.1'
+
+    implementation 'com.android.support:support-v4:26.1.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
 }
