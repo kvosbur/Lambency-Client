@@ -39,12 +39,13 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.LoginActivity" />
+        <activity android:name=".Activities.LoginActivity"
+            android:exported="true"/>
         <activity android:name=".Activities.ProfileActivity" />
         <activity
             android:name=".Activities.EventDetailsActivity"
-            android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:exported="true" />
+        <activity android:name=".Activities.EventCreationActivity"></activity>
     </application>
 
 </manifest>
