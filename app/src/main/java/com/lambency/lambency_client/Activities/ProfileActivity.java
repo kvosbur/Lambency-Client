@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toolbar;
 
 import com.lambency.lambency_client.R;
 
