@@ -117,7 +117,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp">
@@ -128,20 +128,38 @@
                 android:src="@drawable/ic_chevron_right_black_24dp" />
 
             <TextView
+                android:padding="7dp"
+                android:paddingStart="45dp"
                 android:id="@+id/firstName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="10dp"
-                android:text="Evan" />
+                android:textColor="#000000"
+                android:textSize="17dp"
+                android:text="Evan" >
 
-        </LinearLayout>
+            </TextView>
+
+            <EditText
+                android:paddingStart="45dp"
+                android:padding="7dp"
+                android:id="@+id/editFirstName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:textColor="#000000"
+                android:textSize="17dp"
+                android:singleLine="true"
+                android:visibility="invisible"/>
+
+        </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="20dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp">
@@ -152,20 +170,36 @@
                 android:src="@drawable/ic_chevron_right_black_24dp" />
 
             <TextView
+                android:paddingStart="45dp"
+                android:padding="7dp"
                 android:id="@+id/lastName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="10dp"
+                android:textColor="#000000"
+                android:textSize="17dp"
                 android:text="Honeysett" />
 
-        </LinearLayout>
+            <EditText
+                android:paddingStart="45dp"
+                android:padding="7dp"
+                android:id="@+id/editLastName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:textColor="#000000"
+                android:textSize="17dp"
+                android:singleLine="true"
+                android:visibility="invisible"/>
+
+        </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="20dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp">
@@ -176,20 +210,39 @@
                 android:src="@drawable/ic_local_phone_black_24dp" />
 
             <TextView
+                android:paddingStart="45dp"
+                android:padding="7dp"
                 android:id="@+id/phoneNum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="10dp"
-                android:text="630-696-6790" />
+                android:textColor="#000000"
+                android:textSize="17dp"
+                android:text="630-696-6790">
 
-        </LinearLayout>
+            </TextView>
+
+            <EditText
+                android:paddingStart="45dp"
+                android:padding="7dp"
+                android:id="@+id/editPhoneNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:textColor="#000000"
+                android:textSize="17dp"
+                android:inputType="phone"
+                android:singleLine="true"
+                android:visibility="invisible"/>
+
+        </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="20dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp">
@@ -200,14 +253,30 @@
                 android:src="@drawable/ic_email_black_24dp" />
 
             <TextView
+                android:paddingStart="45dp"
+                android:padding="7dp"
                 android:id="@+id/emailOfUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="17dp"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="10dp"
                 android:text="ehoneyse@purdue.edu" />
 
-        </LinearLayout>
+            <EditText
+                android:paddingStart="45dp"
+                android:padding="7dp"
+                android:id="@+id/editEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:textColor="#000000"
+                android:textSize="17dp"
+                android:singleLine="true"
+                android:visibility="invisible"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
