@@ -24,6 +24,8 @@ public class ListUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_user);
         mRecyclerView = (RecyclerView) findViewById(R.id.userRecycle);
 
+        getSupportActionBar().setTitle("Users Attending");
+
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
