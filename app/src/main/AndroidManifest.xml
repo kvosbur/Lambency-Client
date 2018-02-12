@@ -11,9 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.MainActivity">
-
-        </activity>
+        <activity android:name=".Activities.MainActivity"></activity>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -35,7 +33,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.LoginActivity"
+        <activity
+            android:name=".Activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,10 +43,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.ProfileActivity" />
-        <activity android:name=".Activities.EventCreationActivity"></activity>
-        <activity android:name=".Activities.EventDetailsActivity"
+        <activity android:name=".Activities.EventCreationActivity" />
+        <activity
+            android:name=".Activities.EventDetailsActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activities.OrgCreationActivity"
+            android:exported="true"></activity>
     </application>
 
 </manifest>
