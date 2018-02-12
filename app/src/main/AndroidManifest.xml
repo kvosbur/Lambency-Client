@@ -36,20 +36,18 @@
         <activity
             android:name=".Activities.LoginActivity"
             android:exported="true">
+
+        </activity>
+        <activity android:name=".Activities.ProfileActivity" />
+        <activity android:name=".Activities.EventCreationActivity" />
+
+        <activity android:name=".Activities.ListUserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.ProfileActivity" />
-        <activity android:name=".Activities.EventCreationActivity" />
-        <activity
-            android:name=".UserList"
-            android:label="@string/title_activity_user_list"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".UserListActivity" />
-        <activity android:name=".Activities.ListUserActivity"></activity>
     </application>
 
 </manifest>

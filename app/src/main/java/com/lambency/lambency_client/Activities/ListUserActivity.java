@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.lambency.lambency_client.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListUserActivity extends AppCompatActivity {
@@ -15,7 +16,7 @@ public class ListUserActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    List<String> content;
+    List<String> content = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,4 +36,8 @@ public class ListUserActivity extends AppCompatActivity {
         mAdapter = new UserListAdapter(content);
         mRecyclerView.setAdapter(mAdapter);
 
+        content.add("Name: Evan Honeysett");
+        mAdapter.notifyDataSetChanged(); // how we update
+
     }
+}
