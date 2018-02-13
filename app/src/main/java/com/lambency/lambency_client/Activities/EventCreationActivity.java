@@ -12,4 +12,6 @@ public class EventCreationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_creation);
     }
+
+
 }
