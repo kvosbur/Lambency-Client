@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.lambency.lambency_client.Activities.EventCreationActivity">
+
+    <ImageView
+        android:id="@+id/eventPic"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_default_avatar" />
+
+    <EditText
+        android:id="@+id/nameOfEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/eventPic"
+        android:layout_weight="1"
+        android:ems="18"
+        android:inputType="textPersonName"
+        android:text="Event name" />
+
+    <EditText
+        android:id="@+id/dateOfEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/nameOfEvent"
+        android:layout_weight="1"
+        android:ems="18"
+        android:inputType="textPersonName"
+        android:text="Date of event" />
+
+    <EditText
+        android:id="@+id/addressOfEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/dateOfEvent"
+        android:layout_weight="1"
+        android:ems="18"
+        android:inputType="textPersonName"
+        android:text="Event address" />
+
+    <EditText
+        android:id="@+id/descriptionOfEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/addressOfEvent"
+        android:layout_weight="1"
+        android:ems="18"
+        android:inputType="textPersonName"
+        android:text="Description"
+        android:maxLength="2000"
+        android:maxLines="4"
+        />
+
+    <EditText
+        android:id="@+id/contactForEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/descriptionOfEvent"
+        android:layout_weight="1"
+        android:ems="18"
+        android:inputType="textPersonName"
+        android:text="Contact details" />
+
+
+    <Button
+        android:id="@+id/disconnect_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Save Details"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="173dp"
+        tools:layout_editor_absoluteY="0dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/contactForEvent"/>
+
+
+
+
+</RelativeLayout>

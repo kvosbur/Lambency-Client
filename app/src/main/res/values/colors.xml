@@ -3,4 +3,7 @@
     <color name="colorPrimary">#F2CA03</color>
     <color name="colorPrimaryDark">#bb9a00</color>
     <color name="colorAccent">#fffd50</color>
+    <color name="white">#ffffff</color>
+    <color name="lightGray">#ffcccccc</color>
+    <color name="androidGreen">#86B950</color>
 </resources>
