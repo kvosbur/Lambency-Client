@@ -1,4 +1,4 @@
-package com.lambency.lambency_client.Activities;
+package com.lambency.lambency_client.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import com.lambency.lambency_client.R;
 

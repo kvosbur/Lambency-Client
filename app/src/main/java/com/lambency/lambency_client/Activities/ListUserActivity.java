@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.lambency.lambency_client.Adapters.UserListAdapter;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
