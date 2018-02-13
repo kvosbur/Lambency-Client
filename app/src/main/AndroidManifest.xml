@@ -39,10 +39,7 @@
 
         </activity>
 
-        <activity android:name=".Activities.ProfileActivity" />
-        <activity android:name=".Activities.EventCreationActivity" />
-
-        <activity android:name=".Activities.ListUserActivity">
+        <activity android:name=".Activities.ListUserActivity"/>
 
         <activity android:name=".Activities.ProfileActivity"
             android:exported="true">
