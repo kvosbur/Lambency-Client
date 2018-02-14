@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lambency.lambency_client">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -10,8 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.MainActivity" />
 
+        <activity android:name=".Activities.MainActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -53,11 +54,13 @@
             </intent-filter>
         </activity>
 
-
-        <activity android:name=".Activities.EventCreationActivity"></activity>
-        <activity android:name=".Activities.EventDetailsActivity"
+        <activity android:name=".Activities.EventCreationActivity" />
+        <activity
+            android:name=".Activities.EventDetailsActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activities.OrgCreationActivity"
+            android:exported="true"></activity>
 
     </application>
 

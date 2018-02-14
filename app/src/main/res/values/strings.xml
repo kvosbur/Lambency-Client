@@ -4,4 +4,5 @@
     <string name="fb_login_protocol_scheme">fb328340941006039</string>
     <string name="title_activity_user_list">UserList</string>
     <string name="title_activity_list_user">ListUserActivity</string>
+
 </resources>
