@@ -35,10 +35,15 @@ dependencies {
 
     implementation 'com.android.support:design:26.1.0'
 
+    //ButterKnife
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
+    //EasyImage
     compile 'com.github.jkwiecien:EasyImage:2.0.4'
+
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
     //compile 'com.google.api-client:google-api-client:1.22.0'
     //compile 'com.google.api-client:google-api-client-android:1.22.0'

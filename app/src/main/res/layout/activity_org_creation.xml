@@ -22,6 +22,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="10dp"
             android:clickable="true"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
             />
 
         <LinearLayout

@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -15,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.lambency.lambency_client.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.List;
@@ -27,7 +30,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class OrgCreationActivity extends AppCompatActivity {
 
-    private int RESULT_LOAD_IMAGE;
+    private Context context;
 
     @BindView(R.id.profileImage)
     ImageView profileImage;
@@ -36,6 +39,7 @@ public class OrgCreationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_org_creation);
+        this.context = this;
 
         ButterKnife.bind(this);
 
@@ -77,8 +81,26 @@ public class OrgCreationActivity extends AppCompatActivity {
             @Override
             public void onImagesPicked(List<File> imagesFiles, EasyImage.ImageSource source, int type) {
                 //Handle the images
+
+                Picasso.Builder builder = new Picasso.Builder(context);
+                builder.listener(new Picasso.Listener()
+                {
+                    @Override
+                    public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception)
+                    {
+                        exception.printStackTrace();
+                    }
+                });
+
+                builder.build()
+                        .load(new File(imagesFiles.get(0).getPath()))
+                        .error(R.drawable.ic_books)
+                        .into(profileImage);
+
+                /*
                 Bitmap bitmap = BitmapFactory.decodeFile(imagesFiles.get(0).getPath(), null);
                 profileImage.setImageBitmap(bitmap);
+                */
             }
         });
     }
