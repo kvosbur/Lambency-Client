@@ -3,9 +3,10 @@ package com.lambency.lambency_client.Activities;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SearchView;
+
 
 import com.lambency.lambency_client.R;
 
