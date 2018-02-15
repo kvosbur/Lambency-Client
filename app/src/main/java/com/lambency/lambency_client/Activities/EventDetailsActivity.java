@@ -32,11 +32,24 @@ public class EventDetailsActivity extends AppCompatActivity {
         mCollapsingToolbarLayout.setTitle("Event Title");
         mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
 
+        final Button shareButton = findViewById(R.id.shareEvent);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // if statement for user will go here
+
+                // Start smsActivity.class
+                Intent myIntent = new Intent(EventDetailsActivity.this,
+                        smsActivity.class);
+                startActivity(myIntent);
+            }
+        });
+
+
 
     }
 
 
-    @OnClick(R.id.createEventButton)
+    /*@OnClick(R.id.shareEvent)
     public void shareEvent(){
         // if statement for user will go here
 
@@ -44,5 +57,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         Intent myIntent = new Intent(EventDetailsActivity.this,
                 smsActivity.class);
         startActivity(myIntent);
-    }
+    }*/
+
 }
