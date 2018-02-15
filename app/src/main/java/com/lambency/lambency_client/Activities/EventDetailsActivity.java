@@ -42,11 +42,22 @@ public class EventDetailsActivity extends AppCompatActivity {
                 // if statement for user will go here
 
                 // Start smsActivity.class
-                Intent myIntent = new Intent(EventDetailsActivity.this,
+                /*Intent myIntent = new Intent(EventDetailsActivity.this,
                         smsActivity.class);
-                startActivity(myIntent);
+                startActivity(myIntent);*/
+                shareIt();
             }
         });
+    }
+
+    private void shareIt() {
+    //sharing implementation here
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        String shareBody = "Here is the share content body";
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
 
 
