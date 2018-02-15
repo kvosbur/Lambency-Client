@@ -1,5 +1,8 @@
 package com.lambency.lambency_client.Activities;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +22,7 @@ public class SearchActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
 
@@ -34,6 +38,22 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setIconifiedByDefault(false);
         searchView.requestFocus();
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                System.out.println(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
+
+
 }
