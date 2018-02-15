@@ -10,7 +10,13 @@ import android.widget.Button;
 
 import com.lambency.lambency_client.R;
 
+import butterknife.BindView;
+import butterknife.OnClick;
+
 public class EventDetailsActivity extends AppCompatActivity {
+
+    @BindView(R.id.createEventButton)
+    Button shareEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,18 +32,17 @@ public class EventDetailsActivity extends AppCompatActivity {
         mCollapsingToolbarLayout.setTitle("Event Title");
         mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
 
-        //For Button
-        final Button button = findViewById(R.id.createEventButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // if statement for user will go here
 
-                // Start smsActivity.class
-                Intent myIntent = new Intent(EventDetailsActivity.this,
-                        smsActivity.class);
-                startActivity(myIntent);
-            }
-        });
+    }
 
+
+    @OnClick(R.id.createEventButton)
+    public void shareEvent(){
+        // if statement for user will go here
+
+        // Start smsActivity.class
+        Intent myIntent = new Intent(EventDetailsActivity.this,
+                smsActivity.class);
+        startActivity(myIntent);
     }
 }
