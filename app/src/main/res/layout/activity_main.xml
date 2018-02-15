@@ -4,16 +4,7 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Button
-        android:id="@+id/createEventButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Create Event"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        >
-    </Button>
+
 
 
 </RelativeLayout>
