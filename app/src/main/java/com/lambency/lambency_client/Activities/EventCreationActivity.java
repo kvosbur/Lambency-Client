@@ -53,6 +53,11 @@ public class EventCreationActivity extends AppCompatActivity {
                 addressOfEvent = eAddr.getText().toString();
                 description = eDescrip.getText().toString();
                 contact = eContact.getText().toString();
+
+                //Go back to main page now
+                Intent myIntent = new Intent(EventCreationActivity.this,
+                        MainActivity.class);
+                startActivity(myIntent);
             }
         });
     }
