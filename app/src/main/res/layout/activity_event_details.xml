@@ -150,7 +150,8 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@id/joinButton"
                         android:text="Share event"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp"
+                        />
 
                 </RelativeLayout>
 

@@ -1,6 +1,11 @@
 package com.lambency.lambency_client.Activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
@@ -17,10 +22,18 @@ public class smsActivity extends AppCompatActivity {
     EditText textPhoneNo;
     EditText textSMS;
 
+
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
+            checkPermission();
+        }
 
         buttonSend = (Button) findViewById(R.id.buttonSend);
         buttonMain = (Button) findViewById(R.id.backToMain);
@@ -59,7 +72,15 @@ public class smsActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
+    }
 
+    public void checkPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED
+                ){//Can add more as per requirement
 
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    123);
+        }
     }
 }
