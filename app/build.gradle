@@ -18,12 +18,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
     //noinspection GradleCompatible,GradleCompatible
     compile 'com.android.support:design:26.1.0'
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -32,13 +33,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.facebook.android:facebook-login:[4,5)'
-
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.android.support:cardview-v7:26.1.0'
-
     implementation 'com.google.android.gms:play-services-auth:11.8.0'
-
-
     implementation 'com.android.support:design:26.1.0'
 
     //ButterKnife
@@ -54,10 +51,7 @@ dependencies {
     //compile 'com.google.api-client:google-api-client:1.22.0'
     //compile 'com.google.api-client:google-api-client-android:1.22.0'
     //compile 'com.google.apis:google-api-services-people:v1-rev139-1.22.0'
-
     implementation 'com.jakewharton:butterknife:8.8.1'
-
     implementation 'com.android.support:support-v4:26.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
 }
