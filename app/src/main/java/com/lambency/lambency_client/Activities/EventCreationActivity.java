@@ -1,6 +1,7 @@
 package com.lambency.lambency_client.Activities;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.lambency.lambency_client.R;
 import com.squareup.picasso.Picasso;
@@ -34,12 +36,12 @@ public class EventCreationActivity extends AppCompatActivity {
     ImageView eventImage;
     private Context context;
 
-    EditText date;
+    Button date;
 
     Calendar myCalendar = Calendar.getInstance();
+
+
     DatePickerDialog.OnDateSetListener dateD = new DatePickerDialog.OnDateSetListener() {
-
-
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             myCalendar.set(Calendar.YEAR, year);
@@ -49,7 +51,9 @@ public class EventCreationActivity extends AppCompatActivity {
         }
     };
 
-        private void updateLabel() {
+
+
+    private void updateLabel() {
 
             String myFormat = "MM/dd/yy"; //In which you need put here
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
@@ -66,12 +70,12 @@ public class EventCreationActivity extends AppCompatActivity {
 
         //Saving details when button pressed
         final Button saveDetails = findViewById(R.id.saveDetailsButton);
-        date = (EditText)findViewById(R.id.dateOfEvent);
+        date = (Button) findViewById(R.id.dateOfEvent);
         date.setOnClickListener(new View.OnClickListener() {
 
+            //on click of date button
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 new DatePickerDialog(EventCreationActivity.this, dateD, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -80,7 +84,7 @@ public class EventCreationActivity extends AppCompatActivity {
 
         saveDetails.setOnClickListener(new View.OnClickListener() {
             EditText eName = (EditText) findViewById(R.id.nameOfEvent);
-            EditText eDate = (EditText) findViewById(R.id.dateOfEvent);
+            //EditText eDate = (EditText) findViewById(R.id.dateOfEvent);
             EditText eAddr = (EditText) findViewById(R.id.addressOfEvent);
             EditText eDescrip = (EditText) findViewById(R.id.descriptionOfEvent);
             EditText eContact = (EditText) findViewById(R.id.contactForEvent);
@@ -89,7 +93,7 @@ public class EventCreationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eventName = eName.getText().toString();
-                dateOfEvent = eDate.getText().toString();
+                //dateOfEvent = eDate.getText().toString();
                 addressOfEvent = eAddr.getText().toString();
                 description = eDescrip.getText().toString();
                 contact = eContact.getText().toString();
