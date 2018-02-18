@@ -133,6 +133,7 @@
                             app:srcCompat="@drawable/ic_check_green_24dp" />
 
                         <TextView
+                            android:id="@+id/joinButtonText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -152,6 +153,17 @@
                         android:text="Share event"
                         android:textSize="14sp"
                         />
+
+                    <Button
+                        android:id="@+id/listUser"
+                        android:layout_toRightOf="@id/shareEvent"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:visibility="gone"
+                        android:textSize="12sp"
+                        android:text="See whose attending"/>
 
                 </RelativeLayout>
 
