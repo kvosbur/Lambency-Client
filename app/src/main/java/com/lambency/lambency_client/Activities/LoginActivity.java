@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -28,12 +29,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.lambency.lambency_client.Models.UserAuthenticatorModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
@@ -87,14 +93,57 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             String id = (String) object.get("id");
                                             String firstName = (String) object.get("first_name");
                                             String lastName = (String) object.get("last_name");
-                                            String email = (String) object.get("email");
+                                            String email;
+                                            if(object.has("email")) {
+                                                email = (String) object.get("email");
+                                            }else{
+                                                email = "kpvosburgh@comast.net";
+                                            }
 
                                             System.out.println("Hello " + firstName + " " + lastName + " with email " + email + " id: "+ id);
+
+                                            LambencyAPIHelper.getInstance().getFacebookLogin(id, firstName, lastName, email).enqueue(new Callback<UserAuthenticatorModel>() {
+                                                @Override
+                                                public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
+                                                    if (response.body() == null || response.code() != 200) {
+                                                        System.out.println("ERROR!!!!!");
+                                                    }
+                                                    //when response is back
+                                                    UserAuthenticatorModel ua = response.body();
+                                                    String authCode = ua.getoAuthCode();//System.out.println(ua.getoAuthCode());
+                                                    //System.out.println(ua.getStatus());
+                                                    if(ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
+                                                        //System.out.println("SUCCESS");
+                                                        String text = "Success " + ua.getoAuthCode() + " " + ua.getStatus();
+                                                        Toast.makeText(getApplicationContext(), "Success " + ua.getoAuthCode() + " " + ua.getStatus(), Toast.LENGTH_LONG).show();
+                                                        System.out.println(text);
+                                                    }
+                                                    else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR){
+                                                        //System.out.println("NON_DETERMINANT_ERROR");
+                                                        Toast.makeText(getApplicationContext(), "NON_DETERMINANT_ERROR", Toast.LENGTH_LONG).show();
+                                                    }
+                                                    else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
+                                                        //System.out.println("NON_UNIQUE_EMAIL");
+                                                        Toast.makeText(getApplicationContext(), "NON_UNIQUE_EMAIL", Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
+                                                    //when failure
+                                                    System.out.println("FAILED CALL");
+                                                    System.out.println(throwable.getMessage());
+
+                                                    Toast.makeText(getApplicationContext(), "Failed to Communicate with Server.", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+
                                             //JSONObject idObj = arr.getJSONObject(0);
                                             //System.out.print(idObj.getString("id"));
 
                                         } catch (Exception e )
                                         {
+                                            e.printStackTrace();
                                             System.out.println("Messed up");
                                         }
                                     }
@@ -117,10 +166,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
 
     }
-
-
-    
-
 
     @Override
     public void onStart() {
