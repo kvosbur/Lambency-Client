@@ -130,9 +130,10 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
 
-                            android:src="@drawable/ic_check_green_24dp" />
+                            app:srcCompat="@drawable/ic_check_green_24dp" />
 
                         <TextView
+                            android:id="@+id/joinButtonText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -143,6 +144,26 @@
                             android:textSize="18sp"
                             android:text="Join Event" />
                     </LinearLayout>
+
+                    <Button
+                        android:id="@+id/shareEvent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/joinButton"
+                        android:text="Share event"
+                        android:textSize="14sp"
+                        />
+
+                    <Button
+                        android:id="@+id/listUser"
+                        android:layout_toRightOf="@id/shareEvent"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:visibility="gone"
+                        android:textSize="12sp"
+                        android:text="See whose attending"/>
 
                 </RelativeLayout>
 
@@ -205,7 +226,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
+                        app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"/>
 
