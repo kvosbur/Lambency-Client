@@ -17,6 +17,10 @@ public class EventModel {
     private double latitude;
     private double longitude;
 
+    //Empty constructor for testing
+    public EventModel(){
+
+    }
 
     public EventModel(String name, int org_id, Timestamp start, Timestamp end, String description, String location,
                  double latitude, double longitude) {
