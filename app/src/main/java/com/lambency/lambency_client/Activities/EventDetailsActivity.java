@@ -53,7 +53,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         });
 
-        boolean creator = false; // API CALL HERE
+        boolean creator = true; // API CALL HERE
         if(creator) {
             listUser.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
