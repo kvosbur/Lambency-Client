@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.R;
 
 import butterknife.BindView;
@@ -105,13 +106,18 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, view);
+
+        ((MainActivity) getActivity())
+                .setActionBarTitle("Profile");
+        setHasOptionsMenu(true);
+
         return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onProfileFragmentInteraction(uri);
         }
     }
 
@@ -190,6 +196,6 @@ public class ProfileFragment extends Fragment {
          */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onProfileFragmentInteraction(Uri uri);
     }
 }

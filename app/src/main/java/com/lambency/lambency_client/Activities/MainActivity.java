@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 
 import com.lambency.lambency_client.Fragments.EventsMainFragment;
+import com.lambency.lambency_client.Fragments.ProfileFragment;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 
@@ -42,7 +43,7 @@ import com.lambency.lambency_client.R;
 import butterknife.BindView;
 
 
-public class MainActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener{
 
 
 //Key is 406595282653-cc9eb7143bvpgfe5da941r3jq174b4dq
@@ -54,8 +55,13 @@ public class MainActivity extends AppCompatActivity implements EventsMainFragmen
         startActivity(intent);
     }
 
+    public void onProfileFragmentInteraction(Uri uri)
+    {
+
+    }
+
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onEventFragmentInteraction(Uri uri) {
 
     }
 
@@ -111,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements EventsMainFragmen
 
     public void switchToFragment2() {
         FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.fragContainer, new EventsMainFragment()).commit();
+        manager.beginTransaction().replace(R.id.fragContainer, new ProfileFragment()).commit();
     }
 
     public void switchToFragment3() {
