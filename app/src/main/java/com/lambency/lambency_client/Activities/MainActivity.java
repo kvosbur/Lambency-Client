@@ -49,11 +49,6 @@ public class MainActivity extends AppCompatActivity implements EventsMainFragmen
 //Key is 406595282653-cc9eb7143bvpgfe5da941r3jq174b4dq
 //this goes in src/main/resources/client_secret.json
 
-    private void launchActivity() {
-
-        Intent intent = new Intent(this, ProfileActivity.class);
-        startActivity(intent);
-    }
 
     public void onProfileFragmentInteraction(Uri uri)
     {

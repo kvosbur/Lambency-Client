@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -128,6 +129,8 @@ public class EventsMainFragment extends Fragment {
             events.add(new EventModel());
         }
         startAdapter(events);
+
+        ((MainActivity) getActivity()).getSupportActionBar().setElevation(15);
 
         return view;
     }

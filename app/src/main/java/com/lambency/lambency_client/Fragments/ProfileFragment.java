@@ -1,17 +1,22 @@
 package com.lambency.lambency_client.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.lambency.lambency_client.Activities.MainActivity;
+import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.R;
 
 import butterknife.BindView;
@@ -28,8 +33,6 @@ import butterknife.OnClick;
  */
 public class ProfileFragment extends Fragment {
 
-    @BindView(R.id.myFAB)
-    FloatingActionButton myButton;
 
     @BindView(R.id.firstName)
     TextView firstNameText;
@@ -109,6 +112,8 @@ public class ProfileFragment extends Fragment {
 
         ((MainActivity) getActivity())
                 .setActionBarTitle("Profile");
+       ((MainActivity) getActivity()).getSupportActionBar().setElevation(0);
+
         setHasOptionsMenu(true);
 
         return view;
@@ -138,8 +143,31 @@ public class ProfileFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.menu_edit, menu);
+    }
 
-    @OnClick(R.id.myFAB)
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id){
+            case R.id.action_edit:
+                if(item.getItemId() == R.drawable.ic_mode_edit_white_24dp){
+                    item.setIcon(R.drawable.ic_done_white_24dp);
+                }else{
+                    item.setIcon(R.drawable.ic_mode_edit_white_24dp);
+                }
+
+                clickSend();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
     public void clickSend() {
 
         if (!edit) {
@@ -160,7 +188,7 @@ public class ProfileFragment extends Fragment {
             editEmail.setVisibility(View.VISIBLE);
             edit = true;
 
-            myButton.setImageResource(R.drawable.ic_check_black_24dp);
+
         } else {
             editFirstName.setVisibility(View.INVISIBLE);
             firstNameText.setText(editFirstName.getText());
@@ -179,7 +207,7 @@ public class ProfileFragment extends Fragment {
             emailOfUser.setVisibility(View.VISIBLE);
             edit = false;
 
-            myButton.setImageResource(R.drawable.ic_mode_edit_black_24dp);
+
         }
     }
 
