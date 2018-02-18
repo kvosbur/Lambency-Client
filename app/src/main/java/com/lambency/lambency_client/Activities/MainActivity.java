@@ -1,8 +1,10 @@
 package com.lambency.lambency_client.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -15,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import com.lambency.lambency_client.Fragments.EventsMainFragment;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 
@@ -39,7 +42,7 @@ import com.lambency.lambency_client.R;
 import butterknife.BindView;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener{
 
 
 //Key is 406595282653-cc9eb7143bvpgfe5da941r3jq174b4dq
@@ -49,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     @Override
@@ -64,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
                 // handle desired action here
                 switch (item.getItemId()) {
                     case R.id.profileBot:
-                        launchActivity();
+                        switchToFragment1();
+                        break;
                 }
 
                 // One possibility of action is to replace the contents above the nav bar
@@ -85,5 +94,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void switchToFragment1() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.fragContainer, new EventsMainFragment()).commit();
     }
 }
