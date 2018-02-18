@@ -51,7 +51,6 @@ dependencies {
     implementation 'com.android.support:support-v4:26.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
-
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
