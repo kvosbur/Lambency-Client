@@ -71,9 +71,17 @@ public class MainActivity extends AppCompatActivity implements EventsMainFragmen
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 // handle desired action here
                 switch (item.getItemId()) {
-                    case R.id.profileBot:
+                    case R.id.feedBot:
                         switchToFragment1();
                         break;
+                    case R.id.profileBot:
+                        switchToFragment2();
+                        break;
+
+                    case R.id.lamBot:
+                        switchToFragment3();
+                        break;
+
                 }
 
                 // One possibility of action is to replace the contents above the nav bar
@@ -99,5 +107,19 @@ public class MainActivity extends AppCompatActivity implements EventsMainFragmen
     public void switchToFragment1() {
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.fragContainer, new EventsMainFragment()).commit();
+    }
+
+    public void switchToFragment2() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.fragContainer, new EventsMainFragment()).commit();
+    }
+
+    public void switchToFragment3() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.fragContainer, new EventsMainFragment()).commit();
+    }
+
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 }

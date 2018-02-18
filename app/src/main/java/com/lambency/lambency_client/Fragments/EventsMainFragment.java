@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.Adapters.EventsMainAdapter;
 import com.lambency.lambency_client.Models.EventModel;
@@ -81,7 +82,8 @@ public class EventsMainFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        ((MainActivity) getActivity())
+                .setActionBarTitle("Feed");
         setHasOptionsMenu(true);
 
 

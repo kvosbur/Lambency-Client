@@ -24,8 +24,8 @@ import butterknife.OnClick;
 public class EventDetailsActivity extends AppCompatActivity {
 
 
-    @BindView(R.id.createEventButton)
-    Button shareEventButton;
+    //@BindView(R.id.createEventButton)
+    //Button shareEventButton;
 
     @BindView(R.id.joinButtonText)
     TextView joinButText;
