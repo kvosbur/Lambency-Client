@@ -12,9 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".Activities.MainActivity"
-            android:exported="true"/>
+        <activity
+            android:name=".Activities.MainActivity"
+            android:exported="true" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -38,7 +38,7 @@
         </activity>
         <activity
             android:name=".Activities.LoginActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Activities.ListUserActivity"
             android:exported="true" />
@@ -59,9 +59,11 @@
         <activity
             android:name=".Activities.OrgCreationActivity"
             android:exported="true" />
-        <activity android:name=".Activities.SearchActivity"
-            android:exported="true">
-        </activity>
+        <activity
+            android:name=".Activities.SearchActivity"
+            android:exported="true"></activity>
+        <activity android:name=".Activities.FragmentTestActivity"
+            android:exported="true"></activity>
     </application>
 
 </manifest>

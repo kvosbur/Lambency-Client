@@ -1,16 +1,29 @@
-package com.lambency.lambency_client.Fragment;
+package com.lambency.lambency_client.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lambency.lambency_client.Activities.SearchActivity;
+import com.lambency.lambency_client.Adapters.EventsMainAdapter;
+import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +34,7 @@ import com.lambency.lambency_client.R;
  * create an instance of this fragment.
  */
 public class EventsMainFragment extends Fragment {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,6 +45,11 @@ public class EventsMainFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private EventsMainAdapter eventsMainAdapter;
+
+    @BindView(R.id.eventsMainRecyclerView)
+    RecyclerView eventsMainRecyclerView;
+
 
     public EventsMainFragment() {
         // Required empty public constructor
@@ -57,12 +76,22 @@ public class EventsMainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
         setHasOptionsMenu(true);
+
+
+    }
+
+    private void startAdapter(List<EventModel> events){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        eventsMainRecyclerView.setLayoutManager(linearLayoutManager);
+        eventsMainAdapter = new EventsMainAdapter(getContext(), events);
+        eventsMainRecyclerView.setAdapter(eventsMainAdapter);
     }
 
     @Override
@@ -71,10 +100,34 @@ public class EventsMainFragment extends Fragment {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id){
+            case R.id.action_search:
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                this.startActivity(intent);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_events_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_events_main, container, false);
+        ButterKnife.bind(this, view);
+
+
+        ArrayList<EventModel> events = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            events.add(new EventModel());
+        }
+        startAdapter(events);
+
+        return view;
     }
 
 
