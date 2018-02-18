@@ -118,10 +118,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-
-    
-
-
     @Override
     public void onStart() {
         super.onStart();
