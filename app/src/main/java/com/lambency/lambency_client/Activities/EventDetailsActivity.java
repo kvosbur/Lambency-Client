@@ -9,9 +9,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ShareActionProvider;
+import android.widget.TextView;
 
 import com.lambency.lambency_client.R;
+
+import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -19,8 +24,11 @@ import butterknife.OnClick;
 public class EventDetailsActivity extends AppCompatActivity {
 
 
-    @BindView(R.id.createEventButton)
-    Button shareEventButton;
+    //@BindView(R.id.createEventButton)
+    //Button shareEventButton;
+
+    @BindView(R.id.joinButtonText)
+    TextView joinButText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +43,21 @@ public class EventDetailsActivity extends AppCompatActivity {
         CollapsingToolbarLayout mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         mCollapsingToolbarLayout.setTitle("Event Title");
         mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+
+        LinearLayout linearLayout = findViewById(R.id.joinButton);
+        Button listUser = findViewById(R.id.listUser);
+        listUser.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(EventDetailsActivity.this, ListUserActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        boolean creator = true; // API CALL HERE
+        if(creator) {
+            listUser.setVisibility(View.VISIBLE);
+            linearLayout.setVisibility(View.GONE);
+        }
 
         final Button shareButton = findViewById(R.id.shareEvent);
         shareButton.setOnClickListener(new View.OnClickListener() {

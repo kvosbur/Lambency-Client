@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--
+    <item
+    android:id="@+id/icon_group"
+    android:enabled="true"
+    android:icon="@drawable/ic_crop_free_black_24dp"
+    android:title="Check In"
+    app:showAsAction="ifRoom" />
+    -->
+    <item
+        android:id="@+id/feedBot"
+        android:enabled="true"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="Feed"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/lamBot"
+        android:enabled="true"
+        android:icon="@drawable/ic_brightness_high_black_24dp"
+        android:title="My Lambency"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/profileBot"
+        android:enabled="true"
+        android:icon="@drawable/ic_account_circle_black_24dp"
+        android:title="Profile"
+        app:showAsAction="ifRoom" />
+</menu>

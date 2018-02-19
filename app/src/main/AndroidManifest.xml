@@ -4,8 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-sdk android:minSdkVersion="10" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.MainActivity" />
+
+        <activity android:name=".Activities.MainActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -42,18 +46,7 @@
         <activity
             android:name=".Activities.ListUserActivity"
             android:exported="true" />
-        <activity
-            android:name=".Activities.ProfileActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".Activities.EventCreationActivity"
-            android:exported="true"/>
-
+        <activity android:name=".Activities.EventCreationActivity" />
         <activity
             android:name=".Activities.EventDetailsActivity"
             android:exported="true"
@@ -61,12 +54,9 @@
         <activity
             android:name=".Activities.OrgCreationActivity"
             android:exported="true" />
-        <activity android:name=".Activities.smsActivity"
-            android:exported="true"></activity>
         <activity android:name=".Activities.SearchActivity"
             android:exported="true">
         </activity>
-
     </application>
 
 </manifest>

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,7 +5,7 @@
     android:layout_height="match_parent"
 
     android:orientation="vertical"
-     >
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -285,6 +284,7 @@
 
     </LinearLayout>
 
+    <!--
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -297,7 +297,7 @@
             android:id="@+id/myFAB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_mode_edit_black_24dp"
+            app:srcCompat="@drawable/ic_mode_edit_white_24dp"
             app:elevation="4dp"
             android:layout_marginLeft="325dp"
             app:fabSize="normal"
@@ -307,6 +307,6 @@
         </android.support.design.widget.FloatingActionButton>
 
     </RelativeLayout>
+    -->
 
 </LinearLayout>
-
