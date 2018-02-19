@@ -46,7 +46,8 @@
         <activity
             android:name=".Activities.ListUserActivity"
             android:exported="true" />
-        <activity android:name=".Activities.EventCreationActivity" />
+        <activity android:name=".Activities.EventCreationActivity"
+            android:exported="true"/>
         <activity
             android:name=".Activities.EventDetailsActivity"
             android:exported="true"
