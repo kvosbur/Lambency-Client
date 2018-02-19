@@ -36,11 +36,12 @@ public class EventCreationActivity extends AppCompatActivity {
     ImageView eventImage;
     private Context context;
 
-    Button date;
+    Button date,startTime,endTime;
 
     Calendar myCalendar = Calendar.getInstance();
 
 
+    //for date
     DatePickerDialog.OnDateSetListener dateD = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -50,6 +51,30 @@ public class EventCreationActivity extends AppCompatActivity {
             updateLabel();
         }
     };
+
+    //for start time
+    TimePickerDialog.OnTimeSetListener time_listener = new TimePickerDialog.OnTimeSetListener() {
+
+        @Override
+        public void onTimeSet(TimePicker view, int hour, int minute) {
+            // store the data in one string and set it to text
+            String time1 = String.valueOf(hour) + ":" + String.valueOf(minute);
+            startTime.setText(time1);
+        }
+    };
+
+    //for end time
+    TimePickerDialog.OnTimeSetListener time_listener2 = new TimePickerDialog.OnTimeSetListener() {
+
+        @Override
+        public void onTimeSet(TimePicker view, int hour, int minute) {
+            // store the data in one string and set it to text
+            String time1 = String.valueOf(hour) + ":" + String.valueOf(minute);
+            endTime.setText(time1);
+        }
+    };
+
+
 
 
 
@@ -71,14 +96,34 @@ public class EventCreationActivity extends AppCompatActivity {
         //Saving details when button pressed
         final Button saveDetails = findViewById(R.id.saveDetailsButton);
         date = (Button) findViewById(R.id.dateOfEvent);
-        date.setOnClickListener(new View.OnClickListener() {
+        startTime = (Button) findViewById(R.id.startTimeButton);
+        endTime = (Button) findViewById(R.id.endTimeButton);
 
+        date.setOnClickListener(new View.OnClickListener() {
             //on click of date button
             @Override
             public void onClick(View v) {
                 new DatePickerDialog(EventCreationActivity.this, dateD, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        startTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
+                int minute = myCalendar.get(Calendar.MINUTE);
+                new TimePickerDialog(EventCreationActivity.this,time_listener,hour,minute,false).show();
+            }
+        });
+
+        endTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
+                int minute = myCalendar.get(Calendar.MINUTE);
+                new TimePickerDialog(EventCreationActivity.this,time_listener2,hour,minute,false).show();
             }
         });
 
