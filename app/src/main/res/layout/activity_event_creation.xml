@@ -60,25 +60,50 @@
         android:inputType="textPersonName"
         android:text="Event name" />
 
-    <EditText
+
+    <Button
         android:id="@+id/dateOfEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/nameOfEvent"
+        android:layout_centerHorizontal="true"
         android:layout_weight="1"
+        android:clickable="false"
         android:ems="18"
         android:inputType="textPersonName"
-        android:text="Date of event" />
+        android:text="Date of event">
+
+    </Button>
+
+    <LinearLayout
+        android:id="@+id/timeButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dateOfEvent"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:id="@+id/startTimeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Time"
+            />
+
+        <Button
+            android:id="@+id/endTimeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="End Time" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/addressOfEvent"
+        android:paddingTop="25dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/dateOfEvent"
+        android:layout_below="@+id/timeButtons"
         android:layout_weight="1"
         android:ems="18"
         android:inputType="textPersonName"

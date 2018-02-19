@@ -21,7 +21,9 @@
             android:layout_marginEnd="5dp"
             android:layout_marginRight="10dp"
             android:scaleType="fitXY"
+
             android:src="@drawable/ic_books" />
+
 
         <LinearLayout
             android:layout_width="fill_parent"
