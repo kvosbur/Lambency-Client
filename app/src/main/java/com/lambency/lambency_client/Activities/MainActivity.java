@@ -12,12 +12,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 
 import android.view.MenuItem;
+import android.app.Fragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 
 import com.lambency.lambency_client.Fragments.EventsMainFragment;
+import com.lambency.lambency_client.Fragments.MyLambencyFragment;
 import com.lambency.lambency_client.Fragments.ProfileFragment;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
@@ -43,7 +45,7 @@ import com.lambency.lambency_client.R;
 import butterknife.BindView;
 
 
-public class MainActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener{
 
 
 //Key is 406595282653-cc9eb7143bvpgfe5da941r3jq174b4dq
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements EventsMainFragmen
 
     public void switchToFragment3() {
         FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.fragContainer, new EventsMainFragment()).commit();
+        manager.beginTransaction().replace(R.id.fragContainer, new MyLambencyFragment()).commit();
     }
 
     public void setActionBarTitle(String title) {
