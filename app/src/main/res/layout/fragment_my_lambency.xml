@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/eventsMainLayout"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_weight="1"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Button
+        android:id="@+id/createOrgButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:text="Create an Organization"
+        android:layout_centerHorizontal="true"
+        />
+
+    <Button
+        android:layout_marginTop="100dp"
+        android:id="@+id/createEventButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create an Event"
+        android:layout_below="@id/createOrgButton"
+        android:layout_centerHorizontal="true"
+        />
+
+</RelativeLayout>
