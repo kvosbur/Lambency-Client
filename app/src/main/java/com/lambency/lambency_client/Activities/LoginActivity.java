@@ -30,6 +30,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -267,6 +268,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
                     if (response.body() == null || response.code() != 200) {
                         System.out.println("ERROR!!!!!");
+                        return;
                     }
                     //when response is back
                     UserAuthenticatorModel ua = response.body();
@@ -277,11 +279,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Toast.makeText(getApplicationContext(), "Success communication with server.", Toast.LENGTH_LONG).show();
                         //updateUI(account);
 
-                        Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(myIntent);
-                        finish();
+                        UserAuthenticatorModel.myAuth = ua.getoAuthCode();
 
-                        //System.out.println("SUCCESS");
+                        LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
+                            @Override
+                            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                                if (response.body() == null || response.code() != 200) {
+                                    System.out.println("ERROR!!!!!");
+                                }
+                                //when response is back
+                                UserModel.myUserModel = response.body();
+                                Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
+                                System.out.println("got the user object");
+
+                                //System.out.println("SUCCESS");
+                                Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(myIntent);
+                                finish();
+                            }
+
+                            @Override
+                            public void onFailure(Call<UserModel> call, Throwable throwable) {
+                                //when failure
+                                System.out.println("FAILED CALL");
+                                Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
+
+                            }
+                        });
+
                     }
                     else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR){
                         //System.out.println("NON_DETERMINANT_ERROR");

@@ -16,6 +16,8 @@ public class UserModel {
     private int hoursWorked;
     private String oauthToken;
 
+    public static UserModel myUserModel;
+
 
     public UserModel(String firstName, String lastName, String email, List<Integer> myOrgs, List<Integer> eventsAttending,
                 List<Integer> followingOrgs, List<Integer> joinedOrgs, int userId, int hoursWorked, String oauthToken) {
