@@ -30,6 +30,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
@@ -63,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("406595282653-87c0rdih5bqi4nrei8catgh3pq1usith.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
@@ -116,15 +118,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                         //System.out.println("SUCCESS");
                                                         String text = "Success " + ua.getoAuthCode() + " " + ua.getStatus();
                                                         Toast.makeText(getApplicationContext(), "Success " + ua.getoAuthCode() + " " + ua.getStatus(), Toast.LENGTH_LONG).show();
+
+                                                        Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                                        startActivity(myIntent);
+                                                        finish();
+
                                                         System.out.println(text);
                                                     }
                                                     else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR){
                                                         //System.out.println("NON_DETERMINANT_ERROR");
                                                         Toast.makeText(getApplicationContext(), "NON_DETERMINANT_ERROR", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
+
                                                     }
                                                     else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
                                                         //System.out.println("NON_UNIQUE_EMAIL");
                                                         Toast.makeText(getApplicationContext(), "NON_UNIQUE_EMAIL", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
+
                                                     }
                                                 }
 
@@ -134,7 +145,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                     System.out.println("FAILED CALL");
                                                     System.out.println(throwable.getMessage());
 
-                                                    Toast.makeText(getApplicationContext(), "Failed to Communicate with Server.", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getApplicationContext(), "Failed to Communicate with Server please try again.", Toast.LENGTH_LONG).show();
                                                 }
                                             });
 
@@ -249,12 +260,57 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
+            String idToken = account.getIdToken();
             // Signed in successfully, show authenticated UI.
-            updateUI(account);
+            LambencyAPIHelper.getInstance().getGoogleLogin(idToken).enqueue(new Callback<UserAuthenticatorModel>() {
+                @Override
+                public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("ERROR!!!!!");
+                    }
+                    //when response is back
+                    UserAuthenticatorModel ua = response.body();
+                    String authCode = ua.getoAuthCode();
+                    //System.out.println(ua.getoAuthCode());
+                    //System.out.println(ua.getStatus());
+                    if(ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
+                        Toast.makeText(getApplicationContext(), "Success communication with server.", Toast.LENGTH_LONG).show();
+                        //updateUI(account);
+
+                        Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(myIntent);
+                        finish();
+
+                        //System.out.println("SUCCESS");
+                    }
+                    else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR){
+                        //System.out.println("NON_DETERMINANT_ERROR");
+                        Toast.makeText(getApplicationContext(), "NON_DETERMENANT ERROR.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
+
+
+                    }
+                    else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
+                        //System.out.println("NON_UNIQUE_EMAIL");
+                        Toast.makeText(getApplicationContext(), "non unique email.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                    Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
+
+                }
+            });
+
+            /*updateUI(account);
 
             Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(myIntent);
-            finish();
+            finish();*/
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
