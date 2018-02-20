@@ -105,7 +105,8 @@ public class SearchActivity extends AppCompatActivity   {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case android.R.id.home:
-                onBackPressed();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
                 return true;
 
             case R.id.location:
