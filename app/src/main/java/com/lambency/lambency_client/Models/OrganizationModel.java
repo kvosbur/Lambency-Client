@@ -15,6 +15,11 @@ public class OrganizationModel {
     public String image;
     public ArrayList<UserModel> organizers;
 
+
+    public OrganizationModel(){
+        //Empty constructor for testing
+    }
+
     public OrganizationModel(UserModel owner, String name, String location, int orgID, String description, String email, UserModel contact, String image) {
         this.owner = owner;
         this.name = name;
