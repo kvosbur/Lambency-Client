@@ -8,8 +8,11 @@
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
 
     <Button
         android:id="@+id/disconnect_button"
@@ -20,8 +23,8 @@
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="173dp"
         tools:layout_editor_absoluteY="0dp"
-
-        android:layout_below="@id/sign_in_button"/>
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/login_button"/>
 
     <TextView
         android:id="@+id/signInOutStatus"
@@ -29,14 +32,13 @@
         android:layout_height="63dp"
         android:text="TextView"
         android:textSize="25dp"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="51dp"
-        tools:layout_editor_absoluteY="96dp"
-
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/disconnect_button"/>
 
     <com.facebook.login.widget.LoginButton
-        android:layout_below="@id/signInOutStatus"
+        android:layout_below="@id/sign_in_button"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
