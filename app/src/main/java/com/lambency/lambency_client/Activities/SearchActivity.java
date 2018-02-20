@@ -107,6 +107,10 @@ public class SearchActivity extends AppCompatActivity   {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+
+            case R.id.location:
+                System.out.println("Location Pressed");
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
