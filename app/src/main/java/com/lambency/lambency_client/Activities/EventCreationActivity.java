@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
@@ -33,13 +34,14 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class EventCreationActivity extends AppCompatActivity {
     String eventName, dateOfEvent, addressOfEvent, description, contact;
-    ImageView eventImage;
     private Context context;
 
     Button date,startTime,endTime;
 
     Calendar myCalendar = Calendar.getInstance();
 
+    @BindView(R.id.eventImage)
+    ImageView eventImage;
 
     //for date
     DatePickerDialog.OnDateSetListener dateD = new DatePickerDialog.OnDateSetListener() {
@@ -75,11 +77,7 @@ public class EventCreationActivity extends AppCompatActivity {
     };
 
 
-
-
-
     private void updateLabel() {
-
             String myFormat = "MM/dd/yy"; //In which you need put here
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
 
@@ -162,7 +160,6 @@ public class EventCreationActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        super.onActivityResult(requestCode, resultCode, data);
 
         EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
