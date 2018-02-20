@@ -58,7 +58,8 @@
             android:exported="true" />
         <activity
             android:name=".Activities.SearchActivity"
-            android:exported="true"></activity>
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
