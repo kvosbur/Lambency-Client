@@ -17,12 +17,12 @@ import butterknife.ButterKnife;
  * Created by lshan on 2/17/2018.
  */
 
-public class EventsMainAdapter extends RecyclerView.Adapter<EventsMainAdapter.AreaViewHolder>{
+public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHolder>{
 
     List<EventModel> events;
     private Context context;
 
-    public EventsMainAdapter(Context context, List<EventModel> events){
+    public EventsAdapter(Context context, List<EventModel> events){
         this.context = context;
         this.events = events;
     }

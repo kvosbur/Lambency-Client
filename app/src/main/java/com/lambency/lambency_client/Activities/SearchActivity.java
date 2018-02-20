@@ -78,7 +78,7 @@ public class SearchActivity extends AppCompatActivity   {
 
         MenuItem searchAction = menu.findItem( R.id.search );
         SearchView searchView = (SearchView) searchAction.getActionView();
-        searchView.setQueryHint("Search Lambency");
+        searchView.setQueryHint("Search Lambency...");
         searchView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
         searchView.setIconifiedByDefault(false);
