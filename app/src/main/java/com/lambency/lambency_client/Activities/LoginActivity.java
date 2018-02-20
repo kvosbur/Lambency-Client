@@ -265,13 +265,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     //System.out.println(ua.getoAuthCode());
                     //System.out.println(ua.getStatus());
                     if(ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
+                        Toast.makeText(getApplicationContext(), "Success communication with server.", Toast.LENGTH_LONG).show();
+
                         //System.out.println("SUCCESS");
                     }
                     else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR){
                         //System.out.println("NON_DETERMINANT_ERROR");
+                        Toast.makeText(getApplicationContext(), "NON_DETERMENANT ERROR.", Toast.LENGTH_LONG).show();
+
                     }
                     else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
                         //System.out.println("NON_UNIQUE_EMAIL");
+                        Toast.makeText(getApplicationContext(), "non unique email.", Toast.LENGTH_LONG).show();
+
                     }
                 }
 
