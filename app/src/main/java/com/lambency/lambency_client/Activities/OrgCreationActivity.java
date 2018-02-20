@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -32,6 +33,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class OrgCreationActivity extends AppCompatActivity {
 
@@ -109,7 +112,32 @@ public class OrgCreationActivity extends AppCompatActivity {
                 String location = address + " " + city + " " + state + " " + zip;
 
                 orgModel = new OrganizationModel(null, name, location, 0, description, email, null, encodedProfile);
+                LambencyAPIHelper.getInstance().postCreateOrganization(orgModel).enqueue(new retrofit2.Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        if (response.body() == null || response.code() != 200) {
+                            System.out.println("ERROR!!!!!");
+                        }
+                        //when response is back
+                        Integer status = response.body();
+                        System.out.println(status);
+                        if(status == 0){
+                            //System.out.println("SUCCESS");
+                        }
+                        else if(status == 1){
+                            //System.out.println("BAD USER ID");
+                        }
+                        else if(status == 2){
+                            //System.out.println("NON DETERMINANT ERROR");
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<Integer> call, Throwable throwable) {
+                        //when failure
+                        System.out.println("FAILED CALL");
+                    }
+                });
                 return true;
 
             default:
