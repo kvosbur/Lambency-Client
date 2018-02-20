@@ -13,7 +13,7 @@ import retrofit2.http.Query;
 public interface LambencyAPI {
 
     @GET("User/login/google")
-    Call<UserAuthenticatorModel> getGoogleLogin(@Query("id") String id);
+    Call<UserAuthenticatorModel> getGoogleLogin(@Query("idToken") String idToken);
 
     @GET("User/login/facebook")
     Call<UserAuthenticatorModel> getFacebookLogin(@Query("id") String id, @Query("first") String first,

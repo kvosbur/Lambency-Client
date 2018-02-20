@@ -30,6 +30,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
@@ -63,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("406595282653-cc9eb7143bvpgfe5da941r3jq174b4dq.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
@@ -249,7 +251,37 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
+            String idToken = account.getIdToken();
             // Signed in successfully, show authenticated UI.
+            LambencyAPIHelper.getInstance().getGoogleLogin(idToken).enqueue(new Callback<UserAuthenticatorModel>() {
+                @Override
+                public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("ERROR!!!!!");
+                    }
+                    //when response is back
+                    UserAuthenticatorModel ua = response.body();
+                    String authCode = ua.getoAuthCode();
+                    //System.out.println(ua.getoAuthCode());
+                    //System.out.println(ua.getStatus());
+                    if(ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
+                        //System.out.println("SUCCESS");
+                    }
+                    else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR){
+                        //System.out.println("NON_DETERMINANT_ERROR");
+                    }
+                    else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
+                        //System.out.println("NON_UNIQUE_EMAIL");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                }
+            });
+
             updateUI(account);
 
             Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
