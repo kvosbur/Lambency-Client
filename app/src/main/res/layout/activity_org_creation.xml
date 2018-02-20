@@ -68,6 +68,7 @@
                 >
 
                 <android.support.design.widget.TextInputEditText
+                    android:id="@+id/nameEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Organization name"
@@ -82,6 +83,7 @@
                 android:layout_height="wrap_content">
 
                 <android.support.design.widget.TextInputEditText
+                    android:id="@+id/emailEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Organization email"
@@ -101,6 +103,8 @@
         android:layout_marginBottom="20dp">
 
         <android.support.design.widget.TextInputEditText
+            android:id="@+id/descriptionEdit"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -142,6 +146,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/descriptionLayout">
         <android.support.design.widget.TextInputEditText
+            android:id="@+id/addressEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Address"
@@ -154,6 +159,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addressLayout">
         <android.support.design.widget.TextInputEditText
+            android:id="@+id/cityEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="City"/>
@@ -179,12 +185,11 @@
             />
 
 
-
-
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
+                android:id="@+id/zipEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Zip code"

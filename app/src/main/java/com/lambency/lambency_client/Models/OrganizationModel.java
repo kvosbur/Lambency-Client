@@ -1,6 +1,5 @@
 package com.lambency.lambency_client.Models;
 
-
 import java.util.ArrayList;
 
 public class OrganizationModel {
@@ -30,7 +29,6 @@ public class OrganizationModel {
         events = new ArrayList<>();
         this.organizers = new ArrayList<UserModel>();
         organizers.add(owner);
-
     }
 
     public int numFollowing;

@@ -7,18 +7,23 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
 
@@ -31,9 +36,33 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 public class OrgCreationActivity extends AppCompatActivity {
 
     private Context context;
+    private String imagePath = "";
+    private OrganizationModel orgModel;
 
     @BindView(R.id.profileImage)
     ImageView profileImage;
+
+    @BindView(R.id.nameEdit)
+    TextInputEditText nameEdit;
+
+    @BindView(R.id.emailEdit)
+    TextInputEditText emailEdit;
+
+    @BindView(R.id.descriptionEdit)
+    TextInputEditText descriptionEdit;
+
+    @BindView(R.id.addressEdit)
+    TextInputEditText addressEdit;
+
+    @BindView(R.id.cityEdit)
+    TextInputEditText cityEdit;
+
+    @BindView(R.id.stateAutocomplete)
+    AutoCompleteTextView stateAutocomplete;
+
+    @BindView(R.id.zipEdit)
+    TextInputEditText zipEdit;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +80,41 @@ public class OrgCreationActivity extends AppCompatActivity {
         stateAutocomplete.setAdapter(adapter);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case(R.id.action_done):
+
+                //Convert the image to a base64 string
+                Bitmap bm;
+                if(imagePath == ""){
+                    //Use default profile image
+                    bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
+                }else {
+                    bm = BitmapFactory.decodeFile(imagePath);
+                }
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                byte[] b = baos.toByteArray();
+                String encodedProfile = Base64.encodeToString(b, Base64.DEFAULT);
+
+                String name = nameEdit.getText().toString();
+                String email = emailEdit.getText().toString();
+                String description = descriptionEdit.getText().toString();
+
+                String address = addressEdit.getText().toString();
+                String city = cityEdit.getText().toString();
+                String state = stateAutocomplete.getText().toString();
+                String zip = zipEdit.getText().toString();
+                String location = address + " " + city + " " + state + " " + zip;
+
+                orgModel = new OrganizationModel(null, name, location, 0, description, email, null, encodedProfile);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,6 +154,8 @@ public class OrgCreationActivity extends AppCompatActivity {
                         exception.printStackTrace();
                     }
                 });
+
+                imagePath = imagesFiles.get(0).getPath();
 
                 builder.build()
                         .load(new File(imagesFiles.get(0).getPath()))
