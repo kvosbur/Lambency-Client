@@ -33,34 +33,5 @@ public class LambencyAPIHelper {
         return lambencyAPI;
     }
 
-    public void createOrganizationRetrofit(OrganizationModel org){
-
-        LambencyAPIHelper.getInstance().postCreateOrganization(org).enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                if (response.body() == null || response.code() != 200) {
-                    System.out.println("ERROR!!!!!");
-                }
-                //when response is back
-                Integer status = response.body();
-                System.out.println(status);
-                if(status == 0){
-                    //System.out.println("SUCCESS");
-                }
-                else if(status == 1){
-                    //System.out.println("BAD USER ID");
-                }
-                else if(status == 2){
-                    //System.out.println("NON DETERMINANT ERROR");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Integer> call, Throwable throwable) {
-                //when failure
-                System.out.println("FAILED CALL");
-            }
-        });
-    }
 
 }

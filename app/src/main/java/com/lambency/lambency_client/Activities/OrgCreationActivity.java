@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.squareup.picasso.Callback;
@@ -111,7 +112,8 @@ public class OrgCreationActivity extends AppCompatActivity {
                 String zip = zipEdit.getText().toString();
                 String location = address + " " + city + " " + state + " " + zip;
 
-                orgModel = new OrganizationModel(null, name, location, 0, description, email, null, encodedProfile);
+                orgModel = new OrganizationModel(UserModel.myUserModel, name, location, 0, description, email, UserModel.myUserModel, encodedProfile);
+                int a = 6;
                 LambencyAPIHelper.getInstance().postCreateOrganization(orgModel).enqueue(new retrofit2.Callback<OrganizationModel>() {
                     @Override
                     public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
