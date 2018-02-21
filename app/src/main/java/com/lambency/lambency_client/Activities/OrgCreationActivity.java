@@ -133,15 +133,19 @@ public class OrgCreationActivity extends AppCompatActivity {
                     public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
                         if (response.body() == null || response.code() != 200) {
                             System.out.println("ERROR!!!!!");
+                            Toast.makeText(getApplicationContext(), "Error With Server", Toast.LENGTH_SHORT).show();
+                            return;
                         }
                         //when response is back
                         OrganizationModel org = response.body();
-                        if(org.name == null)
-                        {
-                            Toast.makeText(getParent(), "That name is already taken", Toast.LENGTH_SHORT).show();
-                        }
 
                         progressBar.setVisibility(View.GONE);
+
+                        if(org.name == null)
+                        {
+                            Toast.makeText(getApplicationContext(), "That name is already taken", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
                         //Go back to main page now
                         Intent myIntent = new Intent(context, MainActivity.class);
