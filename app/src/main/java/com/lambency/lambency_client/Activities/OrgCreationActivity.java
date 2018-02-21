@@ -21,6 +21,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
@@ -118,6 +119,11 @@ public class OrgCreationActivity extends AppCompatActivity {
                 String zip = zipEdit.getText().toString();
                 String location = address + " " + city + " " + state + " " + zip;
 
+                if (name.matches("") || email.matches("") || description.matches("") || address.matches("") || city.matches("") || state.matches("") || zip.matches("") || zip.matches("")) {
+                    Toast.makeText(this, "You did not enter all information", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
                 orgModel = new OrganizationModel(UserModel.myUserModel, name, location, 0, description, email, UserModel.myUserModel, encodedProfile);
 
                 progressBar.setVisibility(View.VISIBLE);
@@ -130,7 +136,10 @@ public class OrgCreationActivity extends AppCompatActivity {
                         }
                         //when response is back
                         OrganizationModel org = response.body();
-                        System.out.println(org.name);
+                        if(org.name == null)
+                        {
+                            Toast.makeText(getParent(), "That name is already taken", Toast.LENGTH_SHORT).show();
+                        }
 
                         progressBar.setVisibility(View.GONE);
 
