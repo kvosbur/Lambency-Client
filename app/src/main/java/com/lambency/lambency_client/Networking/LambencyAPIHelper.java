@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Networking;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 
 import retrofit2.Call;
@@ -31,5 +32,6 @@ public class LambencyAPIHelper {
         }
         return lambencyAPI;
     }
+
 
 }

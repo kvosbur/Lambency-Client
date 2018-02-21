@@ -112,6 +112,7 @@ public class OrgCreationActivity extends AppCompatActivity {
                 String location = address + " " + city + " " + state + " " + zip;
 
                 orgModel = new OrganizationModel(null, name, location, 0, description, email, null, encodedProfile);
+
                 return true;
 
             default:

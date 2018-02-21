@@ -11,6 +11,8 @@ public class UserAuthenticatorModel {
 
     }
 
+    public static String myAuth;
+
     private Status status;
     private String oAuthCode;
 
