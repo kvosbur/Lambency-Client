@@ -22,6 +22,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
 
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -61,6 +62,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
         callbackManager = CallbackManager.Factory.create();
+        //add permissions for Facebook to get email
+        LoginButton button = findViewById(R.id.login_button);
+        button.setReadPermissions("email");
 
         String googleWebID = "406595282653-87c0rdih5bqi4nrei8catgh3pq1usith.apps.googleusercontent.com";
 
@@ -99,12 +103,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             String id = (String) object.get("id");
                                             String firstName = (String) object.get("first_name");
                                             String lastName = (String) object.get("last_name");
-                                            String email;
-                                            if(object.has("email")) {
-                                                email = (String) object.get("email");
-                                            }else{
-                                                email = "kpvosburgh@comast.net";
-                                            }
+                                            String email = (String) object.get("email");
 
                                             System.out.println("Hello " + firstName + " " + lastName + " with email " + email + " id: "+ id);
 
@@ -126,9 +125,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                                                                 if (response.body() == null || response.code() != 200) {
                                                                     System.out.println("ERROR!!!!!");
+                                                                    return;
                                                                 }
                                                                 //when response is back
                                                                 UserModel.myUserModel = response.body();
+                                                                if(response.body() == null){
+                                                                    System.out.println("ERROR NULLED!!!!");
+                                                                    return;
+                                                                }
                                                                 Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                                                                 System.out.println("got the user object");
 
