@@ -125,9 +125,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                                                                 if (response.body() == null || response.code() != 200) {
                                                                     System.out.println("ERROR!!!!!");
+                                                                    return;
                                                                 }
                                                                 //when response is back
                                                                 UserModel.myUserModel = response.body();
+                                                                if(response.body() == null){
+                                                                    System.out.println("ERROR NULLED!!!!");
+                                                                    return;
+                                                                }
                                                                 Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                                                                 System.out.println("got the user object");
 

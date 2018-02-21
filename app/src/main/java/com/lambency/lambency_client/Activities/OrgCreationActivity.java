@@ -116,7 +116,7 @@ public class OrgCreationActivity extends AppCompatActivity {
                 String zip = zipEdit.getText().toString();
                 String location = address + " " + city + " " + state + " " + zip;
 
-                orgModel = new OrganizationModel(null, name, location, 0, description, email, null, encodedProfile);
+                orgModel = new OrganizationModel(UserModel.myUserModel, name, location, 0, description, email, UserModel.myUserModel, encodedProfile);
 
                 progressBar.setVisibility(View.VISIBLE);
 
