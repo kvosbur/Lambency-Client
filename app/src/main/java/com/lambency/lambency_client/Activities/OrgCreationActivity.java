@@ -10,9 +10,12 @@ import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -78,6 +81,9 @@ public class OrgCreationActivity extends AppCompatActivity {
                 R.array.states, android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         stateAutocomplete.setAdapter(adapter);
+
+
+
     }
 
     @Override
@@ -121,6 +127,7 @@ public class OrgCreationActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_form, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
 
 
     //https://github.com/jkwiecien/EasyImage

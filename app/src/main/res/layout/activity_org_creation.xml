@@ -53,44 +53,33 @@
 
 
         <LinearLayout
-
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="1"
             >
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/nameLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
 
-                android:layout_marginBottom="5dp"
-                >
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/nameEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Organization name"
+                    android:focusable="true"
+                    android:inputType="text"
                     />
-
-            </android.support.design.widget.TextInputLayout>
-
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/emailLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/emailEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Organization email"
-                    android:inputType="textEmailAddress"/>
-            </android.support.design.widget.TextInputLayout>
+                    android:inputType="textEmailAddress"
+                    android:focusable="true"
+                    android:nextFocusDown="@id/descriptionEdit" />
 
         </LinearLayout>
+
     </LinearLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -108,37 +97,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:hint="Description"/>
+            android:hint="Description"
+            android:focusable="true"
+            android:inputType="textLongMessage"/>
 
     </android.support.design.widget.TextInputLayout>
-
-    <!--
-    <LinearLayout
-        android:id="@+id/imageLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/descriptionLayout"
-
-        android:orientation="horizontal"
-
-        android:layout_marginBottom="5dp"
-
-     >
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_default_avatar"
-            android:layout_marginRight="10dp"
-            />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Upload Profile Image"/>
-    </LinearLayout>
--->
-
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/addressLayout"
@@ -150,6 +113,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Address"
+            android:focusable="true"
+            android:inputType="textPostalAddress"
             />
     </android.support.design.widget.TextInputLayout>
 
@@ -162,7 +127,9 @@
             android:id="@+id/cityEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="City"/>
+            android:hint="City"
+            android:focusable="true"
+            android:inputType="textPostalAddress"/>
     </android.support.design.widget.TextInputLayout>
 
 
@@ -182,20 +149,19 @@
             android:layout_height="wrap_content"
             android:hint="State"
             android:completionThreshold="1"
+            android:focusable="true"
+            android:inputType="text"
+            android:nextFocusDown="@id/zipEdit"
             />
 
-
-        <android.support.design.widget.TextInputLayout
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/zipEdit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/zipEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Zip code"
-                android:inputType="number"
-                />
-        </android.support.design.widget.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:hint="Zip code"
+            android:inputType="number"
+            android:focusable="true"
+            />
 
     </LinearLayout>
 
