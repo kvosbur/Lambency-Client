@@ -112,28 +112,19 @@ public class OrgCreationActivity extends AppCompatActivity {
                 String location = address + " " + city + " " + state + " " + zip;
 
                 orgModel = new OrganizationModel(null, name, location, 0, description, email, null, encodedProfile);
-                LambencyAPIHelper.getInstance().postCreateOrganization(orgModel).enqueue(new retrofit2.Callback<Integer>() {
+                LambencyAPIHelper.getInstance().postCreateOrganization(orgModel).enqueue(new retrofit2.Callback<OrganizationModel>() {
                     @Override
-                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
                         if (response.body() == null || response.code() != 200) {
                             System.out.println("ERROR!!!!!");
                         }
                         //when response is back
-                        Integer status = response.body();
-                        System.out.println(status);
-                        if(status == 0){
-                            //System.out.println("SUCCESS");
-                        }
-                        else if(status == 1){
-                            //System.out.println("BAD USER ID");
-                        }
-                        else if(status == 2){
-                            //System.out.println("NON DETERMINANT ERROR");
-                        }
+                        OrganizationModel org = response.body();
+                        System.out.println(org.name);
                     }
 
                     @Override
-                    public void onFailure(Call<Integer> call, Throwable throwable) {
+                    public void onFailure(Call<OrganizationModel> call, Throwable throwable) {
                         //when failure
                         System.out.println("FAILED CALL");
                     }
