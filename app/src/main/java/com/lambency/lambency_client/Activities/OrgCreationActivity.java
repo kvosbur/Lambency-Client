@@ -13,9 +13,11 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
@@ -67,6 +69,8 @@ public class OrgCreationActivity extends AppCompatActivity {
     @BindView(R.id.zipEdit)
     TextInputEditText zipEdit;
 
+    @BindView(R.id.loadingBar)
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,8 +116,10 @@ public class OrgCreationActivity extends AppCompatActivity {
                 String zip = zipEdit.getText().toString();
                 String location = address + " " + city + " " + state + " " + zip;
 
-                orgModel = new OrganizationModel(UserModel.myUserModel, name, location, 0, description, email, UserModel.myUserModel, encodedProfile);
-                int a = 6;
+                orgModel = new OrganizationModel(null, name, location, 0, description, email, null, encodedProfile);
+
+                progressBar.setVisibility(View.VISIBLE);
+
                 LambencyAPIHelper.getInstance().postCreateOrganization(orgModel).enqueue(new retrofit2.Callback<OrganizationModel>() {
                     @Override
                     public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
@@ -123,6 +129,12 @@ public class OrgCreationActivity extends AppCompatActivity {
                         //when response is back
                         OrganizationModel org = response.body();
                         System.out.println(org.name);
+
+                        progressBar.setVisibility(View.GONE);
+
+                        //Go back to main page now
+                        Intent myIntent = new Intent(context, MainActivity.class);
+                        startActivity(myIntent);
                     }
 
                     @Override
