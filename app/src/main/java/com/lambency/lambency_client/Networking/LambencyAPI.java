@@ -24,7 +24,7 @@ public interface LambencyAPI {
     Call<UserAuthenticatorModel> getFacebookLogin(@Query("id") String id, @Query("first") String first,
                                                   @Query("last") String last, @Query("email") String email);
 
-    @POST("Organization/Create")
+    @POST("Organization/create")
     Call<OrganizationModel> postCreateOrganization(@Body OrganizationModel org);
 
     @GET("User/search")
