@@ -54,8 +54,12 @@ public class SearchActivity extends AppCompatActivity   {
         final SearchTabsAdapter searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(searchTabsAdapter);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                //Does not work... color still doesn't switch
+                tabLayout.setScrollPosition(tab.getPosition(), 0f, true);
+
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
