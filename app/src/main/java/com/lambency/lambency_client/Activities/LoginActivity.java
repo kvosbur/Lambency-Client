@@ -44,6 +44,8 @@ import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,18 +66,46 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        /*
+
         //skip login activity if there is already an oAuthToken saved to shared preferences
         SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
         String myauth = sharedPref.getString("myauth", "");
         if(myauth.length() > 0){
             UserAuthenticatorModel.myAuth = myauth;
             System.out.println("My auth is : " + myauth);
-            Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(myIntent);
-            finish();
+            LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
+                @Override
+                public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("ERROR!!!!!");
+                        return;
+                    }
+                    //when response is back
+                    UserModel.myUserModel = response.body();
+                    if(response.body() == null){
+                        System.out.println("ERROR NULLED!!!!");
+                        Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
+                    System.out.println("got the user object");
+
+                    //System.out.println("SUCCESS");
+                    Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(myIntent);
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Call<UserModel> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                    Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
+
+                }
+            });
         }
-        */
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -85,7 +115,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //add permissions for Facebook to get email
         LoginButton loginButton = findViewById(R.id.login_button);
         loginButton.clearPermissions();
-        loginButton.setReadPermissions("email");
+        loginButton.setReadPermissions(Arrays.asList("email"));
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         System.out.println("There is an access token: " + (accessToken != null));
@@ -214,6 +244,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         } catch (Exception e )
                                         {
                                             e.printStackTrace();
+                                            Toast.makeText(getApplicationContext(), "Exception Occured (probs email)", Toast.LENGTH_LONG).show();
                                             System.out.println("Messed up");
                                         }
                                     }
