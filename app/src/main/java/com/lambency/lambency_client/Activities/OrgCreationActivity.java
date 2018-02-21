@@ -81,9 +81,6 @@ public class OrgCreationActivity extends AppCompatActivity {
                 R.array.states, android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         stateAutocomplete.setAdapter(adapter);
-
-
-
     }
 
     @Override

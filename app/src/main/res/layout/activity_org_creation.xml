@@ -152,6 +152,7 @@
             android:focusable="true"
             android:inputType="text"
             android:nextFocusDown="@id/zipEdit"
+            android:maxLength="2"
             />
 
         <android.support.design.widget.TextInputEditText
@@ -161,6 +162,7 @@
             android:hint="Zip code"
             android:inputType="number"
             android:focusable="true"
+            android:maxLength="5"
             />
 
     </LinearLayout>
