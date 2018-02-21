@@ -1,7 +1,9 @@
 package com.lambency.lambency_client.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
@@ -35,6 +38,7 @@ import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 
 import org.json.JSONArray;
@@ -52,21 +56,43 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final int RC_SIGN_IN = 9001;
     private TextView mStatusTextView;
 
+    final private Context context = this;
+
 
     CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        /*
+        //skip login activity if there is already an oAuthToken saved to shared preferences
+        SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
+        String myauth = sharedPref.getString("myauth", "");
+        if(myauth.length() > 0){
+            UserAuthenticatorModel.myAuth = myauth;
+            System.out.println("My auth is : " + myauth);
+            Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(myIntent);
+            finish();
+        }
+        */
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
 
         callbackManager = CallbackManager.Factory.create();
         //add permissions for Facebook to get email
-        LoginButton button = findViewById(R.id.login_button);
-        button.setReadPermissions("email");
+        LoginButton loginButton = findViewById(R.id.login_button);
+        loginButton.clearPermissions();
+        loginButton.setReadPermissions("email");
 
-        String googleWebID = "406595282653-87c0rdih5bqi4nrei8catgh3pq1usith.apps.googleusercontent.com";
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        System.out.println("There is an access token: " + (accessToken != null));
+
+
+        //String googleWebID = "406595282653-87c0rdih5bqi4nrei8catgh3pq1usith.apps.googleusercontent.com";
+        String googleWebID = "801710608826-06vpf384rl9nfcbumav56niql251419n.apps.googleusercontent.com";
 
 
         // Configure sign-in to request the user's ID, email address, and basic
@@ -82,7 +108,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.disconnect_button).setOnClickListener(this);
 
-        LoginManager.getInstance().registerCallback(callbackManager,
+        //LoginManager.getInstance()
+
+        loginButton.registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
@@ -112,13 +140,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
                                                     if (response.body() == null || response.code() != 200) {
                                                         System.out.println("ERROR!!!!!");
+                                                        return;
                                                     }
                                                     //when response is back
                                                     UserAuthenticatorModel ua = response.body();
 
-                                                    if(ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
+                                                    if(ua != null && ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
                                                         //System.out.println("SUCCESS");
                                                         UserAuthenticatorModel.myAuth = ua.getoAuthCode();
+
+                                                        //save myauth into shared preferences
+                                                        SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
+                                                        SharedPreferences.Editor editor = sharedPref.edit();
+                                                        editor.putString("myauth", ua.getoAuthCode());
+                                                        editor.apply();
 
                                                         LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
                                                             @Override
@@ -131,6 +166,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                                 UserModel.myUserModel = response.body();
                                                                 if(response.body() == null){
                                                                     System.out.println("ERROR NULLED!!!!");
+                                                                    Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
                                                                     return;
                                                                 }
                                                                 Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
@@ -302,6 +338,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         //updateUI(account);
 
                         UserAuthenticatorModel.myAuth = ua.getoAuthCode();
+
+                        //save myauth into shared preferences
+                        SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("myauth", ua.getoAuthCode());
+                        editor.apply();
 
                         LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
                             @Override
