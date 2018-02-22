@@ -191,30 +191,30 @@ public class EventCreationActivity extends AppCompatActivity {
                     //the EventModel object to send to server(use this evan)
                     eventModel = new EventModel(encodedProfile,eventName,2,startingTime,endingTime,description,addressOfEvent);
 
-                    LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<Integer>() {
+                    LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                         @Override
-                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        public void onResponse(Call<EventModel> call, Response<EventModel> response) {
                             if (response.body() == null || response.code() != 200) {
                                 Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
                                 return;
                             }
                             //when response is back
-                            Integer status = response.body();
-                            System.out.println(status);
+                            EventModel createdEvent = response.body();
+                            System.out.println("Created Event: "+createdEvent);
 
-                            if(status == -1){
+                            if(createdEvent == null){
                                 Toast.makeText(getApplicationContext(), "Event error!", Toast.LENGTH_SHORT).show();
                                 return;
                             }
 
                             // Status now contains event_id
-                            int event_id = status;
+                            int event_id = createdEvent.getEvent_id();
 
                             Toast.makeText(getApplicationContext(), "Success creating event!", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void onFailure(Call<Integer> call, Throwable throwable) {
+                        public void onFailure(Call<EventModel> call, Throwable throwable) {
                             Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
                             return;
                         }
