@@ -1,14 +1,19 @@
 package com.lambency.lambency_client.Activities;
 
+import android.Manifest;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +39,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 public class SearchActivity extends AppCompatActivity   {
 
     @BindView(R.id.toolbar)
@@ -47,6 +56,8 @@ public class SearchActivity extends AppCompatActivity   {
 
     SearchTabsAdapter searchTabsAdapter;
     Context context;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private int MY_PERMISSIONS_ACCESS_COARSE_LOCATION;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +73,8 @@ public class SearchActivity extends AppCompatActivity   {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         tabLayout.addTab(tabLayout.newTab().setText("Events"));
         tabLayout.addTab(tabLayout.newTab().setText("Organizations"));
@@ -164,6 +177,30 @@ public class SearchActivity extends AppCompatActivity   {
 
             case R.id.location:
                 System.out.println("Location Pressed");
+
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                            MY_PERMISSIONS_ACCESS_COARSE_LOCATION
+                    );
+                }
+
+                try {
+                    mFusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                                if(location == null){
+                                    System.out.println("Null location.");
+                                }else {
+                                    System.out.println(location.getLongitude() + " " + location.getLatitude());
+                                }
+                            }
+                    });
+                }catch (SecurityException e){
+                    e.printStackTrace();
+                }
+
                 return true;
         }
 
