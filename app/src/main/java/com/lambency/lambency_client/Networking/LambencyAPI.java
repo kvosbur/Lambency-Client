@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Networking;
 
+import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
@@ -32,5 +33,8 @@ public interface LambencyAPI {
 
     @POST("User/changeInfo")
     Call<UserModel> getChangeAccountInfo(@Body UserModel u);
+
+    @POST("Event/create")
+    Call<Integer> createEvent(@Body EventModel eventModel);
 
 }

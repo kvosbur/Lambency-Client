@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
@@ -146,6 +147,8 @@ public class OrgCreationActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "That name is already taken", Toast.LENGTH_SHORT).show();
                             return;
                         }
+
+                        OrganizationModel.myOrgModel = orgModel;
 
                         //Go back to main page now
                         Intent myIntent = new Intent(context, MainActivity.class);
