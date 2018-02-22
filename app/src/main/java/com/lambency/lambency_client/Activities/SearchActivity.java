@@ -137,13 +137,17 @@ public class SearchActivity extends AppCompatActivity   {
                         }
                         //when response is back
                         ArrayList<OrganizationModel> orgList = response.body();
-                        if(orgList.size() == 0){
+                        if(orgList == null || orgList.size() == 0){
                             //no results found
+                            if(orgList == null){
+                                orgList = new ArrayList<OrganizationModel>();
+                            }
                             searchTabsAdapter.updateOrgs(orgList);
                         }
                         else{
                             //results found
                             System.out.println("Orgs found!");
+
 
                             //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
                             searchTabsAdapter.updateOrgs(orgList);
