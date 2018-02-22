@@ -14,9 +14,12 @@ import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.ImageHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,6 +40,12 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.addressOrg)
     TextView addressOrg;
+
+    @BindView(R.id.OrgImage)
+    CircleImageView orgImage;
+
+    @BindView(R.id.orgRequestJoin)
+    CircleImageView requestJoin;
 
 
     @Override
@@ -88,6 +97,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     descriptionOrg.setText(organization.getDescription());
                     emailOrg.setText(organization.getEmail());
                     addressOrg.setText(organization.getLocation());
+                    orgImage.setImageBitmap(ImageHelper.stringToBitmap(organization.getImage()));
                 }
 
                 @Override
@@ -110,5 +120,20 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             default:
                 return true;
         }
+    }
+
+    @OnClick(R.id.followUnFollow)
+    public void onClickFollow(){
+        if(checkBox.isChecked()){
+            //it is checked (meaning they followed)
+        }else{
+            //is not checked (meaning they unfollowed)
+        }
+    }
+
+    @OnClick(R.id.orgRequestJoin)
+    public void onClickRequest(){
+
+        return;
     }
 }
