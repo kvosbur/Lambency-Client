@@ -164,7 +164,7 @@ public class EventCreationActivity extends AppCompatActivity {
 
                 //making image string....
                 Bitmap bm;
-                if(imagePath == ""){
+                if(imagePath.equals("")){
                     //Use default profile image
                     bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
                 }else {
@@ -177,7 +177,7 @@ public class EventCreationActivity extends AppCompatActivity {
                 //encoded profile is the image string
 
 
-                if (eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("")){
+                if (eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("") || startingTime == null || endingTime == null){
                     Toast.makeText(getApplicationContext(), "You did not enter everything", Toast.LENGTH_LONG).show();
                     //saveDetails.setVisibility(View.GONE);
                 }
@@ -187,7 +187,7 @@ public class EventCreationActivity extends AppCompatActivity {
                 }
 
                 //Go back to main page now
-                if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches(""))) {
+                if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("")  || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
                     eventModel = new EventModel(encodedProfile,eventName,EventModel.myEventModel.getOrg_id(),startingTime,endingTime,description,addressOfEvent);
                     Intent myIntent = new Intent(EventCreationActivity.this,

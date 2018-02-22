@@ -17,7 +17,10 @@ public class EventModel {
     private double latitude;
     private double longitude;
 
-    public static EventModel myEventModel;
+    static int x = 54545;
+    static Timestamp testTime = new Timestamp((long)x);
+    public static EventModel myEventModel = new EventModel("tester",11,testTime,testTime,"fake test","testing123",0,0);
+
 
 
     //Empty constructor for testing
