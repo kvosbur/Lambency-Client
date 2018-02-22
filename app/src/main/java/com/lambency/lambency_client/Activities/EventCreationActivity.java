@@ -61,6 +61,7 @@ public class EventCreationActivity extends AppCompatActivity {
     @BindView(R.id.eventImage)
     ImageView eventImage;
 
+
     //for date
     DatePickerDialog.OnDateSetListener dateD = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -106,7 +107,7 @@ public class EventCreationActivity extends AppCompatActivity {
             date.setText(sdf.format(myCalendar.getTime()));
         }
 
-        @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_creation);

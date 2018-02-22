@@ -88,15 +88,16 @@ public class EventDetailsActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
 
-
-    /*@OnClick(R.id.shareEvent)
-    public void shareEvent(){
-        // if statement for user will go here
-
-        // Start smsActivity.class
-        Intent myIntent = new Intent(EventDetailsActivity.this,
-                smsActivity.class);
-        startActivity(myIntent);
-    }*/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return true;
+        }
+    }
 
 }
