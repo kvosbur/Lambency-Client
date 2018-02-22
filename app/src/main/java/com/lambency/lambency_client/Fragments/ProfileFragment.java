@@ -206,7 +206,8 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                     if (response.body() == null || response.code() != 200) {
-                        System.out.println("ERROR!!!!!");
+                        Toast.makeText(getActivity(), "Server error!", Toast.LENGTH_SHORT).show();
+                        return;
                     }
                     //when response is back
                     UserModel u  = response.body();
@@ -237,8 +238,8 @@ public class ProfileFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<UserModel> call, Throwable throwable) {
-                    //when failure
-                    System.out.println("FAILED CALL");
+                    Toast.makeText(getActivity(), "Failed call!", Toast.LENGTH_SHORT).show();
+                    return;
                 }
             });
         }
