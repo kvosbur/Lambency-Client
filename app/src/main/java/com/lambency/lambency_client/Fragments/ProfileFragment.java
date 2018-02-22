@@ -203,7 +203,19 @@ public class ProfileFragment extends Fragment {
             if(editFirstName.getText().toString().equals(firstNameText.getText().toString()) && editLastName.getText().toString().equals(lastNameText.getText().toString()) && editEmail.getText().toString().equals(emailOfUser.getText().toString()))
             {
                 edit = false;
+                editFirstName.setVisibility(View.INVISIBLE);
+                firstNameText.setVisibility(View.VISIBLE);
+
+                editLastName.setVisibility(View.INVISIBLE);
+                lastNameText.setVisibility(View.VISIBLE);
+
+                editPhoneNum.setVisibility(View.INVISIBLE);
+                phoneNum.setVisibility(View.VISIBLE);
+
+                editEmail.setVisibility(View.INVISIBLE);
+                emailOfUser.setVisibility(View.VISIBLE);
                 return;
+
             }
 
             user = new UserModel(editFirstName.getText().toString(), editLastName.getText().toString(), editEmail.getText().toString(), null, null, null, null, 0, 0, UserAuthenticatorModel.myAuth);
@@ -240,6 +252,9 @@ public class ProfileFragment extends Fragment {
                     emailOfUser.setText(editEmail.getText());
                     emailOfUser.setVisibility(View.VISIBLE);
                     edit = false;
+
+                    Toast.makeText(getActivity(), "Information successfully changed!", Toast.LENGTH_SHORT).show();
+
                 }
 
                 @Override
