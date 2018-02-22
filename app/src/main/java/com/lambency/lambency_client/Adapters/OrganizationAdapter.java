@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.R;
@@ -12,6 +13,7 @@ import com.lambency.lambency_client.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -36,7 +38,20 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
 
     @Override
     public void onBindViewHolder(OrganizationAdapter.AreaViewHolder holder, int position) {
-        //Change card info here
+        OrganizationModel orgModel = orgs.get(position);
+
+        if(orgModel.name != null) {
+            holder.titleView.setText(orgModel.name);
+        }
+
+        if(orgModel.description != null) {
+            holder.descriptionView.setText(orgModel.description);
+        }
+
+        if(orgModel.email != null) {
+            holder.emailView.setText(orgModel.email);
+        }
+
     }
 
     @Override
@@ -47,6 +62,15 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
     public class AreaViewHolder extends RecyclerView.ViewHolder {
 
         //Get references to layout and define onClick methods here
+
+        @BindView(R.id.title)
+        TextView titleView;
+
+        @BindView(R.id.description)
+        TextView descriptionView;
+
+        @BindView(R.id.email)
+        TextView emailView;
 
         public AreaViewHolder(View itemView) {
             super(itemView);

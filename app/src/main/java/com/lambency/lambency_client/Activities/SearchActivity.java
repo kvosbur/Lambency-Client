@@ -108,11 +108,7 @@ public class SearchActivity extends AppCompatActivity   {
             public boolean onQueryTextSubmit(String query) {
                 System.out.println(query);
 
-                ArrayList<OrganizationModel> orgList = new ArrayList<>();
-                orgList.add(new OrganizationModel());
-                searchTabsAdapter.updateOrgs(orgList);
 
-                /*
 
                 LambencyAPIHelper.getInstance().getOrganizationSearch(query).enqueue(new Callback<ArrayList<OrganizationModel>>() {
                     @Override
@@ -130,7 +126,7 @@ public class SearchActivity extends AppCompatActivity   {
                             System.out.println("Orgs found!");
 
                             //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
-                            searchTabsAdapter.updateOrgs(new ArrayList<OrganizationModel>());
+                            searchTabsAdapter.updateOrgs(orgList);
                         }
                     }
 
@@ -140,7 +136,7 @@ public class SearchActivity extends AppCompatActivity   {
                         System.out.println("FAILED CALL");
                     }
                 });
-                */
+
 
                 return false;
             }
