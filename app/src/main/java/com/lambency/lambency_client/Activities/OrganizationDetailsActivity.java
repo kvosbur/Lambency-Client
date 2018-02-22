@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +49,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     CircleImageView orgImage;
 
     @BindView(R.id.orgRequestJoin)
-    CircleImageView requestJoin;
+    Button requestJoin;
 
 
     @Override
