@@ -9,10 +9,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.Fragments.EventSearchResultFragment;
 import com.lambency.lambency_client.Fragments.OrgSearchResultFragment;
+import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lshan on 2/19/2018.
@@ -51,6 +53,10 @@ public class SearchTabsAdapter extends FragmentStatePagerAdapter {
 
     public void updateOrgs(ArrayList<OrganizationModel> orgList){
         orgFragment.updateOrgs(orgList);
+    }
+
+    public void updateEvents(List<EventModel> eventList){
+        eventFragment.updateEvents(eventList);
     }
 
 

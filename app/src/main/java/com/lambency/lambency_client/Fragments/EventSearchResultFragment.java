@@ -63,7 +63,9 @@ public class EventSearchResultFragment extends Fragment {
         eventsRecyclerView.setAdapter(eventsAdapter);
 
         eventsAdapter.notifyDataSetChanged();
+    }
 
-
+    public void updateEvents(List<EventModel> eventList){
+        eventsAdapter.updateEvents(eventList);
     }
 }

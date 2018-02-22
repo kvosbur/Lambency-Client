@@ -27,11 +27,14 @@ import android.widget.Toast;
 
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
 import com.lambency.lambency_client.Fragments.OrgSearchResultFragment;
+import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -194,6 +197,19 @@ public class SearchActivity extends AppCompatActivity   {
                                     System.out.println("Null location.");
                                 }else {
                                     System.out.println(location.getLongitude() + " " + location.getLatitude());
+
+                                    LambencyAPIHelper.getInstance().getEventsWithParams(location.getLatitude(), location.getLongitude(), "", "").enqueue(new Callback<List<EventModel>>() {
+                                        @Override
+                                        public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
+                                            List<EventModel> events = response.body();
+                                            searchTabsAdapter.updateEvents(events);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<List<EventModel>> call, Throwable t) {
+
+                                        }
+                                    });
                                 }
                             }
                     });

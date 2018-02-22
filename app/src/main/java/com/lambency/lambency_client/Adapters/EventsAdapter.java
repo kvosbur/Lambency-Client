@@ -5,12 +5,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.TimeHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -36,6 +41,28 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
     @Override
     public void onBindViewHolder(AreaViewHolder holder, int position) {
         //Change card info here
+
+        EventModel eventModel = events.get(position);
+
+        if(eventModel.getName() != null){
+            holder.titleView.setText(eventModel.getName());
+        }
+
+        if (eventModel.getDescription() != null){
+            holder.descriptionView.setText(eventModel.getDescription());
+        }
+
+        if(eventModel.getStart() != null){
+            String date = "Date: " + TimeHelper.dateFromTimestamp(eventModel.getStart());
+            holder.dateView.setText(date);
+        }
+
+        if(eventModel.getStart() != null && eventModel.getEnd() != null){
+            String time = "Time: " + TimeHelper.hourFromTimestamp(eventModel.getStart()) +
+                    "-" + TimeHelper.hourFromTimestamp(eventModel.getEnd());
+            holder.timeView.setText(time);
+        }
+
     }
 
     @Override
@@ -46,11 +73,28 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
     public class AreaViewHolder extends RecyclerView.ViewHolder {
 
         //Get references to layout and define onClick methods here
+        @BindView(R.id.title)
+        TextView titleView;
+
+        @BindView(R.id.descriptionOfEvent)
+        TextView descriptionView;
+
+        @BindView(R.id.dateOfEvent)
+        TextView dateView;
+
+        @BindView(R.id.timeOfEvent)
+        TextView timeView;
+
 
         public AreaViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public void updateEvents(List<EventModel> eventList){
+        events = eventList;
+        notifyDataSetChanged();
     }
 
 }
