@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
@@ -197,26 +198,11 @@ public class ProfileFragment extends Fragment {
 
 
         } else {
-            editFirstName.setVisibility(View.INVISIBLE);
-            firstNameText.setText(editFirstName.getText());
-            firstNameText.setVisibility(View.VISIBLE);
 
-            editLastName.setVisibility(View.INVISIBLE);
-            lastNameText.setText(editLastName.getText());
-            lastNameText.setVisibility(View.VISIBLE);
-
-            editPhoneNum.setVisibility(View.INVISIBLE);
-            phoneNum.setText(editPhoneNum.getText());
-            phoneNum.setVisibility(View.VISIBLE);
-
-            editEmail.setVisibility(View.INVISIBLE);
-            emailOfUser.setText(editEmail.getText());
-            emailOfUser.setVisibility(View.VISIBLE);
-            edit = false;
 
             UserModel user = new UserModel(editFirstName.getText().toString(), editLastName.getText().toString(), editEmail.getText().toString(), null, null, null, null, 0, 0, UserAuthenticatorModel.myAuth);
 
-            LambencyAPIHelper.getInstance().getChangeAccountInfo(null).enqueue(new Callback<UserModel>() {
+            LambencyAPIHelper.getInstance().getChangeAccountInfo(user).enqueue(new Callback<UserModel>() {
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                     if (response.body() == null || response.code() != 200) {
@@ -225,10 +211,28 @@ public class ProfileFragment extends Fragment {
                     //when response is back
                     UserModel u  = response.body();
                     if(u == null){
-                        System.out.println("failed: returned null");
+                        Toast.makeText(getActivity(), "Error changing information", Toast.LENGTH_SHORT).show();
+                        return;
                     }
                     //u.getEmail();
                     //updated user object
+
+                    editFirstName.setVisibility(View.INVISIBLE);
+                    firstNameText.setText(editFirstName.getText());
+                    firstNameText.setVisibility(View.VISIBLE);
+
+                    editLastName.setVisibility(View.INVISIBLE);
+                    lastNameText.setText(editLastName.getText());
+                    lastNameText.setVisibility(View.VISIBLE);
+
+                    editPhoneNum.setVisibility(View.INVISIBLE);
+                    phoneNum.setText(editPhoneNum.getText());
+                    phoneNum.setVisibility(View.VISIBLE);
+
+                    editEmail.setVisibility(View.INVISIBLE);
+                    emailOfUser.setText(editEmail.getText());
+                    emailOfUser.setVisibility(View.VISIBLE);
+                    edit = false;
                 }
 
                 @Override
