@@ -99,7 +99,7 @@ public class OrgCreationActivity extends AppCompatActivity {
 
                 //Convert the image to a base64 string
                 Bitmap bm;
-                if(imagePath == ""){
+                if(imagePath.equals("")){
                     //Use default profile image
                     bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
                 }else {

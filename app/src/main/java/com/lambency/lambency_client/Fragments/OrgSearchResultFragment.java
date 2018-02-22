@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.EventModel;
@@ -29,6 +31,12 @@ public class OrgSearchResultFragment extends Fragment {
 
     @BindView(R.id.orgsRecyclerView)
     RecyclerView orgsRecyclerView;
+
+    @BindView(R.id.nothingText)
+    TextView nothingText;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,4 +62,23 @@ public class OrgSearchResultFragment extends Fragment {
         orgsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         orgsRecyclerView.setAdapter(orgAdapter);
     }
+
+    public void updateOrgs(ArrayList<OrganizationModel> orgList){
+        if(orgList.size() == 0){
+            //No search results
+            nothingText.setVisibility(View.VISIBLE);
+            orgsRecyclerView.setVisibility(View.GONE);
+        }else {
+            nothingText.setVisibility(View.GONE);
+            orgsRecyclerView.setVisibility(View.VISIBLE);
+            orgAdapter.updateOrgs(orgList);
+        }
+    }
+
+    public void setVisiblity(int progressBarVisiblity, int recyclerViewVisibility){
+        orgsRecyclerView.setVisibility(recyclerViewVisibility);
+        progressBar.setVisibility(progressBarVisiblity);
+    }
+
+
 }

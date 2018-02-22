@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Adapters.EventsAdapter;
@@ -30,6 +31,9 @@ public class EventSearchResultFragment extends Fragment {
 
     @BindView(R.id.eventsRecyclerView)
     RecyclerView eventsRecyclerView;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +67,14 @@ public class EventSearchResultFragment extends Fragment {
         eventsRecyclerView.setAdapter(eventsAdapter);
 
         eventsAdapter.notifyDataSetChanged();
+    }
 
+    public void updateEvents(List<EventModel> eventList){
+        eventsAdapter.updateEvents(eventList);
+    }
 
+    public void setVisibility(int progressBarVisiblity, int recyclerViewVisbility){
+        progressBar.setVisibility(progressBarVisiblity);
+        eventsRecyclerView.setVisibility(recyclerViewVisbility);
     }
 }
