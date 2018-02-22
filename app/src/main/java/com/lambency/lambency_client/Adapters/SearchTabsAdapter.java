@@ -55,6 +55,10 @@ public class SearchTabsAdapter extends FragmentStatePagerAdapter {
         orgFragment.updateOrgs(orgList);
     }
 
+    public void setOrgVisiblity(int progressBarVisiblity, int recyclerViewVisiblity){
+        orgFragment.setVisiblity(progressBarVisiblity, recyclerViewVisiblity);
+    }
+
     public void updateEvents(List<EventModel> eventList){
         eventFragment.updateEvents(eventList);
     }

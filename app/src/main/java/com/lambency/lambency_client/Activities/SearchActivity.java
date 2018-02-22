@@ -22,6 +22,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 
@@ -128,10 +129,13 @@ public class SearchActivity extends AppCompatActivity   {
             public boolean onQueryTextSubmit(String query) {
                 System.out.println(query);
 
+                searchTabsAdapter.setOrgVisiblity(View.VISIBLE, View.GONE);
 
                 LambencyAPIHelper.getInstance().getOrganizationSearch(query).enqueue(new Callback<ArrayList<OrganizationModel>>() {
                     @Override
                     public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
+                        searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
+
                         if (response.body() == null || response.code() != 200) {
                             System.out.println("ERROR!!!!!");
                         }
@@ -158,8 +162,11 @@ public class SearchActivity extends AppCompatActivity   {
                     public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
                         //when failure
                         System.out.println("FAILED CALL");
+
+                        searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
                     }
                 });
+
 
 
                 return false;
