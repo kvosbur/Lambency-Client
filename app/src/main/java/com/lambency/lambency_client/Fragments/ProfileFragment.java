@@ -109,6 +109,8 @@ public class ProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
@@ -123,6 +125,11 @@ public class ProfileFragment extends Fragment {
        ((MainActivity) getActivity()).getSupportActionBar().setElevation(0);
 
         setHasOptionsMenu(true);
+
+        UserModel myModel = UserModel.myUserModel;
+        firstNameText.setText(myModel.getFirstName());
+        lastNameText.setText(myModel.getLastName());
+        emailOfUser.setText(myModel.getEmail());
 
         return view;
     }
@@ -252,6 +259,8 @@ public class ProfileFragment extends Fragment {
                     emailOfUser.setText(editEmail.getText());
                     emailOfUser.setVisibility(View.VISIBLE);
                     edit = false;
+
+                    UserModel.myUserModel = user;
 
                     Toast.makeText(getActivity(), "Information successfully changed!", Toast.LENGTH_SHORT).show();
 
