@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -51,6 +52,11 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public void updateOrgs(ArrayList<OrganizationModel> orgsList){
+        orgs = orgsList;
+        notifyDataSetChanged();
     }
 
 }

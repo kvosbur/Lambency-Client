@@ -54,4 +54,10 @@ public class OrgSearchResultFragment extends Fragment {
         orgsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         orgsRecyclerView.setAdapter(orgAdapter);
     }
+
+    public void updateOrgs(ArrayList<OrganizationModel> orgList){
+        orgAdapter.updateOrgs(orgList);
+    }
+
+
 }
