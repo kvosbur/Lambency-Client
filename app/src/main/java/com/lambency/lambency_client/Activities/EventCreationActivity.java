@@ -185,15 +185,11 @@ public class EventCreationActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "You did not enter everything", Toast.LENGTH_LONG).show();
                     //saveDetails.setVisibility(View.GONE);
                 }
-                else {
-                    Toast.makeText(getApplicationContext(), "Success!!", Toast.LENGTH_LONG).show();
-                    //saveDetails.setVisibility(View.VISIBLE);
-                }
 
                 //Go back to main page now
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches(""))) {
                     //the EventModel object to send to server(use this evan)
-                    eventModel = new EventModel(encodedProfile,eventName,OrganizationModel.myOrgModel.getOrgID(),startingTime,endingTime,description,addressOfEvent);
+                    eventModel = new EventModel(encodedProfile,eventName,2,startingTime,endingTime,description,addressOfEvent);
 
                     LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<Integer>() {
                         @Override
