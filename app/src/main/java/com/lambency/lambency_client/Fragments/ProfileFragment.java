@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
+import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -194,6 +195,7 @@ public class ProfileFragment extends Fragment {
             edit = true;
 
 
+
         } else {
             editFirstName.setVisibility(View.INVISIBLE);
             firstNameText.setText(editFirstName.getText());
@@ -211,6 +213,8 @@ public class ProfileFragment extends Fragment {
             emailOfUser.setText(editEmail.getText());
             emailOfUser.setVisibility(View.VISIBLE);
             edit = false;
+
+            UserModel user = new UserModel(editFirstName.getText().toString(), editLastName.getText().toString(), editEmail.getText().toString(), null, null, null, null, 0, 0, UserAuthenticatorModel.myAuth);
 
             LambencyAPIHelper.getInstance().getChangeAccountInfo(null).enqueue(new Callback<UserModel>() {
                 @Override
