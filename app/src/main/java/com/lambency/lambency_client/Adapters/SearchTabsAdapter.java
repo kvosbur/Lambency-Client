@@ -59,6 +59,10 @@ public class SearchTabsAdapter extends FragmentStatePagerAdapter {
         orgFragment.setVisiblity(progressBarVisiblity, recyclerViewVisiblity);
     }
 
+    public void setEventVisiblity(int progressBarVisiblity, int recyclerViewVisibility){
+        eventFragment.setVisibility(progressBarVisiblity, recyclerViewVisibility);
+    }
+
     public void updateEvents(List<EventModel> eventList){
         eventFragment.updateEvents(eventList);
     }
