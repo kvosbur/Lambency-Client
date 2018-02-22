@@ -76,6 +76,7 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private UserModel user;
 
     private OnFragmentInteractionListener mListener;
 
@@ -199,8 +200,13 @@ public class ProfileFragment extends Fragment {
 
         } else {
 
+            if(editFirstName.getText().toString().equals(firstNameText.getText().toString()) && editLastName.getText().toString().equals(lastNameText.getText().toString()) && editEmail.getText().toString().equals(emailOfUser.getText().toString()))
+            {
+                edit = false;
+                return;
+            }
 
-            UserModel user = new UserModel(editFirstName.getText().toString(), editLastName.getText().toString(), editEmail.getText().toString(), null, null, null, null, 0, 0, UserAuthenticatorModel.myAuth);
+            user = new UserModel(editFirstName.getText().toString(), editLastName.getText().toString(), editEmail.getText().toString(), null, null, null, null, 0, 0, UserAuthenticatorModel.myAuth);
 
             LambencyAPIHelper.getInstance().getChangeAccountInfo(user).enqueue(new Callback<UserModel>() {
                 @Override
