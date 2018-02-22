@@ -17,11 +17,16 @@ import android.widget.TextView;
 
 import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
+import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -207,7 +212,27 @@ public class ProfileFragment extends Fragment {
             emailOfUser.setVisibility(View.VISIBLE);
             edit = false;
 
+            LambencyAPIHelper.getInstance().getChangeAccountInfo(null).enqueue(new Callback<UserModel>() {
+                @Override
+                public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("ERROR!!!!!");
+                    }
+                    //when response is back
+                    UserModel u  = response.body();
+                    if(u == null){
+                        System.out.println("failed: returned null");
+                    }
+                    //u.getEmail();
+                    //updated user object
+                }
 
+                @Override
+                public void onFailure(Call<UserModel> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                }
+            });
         }
     }
 
