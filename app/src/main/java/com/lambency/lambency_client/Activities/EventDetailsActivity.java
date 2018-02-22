@@ -71,6 +71,11 @@ public class EventDetailsActivity extends AppCompatActivity {
                 shareIt();
             }
         });
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            System.out.println(bundle.getInt("event_id"));
+        }
     }
 
     private void shareIt() {

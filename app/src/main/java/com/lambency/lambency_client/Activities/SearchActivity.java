@@ -1,12 +1,19 @@
 package com.lambency.lambency_client.Activities;
 
+import android.Manifest;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,13 +22,29 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
+import com.lambency.lambency_client.Fragments.OrgSearchResultFragment;
+import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 public class SearchActivity extends AppCompatActivity   {
 
@@ -34,6 +57,11 @@ public class SearchActivity extends AppCompatActivity   {
     @BindView(R.id.viewPager)
     ViewPager viewPager;
 
+    SearchTabsAdapter searchTabsAdapter;
+    Context context;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private int MY_PERMISSIONS_ACCESS_COARSE_LOCATION;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,17 +69,21 @@ public class SearchActivity extends AppCompatActivity   {
 
         ButterKnife.bind(this);
 
+        this.context = this;
+
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         tabLayout.addTab(tabLayout.newTab().setText("Events"));
         tabLayout.addTab(tabLayout.newTab().setText("Organizations"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final SearchTabsAdapter searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), this);
         viewPager.setAdapter(searchTabsAdapter);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
@@ -73,6 +105,8 @@ public class SearchActivity extends AppCompatActivity   {
 
             }
         });
+
+
     }
 
 
@@ -80,7 +114,7 @@ public class SearchActivity extends AppCompatActivity   {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate( R.menu.menu_search, menu);
 
-        MenuItem searchAction = menu.findItem( R.id.search );
+        final MenuItem searchAction = menu.findItem( R.id.search );
         SearchView searchView = (SearchView) searchAction.getActionView();
         searchView.setQueryHint("Search Lambency...");
         searchView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -93,6 +127,37 @@ public class SearchActivity extends AppCompatActivity   {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 System.out.println(query);
+
+
+                LambencyAPIHelper.getInstance().getOrganizationSearch(query).enqueue(new Callback<ArrayList<OrganizationModel>>() {
+                    @Override
+                    public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
+                        if (response.body() == null || response.code() != 200) {
+                            System.out.println("ERROR!!!!!");
+                        }
+                        //when response is back
+                        ArrayList<OrganizationModel> orgList = response.body();
+                        if(orgList.size() == 0){
+                            //no results found
+                            searchTabsAdapter.updateOrgs(orgList);
+                        }
+                        else{
+                            //results found
+                            System.out.println("Orgs found!");
+
+                            //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
+                            searchTabsAdapter.updateOrgs(orgList);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
+                        //when failure
+                        System.out.println("FAILED CALL");
+                    }
+                });
+
+
                 return false;
             }
 
@@ -115,6 +180,43 @@ public class SearchActivity extends AppCompatActivity   {
 
             case R.id.location:
                 System.out.println("Location Pressed");
+
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                            MY_PERMISSIONS_ACCESS_COARSE_LOCATION
+                    );
+                }
+
+                try {
+                    mFusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                                if(location == null){
+                                    System.out.println("Null location.");
+                                }else {
+                                    System.out.println(location.getLongitude() + " " + location.getLatitude());
+
+                                    LambencyAPIHelper.getInstance().getEventsWithParams(location.getLatitude(), location.getLongitude(), "", "").enqueue(new Callback<List<EventModel>>() {
+                                        @Override
+                                        public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
+                                            List<EventModel> events = response.body();
+                                            searchTabsAdapter.updateEvents(events);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<List<EventModel>> call, Throwable t) {
+
+                                        }
+                                    });
+                                }
+                            }
+                    });
+                }catch (SecurityException e){
+                    e.printStackTrace();
+                }
+
                 return true;
         }
 

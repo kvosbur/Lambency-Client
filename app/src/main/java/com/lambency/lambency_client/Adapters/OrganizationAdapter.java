@@ -1,16 +1,24 @@
 package com.lambency.lambency_client.Adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.ImageHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -35,7 +43,24 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
 
     @Override
     public void onBindViewHolder(OrganizationAdapter.AreaViewHolder holder, int position) {
-        //Change card info here
+        OrganizationModel orgModel = orgs.get(position);
+
+        if(orgModel.name != null) {
+            holder.titleView.setText(orgModel.name);
+        }
+
+        if(orgModel.description != null) {
+            holder.descriptionView.setText(orgModel.description);
+        }
+
+        if(orgModel.email != null) {
+            holder.emailView.setText(orgModel.email);
+        }
+
+        if(orgModel.getImage() != null){
+            holder.profileImage.setImageBitmap(ImageHelper.stringToBitmap(orgModel.getImage()));
+        }
+
     }
 
     @Override
@@ -47,10 +72,27 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
 
         //Get references to layout and define onClick methods here
 
+        @BindView(R.id.title)
+        TextView titleView;
+
+        @BindView(R.id.description)
+        TextView descriptionView;
+
+        @BindView(R.id.email)
+        TextView emailView;
+
+        @BindView(R.id.profileImage)
+        ImageView profileImage;
+
         public AreaViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public void updateOrgs(ArrayList<OrganizationModel> orgsList){
+        orgs = orgsList;
+        notifyDataSetChanged();
     }
 
 }
