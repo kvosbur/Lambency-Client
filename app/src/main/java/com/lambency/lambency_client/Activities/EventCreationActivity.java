@@ -4,9 +4,12 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,11 +19,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -36,7 +44,14 @@ public class EventCreationActivity extends AppCompatActivity {
     String eventName, dateOfEvent, addressOfEvent, description, contact;
     private Context context;
 
+    private EventModel eventModel;
+
+
     Button date,startTime,endTime;
+
+    private String imagePath = "";
+
+    Timestamp startingTime,endingTime;
 
     Calendar myCalendar = Calendar.getInstance();
 
@@ -62,6 +77,8 @@ public class EventCreationActivity extends AppCompatActivity {
             // store the data in one string and set it to text
             String time1 = String.valueOf(hour) + ":" + String.valueOf(minute);
             startTime.setText(time1);
+            startingTime = new Timestamp(myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DATE),
+                    hour,minute,0,0);
         }
     };
 
@@ -73,6 +90,8 @@ public class EventCreationActivity extends AppCompatActivity {
             // store the data in one string and set it to text
             String time1 = String.valueOf(hour) + ":" + String.valueOf(minute);
             endTime.setText(time1);
+            endingTime = new Timestamp(myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DATE),
+                    hour,minute,0,0);
         }
     };
 
@@ -125,6 +144,8 @@ public class EventCreationActivity extends AppCompatActivity {
             }
         });
 
+
+
         saveDetails.setOnClickListener(new View.OnClickListener() {
             EditText eName = (EditText) findViewById(R.id.nameOfEvent);
             //EditText eDate = (EditText) findViewById(R.id.dateOfEvent);
@@ -141,10 +162,38 @@ public class EventCreationActivity extends AppCompatActivity {
                 description = eDescrip.getText().toString();
                 contact = eContact.getText().toString();
 
+                //making image string....
+                Bitmap bm;
+                if(imagePath.equals("")){
+                    //Use default profile image
+                    bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
+                }else {
+                    bm = BitmapFactory.decodeFile(imagePath);
+                }
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                byte[] b = baos.toByteArray();
+                String encodedProfile = Base64.encodeToString(b, Base64.DEFAULT);
+                //encoded profile is the image string
+
+
+                if (eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("") || startingTime == null || endingTime == null){
+                    Toast.makeText(getApplicationContext(), "You did not enter everything", Toast.LENGTH_LONG).show();
+                    //saveDetails.setVisibility(View.GONE);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Success!!", Toast.LENGTH_LONG).show();
+                    //saveDetails.setVisibility(View.VISIBLE);
+                }
+
                 //Go back to main page now
-                Intent myIntent = new Intent(EventCreationActivity.this,
-                        MainActivity.class);
-                startActivity(myIntent);
+                if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("")  || startingTime == null || endingTime == null)) {
+                    //the EventModel object to send to server(use this evan)
+                    eventModel = new EventModel(encodedProfile,eventName,EventModel.myEventModel.getOrg_id(),startingTime,endingTime,description,addressOfEvent);
+                    Intent myIntent = new Intent(EventCreationActivity.this,
+                            MainActivity.class);
+                    startActivity(myIntent);
+                }
             }
         });
     }
@@ -180,6 +229,8 @@ public class EventCreationActivity extends AppCompatActivity {
                         exception.printStackTrace();
                     }
                 });
+
+                imagePath = imagesFiles.get(0).getPath();
 
                 builder.build()
                         .load(new File(imagesFiles.get(0).getPath()))

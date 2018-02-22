@@ -71,6 +71,14 @@
                         android:text="leader@theorg.org"
                         />
 
+                    <CheckBox
+                        android:id="@+id/followUnFollow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Follow/Un Follow"
+                        android:paddingLeft="5dp"
+                        ></CheckBox>
+
                 </LinearLayout>
             </RelativeLayout>
     </RelativeLayout>
