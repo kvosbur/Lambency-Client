@@ -17,6 +17,9 @@ public class EventModel {
     private double latitude;
     private double longitude;
 
+    public static EventModel myEventModel;
+
+
     //Empty constructor for testing
     public EventModel(){
 
