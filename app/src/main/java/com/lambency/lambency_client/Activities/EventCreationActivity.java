@@ -50,7 +50,6 @@ public class EventCreationActivity extends AppCompatActivity {
 
     private EventModel eventModel;
 
-
     Button date,startTime,endTime;
 
     private String imagePath = "";
