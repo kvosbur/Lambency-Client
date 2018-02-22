@@ -51,10 +51,10 @@ public class EventModel {
         }
     }
 
-    public EventModel(String image_path, String name, int org_id, Timestamp start,
+    public EventModel(String image, String name, int org_id, Timestamp start,
                  Timestamp end, String description, String location, double latitude, double longitude) {
         this(name, org_id, start, end, description, location, latitude, longitude);
-        this.image_path = image_path;
+        this.imageFile = image;
     }
 
     //one without longitude latitude
