@@ -179,13 +179,13 @@ public class SearchActivity extends AppCompatActivity   {
         return super.onCreateOptionsMenu(menu);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
+
             case android.R.id.home:
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                return true;
+                finish();
 
             case R.id.location:
                 System.out.println("Location Pressed");
