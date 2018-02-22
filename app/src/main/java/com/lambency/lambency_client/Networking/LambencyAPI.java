@@ -45,5 +45,8 @@ public interface LambencyAPI {
     @POST("User/changeInfo")
     Call<UserModel> getChangeAccountInfo(@Body UserModel u);
 
+    @GET("Event/searchByID")
+    Call<EventModel> getEventSearchByID(@Query("id") String event_id);
+
 
 }
