@@ -7,17 +7,36 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OrganizationDetailsActivity extends AppCompatActivity {
 
-@BindView(R.id.followUnFollow)
-CheckBox checkBox;
+    @BindView(R.id.followUnFollow)
+    CheckBox checkBox;
+
+    @BindView(R.id.titleOrg)
+    TextView titleOrg;
+
+    @BindView(R.id.descriptionOrg)
+    TextView descriptionOrg;
+
+    @BindView(R.id.emailOrg)
+    TextView emailOrg;
+
+    @BindView(R.id.addressOrg)
+    TextView addressOrg;
 
 
     @Override
@@ -42,6 +61,44 @@ CheckBox checkBox;
                 }
             }
         });
+
+        Bundle bundle = this.getIntent().getExtras();
+        if(bundle != null) {
+            int org_id = bundle.getInt("org_id");
+            LambencyAPIHelper.getInstance().getOrgSearchByID("" + org_id).enqueue(new Callback<OrganizationModel>() {
+                @Override
+                public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("ERROR!!!!!");
+                        return;
+                    }
+                    //when response is back
+                    OrganizationModel organization= response.body();
+
+                    if(organization == null){
+                        System.out.println("failed to find organization");
+                        Toast.makeText(getApplicationContext(), "No Organization Object", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    Toast.makeText(getApplicationContext(), "Got Organization Object", Toast.LENGTH_LONG).show();
+
+                    //change screen to show organization information
+                    titleOrg.setText(organization.getName());
+                    descriptionOrg.setText(organization.getDescription());
+                    emailOrg.setText(organization.getEmail());
+                    addressOrg.setText(organization.getLocation());
+                }
+
+                @Override
+                public void onFailure(Call<OrganizationModel> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                }
+            });
+        }else{
+            Toast.makeText(getApplicationContext(), "Bundle is broken... :(", Toast.LENGTH_LONG).show();
+        }
 
     }
 

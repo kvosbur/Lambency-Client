@@ -1,8 +1,11 @@
 package com.lambency.lambency_client.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -11,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.lambency.lambency_client.Activities.EventDetailsActivity;
+import com.lambency.lambency_client.Activities.OrganizationDetailsActivity;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
@@ -20,6 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by lshan on 2/20/2018.
@@ -84,10 +90,29 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
         @BindView(R.id.profileImage)
         ImageView profileImage;
 
+        @BindView(R.id.card_organization)
+        CardView cardView;
+
         public AreaViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
+        @OnClick(R.id.card_organization)
+        public void onClickCard() {
+            Intent intent = new Intent(context, OrganizationDetailsActivity.class);
+            Bundle bundle = new Bundle();
+
+            Integer taggedPosition = this.getLayoutPosition();
+
+            System.out.println("the position is : " + taggedPosition);
+            OrganizationModel org = orgs.get(taggedPosition);
+            bundle.putInt("org_id", orgs.get(taggedPosition).getOrgID());
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        }
+
+
     }
 
     public void updateOrgs(ArrayList<OrganizationModel> orgsList){
