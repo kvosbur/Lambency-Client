@@ -14,9 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
+import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -60,6 +65,27 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
 
         final Button shareButton = findViewById(R.id.shareEvent);
+
+        //testing if button comes and go
+        List<Integer> fakeOrgIds = new ArrayList<Integer>();
+        fakeOrgIds.add(5);
+        fakeOrgIds.add(7);
+        fakeOrgIds.add(110);
+
+        UserModel forTestingUserModel = new UserModel("farhan","shafi","fshafi@purdue.edu",fakeOrgIds,
+                fakeOrgIds,fakeOrgIds,fakeOrgIds,1,23,"12234567890");
+        //end testing code
+
+
+        //this is for checking is usermodel org id match the event model org id
+        if (forTestingUserModel.getMyOrgs().contains(EventModel.myEventModel.getOrg_id()) == true){
+            shareButton.setVisibility(View.VISIBLE);
+        }
+        else{
+            shareButton.setVisibility(View.GONE);
+        }
+        //end
+
         shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // if statement for user will go here
