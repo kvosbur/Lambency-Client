@@ -14,7 +14,7 @@
         android:id="@+id/nothingText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NOTHING FOUND"
+        android:text="No Organizations Found"
         android:layout_centerInParent="true"
         android:visibility="gone"/>
 
