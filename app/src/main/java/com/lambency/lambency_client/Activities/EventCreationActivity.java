@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.R;
 import com.squareup.picasso.Picasso;
@@ -125,6 +126,8 @@ public class EventCreationActivity extends AppCompatActivity {
             }
         });
 
+
+
         saveDetails.setOnClickListener(new View.OnClickListener() {
             EditText eName = (EditText) findViewById(R.id.nameOfEvent);
             //EditText eDate = (EditText) findViewById(R.id.dateOfEvent);
@@ -141,10 +144,21 @@ public class EventCreationActivity extends AppCompatActivity {
                 description = eDescrip.getText().toString();
                 contact = eContact.getText().toString();
 
+                if (eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("")){
+                    Toast.makeText(getApplicationContext(), "You did not enter everything", Toast.LENGTH_LONG).show();
+                    //saveDetails.setVisibility(View.GONE);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Success!!", Toast.LENGTH_LONG).show();
+                    //saveDetails.setVisibility(View.VISIBLE);
+                }
+
                 //Go back to main page now
-                Intent myIntent = new Intent(EventCreationActivity.this,
-                        MainActivity.class);
-                startActivity(myIntent);
+                if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches(""))) {
+                    Intent myIntent = new Intent(EventCreationActivity.this,
+                            MainActivity.class);
+                    startActivity(myIntent);
+                }
             }
         });
     }
