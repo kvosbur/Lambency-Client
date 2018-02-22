@@ -106,8 +106,6 @@ public class SearchActivity extends AppCompatActivity   {
 
             }
         });
-
-
     }
 
 
@@ -120,7 +118,7 @@ public class SearchActivity extends AppCompatActivity   {
         searchView.setQueryHint("Search Lambency...");
         searchView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
-        searchView.setIconifiedByDefault(false);
+        //searchView.setIconifiedByDefault(false);
         searchView.requestFocus();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

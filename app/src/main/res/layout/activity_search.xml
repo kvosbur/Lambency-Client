@@ -17,11 +17,19 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
         android:paddingRight="10dp"
+        android:paddingEnd="10dp"
         />
+
+    <!--
+    app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        android:paddingRight="10dp"
+        android:paddingEnd="10dp"
+    -->
 
     <android.support.design.widget.TabLayout
         android:layout_below="@id/toolbar"
