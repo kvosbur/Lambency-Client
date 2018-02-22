@@ -163,7 +163,7 @@
                         android:textAlignment="center"
                         android:visibility="gone"
                         android:textSize="12sp"
-                        android:text="See whose attending"/>
+                        android:text="See who's attending"/>
 
                 </RelativeLayout>
 

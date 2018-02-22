@@ -1,14 +1,19 @@
 package com.lambency.lambency_client.Adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.ImageHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +57,10 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
             holder.emailView.setText(orgModel.email);
         }
 
+        if(orgModel.getImage() != null){
+            holder.profileImage.setImageBitmap(ImageHelper.stringToBitmap(orgModel.getImage()));
+        }
+
     }
 
     @Override
@@ -71,6 +80,9 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
 
         @BindView(R.id.email)
         TextView emailView;
+
+        @BindView(R.id.profileImage)
+        ImageView profileImage;
 
         public AreaViewHolder(View itemView) {
             super(itemView);
