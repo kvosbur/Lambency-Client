@@ -139,6 +139,8 @@ public class OrgCreationActivity extends AppCompatActivity {
                         }
                         //when response is back
                         OrganizationModel org = response.body();
+                        int org_id = org.getOrgID();
+                        UserModel.myUserModel.organizeGroup(org_id);
 
                         progressBar.setVisibility(View.GONE);
 
@@ -153,6 +155,7 @@ public class OrgCreationActivity extends AppCompatActivity {
                         //Go back to main page now
                         Intent myIntent = new Intent(context, MainActivity.class);
                         startActivity(myIntent);
+                        Toast.makeText(getApplicationContext(), "Organization made", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
