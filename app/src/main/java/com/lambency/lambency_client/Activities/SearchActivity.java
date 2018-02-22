@@ -17,6 +17,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
@@ -45,6 +46,7 @@ public class SearchActivity extends AppCompatActivity   {
     ViewPager viewPager;
 
     SearchTabsAdapter searchTabsAdapter;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,8 @@ public class SearchActivity extends AppCompatActivity   {
         setContentView(R.layout.activity_search);
 
         ButterKnife.bind(this);
+
+        this.context = this;
 
         setSupportActionBar(toolbar);
 
@@ -109,7 +113,6 @@ public class SearchActivity extends AppCompatActivity   {
                 System.out.println(query);
 
 
-
                 LambencyAPIHelper.getInstance().getOrganizationSearch(query).enqueue(new Callback<ArrayList<OrganizationModel>>() {
                     @Override
                     public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
@@ -120,6 +123,7 @@ public class SearchActivity extends AppCompatActivity   {
                         ArrayList<OrganizationModel> orgList = response.body();
                         if(orgList.size() == 0){
                             //no results found
+                            searchTabsAdapter.updateOrgs(orgList);
                         }
                         else{
                             //results found
