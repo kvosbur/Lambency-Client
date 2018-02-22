@@ -15,6 +15,9 @@ public class OrganizationModel {
     public String image;
     public ArrayList<UserModel> organizers;
 
+    public static OrganizationModel myOrgModel;
+
+
 
     public OrganizationModel(){
         //Empty constructor for testing

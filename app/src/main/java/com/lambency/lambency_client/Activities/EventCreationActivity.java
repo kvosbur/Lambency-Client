@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.squareup.picasso.Picasso;
 
@@ -39,6 +40,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EventCreationActivity extends AppCompatActivity {
     String eventName, dateOfEvent, addressOfEvent, description, contact;
@@ -181,15 +185,41 @@ public class EventCreationActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "You did not enter everything", Toast.LENGTH_LONG).show();
                     //saveDetails.setVisibility(View.GONE);
                 }
-                else {
-                    Toast.makeText(getApplicationContext(), "Success!!", Toast.LENGTH_LONG).show();
-                    //saveDetails.setVisibility(View.VISIBLE);
-                }
 
                 //Go back to main page now
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("")  || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
-                    eventModel = new EventModel(encodedProfile,eventName,EventModel.myEventModel.getOrg_id(),startingTime,endingTime,description,addressOfEvent);
+                    eventModel = new EventModel(encodedProfile,eventName,2,startingTime,endingTime,description,addressOfEvent);
+
+                    LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
+                        @Override
+                        public void onResponse(Call<EventModel> call, Response<EventModel> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            //when response is back
+                            EventModel createdEvent = response.body();
+                            System.out.println("Created Event: "+createdEvent);
+
+                            if(createdEvent == null){
+                                Toast.makeText(getApplicationContext(), "Event error!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            // Status now contains event_id
+                            int event_id = createdEvent.getEvent_id();
+
+                            Toast.makeText(getApplicationContext(), "Success creating event!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<EventModel> call, Throwable throwable) {
+                            Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    });
+
                     Intent myIntent = new Intent(EventCreationActivity.this,
                             MainActivity.class);
                     startActivity(myIntent);

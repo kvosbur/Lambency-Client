@@ -45,5 +45,7 @@ public interface LambencyAPI {
     @POST("User/changeInfo")
     Call<UserModel> getChangeAccountInfo(@Body UserModel u);
 
+    @POST("Event/create")
+    Call<EventModel> createEvent(@Body EventModel eventModel);
 
 }
