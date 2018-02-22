@@ -30,4 +30,7 @@ public interface LambencyAPI {
     @GET("User/search")
     Call<UserModel> userSearch(@Query("oAuthToken") String oAuthToken, @Query("id") String userID);
 
+    @POST("User/changeInfo")
+    Call<UserModel> getChangeAccountInfo(@Body UserModel u);
+
 }
