@@ -73,6 +73,9 @@ public class EventDetailsActivity extends AppCompatActivity {
     @BindView(R.id.whosAttending)
     Button whosAttendingButton;
 
+    @BindView(R.id.editButton)
+    Button editButton;
+
     private EventModel event;
 
     @Override
@@ -146,7 +149,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private void callRetrofit(final int event_id){
-        
+
         progressBar.setVisibility(View.VISIBLE);
 
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
@@ -223,6 +226,15 @@ public class EventDetailsActivity extends AppCompatActivity {
         }else{
             System.out.println("Error - no event found.");
         }
+    }
+
+    @OnClick(R.id.editButton)
+    public void handleEditClick(){
+        Bundle bundle = new Bundle();
+        bundle.putInt("event_id", event.getEvent_id());
+        Intent intent = new Intent(this, EventCreationActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
 }
