@@ -234,7 +234,7 @@
                 </RelativeLayout>
 
                 <Button
-                    android:id="@+id/editButton"
+                    android:id="@+id/editEventButton"
                     android:layout_below="@id/organizationLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -244,7 +244,7 @@
                     android:id="@+id/eventInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/editButton"
+                    android:layout_below="@+id/editEventButton"
 
                     android:textColor="#000000"
 

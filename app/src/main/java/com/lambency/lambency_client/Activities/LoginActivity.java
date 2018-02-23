@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //skip login activity if there is already an oAuthToken saved to shared preferences
         SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
         String myauth = sharedPref.getString("myauth", "");
-        /*
+
         if(myauth.length() > 0){
             UserAuthenticatorModel.myAuth = myauth;
             System.out.println("My auth is : " + myauth);
@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
         }
-        */
+
 
 
         super.onCreate(savedInstanceState);

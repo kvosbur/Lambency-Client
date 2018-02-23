@@ -69,7 +69,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkBox.isChecked()){
-                    LambencyAPIHelper.getInstance().getFollowOrg(UserModel.myUserModel.getOauthToken(),Integer.toString(currentOrgId)).enqueue(new retrofit2.Callback<Integer>() {
+                    LambencyAPIHelper.getInstance().getFollowOrg(UserModel.myUserModel.getOauthToken(),"" + currentOrgId).enqueue(new retrofit2.Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             if (response.body() == null || response.code() != 200) {
