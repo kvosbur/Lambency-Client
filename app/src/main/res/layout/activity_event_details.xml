@@ -155,7 +155,7 @@
                         />
 
                     <Button
-                        android:id="@+id/listUser"
+                        android:id="@+id/whosAttending"
                         android:layout_toRightOf="@id/shareEvent"
 
                         android:layout_width="wrap_content"
@@ -164,6 +164,7 @@
                         android:visibility="gone"
                         android:textSize="12sp"
                         android:text="See who's attending"/>
+
 
                 </RelativeLayout>
 
@@ -232,11 +233,18 @@
 
                 </RelativeLayout>
 
+                <Button
+                    android:id="@+id/editButton"
+                    android:layout_below="@id/organizationLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Event"/>
+
                 <TextView
                     android:id="@+id/eventInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/organizationLayout"
+                    android:layout_below="@+id/editButton"
 
                     android:textColor="#000000"
 

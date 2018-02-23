@@ -63,6 +63,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     ImageView eventImageView;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
