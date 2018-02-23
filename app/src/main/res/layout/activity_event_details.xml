@@ -179,7 +179,13 @@
                             android:text="See who's attending"/>
 
 
+
+                            android:textSize="18sp"
+                            android:text="Join Event"/>
+                    </LinearLayout>
+
                     </RelativeLayout>
+
 
 
 
