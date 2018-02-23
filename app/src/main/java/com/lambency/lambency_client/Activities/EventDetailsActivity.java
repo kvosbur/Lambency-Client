@@ -91,6 +91,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
 
         LinearLayout linearLayout = findViewById(R.id.joinButton);
+        text = findViewById(R.id.joinButtonText);
+        if(UserModel.myUserModel.isRegisterdForEvent(event_id)){
+            text.setText("Joined Event");
+        }
+        else{
+            text.setText("Join Event");
+        }
 
 
 
@@ -98,7 +105,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             public void onClick(View v){
                 ImageView imageView = findViewById(R.id.check);
-                text = findViewById(R.id.joinButtonText);
+
                 if(text.getText().toString().equals("Join Event")){
                     LambencyAPIHelper.getInstance().getRegisterEvent(UserModel.myUserModel.getOauthToken(),event_id).enqueue(new retrofit2.Callback<Integer>() {
                         @Override
