@@ -60,10 +60,6 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView text;
     private LinearLayout linearLayout;
 
-
-    @BindView(R.id.createEventButton)
-    Button shareEventButton;
-
     @BindView(R.id.mainLayout)
     CoordinatorLayout mainLayout;
 
