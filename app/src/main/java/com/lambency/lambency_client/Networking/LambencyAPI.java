@@ -54,5 +54,8 @@ public interface LambencyAPI {
     @GET("Organization/searchByID")
     Call<OrganizationModel> getOrgSearchByID(@Query("id") String org_id);
 
+    @POST("User/requestJoinOrg")
+    Call<Integer> postJoinOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgId") int orgID);
+
 
 }

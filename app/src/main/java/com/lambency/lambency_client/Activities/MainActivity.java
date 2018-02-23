@@ -48,6 +48,8 @@ import butterknife.BindView;
 public class MainActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener{
 
 
+    public static BottomNavigationView bottomNavigationView;
+
 //Key is 406595282653-cc9eb7143bvpgfe5da941r3jq174b4dq
 //this goes in src/main/resources/client_secret.json
 
@@ -64,11 +66,11 @@ public class MainActivity extends AppCompatActivity implements EventsMainFragmen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
-
         bar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -94,6 +96,22 @@ public class MainActivity extends AppCompatActivity implements EventsMainFragmen
         });
 
     }
+
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        BottomNavigationView bar = findViewById(R.id.bottom_navigation);
+        Bundle b = getIntent().getExtras();
+        if(b != null)
+        {
+            if(b.getString("bottomView") != null && b.getString("bottomView").equals("feed"))
+            {
+                bar.setSelectedItemId(R.id.feedBot);
+            }
+        }
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

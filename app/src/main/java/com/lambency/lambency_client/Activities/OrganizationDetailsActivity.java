@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -51,6 +52,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.orgRequestJoin)
     Button requestJoin;
 
+    public static int currentOrgId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
             int org_id = bundle.getInt("org_id");
+            currentOrgId = org_id;
             LambencyAPIHelper.getInstance().getOrgSearchByID("" + org_id).enqueue(new Callback<OrganizationModel>() {
                 @Override
                 public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
@@ -137,7 +140,33 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
     @OnClick(R.id.orgRequestJoin)
     public void onClickRequest(){
+        System.out.println("CURRENT ORG ID: " + currentOrgId);
+        LambencyAPIHelper.getInstance().postJoinOrganization(UserModel.myUserModel.getOauthToken(), currentOrgId).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    Toast.makeText(getApplicationContext(), "NULL ERROR", Toast.LENGTH_LONG).show();
+                    return;
+                }
 
+                //when response is back
+                Integer status = response.body();
+                System.out.println(status);
+                if(status == 0){
+                    Toast.makeText(getApplicationContext(), "Successfully requested to join", Toast.LENGTH_LONG).show();
+                    requestJoin.setText("Request pending");
+                }
+                else if(status == 1){
+                    Toast.makeText(getApplicationContext(), "Error requesting to join", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable throwable) {
+                Toast.makeText(getApplicationContext(), "Failed call!", Toast.LENGTH_LONG).show();
+                System.out.println("FAILED CALL");
+            }
+        });
         return;
     }
 }
