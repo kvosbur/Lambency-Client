@@ -58,6 +58,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
 
         EventModel eventModel = events.get(position);
 
+        if(eventModel == null){
+            return;
+        }
+
         if(eventModel.getName() != null){
             holder.titleView.setText(eventModel.getName());
         }

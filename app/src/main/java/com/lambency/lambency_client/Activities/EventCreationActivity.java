@@ -405,10 +405,19 @@ public class EventCreationActivity extends AppCompatActivity {
 
                 imagePath = imagesFiles.get(0).getPath();
 
+                File file = imagesFiles.get(0);
+                String path = file.getPath();
+                ImageHelper.loadWithGlide(context,
+                        path,
+                        eventImage
+                        );
+
+                /*
                 builder.build()
                         .load(new File(imagesFiles.get(0).getPath()))
                         .error(R.drawable.ic_books)
                         .into(eventImage);
+                        */
 
                 /*
                 Bitmap bitmap = BitmapFactory.decodeFile(imagesFiles.get(0).getPath(), null);
