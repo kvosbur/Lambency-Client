@@ -243,7 +243,7 @@ public class ProfileFragment extends Fragment {
                     emailOfUser.setVisibility(View.VISIBLE);
                     edit = false;
 
-                    UserModel.myUserModel = user;
+                    UserModel.myUserModel = u;
 
                     Toast.makeText(getActivity(), "Information successfully changed!", Toast.LENGTH_SHORT).show();
 
