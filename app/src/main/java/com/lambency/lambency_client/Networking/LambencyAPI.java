@@ -72,6 +72,9 @@ public interface LambencyAPI {
     @GET("/User/registerForEvent")
     Call<Integer> getRegisterEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID);
 
+    @GET("/Event/searchByIDs")
+    Call<List<EventModel>> getUserEvents(@Query("oAuthCode") String oAuthCode, @Query("userID") int userID);
+
 
 }
 
