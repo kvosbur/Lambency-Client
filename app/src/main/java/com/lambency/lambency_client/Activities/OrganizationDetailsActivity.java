@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -48,8 +49,8 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.OrgImage)
     CircleImageView orgImage;
 
-    @BindView(R.id.orgRequestJoin)
-    Button requestJoin;
+    //@BindView(R.id.orgRequestJoin)
+    //Button requestJoin;
 
 
     @Override
@@ -67,10 +68,70 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkBox.isChecked()){
-                    Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
+                    LambencyAPIHelper.getInstance().getFollowOrg(UserModel.myUserModel.getOauthToken(),Integer.toString(org_model.getOrgID())).enqueue(new retrofit2.Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                System.out.println("ERROR!!!!!");
+                            }
+                            //when response is back
+                            Integer ret = response.body();
+                            if(ret == 0){
+                                System.out.println("successfully followed organization");
+                                Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
+                            }
+                            else if (ret == 1){
+                                System.out.println("failed to find user or organization");
+                                Toast.makeText(getApplicationContext(), "NO ORG OR USER TO FOLLOW", Toast.LENGTH_LONG).show();
+                                checkBox.setChecked(false);
+                            }
+                            else if (ret == 2){
+                                System.out.println("undetermined error");
+                                Toast.makeText(getApplicationContext(), "Unkown Error", Toast.LENGTH_LONG).show();
+                                checkBox.setChecked(false);
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable throwable) {
+                            //when failure
+                            System.out.println("FAILED CALL");
+                            Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
+                            checkBox.setChecked(false);
+                        }
+                    });
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
+                    LambencyAPIHelper.getInstance().getUnfollowOrg(UserModel.myUserModel.getOauthToken(), Integer.toString(org_model.getOrgID())).enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                System.out.println("ERROR!!!!!");
+                            }
+                            //when response is back
+                            Integer ret = response.body();
+                            if(ret == 0){
+                                System.out.println("successfully unfollowed organization");
+                            }
+                            else if (ret == 1){
+                                System.out.println("failed to find user or organization");
+                                Toast.makeText(getApplicationContext(), "Failure to find org or user", Toast.LENGTH_LONG).show();
+                                checkBox.setChecked(true);
+                            }
+                            else if (ret == 2){
+                                System.out.println("undetermined error");
+                                Toast.makeText(getApplicationContext(), "Unkown Error", Toast.LENGTH_LONG).show();
+                                checkBox.setChecked(true);
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable throwable) {
+                            //when failure
+                            System.out.println("FAILED CALL");
+                            Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+                            checkBox.setChecked(true);
+                        }
+                    });
                 }
             }
         });
@@ -134,10 +195,11 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             //is not checked (meaning they unfollowed)
         }
     }
-
+    /*
     @OnClick(R.id.orgRequestJoin)
     public void onClickRequest(){
 
         return;
     }
+
 }
