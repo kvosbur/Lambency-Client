@@ -3,6 +3,7 @@ package com.lambency.lambency_client.Activities;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
@@ -41,9 +43,14 @@ import retrofit2.Response;
 public class EventDetailsActivity extends AppCompatActivity {
     String eventName = "";
 
-
     //@BindView(R.id.createEventButton)
     //Button shareEventButton;
+
+    @BindView(R.id.mainLayout)
+    CoordinatorLayout mainLayout;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     @BindView(R.id.joinButtonText)
     TextView joinButText;
@@ -139,6 +146,9 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private void callRetrofit(final int event_id){
+        
+        progressBar.setVisibility(View.VISIBLE);
+
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
             @Override
             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
@@ -165,6 +175,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                     eventImageView.setBackground(bd);
 
                     event = eventModel;
+
+
+                    progressBar.setVisibility(View.GONE);
                 }
             }
 
@@ -172,6 +185,8 @@ public class EventDetailsActivity extends AppCompatActivity {
             public void onFailure(Call<EventModel> call, Throwable throwable) {
                 //when failure
                 System.out.println("FAILED CALL");
+
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
