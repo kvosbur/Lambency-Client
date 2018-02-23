@@ -8,6 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +33,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OrganizationDetailsActivity extends AppCompatActivity {
+
+    @BindView(R.id.mainLayout)
+    ScrollView mainLayout;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     @BindView(R.id.followUnFollow)
     CheckBox checkBox;
@@ -143,6 +152,10 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         if(bundle != null) {
             int org_id = bundle.getInt("org_id");
             currentOrgId = org_id;
+
+            mainLayout.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+
             LambencyAPIHelper.getInstance().getOrgSearchByID("" + org_id).enqueue(new Callback<OrganizationModel>() {
                 @Override
                 public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
@@ -167,12 +180,17 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     emailOrg.setText(organization.getEmail());
                     addressOrg.setText(organization.getLocation());
                     orgImage.setImageBitmap(ImageHelper.stringToBitmap(organization.getImage()));
+
+                    mainLayout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void onFailure(Call<OrganizationModel> call, Throwable throwable) {
                     //when failure
                     System.out.println("FAILED CALL");
+                    mainLayout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 }
             });
         }else{
