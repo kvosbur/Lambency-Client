@@ -22,7 +22,7 @@
             >
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profileImage"
+                android:id="@+id/OrgImage"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:src="@drawable/ic_books"
@@ -30,7 +30,7 @@
                 app:civ_border_width="1dp"
                 android:layout_marginBottom="10dp"/>
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/titleOrg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Organization Name"
@@ -38,7 +38,7 @@
                 android:textSize="29sp"
                 android:textStyle="bold"/>
             <TextView
-                android:id="@+id/description"
+                android:id="@+id/descriptionOrg"
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
                 android:text="Org description goes here. We are a great organization. we do lots of great things. Please come to all of our meetings until the end of time ok thanks."
@@ -56,6 +56,7 @@
                 android:textSize="15sp"/>
 
             <Button
+                android:id="@+id/orgRequestJoin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Send Join Request"
@@ -85,7 +86,7 @@
                     android:layout_marginRight="20dp"/>
 
                 <TextView
-                    android:id="@+id/email"
+                    android:id="@+id/emailOrg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="leader@myorganization.com"
@@ -110,7 +111,7 @@
                     android:layout_marginRight="20dp"/>
 
                 <TextView
-                    android:id="@+id/address"
+                    android:id="@+id/addressOrg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1275 Third Street, West Lafayette IN 47906"

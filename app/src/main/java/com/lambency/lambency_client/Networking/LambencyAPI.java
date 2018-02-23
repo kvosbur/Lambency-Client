@@ -48,4 +48,7 @@ public interface LambencyAPI {
     @POST("Event/create")
     Call<EventModel> createEvent(@Body EventModel eventModel);
 
+    @GET("Organization/searchByID")
+    Call<OrganizationModel> getOrgSearchByID(@Query("id") String org_id);
+
 }
