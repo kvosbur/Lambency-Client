@@ -63,5 +63,7 @@ public interface LambencyAPI {
     @GET("User/unfollowOrg")
     Call<Integer> getUnfollowOrg(@Query("oAuthCode") String oAuthCode, @Query("org_id") String orgID);
 
+    @GET("Event/users")
+    Call<ArrayList<UserModel>> getListOfUsers(@Query("oauthcode") String oAuthCode, @Query("event_id") int eventId);
 
 }

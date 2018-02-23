@@ -9,8 +9,10 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,12 +20,12 @@ import java.util.List;
  */
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHolder> {
-    public UserListAdapter(List<String> messages)
+    public UserListAdapter(List<UserModel> users)
     {
-        this.messages = messages;
+        this.users = users;
     }
 
-    List<String> messages;
+    List<UserModel> users;
 
     @Override
     public UserListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -33,23 +35,37 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(UserListAdapter.ViewHolder holder, int position) {
-        holder.cardText.setText(messages.get(position));
+
+        UserModel userModel = users.get(position);
+
+        String name = userModel.getFirstName() + " " + userModel.getLastName();
+        holder.nameView.setText(name);
+
+        holder.emailView.setText(userModel.getEmail());
     }
 
     @Override
     public int getItemCount() {
-        return messages.size();
+        return users.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.cardText)
-        TextView cardText;
+        @BindView(R.id.name)
+        TextView nameView;
+
+        @BindView(R.id.email)
+        TextView emailView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public void updateUserList(ArrayList<UserModel> users){
+        this.users = (List) users;
+        notifyDataSetChanged();
     }
 }
 

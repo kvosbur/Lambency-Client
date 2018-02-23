@@ -154,10 +154,10 @@ public class SearchActivity extends AppCompatActivity   {
                             //results found
                             System.out.println("Orgs found!");
 
+
                             if(searchTabsAdapter == null){
                                 searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
                             }
-
                             //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
                             searchTabsAdapter.updateOrgs(orgList);
                         }

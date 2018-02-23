@@ -74,6 +74,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             if (response.body() == null || response.code() != 200) {
                                 System.out.println("ERROR!!!!!");
+                                return;
                             }
                             //when response is back
                             Integer ret = response.body();
@@ -108,6 +109,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             if (response.body() == null || response.code() != 200) {
                                 System.out.println("ERROR!!!!!");
+                                return;
                             }
                             //when response is back
                             Integer ret = response.body();
@@ -198,6 +200,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
                     if (response.body() == null || response.code() != 200) {
                         System.out.println("ERROR!!!!!");
+                        return;
                     }
                     //when response is back
                     Integer ret = response.body();
@@ -231,6 +234,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
                     if (response.body() == null || response.code() != 200) {
                         System.out.println("ERROR!!!!!");
+                        return;
                     }
                     //when response is back
                     Integer ret = response.body();
