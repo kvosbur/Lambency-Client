@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.squareup.picasso.Picasso;
@@ -189,7 +190,7 @@ public class EventCreationActivity extends AppCompatActivity {
                 //Go back to main page now
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("")  || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
-                    eventModel = new EventModel(encodedProfile,eventName,2,startingTime,endingTime,description,addressOfEvent);
+                    eventModel = new EventModel(encodedProfile,eventName, UserModel.myUserModel.getMyOrgs().get(0),startingTime,endingTime,description,addressOfEvent);
 
                     LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                         @Override
