@@ -69,10 +69,10 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkBox.isChecked()){
-                    Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "You are now following the organization :)", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "You unfollowed the organization :(", Toast.LENGTH_LONG).show();
                 }
             }
         });

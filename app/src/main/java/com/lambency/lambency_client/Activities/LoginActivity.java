@@ -66,7 +66,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         //skip login activity if there is already an oAuthToken saved to shared preferences
         SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
         String myauth = sharedPref.getString("myauth", "");
@@ -319,14 +318,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.disconnect_button).setVisibility(View.VISIBLE);
-            TextView temp = findViewById(R.id.signInOutStatus);
-            temp.setText("Signed in user");
 
         } else {
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.disconnect_button).setVisibility(View.GONE);
-            TextView temp = findViewById(R.id.signInOutStatus);
-            temp.setText("Signed out user");
         }
     }
 

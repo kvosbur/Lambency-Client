@@ -27,33 +27,10 @@
             android:layout_below="@id/logo"
             />
 
-        <Button
-            android:id="@+id/disconnect_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Logout"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="173dp"
-            tools:layout_editor_absoluteY="0dp"
 
-            android:layout_below="@id/sign_in_button"
-            />
-
-        <TextView
-            android:id="@+id/signInOutStatus"
-            android:layout_width="210dp"
-            android:layout_height="63dp"
-            android:text="TextView"
-            android:textSize="25dp"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="51dp"
-            tools:layout_editor_absoluteY="96dp"
-
-            android:layout_below="@id/disconnect_button"/>
 
         <com.facebook.login.widget.LoginButton
-            android:layout_below="@id/signInOutStatus"
+            android:layout_below="@id/sign_in_button"
             android:id="@+id/login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,6 +41,20 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
+
+        <Button
+            android:id="@+id/disconnect_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Logout"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="173dp"
+            tools:layout_editor_absoluteY="0dp"
+
+            android:layout_below="@id/login_button"
+            />
+
     </LinearLayout>
 
 </RelativeLayout>
