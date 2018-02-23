@@ -70,7 +70,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         List<Integer> fakeOrgIds = new ArrayList<Integer>();
         fakeOrgIds.add(5);
         fakeOrgIds.add(7);
-        fakeOrgIds.add(110);
+        fakeOrgIds.add(11);
 
         UserModel forTestingUserModel = new UserModel("farhan","shafi","fshafi@purdue.edu",fakeOrgIds,
                 fakeOrgIds,fakeOrgIds,fakeOrgIds,1,23,"12234567890");
@@ -108,7 +108,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     //sharing implementation here
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        String shareBody = "Here is the share content body";
+        String shareBody = "Lambency event share to you: (event link or name goes here)";
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
