@@ -81,6 +81,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     @BindView(R.id.editEventButton)
     Button editEventButton;
 
+    @BindView(R.id.check)
+    ImageView checkMark;
 
     private EventModel event;
 
@@ -113,7 +115,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                 text = findViewById(R.id.joinButtonText);
                 if(text.getText().toString().equals("Join Event")){
-                    text.setText("Joined Event");
                     LambencyAPIHelper.getInstance().getRegisterEvent(UserModel.myUserModel.getOauthToken(),""+event_id).enqueue(new retrofit2.Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -129,6 +130,8 @@ public class EventDetailsActivity extends AppCompatActivity {
                                 System.out.println("REgistering for an event: "+event_id);
                                 System.out.println("Is it joined: "+UserModel.myUserModel.isRegisterdForEvent(event_id));
                                 Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG).show();
+                                text.setText("Joined");
+                                checkMark.setVisibility(View.VISIBLE);
 
                             }
                             else if (ret == 1){
@@ -202,10 +205,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         System.out.println("This event id is: "+event_id);
         if(UserModel.myUserModel.isRegisterdForEvent(event_id)){
-            text.setText("Joined Event");
+            text.setText("Joined");
+            checkMark.setVisibility(View.VISIBLE);
         }
         else{
             text.setText("Join Event");
+            checkMark.setVisibility(View.GONE);
         }
     }
 
@@ -235,7 +240,11 @@ public class EventDetailsActivity extends AppCompatActivity {
                     setTitle(eventModel.getName());
                     eventName = eventModel.getName();
 
-                    dateView.setText(TimeHelper.dateFromTimestamp(eventModel.getStart()));
+                    String currDate = TimeHelper.dateFromTimestamp(eventModel.getStart());
+                    currDate = currDate.substring(0, currDate.length()-4);
+                    currDate += "18";
+
+                    dateView.setText(currDate); //TimeHelper.dateFromTimestamp(eventModel.getStart()));
                     descriptionView.setText(eventModel.getDescription());
                     timeView.setText(TimeHelper.hourFromTimestamp(eventModel.getStart()) + " - " + TimeHelper.hourFromTimestamp(eventModel.getEnd()));
                     addressView.setText(eventModel.getLocation());
