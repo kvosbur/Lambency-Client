@@ -163,7 +163,7 @@ public class ProfileFragment extends Fragment {
 
         switch(id){
             case R.id.action_edit:
-                if(item.getItemId() == R.drawable.ic_mode_edit_white_24dp){
+                if(item.getIcon().getConstantState().equals(getResources().getDrawable(R.drawable.ic_mode_edit_white_24dp).getConstantState())){
                     item.setIcon(R.drawable.ic_done_white_24dp);
                 }else{
                     item.setIcon(R.drawable.ic_mode_edit_white_24dp);
