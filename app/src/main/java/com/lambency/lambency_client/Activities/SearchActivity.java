@@ -220,7 +220,6 @@ public class SearchActivity extends AppCompatActivity   {
                                         @Override
                                         public void onFailure(Call<List<EventModel>> call, Throwable t) {
                                             searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
-
                                         }
                                     });
                                 }

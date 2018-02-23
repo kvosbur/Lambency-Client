@@ -45,10 +45,17 @@ public interface LambencyAPI {
     @POST("User/changeInfo")
     Call<UserModel> getChangeAccountInfo(@Body UserModel u);
 
+    @GET("Event/searchByID")
+    Call<EventModel> getEventSearchByID(@Query("id") String event_id);
+
     @POST("Event/create")
     Call<EventModel> createEvent(@Body EventModel eventModel);
 
     @GET("Organization/searchByID")
     Call<OrganizationModel> getOrgSearchByID(@Query("id") String org_id);
+
+    @POST("User/requestJoinOrg")
+    Call<Integer> postJoinOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgId") int orgID);
+
 
 }
