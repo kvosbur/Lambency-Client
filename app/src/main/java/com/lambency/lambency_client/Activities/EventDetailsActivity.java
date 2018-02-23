@@ -39,6 +39,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EventDetailsActivity extends AppCompatActivity {
+    String eventName = "";
 
 
     //@BindView(R.id.createEventButton)
@@ -153,6 +154,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                     System.out.println("Got event data!");
 
                     setTitle(eventModel.getName());
+                    eventName = eventModel.getName();
 
                     dateView.setText(TimeHelper.dateFromTimestamp(eventModel.getStart()));
                     descriptionView.setText(eventModel.getDescription());
@@ -178,8 +180,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     //sharing implementation here
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        String shareBody = "Lambency event share to you: (event link or name goes here)";
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+        String shareBody = eventName + ", This is a cool event I found on Lambency and I think you will be interested in it.";
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Lambency event shared");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
