@@ -7,13 +7,14 @@
     android:layout_margin="5dp">
 
     <TextView
-        android:id="@+id/cardText"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textColor="@color/colorPrimaryDark"
         android:text="Name: Evan M. Honeysett   "/>
     <TextView
+        android:id="@+id/email"
         android:layout_marginTop="35dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -65,6 +65,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     @BindView(R.id.whosAttending)
     Button whosAttendingButton;
 
+    private EventModel event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +161,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                     BitmapDrawable bd = new BitmapDrawable(getResources(), ImageHelper.stringToBitmap(eventModel.getImageFile()));
                     eventImageView.setBackground(bd);
+
+                    event = eventModel;
                 }
             }
 
@@ -192,10 +195,17 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick
+    @OnClick(R.id.whosAttending)
     public void handleWhosAttendingClick(){
-        Intent intent = new Intent(this, ListUserActivity.class);
-        startActivity(intent);
+        if(event != null){
+            Bundle bundle = new Bundle();
+            bundle.putInt("event_id", event.getEvent_id());
+            Intent intent = new Intent(this, ListUserActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }else{
+            System.out.println("Error - no event found.");
+        }
     }
 
 }

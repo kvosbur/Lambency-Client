@@ -150,7 +150,6 @@ public class SearchActivity extends AppCompatActivity   {
                             //results found
                             System.out.println("Orgs found!");
 
-
                             //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
                             searchTabsAdapter.updateOrgs(orgList);
                         }
