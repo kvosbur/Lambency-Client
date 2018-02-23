@@ -28,5 +28,14 @@
         android:layout_centerHorizontal="true"
         />
 
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/createEventButton"
+        android:layout_marginTop="50dp"
+        android:text="Logout"
+        android:layout_centerHorizontal="true"/>
+
 </RelativeLayout>
 
