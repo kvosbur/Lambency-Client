@@ -237,7 +237,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void callRetrofit(final int event_id){
 
-        progressBar.setVisibility(View.VISIBLE);
 
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
             @Override
@@ -280,8 +279,11 @@ public class EventDetailsActivity extends AppCompatActivity {
                             });*/
 
 
-                    BitmapDrawable bd = new BitmapDrawable(getResources(), ImageHelper.stringToBitmap(eventModel.getImageFile()));
+                    /*BitmapDrawable bd = new BitmapDrawable(getResources(), ImageHelper.stringToBitmap(eventModel.getImageFile()));
                     eventImageView.setBackground(bd);
+                    */
+
+                    ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
 
                     getOrgInfo(eventModel.getOrg_id());
 

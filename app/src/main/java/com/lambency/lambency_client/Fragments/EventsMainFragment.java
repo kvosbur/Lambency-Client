@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Activities.LoginActivity;
@@ -60,6 +61,9 @@ public class EventsMainFragment extends Fragment {
 
     @BindView(R.id.eventsMainRecyclerView)
     RecyclerView eventsMainRecyclerView;
+
+    @BindView(R.id.eventMainProgress_bar)
+    ProgressBar eventMainProgress_bar;
 
 
     public EventsMainFragment() {
@@ -131,6 +135,7 @@ public class EventsMainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_events_main, container, false);
         ButterKnife.bind(this, view);
 
+        loadingEvents();
         callRetrofit();
 
         ((MainActivity) getActivity()).getSupportActionBar().setElevation(15);
@@ -159,6 +164,7 @@ public class EventsMainFragment extends Fragment {
 
                 //System.out.println("SUCCESS");
                 startAdapter(myEvents);
+                eventsLoaded();
             }
 
             @Override
@@ -194,6 +200,18 @@ public class EventsMainFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void loadingEvents(){
+
+        eventsMainRecyclerView.setVisibility(View.GONE);
+        eventMainProgress_bar.setVisibility(View.VISIBLE);
+    }
+
+    public void eventsLoaded(){
+
+        eventsMainRecyclerView.setVisibility(View.VISIBLE);
+        eventMainProgress_bar.setVisibility(View.GONE);
     }
 
     /**
