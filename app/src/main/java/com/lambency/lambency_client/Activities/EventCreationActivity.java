@@ -141,13 +141,16 @@ public class EventCreationActivity extends AppCompatActivity {
         this.context = this;
         ButterKnife.bind(this);
 
+        editing = false;
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             //TODO error check
             int event_id = bundle.getInt("event_id");
-            getEventInfo(event_id);
-            editing = true;
+            if(event_id != 0) {
+                getEventInfo(event_id);
+                editing = true;
+            }
         }
 
 
@@ -226,6 +229,7 @@ public class EventCreationActivity extends AppCompatActivity {
                         bundle.putInt("event_id", eventModel.getEvent_id());
                         intent.putExtras(bundle);
                         context.startActivity(intent);
+
                 } else {
 
                     eventName = eName.getText().toString();
