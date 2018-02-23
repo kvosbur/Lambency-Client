@@ -213,7 +213,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.editButton)
+    @OnClick(R.id.editEventButton)
     public void handleEditClick(){
         Bundle bundle = new Bundle();
         bundle.putInt("event_id", event.getEvent_id());
