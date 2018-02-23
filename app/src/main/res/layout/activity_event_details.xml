@@ -142,7 +142,7 @@
                             android:layout_marginLeft="5dp"
 
                             android:textSize="18sp"
-                            android:text="Join Event" />
+                            android:text="Join Event"/>
                     </LinearLayout>
 
                     <Button
