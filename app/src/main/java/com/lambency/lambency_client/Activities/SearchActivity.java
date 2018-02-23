@@ -144,6 +144,10 @@ public class SearchActivity extends AppCompatActivity   {
                             if(orgList == null){
                                 orgList = new ArrayList<OrganizationModel>();
                             }
+
+                            if(searchTabsAdapter == null){
+                                searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                            }
                             searchTabsAdapter.updateOrgs(orgList);
                         }
                         else{
@@ -151,6 +155,9 @@ public class SearchActivity extends AppCompatActivity   {
                             System.out.println("Orgs found!");
 
 
+                            if(searchTabsAdapter == null){
+                                searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                            }
                             //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
                             searchTabsAdapter.updateOrgs(orgList);
                         }

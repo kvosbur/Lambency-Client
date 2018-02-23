@@ -106,6 +106,7 @@ public class OrgSearchResultFragment extends Fragment {
         }else {
             nothingText.setVisibility(View.GONE);
             orgsRecyclerView.setVisibility(View.VISIBLE);
+            startAdapter(orgList);
             orgAdapter.updateOrgs(orgList);
         }
     }

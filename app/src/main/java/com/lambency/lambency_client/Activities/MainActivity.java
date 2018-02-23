@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements EventsMainFragmen
         setContentView(R.layout.activity_main);
 
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
+        bar.setSelectedItemId(R.id.lamBot);
+        switchToFragment3();
+
         bar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

@@ -74,6 +74,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             if (response.body() == null || response.code() != 200) {
                                 System.out.println("ERROR!!!!!");
+                                return;
                             }
                             //when response is back
                             Integer ret = response.body();
@@ -88,7 +89,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                             }
                             else if (ret == 2){
                                 System.out.println("undetermined error");
-                                Toast.makeText(getApplicationContext(), "Unkown Error", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
                                 checkBox.setChecked(false);
                             }
                         }
@@ -108,6 +109,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             if (response.body() == null || response.code() != 200) {
                                 System.out.println("ERROR!!!!!");
+                                return;
                             }
                             //when response is back
                             Integer ret = response.body();
@@ -198,6 +200,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
                     if (response.body() == null || response.code() != 200) {
                         System.out.println("ERROR!!!!!");
+                        return;
                     }
                     //when response is back
                     Integer ret = response.body();
@@ -231,6 +234,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
                     if (response.body() == null || response.code() != 200) {
                         System.out.println("ERROR!!!!!");
+                        return;
                     }
                     //when response is back
                     Integer ret = response.body();
