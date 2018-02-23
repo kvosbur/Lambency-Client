@@ -148,14 +148,16 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "NULL ERROR", Toast.LENGTH_LONG).show();
                     return;
                 }
+
                 //when response is back
                 Integer status = response.body();
                 System.out.println(status);
                 if(status == 0){
-                    Toast.makeText(getApplicationContext(), "Successfully followed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Successfully requested to join", Toast.LENGTH_LONG).show();
+                    requestJoin.setText("Request pending");
                 }
                 else if(status == 1){
-                    Toast.makeText(getApplicationContext(), "Error following", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Error requesting to join", Toast.LENGTH_LONG).show();
                 }
             }
 
