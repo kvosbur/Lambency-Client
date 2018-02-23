@@ -254,10 +254,10 @@ public class EventCreationActivity extends AppCompatActivity {
                         //saveDetails.setVisibility(View.GONE);
                     }
 
-                    //Go back to main page now
-                    if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("") || startingTime == null || endingTime == null)) {
-                        //the EventModel object to send to server(use this evan)
-                        eventModel = new EventModel(encodedProfile, eventName, 2, startingTime, endingTime, description, addressOfEvent);
+                //Go back to main page now
+                if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("")  || startingTime == null || endingTime == null)) {
+                    //the EventModel object to send to server(use this evan)
+                    eventModel = new EventModel(encodedProfile,eventName, UserModel.myUserModel.getMyOrgs().get(0),startingTime,endingTime,description,addressOfEvent);
 
                         LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override

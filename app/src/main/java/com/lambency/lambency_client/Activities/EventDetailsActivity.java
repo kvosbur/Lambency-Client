@@ -73,8 +73,9 @@ public class EventDetailsActivity extends AppCompatActivity {
     @BindView(R.id.whosAttending)
     Button whosAttendingButton;
 
-    @BindView(R.id.editButton)
-    Button editButton;
+    @BindView(R.id.editEventButton)
+    Button editEventButton;
+
 
     private EventModel event;
 
@@ -102,26 +103,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
 
         final Button shareButton = findViewById(R.id.shareEvent);
-
-        //testing if button comes and go
-        List<Integer> fakeOrgIds = new ArrayList<Integer>();
-        fakeOrgIds.add(5);
-        fakeOrgIds.add(7);
-        fakeOrgIds.add(11);
-
-        UserModel forTestingUserModel = new UserModel("farhan","shafi","fshafi@purdue.edu",fakeOrgIds,
-                fakeOrgIds,fakeOrgIds,fakeOrgIds,1,23,"12234567890");
-        //end testing code
-
-
-        //this is for checking is usermodel org id match the event model org id
-        if (forTestingUserModel.getMyOrgs().contains(EventModel.myEventModel.getOrg_id()) == true){
-            shareButton.setVisibility(View.VISIBLE);
-        }
-        else{
-            shareButton.setVisibility(View.GONE);
-        }
-        //end
 
         shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -176,6 +157,10 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                     BitmapDrawable bd = new BitmapDrawable(getResources(), ImageHelper.stringToBitmap(eventModel.getImageFile()));
                     eventImageView.setBackground(bd);
+
+                    if(! UserModel.myUserModel.getMyOrgs().contains(eventModel.getOrg_id())){
+                        editEventButton.setVisibility(View.GONE);
+                    }
 
                     event = eventModel;
 

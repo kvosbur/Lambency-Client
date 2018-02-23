@@ -74,11 +74,26 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        boolean followed = false;
+        for(int i = 0; i < UserModel.myUserModel.getFollowingOrgs().size(); i++)
+        {
+            if(UserModel.myUserModel.getFollowingOrgs().get(i) == currentOrgId)
+            {
+                checkBox.setText("Unfollow");
+                followed = true;
+            }
+        }
+
+        if(!followed)
+        {
+            checkBox.setText("Follow");
+        }
+
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkBox.isChecked()){
-                    LambencyAPIHelper.getInstance().getFollowOrg(UserModel.myUserModel.getOauthToken(),Integer.toString(currentOrgId)).enqueue(new retrofit2.Callback<Integer>() {
+                    LambencyAPIHelper.getInstance().getFollowOrg(UserModel.myUserModel.getOauthToken(),"" + currentOrgId).enqueue(new retrofit2.Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             if (response.body() == null || response.code() != 200) {
@@ -90,6 +105,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                             if(ret == 0){
                                 System.out.println("successfully followed organization");
                                 Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
+                                checkBox.setText("Unfollow");
                             }
                             else if (ret == 1){
                                 System.out.println("failed to find user or organization");
@@ -124,6 +140,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                             Integer ret = response.body();
                             if(ret == 0){
                                 System.out.println("successfully unfollowed organization");
+                                checkBox.setText("Follow");
                             }
                             else if (ret == 1){
                                 System.out.println("failed to find user or organization");

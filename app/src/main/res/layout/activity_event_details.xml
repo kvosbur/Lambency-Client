@@ -246,25 +246,19 @@
 
                     </RelativeLayout>
 
-                    <Button
-                        android:id="@+id/editButton"
-                        android:layout_below="@id/organizationLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Edit Event"/>
-
+                  <Button
+                    android:id="@+id/editEventButton"
+                    android:layout_below="@id/organizationLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Event"/>
+             
                     <TextView
                         android:id="@+id/eventInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/editButton"
-
-                        android:textColor="#000000"
-
-                        android:textSize="20sp"
-
-                        android:text="Event Info"/>
-
+                        android:layout_below="@+id/editEventButton"
+                        android:textColor="#000000"/>
                     <TextView
                         android:id="@+id/description"
                         android:layout_height="wrap_content"
@@ -283,7 +277,15 @@
         Vestibulum elementum leo efficitur, dictum neque vel, malesuada turpis. Morbi pellentesque dictum diam, nec mollis quam aliquet nec. Praesent maximus elementum nibh, in fringilla tellus bibendum quis. Sed sed orci nibh. Praesent vulputate velit et purus feugiat faucibus. Proin eu hendrerit nunc. Aenean at lobortis est, eleifend varius ex. Nullam sed ligula ante. Vestibulum ultricies imperdiet eros. Cras venenatis tincidunt nisi, cursus dictum erat mattis non. Curabitur hendrerit facilisis sapien, vitae bibendum libero auctor nec. ">
                     </TextView>
 
+
                 </RelativeLayout>
+
+                
+
+             
+
+                  
+  
             </android.support.v4.widget.NestedScrollView>
 
         </android.support.design.widget.CoordinatorLayout>
