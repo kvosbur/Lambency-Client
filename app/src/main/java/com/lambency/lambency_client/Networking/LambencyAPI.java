@@ -70,7 +70,7 @@ public interface LambencyAPI {
     Call<Integer> postUpdateEvent(@Body EventModel event);
 
     @GET("/User/registerForEvent")
-    Call<Integer> getRegisterEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") int eventID);
+    Call<Integer> getRegisterEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID);
 
 
 }
