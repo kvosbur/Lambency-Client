@@ -202,6 +202,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                                 Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                                                                 System.out.println("got the user object");
 
+
+                                                                Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                                                startActivity(myIntent);
+                                                                finish();
                                                                 //System.out.println("SUCCESS");
 
                                                                 //Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);

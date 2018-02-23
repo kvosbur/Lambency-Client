@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,7 +23,9 @@ import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.OrgCreationActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,6 +107,7 @@ public class MyLambencyFragment extends Fragment {
             }
         });
 
+
         Button createEventButton = view.findViewById(R.id.createEventButton);
         createEventButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -112,11 +116,20 @@ public class MyLambencyFragment extends Fragment {
             }
         });
 
+        if(UserModel.myUserModel.getMyOrgs().size() == 0)
+        {
+            createEventButton.setVisibility(View.GONE);
+        }
+
         Button logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
+                SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(getApplicationContext());
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.remove("myauth");
+                editor.apply();
             }
         });
 
