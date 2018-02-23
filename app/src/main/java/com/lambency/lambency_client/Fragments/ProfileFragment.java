@@ -14,14 +14,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
+import com.lambency.lambency_client.Models.UserAuthenticatorModel;
+import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,12 +53,6 @@ public class ProfileFragment extends Fragment {
     @BindView(R.id.editLastName)
     EditText editLastName;
 
-    @BindView(R.id.phoneNum)
-    TextView phoneNum;
-
-    @BindView(R.id.editPhoneNum)
-    EditText editPhoneNum;
-
     @BindView(R.id.emailOfUser)
     TextView emailOfUser;
 
@@ -69,6 +70,7 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private UserModel user;
 
     private OnFragmentInteractionListener mListener;
 
@@ -101,6 +103,8 @@ public class ProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
@@ -115,6 +119,11 @@ public class ProfileFragment extends Fragment {
        ((MainActivity) getActivity()).getSupportActionBar().setElevation(0);
 
         setHasOptionsMenu(true);
+
+        UserModel myModel = UserModel.myUserModel;
+        firstNameText.setText(myModel.getFirstName());
+        lastNameText.setText(myModel.getLastName());
+        emailOfUser.setText(myModel.getEmail());
 
         return view;
     }
@@ -179,35 +188,73 @@ public class ProfileFragment extends Fragment {
             editLastName.setText(lastNameText.getText());
             editLastName.setVisibility(View.VISIBLE);
 
-            phoneNum.setVisibility(View.INVISIBLE);
-            editPhoneNum.setText(phoneNum.getText());
-            editPhoneNum.setVisibility(View.VISIBLE);
-
             emailOfUser.setVisibility(View.INVISIBLE);
             editEmail.setText(emailOfUser.getText());
             editEmail.setVisibility(View.VISIBLE);
             edit = true;
 
 
+
         } else {
-            editFirstName.setVisibility(View.INVISIBLE);
-            firstNameText.setText(editFirstName.getText());
-            firstNameText.setVisibility(View.VISIBLE);
 
-            editLastName.setVisibility(View.INVISIBLE);
-            lastNameText.setText(editLastName.getText());
-            lastNameText.setVisibility(View.VISIBLE);
+            if(editFirstName.getText().toString().equals(firstNameText.getText().toString()) && editLastName.getText().toString().equals(lastNameText.getText().toString()) && editEmail.getText().toString().equals(emailOfUser.getText().toString()))
+            {
+                edit = false;
+                editFirstName.setVisibility(View.INVISIBLE);
+                firstNameText.setVisibility(View.VISIBLE);
 
-            editPhoneNum.setVisibility(View.INVISIBLE);
-            phoneNum.setText(editPhoneNum.getText());
-            phoneNum.setVisibility(View.VISIBLE);
+                editLastName.setVisibility(View.INVISIBLE);
+                lastNameText.setVisibility(View.VISIBLE);
 
-            editEmail.setVisibility(View.INVISIBLE);
-            emailOfUser.setText(editEmail.getText());
-            emailOfUser.setVisibility(View.VISIBLE);
-            edit = false;
+                editEmail.setVisibility(View.INVISIBLE);
+                emailOfUser.setVisibility(View.VISIBLE);
+                return;
 
+            }
 
+            user = new UserModel(editFirstName.getText().toString(), editLastName.getText().toString(), editEmail.getText().toString(), null, null, null, null, 0, 0, UserAuthenticatorModel.myAuth);
+
+            LambencyAPIHelper.getInstance().getChangeAccountInfo(user).enqueue(new Callback<UserModel>() {
+                @Override
+                public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        Toast.makeText(getActivity(), "Server error!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    //when response is back
+                    UserModel u  = response.body();
+                    if(u == null){
+                        Toast.makeText(getActivity(), "Error changing information", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    //u.getEmail();
+                    //updated user object
+
+                    editFirstName.setVisibility(View.INVISIBLE);
+                    firstNameText.setText(editFirstName.getText());
+                    firstNameText.setVisibility(View.VISIBLE);
+
+                    editLastName.setVisibility(View.INVISIBLE);
+                    lastNameText.setText(editLastName.getText());
+                    lastNameText.setVisibility(View.VISIBLE);
+
+                    editEmail.setVisibility(View.INVISIBLE);
+                    emailOfUser.setText(editEmail.getText());
+                    emailOfUser.setVisibility(View.VISIBLE);
+                    edit = false;
+
+                    UserModel.myUserModel = user;
+
+                    Toast.makeText(getActivity(), "Information successfully changed!", Toast.LENGTH_SHORT).show();
+
+                }
+
+                @Override
+                public void onFailure(Call<UserModel> call, Throwable throwable) {
+                    Toast.makeText(getActivity(), "Failed call!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            });
         }
     }
 

@@ -17,6 +17,12 @@ public class EventModel {
     private double latitude;
     private double longitude;
 
+    static int x = 54545;
+    static Timestamp testTime = new Timestamp((long)x);
+    public static EventModel myEventModel = new EventModel("tester",11,testTime,testTime,"fake test","testing123",0,0);
+
+
+
     //Empty constructor for testing
     public EventModel(){
 
@@ -34,6 +40,7 @@ public class EventModel {
         this.longitude = longitude;
     }
 
+
     public EventModel(String name, int org_id, Timestamp start, Timestamp end, String description, String location,
                  String imageFile, double latitude, double longitude) {
         this(name, org_id, start, end, description, location, latitude, longitude);
@@ -44,10 +51,22 @@ public class EventModel {
         }
     }
 
-    public EventModel(String image_path, String name, int org_id, Timestamp start,
+    public EventModel(String image, String name, int org_id, Timestamp start,
                  Timestamp end, String description, String location, double latitude, double longitude) {
         this(name, org_id, start, end, description, location, latitude, longitude);
-        this.image_path = image_path;
+        this.imageFile = image;
+    }
+
+    //one without longitude latitude
+    public EventModel(String imageFile, String name, int org_id, Timestamp start,
+                      Timestamp end, String description, String location){
+        this.name = name;
+        this.org_id = org_id;
+        this.start = start;
+        this.end = end;
+        this.description = description;
+        this.location = location;
+        this.imageFile = imageFile;
     }
 
     public EventModel(String name, int org_id, Timestamp start, Timestamp end, String description, String location,

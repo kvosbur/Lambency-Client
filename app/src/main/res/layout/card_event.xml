@@ -32,7 +32,7 @@
             android:layout_toRightOf="@+id/pictureOfEvent">
 
             <TextView
-                android:id="@+id/card_main_title"
+                android:id="@+id/title"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Event Name"
@@ -59,6 +59,7 @@
             android:text="Date: 03/10/1998 "/>
 
         <TextView
+            android:id="@+id/timeOfEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Time: 3 - 5 pm"

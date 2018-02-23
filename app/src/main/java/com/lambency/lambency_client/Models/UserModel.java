@@ -1,6 +1,7 @@
 package com.lambency.lambency_client.Models;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserModel {
@@ -16,6 +17,8 @@ public class UserModel {
     private int hoursWorked;
     private String oauthToken;
 
+    public static UserModel myUserModel;
+
 
     public UserModel(String firstName, String lastName, String email, List<Integer> myOrgs, List<Integer> eventsAttending,
                 List<Integer> followingOrgs, List<Integer> joinedOrgs, int userId, int hoursWorked, String oauthToken) {
@@ -29,6 +32,18 @@ public class UserModel {
         this.userId = userId;
         this.hoursWorked = hoursWorked;
         this.oauthToken = oauthToken;
+        if(myOrgs == null){
+            myOrgs = new ArrayList<>();
+        }
+        if(eventsAttending == null){
+            eventsAttending = new ArrayList<>();
+        }
+        if(followingOrgs == null){
+            followingOrgs = new ArrayList<>();
+        }
+        if(joinedOrgs == null){
+            joinedOrgs = new ArrayList<>();
+        }
 
     }
 
@@ -62,6 +77,13 @@ public class UserModel {
 
     public void setJoinedOrgs(List<Integer> joinedOrgs) {
         this.joinedOrgs = joinedOrgs;
+    }
+
+    public void joinOrg(Integer org_id){
+        this.joinedOrgs.add(org_id);
+    }
+    public void leaveOrg(Integer org_id){
+        this.joinedOrgs.remove(org_id);
     }
 
     public void setUserId(int userId) {
@@ -113,6 +135,16 @@ public class UserModel {
         return oauthToken;
     }
 
+    public void organizeGroup(int group_id){
+        myOrgs.add(group_id);
+    }
+
+    public void registerForEvent(Integer event_id){
+        this.eventsAttending.add(event_id);
+    }
+    public void unregisterForEvent(Integer event_id){
+        this.eventsAttending.remove(event_id);
+    }
 
     public String toString(){
         /*

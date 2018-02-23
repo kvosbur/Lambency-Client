@@ -2,7 +2,6 @@ package com.lambency.lambency_client.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
-import com.lambency.lambency_client.Adapters.EventsMainAdapter;
+import com.lambency.lambency_client.Adapters.EventsAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
 
@@ -47,7 +46,7 @@ public class EventsMainFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private EventsMainAdapter eventsMainAdapter;
+    private EventsAdapter eventsMainAdapter;
 
     @BindView(R.id.eventsMainRecyclerView)
     RecyclerView eventsMainRecyclerView;
@@ -93,7 +92,7 @@ public class EventsMainFragment extends Fragment {
     private void startAdapter(List<EventModel> events){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         eventsMainRecyclerView.setLayoutManager(linearLayoutManager);
-        eventsMainAdapter = new EventsMainAdapter(getContext(), events);
+        eventsMainAdapter = new EventsAdapter(getContext(), events);
         eventsMainRecyclerView.setAdapter(eventsMainAdapter);
     }
 

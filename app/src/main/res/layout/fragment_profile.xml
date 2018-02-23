@@ -197,49 +197,6 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp">
-
-            <android.support.v7.widget.AppCompatImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                app:srcCompat="@drawable/ic_local_phone_black_24dp" />
-
-            <TextView
-                android:paddingStart="45dp"
-                android:padding="7dp"
-                android:id="@+id/phoneNum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="10dp"
-                android:textColor="#000000"
-                android:textSize="17dp"
-                android:text="630-696-6790">
-
-            </TextView>
-
-            <EditText
-                android:paddingStart="45dp"
-                android:padding="7dp"
-                android:id="@+id/editPhoneNum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
-                android:textColor="#000000"
-                android:textSize="17dp"
-                android:inputType="phone"
-                android:singleLine="true"
-                android:visibility="invisible"
-                android:paddingLeft="45dp" />
-
-        </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"

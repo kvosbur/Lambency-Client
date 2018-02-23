@@ -1,6 +1,5 @@
 package com.lambency.lambency_client.Models;
 
-
 import java.util.ArrayList;
 
 public class OrganizationModel {
@@ -16,6 +15,14 @@ public class OrganizationModel {
     public String image;
     public ArrayList<UserModel> organizers;
 
+    public static OrganizationModel myOrgModel;
+
+
+
+    public OrganizationModel(){
+        //Empty constructor for testing
+    }
+
     public OrganizationModel(UserModel owner, String name, String location, int orgID, String description, String email, UserModel contact, String image) {
         this.owner = owner;
         this.name = name;
@@ -30,7 +37,6 @@ public class OrganizationModel {
         events = new ArrayList<>();
         this.organizers = new ArrayList<UserModel>();
         organizers.add(owner);
-
     }
 
     public int numFollowing;
