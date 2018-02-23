@@ -11,12 +11,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.lambency.lambency_client.Activities.EventDetailsActivity;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
 import com.lambency.lambency_client.Utils.TimeHelper;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -74,7 +78,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
         }
 
         if(eventModel.getImageFile() != null){
-            holder.eventImageView.setImageBitmap(ImageHelper.stringToBitmap(eventModel.getImageFile()));
+            //holder.eventImageView.setImageBitmap(ImageHelper.stringToBitmap(eventModel.getImageFile()));
+
+            ImageHelper.loadWithGlide(context,
+                    ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()),
+                    holder.eventImageView);
         }
 
 

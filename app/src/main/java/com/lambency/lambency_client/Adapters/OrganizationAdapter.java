@@ -64,7 +64,11 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
         }
 
         if(orgModel.getImage() != null){
-            holder.profileImage.setImageBitmap(ImageHelper.stringToBitmap(orgModel.getImage()));
+            //holder.profileImage.setImageBitmap(ImageHelper.stringToBitmap(orgModel.getImage()));
+
+            ImageHelper.loadWithGlide(context,
+                    ImageHelper.saveImage(context, orgModel.getImage(), "orgImage" + orgModel.getOrgID()),
+                    holder.profileImage);
         }
 
     }
