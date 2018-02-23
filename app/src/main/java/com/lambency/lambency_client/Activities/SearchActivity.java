@@ -180,31 +180,22 @@ public class SearchActivity extends AppCompatActivity   {
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+    private void searchByLocation(){
 
-            case android.R.id.home:
-                finish();
-
-            case R.id.location:
-                System.out.println("Location Pressed");
-
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                            MY_PERMISSIONS_ACCESS_COARSE_LOCATION
-                    );
-                }
-
-                try {
-                    mFusedLocationClient.getLastLocation()
-                            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                                if(location == null){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    MY_PERMISSIONS_ACCESS_COARSE_LOCATION
+            );
+        }else {
+            try {
+                mFusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                if (location == null) {
                                     System.out.println("Null location.");
-                                }else {
+                                } else {
                                     System.out.println(location.getLongitude() + " " + location.getLatitude());
 
                                     searchTabsAdapter.setEventVisiblity(View.VISIBLE, View.GONE);
@@ -224,11 +215,50 @@ public class SearchActivity extends AppCompatActivity   {
                                     });
                                 }
                             }
-                    });
-                }catch (SecurityException e){
-                    e.printStackTrace();
-                }
+                        });
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            searchByLocation();
+            // permission was granted, yay! Do the
+            // contacts-related task you need to do.
+
+        } else {
+
+            // permission denied, boo! Disable the
+            // functionality that depends on this permission.
+        }
+        return;
+
+
+    // other 'case' lines to check for other
+    // permissions this app might request.
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+
+            case android.R.id.home:
+                Intent intent = new Intent(context, MainActivity.class);
+                startActivity(intent);
+                break;
+
+            case R.id.location:
+                System.out.println("Location Pressed");
+                searchByLocation();
                 return true;
         }
 
