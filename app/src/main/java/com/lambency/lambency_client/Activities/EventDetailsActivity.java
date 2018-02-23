@@ -1,7 +1,11 @@
 package com.lambency.lambency_client.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.ActionBar;
@@ -15,12 +19,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.lambency.lambency_client.Models.EventModel;
 
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 
 import com.lambency.lambency_client.Models.UserModel;
@@ -37,6 +47,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,8 +92,18 @@ public class EventDetailsActivity extends AppCompatActivity {
     @BindView(R.id.editEventButton)
     Button editEventButton;
 
+    @BindView(R.id.organizationImage)
+    CircleImageView orgImageView;
+
+    @BindView(R.id.hostOrgTitle)
+    TextView orgTitleView;
+
+    @BindView(R.id.organizationLayout)
+    RelativeLayout orgLayout;
+
 
     private EventModel event;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +111,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_details);
 
         ButterKnife.bind(this);
+        context = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
         setSupportActionBar(toolbar);
@@ -107,8 +129,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         else{
             text.setText("Join Event");
         }
-
-
 
 
         linearLayout.setOnClickListener(new View.OnClickListener(){
@@ -167,6 +187,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 //                startActivity(intent);
 //            }
 //        });
+
         System.out.println(UserModel.myUserModel);
         System.out.println(event_id);
         boolean creator = UserModel.myUserModel.isRegisterdForEvent(event_id); // API CALL HERE
@@ -228,8 +249,25 @@ public class EventDetailsActivity extends AppCompatActivity {
                     timeView.setText(TimeHelper.hourFromTimestamp(eventModel.getStart()) + " - " + TimeHelper.hourFromTimestamp(eventModel.getEnd()));
                     addressView.setText(eventModel.getLocation());
 
+                    RequestOptions requestOptions = new RequestOptions();
+
+                    /*Glide.with(context)
+                            .setDefaultRequestOptions(requestOptions)
+                            .asBitmap()
+                            .load(ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()))
+                            .into(new SimpleTarget() {
+                                @Override
+                                public void onResourceReady(@NonNull Object resource, @Nullable Transition transition) {
+                                    BitmapDrawable bd = new BitmapDrawable(getResources(), (Bitmap) resource);
+                                    eventImageView.setBackground(bd);
+                                }
+                            });*/
+
+
                     BitmapDrawable bd = new BitmapDrawable(getResources(), ImageHelper.stringToBitmap(eventModel.getImageFile()));
                     eventImageView.setBackground(bd);
+
+                    getOrgInfo(eventModel.getOrg_id());
 
                     if(! UserModel.myUserModel.getMyOrgs().contains(eventModel.getOrg_id())){
                         editEventButton.setVisibility(View.GONE);
@@ -248,6 +286,38 @@ public class EventDetailsActivity extends AppCompatActivity {
                 System.out.println("FAILED CALL");
 
                 progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void getOrgInfo(int org_id){
+        LambencyAPIHelper.getInstance().getOrgSearchByID("" + org_id).enqueue(new Callback<OrganizationModel>() {
+            @Override
+            public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("ERROR!!!!!");
+                    return;
+                }
+                //when response is back
+                OrganizationModel organization= response.body();
+
+                if(organization == null){
+                    System.out.println("failed to find organization");
+                    Toast.makeText(getApplicationContext(), "No Organization Object", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                orgTitleView.setText("Host Organization: " + organization.getName());
+                ImageHelper.loadWithGlide(context,
+                        ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                        orgImageView);
+
+            }
+
+            @Override
+            public void onFailure(Call<OrganizationModel> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED ORG CALL");
             }
         });
     }
@@ -293,6 +363,16 @@ public class EventDetailsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, EventCreationActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @OnClick(R.id.organizationLayout)
+    public void handleOrgClick(){
+        Intent intent = new Intent(context, OrganizationDetailsActivity.class);
+        Bundle bundle = new Bundle();
+
+        bundle.putInt("org_id", event.getOrg_id());
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
 }

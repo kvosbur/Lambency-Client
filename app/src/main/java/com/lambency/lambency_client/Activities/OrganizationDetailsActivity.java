@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -62,6 +63,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     Button requestJoin;
 
     public static int currentOrgId;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organization_details);
 
         ButterKnife.bind(this);
+        context = this;
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
@@ -196,7 +199,11 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     descriptionOrg.setText(organization.getDescription());
                     emailOrg.setText(organization.getEmail());
                     addressOrg.setText(organization.getLocation());
-                    orgImage.setImageBitmap(ImageHelper.stringToBitmap(organization.getImage()));
+
+                    ImageHelper.loadWithGlide(context,
+                            ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                            orgImage);
+
 
                     mainLayout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
