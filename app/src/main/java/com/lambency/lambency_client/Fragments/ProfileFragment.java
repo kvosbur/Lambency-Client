@@ -53,12 +53,6 @@ public class ProfileFragment extends Fragment {
     @BindView(R.id.editLastName)
     EditText editLastName;
 
-    @BindView(R.id.phoneNum)
-    TextView phoneNum;
-
-    @BindView(R.id.editPhoneNum)
-    EditText editPhoneNum;
-
     @BindView(R.id.emailOfUser)
     TextView emailOfUser;
 
@@ -194,10 +188,6 @@ public class ProfileFragment extends Fragment {
             editLastName.setText(lastNameText.getText());
             editLastName.setVisibility(View.VISIBLE);
 
-            phoneNum.setVisibility(View.INVISIBLE);
-            editPhoneNum.setText(phoneNum.getText());
-            editPhoneNum.setVisibility(View.VISIBLE);
-
             emailOfUser.setVisibility(View.INVISIBLE);
             editEmail.setText(emailOfUser.getText());
             editEmail.setVisibility(View.VISIBLE);
@@ -215,9 +205,6 @@ public class ProfileFragment extends Fragment {
 
                 editLastName.setVisibility(View.INVISIBLE);
                 lastNameText.setVisibility(View.VISIBLE);
-
-                editPhoneNum.setVisibility(View.INVISIBLE);
-                phoneNum.setVisibility(View.VISIBLE);
 
                 editEmail.setVisibility(View.INVISIBLE);
                 emailOfUser.setVisibility(View.VISIBLE);
@@ -250,10 +237,6 @@ public class ProfileFragment extends Fragment {
                     editLastName.setVisibility(View.INVISIBLE);
                     lastNameText.setText(editLastName.getText());
                     lastNameText.setVisibility(View.VISIBLE);
-
-                    editPhoneNum.setVisibility(View.INVISIBLE);
-                    phoneNum.setText(editPhoneNum.getText());
-                    phoneNum.setVisibility(View.VISIBLE);
 
                     editEmail.setVisibility(View.INVISIBLE);
                     emailOfUser.setText(editEmail.getText());

@@ -17,12 +17,19 @@ import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import com.lambency.lambency_client.Models.EventModel;
+
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
+
+import com.lambency.lambency_client.Models.UserModel;
+
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
 import com.lambency.lambency_client.Utils.TimeHelper;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,6 +94,27 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
 
         final Button shareButton = findViewById(R.id.shareEvent);
+
+        //testing if button comes and go
+        List<Integer> fakeOrgIds = new ArrayList<Integer>();
+        fakeOrgIds.add(5);
+        fakeOrgIds.add(7);
+        fakeOrgIds.add(11);
+
+        UserModel forTestingUserModel = new UserModel("farhan","shafi","fshafi@purdue.edu",fakeOrgIds,
+                fakeOrgIds,fakeOrgIds,fakeOrgIds,1,23,"12234567890");
+        //end testing code
+
+
+        //this is for checking is usermodel org id match the event model org id
+        if (forTestingUserModel.getMyOrgs().contains(EventModel.myEventModel.getOrg_id()) == true){
+            shareButton.setVisibility(View.VISIBLE);
+        }
+        else{
+            shareButton.setVisibility(View.GONE);
+        }
+        //end
+
         shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // if statement for user will go here
@@ -151,21 +179,21 @@ public class EventDetailsActivity extends AppCompatActivity {
     //sharing implementation here
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        String shareBody = "Here is the share content body";
+        String shareBody = "Lambency event share to you: (event link or name goes here)";
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
 
-
-    /*@OnClick(R.id.shareEvent)
-    public void shareEvent(){
-        // if statement for user will go here
-
-        // Start smsActivity.class
-        Intent myIntent = new Intent(EventDetailsActivity.this,
-                smsActivity.class);
-        startActivity(myIntent);
-    }*/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return true;
+        }
+    }
 
 }

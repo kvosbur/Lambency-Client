@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
@@ -138,6 +139,8 @@ public class OrgCreationActivity extends AppCompatActivity {
                         }
                         //when response is back
                         OrganizationModel org = response.body();
+                        int org_id = org.getOrgID();
+                        UserModel.myUserModel.organizeGroup(org_id);
 
                         progressBar.setVisibility(View.GONE);
 
@@ -147,9 +150,12 @@ public class OrgCreationActivity extends AppCompatActivity {
                             return;
                         }
 
+                        OrganizationModel.myOrgModel = orgModel;
+
                         //Go back to main page now
                         Intent myIntent = new Intent(context, MainActivity.class);
                         startActivity(myIntent);
+                        Toast.makeText(getApplicationContext(), "Organization made", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

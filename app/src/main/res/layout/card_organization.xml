@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_event"
+    android:id="@+id/card_organization"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
@@ -71,14 +71,6 @@
                         android:text="leader@theorg.org"
                         android:layout_marginRight="5dp"
                         />
-
-                    <CheckBox
-                        android:id="@+id/followUnFollow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Follow/Unfollow"
-                        android:paddingLeft="5dp"
-                        ></CheckBox>
 
                 </LinearLayout>
             </RelativeLayout>
