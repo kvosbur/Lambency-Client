@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -23,6 +24,7 @@ import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.OrgCreationActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -117,6 +119,10 @@ public class MyLambencyFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
+                SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(getApplicationContext());
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.remove("myauth");
+                editor.apply();
             }
         });
 
