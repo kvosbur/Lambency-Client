@@ -129,19 +129,6 @@
         android:maxLines="4"
         />
 
-    <EditText
-        android:id="@+id/contactForEvent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/descriptionOfEvent"
-        android:layout_weight="1"
-        android:ems="18"
-        android:inputType="textPersonName"
-        android:hint="Contact details" />
-
-
     <Button
         android:id="@+id/saveDetailsButton"
         android:layout_width="wrap_content"
@@ -152,7 +139,7 @@
         tools:layout_editor_absoluteX="173dp"
         tools:layout_editor_absoluteY="0dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/contactForEvent"/>
+        android:layout_below="@id/descriptionOfEvent"/>
 
 
 

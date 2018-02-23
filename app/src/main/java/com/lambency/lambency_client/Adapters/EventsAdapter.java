@@ -109,6 +109,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
 
     @Override
     public int getItemCount() {
+        if(events == null){
+            return 0;
+        }
         return events.size();
     }
 
