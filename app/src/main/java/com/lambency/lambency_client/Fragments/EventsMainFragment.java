@@ -13,11 +13,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.Adapters.EventsAdapter;
 import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.UserAuthenticatorModel;
+import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
@@ -25,6 +30,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,7 +96,6 @@ public class EventsMainFragment extends Fragment {
                 .setActionBarTitle("Feed");
         setHasOptionsMenu(true);
 
-
     }
 
     private void startAdapter(List<EventModel> events){
@@ -122,16 +131,44 @@ public class EventsMainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_events_main, container, false);
         ButterKnife.bind(this, view);
 
-
-        ArrayList<EventModel> events = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            events.add(new EventModel());
-        }
-        startAdapter(events);
+        callRetrofit();
 
         ((MainActivity) getActivity()).getSupportActionBar().setElevation(15);
 
         return view;
+    }
+
+    public void callRetrofit(){
+        LambencyAPIHelper.getInstance().getUserEvents(UserAuthenticatorModel.myAuth, UserModel.myUserModel.getUserId()).enqueue(new Callback<List<EventModel>>() {
+            @Override
+            public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("ERROR!!!!!");
+                    return;
+                }
+                //when response is back
+                List<EventModel> myEvents = response.body();
+                if(response.body() == null) {
+                    System.out.println("ERROR NULLED!!!!");
+                    Toast.makeText(getApplicationContext(), "Events NULL", Toast.LENGTH_LONG).show();
+                    myEvents = new ArrayList<>();
+
+                }
+                Toast.makeText(getApplicationContext(), "got events", Toast.LENGTH_LONG).show();
+                System.out.println("got events");
+
+                //System.out.println("SUCCESS");
+                startAdapter(myEvents);
+            }
+
+            @Override
+            public void onFailure(Call<List<EventModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+                Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 
 

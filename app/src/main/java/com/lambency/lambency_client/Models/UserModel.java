@@ -158,6 +158,7 @@ public class UserModel {
     }
 
     public void registerForEvent(Integer event_id){
+
         this.eventsAttending.add(event_id);
     }
     public void unregisterForEvent(Integer event_id){
