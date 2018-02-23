@@ -62,7 +62,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     @BindView(R.id.header)
     ImageView eventImageView;
 
-
+    @BindView(R.id.whosAttending)
+    Button whosAttendingButton;
 
 
     @Override
@@ -81,17 +82,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
 
         LinearLayout linearLayout = findViewById(R.id.joinButton);
-        Button listUser = findViewById(R.id.listUser);
-        listUser.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(EventDetailsActivity.this, ListUserActivity.class);
-                startActivity(intent);
-            }
-        });
 
         boolean creator = true; // API CALL HERE
         if(creator) {
-            listUser.setVisibility(View.VISIBLE);
+            whosAttendingButton.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
         }
 
@@ -196,6 +190,12 @@ public class EventDetailsActivity extends AppCompatActivity {
             default:
                 return true;
         }
+    }
+
+    @OnClick
+    public void handleWhosAttendingClick(){
+        Intent intent = new Intent(this, ListUserActivity.class);
+        startActivity(intent);
     }
 
 }
