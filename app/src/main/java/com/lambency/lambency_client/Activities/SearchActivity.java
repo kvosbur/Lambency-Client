@@ -190,10 +190,10 @@ public class SearchActivity extends AppCompatActivity   {
             case R.id.location:
                 System.out.println("Location Pressed");
 
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                            MY_PERMISSIONS_ACCESS_COARSE_LOCATION
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            123
                     );
                 }
 

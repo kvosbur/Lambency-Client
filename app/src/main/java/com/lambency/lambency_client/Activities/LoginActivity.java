@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //skip login activity if there is already an oAuthToken saved to shared preferences
         SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
         String myauth = sharedPref.getString("myauth", "");
+        /*
         if(myauth.length() > 0){
             UserAuthenticatorModel.myAuth = myauth;
             System.out.println("My auth is : " + myauth);
@@ -105,6 +106,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
         }
+        */
 
 
         super.onCreate(savedInstanceState);
@@ -118,8 +120,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginButton.setReadPermissions(Arrays.asList("email"));
 
 
-        //String googleWebID = "406595282653-87c0rdih5bqi4nrei8catgh3pq1usith.apps.googleusercontent.com";
-        String googleWebID = "801710608826-06vpf384rl9nfcbumav56niql251419n.apps.googleusercontent.com";
+        String googleWebID = "406595282653-87c0rdih5bqi4nrei8catgh3pq1usith.apps.googleusercontent.com";
+        //String googleWebID = "801710608826-06vpf384rl9nfcbumav56niql251419n.apps.googleusercontent.com";
 
 
         // Configure sign-in to request the user's ID, email address, and basic
