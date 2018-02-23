@@ -221,10 +221,7 @@ public class EventCreationActivity extends AppCompatActivity {
 
                         updateEvent(eventModel);
 
-                        Intent intent = new Intent(context, EventDetailsActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("event_id", eventModel.getEvent_id());
-                        intent.putExtras(bundle);
+                        Intent intent = new Intent(context, MainActivity.class);
                         context.startActivity(intent);
 
                 } else {
