@@ -58,6 +58,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private int event_id;
     private TextView text;
+    private LinearLayout linearLayout;
 
     //@BindView(R.id.createEventButton)
     //Button shareEventButton;
@@ -123,7 +124,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         mCollapsingToolbarLayout.setTitle("Event Title");
         mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
 
-        LinearLayout linearLayout = findViewById(R.id.joinButton);
+        linearLayout = findViewById(R.id.joinButton);
         text = findViewById(R.id.joinButtonText);
 
 
@@ -195,13 +196,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 //            }
 //        });
 
-        System.out.println(UserModel.myUserModel);
-        System.out.println(event_id);
-        boolean creator = UserModel.myUserModel.isRegisterdForEvent(event_id); // API CALL HERE
-        if(creator) {
-            whosAttendingButton.setVisibility(View.VISIBLE);
-            linearLayout.setVisibility(View.GONE);
-        }
+
 
         final Button shareButton = findViewById(R.id.shareEvent);
 
@@ -298,6 +293,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
                     progressBar.setVisibility(View.GONE);
+
+                    if(UserModel.myUserModel.getMyOrgs().contains(event.getOrg_id())) {
+                        //if(creator) {
+                        whosAttendingButton.setVisibility(View.VISIBLE);
+                        linearLayout.setVisibility(View.GONE);
+                    }
                 }
             }
 
