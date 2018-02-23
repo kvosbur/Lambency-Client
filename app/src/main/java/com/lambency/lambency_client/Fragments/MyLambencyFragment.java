@@ -23,6 +23,7 @@ import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.OrgCreationActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
@@ -106,6 +107,7 @@ public class MyLambencyFragment extends Fragment {
             }
         });
 
+
         Button createEventButton = view.findViewById(R.id.createEventButton);
         createEventButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -113,6 +115,11 @@ public class MyLambencyFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        if(UserModel.myUserModel.getMyOrgs().size() == 0)
+        {
+            createEventButton.setVisibility(View.GONE);
+        }
 
         Button logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(new View.OnClickListener() {
