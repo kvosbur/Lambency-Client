@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
@@ -45,11 +46,45 @@ public class OrgSearchResultFragment extends Fragment {
         ButterKnife.bind(this, view);
 
 
-        ArrayList<OrganizationModel> orgs = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            orgs.add(new OrganizationModel());
+        //I am going to get my events first
+        List<Integer> orgsAttending = UserModel.myUserModel.getMyOrgs();
+        final ArrayList<OrganizationModel> orgs = new ArrayList<>();
+        if(orgsAttending.size() == 0){
+            for (int i = 0; i < 10; i++) {
+                orgs.add(new OrganizationModel());
+            }
+            startAdapter(orgs);
         }
-        startAdapter(orgs);
+        /*else{
+            for(Integer ev_id:orgsAttending){
+                LambencyAPIHelper.getInstance().getOrgSearchByID(Integer.toString(ev_id)).enqueue(new Callback<OrganizationModel>() {
+                    @Override
+                    public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
+                        if (response.body() == null || response.code() != 200) {
+                            System.out.println("ERROR!!!!!");
+                        }
+                        //when response is back
+                        OrganizationModel organization= response.body();
+                        if(organization == null){
+                            System.out.println("failed to find organization");
+                        }
+                        else{
+                            orgs.add(organization);
+                            updateOrgs(orgs);
+                            System.out.println("organization description: " + organization.getDescription());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<OrganizationModel> call, Throwable throwable) {
+                        //when failure
+                        System.out.println("FAILED CALL");
+                    }
+                });
+            }
+        }
+
+        */
 
         return view;
     }

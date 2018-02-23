@@ -81,7 +81,7 @@ public class EventCreationActivity extends AppCompatActivity {
             // store the data in one string and set it to text
             String time1 = String.valueOf(hour) + ":" + String.valueOf(minute);
             startTime.setText(time1);
-            startingTime = new Timestamp(myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DATE),
+            startingTime = new Timestamp(myCalendar.get(Calendar.YEAR)-1900,myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DATE),
                     hour,minute,0,0);
         }
     };
@@ -94,7 +94,7 @@ public class EventCreationActivity extends AppCompatActivity {
             // store the data in one string and set it to text
             String time1 = String.valueOf(hour) + ":" + String.valueOf(minute);
             endTime.setText(time1);
-            endingTime = new Timestamp(myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DATE),
+            endingTime = new Timestamp(myCalendar.get(Calendar.YEAR)-1900,myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DATE),
                     hour,minute,0,0);
         }
     };
