@@ -108,18 +108,36 @@ public class UserModel {
     }
 
     public List<Integer> getMyOrgs() {
+        if(myOrgs == null){
+            System.out.println("null myOrgs");
+            return new ArrayList<>();
+        }
         return myOrgs;
     }
 
     public List<Integer> getEventsAttending() {
+
+        if(eventsAttending == null){
+            System.out.println("null events Attending");
+            return new ArrayList<>();
+        }
         return eventsAttending;
     }
 
     public List<Integer> getFollowingOrgs() {
+        if(followingOrgs == null){
+            System.out.println("null followingorgs");
+            return new ArrayList<>();
+        }
+
         return followingOrgs;
     }
 
     public List<Integer> getJoinedOrgs() {
+        if(joinedOrgs == null){
+            System.out.println("null joinedOrgs");
+            return new ArrayList<>();
+        }
         return joinedOrgs;
     }
 
