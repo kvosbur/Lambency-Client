@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -102,7 +103,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
-                    LambencyAPIHelper.getInstance().getUnfollowOrg(UserModel.myUserModel.getOauthToken(), Integer.toString(org_model.getOrgID())).enqueue(new Callback<Integer>() {
+                    LambencyAPIHelper.getInstance().getUnfollowOrg(UserModel.myUserModel.getOauthToken(), Integer.toString(currentOrgId)).enqueue(new Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             if (response.body() == null || response.code() != 200) {
