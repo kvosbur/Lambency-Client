@@ -88,7 +88,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                             }
                             else if (ret == 2){
                                 System.out.println("undetermined error");
-                                Toast.makeText(getApplicationContext(), "Unkown Error", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
                                 checkBox.setChecked(false);
                             }
                         }
