@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -51,6 +52,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.orgRequestJoin)
     Button requestJoin;
 
+    public static int currentOrgId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +69,70 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkBox.isChecked()){
-                    Toast.makeText(getApplicationContext(), "You are now following the organization :)", Toast.LENGTH_LONG).show();
+                    LambencyAPIHelper.getInstance().getFollowOrg(UserModel.myUserModel.getOauthToken(),Integer.toString(currentOrgId)).enqueue(new retrofit2.Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                System.out.println("ERROR!!!!!");
+                            }
+                            //when response is back
+                            Integer ret = response.body();
+                            if(ret == 0){
+                                System.out.println("successfully followed organization");
+                                Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
+                            }
+                            else if (ret == 1){
+                                System.out.println("failed to find user or organization");
+                                Toast.makeText(getApplicationContext(), "NO ORG OR USER TO FOLLOW", Toast.LENGTH_LONG).show();
+                                checkBox.setChecked(false);
+                            }
+                            else if (ret == 2){
+                                System.out.println("undetermined error");
+                                Toast.makeText(getApplicationContext(), "Unkown Error", Toast.LENGTH_LONG).show();
+                                checkBox.setChecked(false);
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable throwable) {
+                            //when failure
+                            System.out.println("FAILED CALL");
+                            Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
+                            checkBox.setChecked(false);
+                        }
+                    });
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "You unfollowed the organization :(", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
+                    LambencyAPIHelper.getInstance().getUnfollowOrg(UserModel.myUserModel.getOauthToken(), Integer.toString(currentOrgId)).enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                System.out.println("ERROR!!!!!");
+                            }
+                            //when response is back
+                            Integer ret = response.body();
+                            if(ret == 0){
+                                System.out.println("successfully unfollowed organization");
+                            }
+                            else if (ret == 1){
+                                System.out.println("failed to find user or organization");
+                                Toast.makeText(getApplicationContext(), "Failure to find org or user", Toast.LENGTH_LONG).show();
+                                checkBox.setChecked(true);
+                            }
+                            else if (ret == 2){
+                                System.out.println("undetermined error");
+                                Toast.makeText(getApplicationContext(), "Unkown Error", Toast.LENGTH_LONG).show();
+                                checkBox.setChecked(true);
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable throwable) {
+                            //when failure
+                            System.out.println("FAILED CALL");
+                            Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+                            checkBox.setChecked(true);
+                        }
+                    });
                 }
             }
         });
@@ -78,6 +140,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
             int org_id = bundle.getInt("org_id");
+            currentOrgId = org_id;
             LambencyAPIHelper.getInstance().getOrgSearchByID("" + org_id).enqueue(new Callback<OrganizationModel>() {
                 @Override
                 public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
@@ -130,14 +193,102 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     public void onClickFollow(){
         if(checkBox.isChecked()){
             //it is checked (meaning they followed)
+            LambencyAPIHelper.getInstance().getFollowOrg(UserModel.myUserModel.getOauthToken(),Integer.toString(currentOrgId)).enqueue(new retrofit2.Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("ERROR!!!!!");
+                    }
+                    //when response is back
+                    Integer ret = response.body();
+                    if(ret == 0){
+                        System.out.println("successfully followed organization");
+                        Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
+                    }
+                    else if (ret == 1){
+                        System.out.println("failed to find user or organization");
+                        Toast.makeText(getApplicationContext(), "NO ORG OR USER TO FOLLOW", Toast.LENGTH_LONG).show();
+                        checkBox.setChecked(false);
+                    }
+                    else if (ret == 2){
+                        System.out.println("undetermined error");
+                        Toast.makeText(getApplicationContext(), "Unkown Error", Toast.LENGTH_LONG).show();
+                        checkBox.setChecked(false);
+                    }
+                }
+                @Override
+                public void onFailure(Call<Integer> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                    Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
+                    checkBox.setChecked(false);
+                }
+            });
         }else{
             //is not checked (meaning they unfollowed)
+            LambencyAPIHelper.getInstance().getUnfollowOrg(UserModel.myUserModel.getOauthToken(), Integer.toString(currentOrgId)).enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("ERROR!!!!!");
+                    }
+                    //when response is back
+                    Integer ret = response.body();
+                    if(ret == 0){
+                        System.out.println("successfully unfollowed organization");
+                    }
+                    else if (ret == 1){
+                        System.out.println("failed to find user or organization");
+                        Toast.makeText(getApplicationContext(), "Failure to find org or user", Toast.LENGTH_LONG).show();
+                        checkBox.setChecked(true);
+                    }
+                    else if (ret == 2){
+                        System.out.println("undetermined error");
+                        Toast.makeText(getApplicationContext(), "Unkown Error", Toast.LENGTH_LONG).show();
+                        checkBox.setChecked(true);
+                    }
+                }
+                @Override
+                public void onFailure(Call<Integer> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                    Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+                    checkBox.setChecked(true);
+                }
+            });
+            Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
         }
     }
 
     @OnClick(R.id.orgRequestJoin)
     public void onClickRequest(){
+        System.out.println("CURRENT ORG ID: " + currentOrgId);
+        LambencyAPIHelper.getInstance().postJoinOrganization(UserModel.myUserModel.getOauthToken(), currentOrgId).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    Toast.makeText(getApplicationContext(), "NULL ERROR", Toast.LENGTH_LONG).show();
+                    return;
+                }
 
+                //when response is back
+                Integer status = response.body();
+                System.out.println(status);
+                if(status == 0){
+                    Toast.makeText(getApplicationContext(), "Successfully requested to join", Toast.LENGTH_LONG).show();
+                    requestJoin.setText("Request pending");
+                }
+                else if(status == 1){
+                    Toast.makeText(getApplicationContext(), "Error requesting to join", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable throwable) {
+                Toast.makeText(getApplicationContext(), "Failed call!", Toast.LENGTH_LONG).show();
+                System.out.println("FAILED CALL");
+            }
+        });
         return;
     }
 }

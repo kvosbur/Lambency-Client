@@ -171,6 +171,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                         return;
                                                     }
                                                     //when response is back
+
+
                                                     UserAuthenticatorModel ua = response.body();
 
                                                     if(ua != null && ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
@@ -201,9 +203,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                                 System.out.println("got the user object");
 
                                                                 //System.out.println("SUCCESS");
-                                                                Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-                                                                startActivity(myIntent);
-                                                                finish();
+
+                                                                //Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                                                //startActivity(myIntent);
+                                                                //finish();
                                                             }
 
                                                             @Override

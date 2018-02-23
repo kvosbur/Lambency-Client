@@ -15,8 +15,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Activities.EventCreationActivity;
+import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.OrgCreationActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
@@ -25,6 +27,8 @@ import com.lambency.lambency_client.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,6 +51,9 @@ public class MyLambencyFragment extends Fragment {
 
     @BindView(R.id.createOrgButton)
     Button createOrg;
+
+    @BindView(R.id.logoutButton)
+    Button logout;
 
     private OnFragmentInteractionListener mListener;
 
@@ -101,6 +108,14 @@ public class MyLambencyFragment extends Fragment {
         createEventButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EventCreationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button logoutButton = view.findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
             }
         });
