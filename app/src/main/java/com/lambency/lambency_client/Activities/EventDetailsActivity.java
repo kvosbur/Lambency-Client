@@ -1,7 +1,9 @@
 package com.lambency.lambency_client.Activities;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.ImageHelper;
 import com.lambency.lambency_client.Utils.TimeHelper;
 
 import org.w3c.dom.Text;
@@ -40,6 +43,18 @@ public class EventDetailsActivity extends AppCompatActivity {
     @BindView(R.id.date)
     TextView dateView;
 
+    @BindView(R.id.description)
+    TextView descriptionView;
+
+    @BindView(R.id.time)
+    TextView timeView;
+
+    @BindView(R.id.address)
+    TextView addressView;
+
+    @BindView(R.id.header)
+    ImageView eventImageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +64,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
-        toolbar.setTitle("Event Title");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -93,7 +107,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void callRetrofit(int event_id){
+    private void setTitle(String title){
+        CollapsingToolbarLayout mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        mCollapsingToolbarLayout.setTitle(title);
+    }
+
+    private void callRetrofit(final int event_id){
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
             @Override
             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
@@ -107,9 +126,16 @@ public class EventDetailsActivity extends AppCompatActivity {
                 }
                 else{
                     System.out.println("Got event data!");
-                    getSupportActionBar().setTitle(eventModel.getName());
-                    dateView.setText(TimeHelper.dateFromTimestamp(eventModel.getStart()));
 
+                    setTitle(eventModel.getName());
+
+                    dateView.setText(TimeHelper.dateFromTimestamp(eventModel.getStart()));
+                    descriptionView.setText(eventModel.getDescription());
+                    timeView.setText(TimeHelper.hourFromTimestamp(eventModel.getStart()) + " - " + TimeHelper.hourFromTimestamp(eventModel.getEnd()));
+                    addressView.setText(eventModel.getLocation());
+
+                    BitmapDrawable bd = new BitmapDrawable(getResources(), ImageHelper.stringToBitmap(eventModel.getImageFile()));
+                    eventImageView.setBackground(bd);
                 }
             }
 

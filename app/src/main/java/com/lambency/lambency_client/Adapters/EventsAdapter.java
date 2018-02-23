@@ -8,11 +8,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lambency.lambency_client.Activities.EventDetailsActivity;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.ImageHelper;
 import com.lambency.lambency_client.Utils.TimeHelper;
 
 import java.text.SimpleDateFormat;
@@ -71,6 +73,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
             holder.timeView.setText(time);
         }
 
+        if(eventModel.getImageFile() != null){
+            holder.eventImageView.setImageBitmap(ImageHelper.stringToBitmap(eventModel.getImageFile()));
+        }
+
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +117,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
 
         @BindView(R.id.card_event)
         CardView cardView;
+
+        @BindView(R.id.pictureOfEvent)
+        ImageView eventImageView;
 
         public AreaViewHolder(View itemView) {
             super(itemView);
