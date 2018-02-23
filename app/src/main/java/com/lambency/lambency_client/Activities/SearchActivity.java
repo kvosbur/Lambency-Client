@@ -194,6 +194,7 @@ public class SearchActivity extends AppCompatActivity   {
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     MY_PERMISSIONS_ACCESS_COARSE_LOCATION
             );
+            System.out.println("Must add permissons");
         }else {
             try {
                 mFusedLocationClient.getLastLocation()

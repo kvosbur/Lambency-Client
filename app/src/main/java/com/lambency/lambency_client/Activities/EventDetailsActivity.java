@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.EventModel;
 
@@ -42,6 +43,10 @@ import retrofit2.Response;
 
 public class EventDetailsActivity extends AppCompatActivity {
     String eventName = "";
+
+
+    private int event_id;
+    private TextView text;
 
     //@BindView(R.id.createEventButton)
     //Button shareEventButton;
@@ -96,7 +101,66 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         LinearLayout linearLayout = findViewById(R.id.joinButton);
 
-        boolean creator = true; // API CALL HERE
+
+
+        linearLayout.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v){
+                ImageView imageView = findViewById(R.id.check);
+                text = findViewById(R.id.joinButtonText);
+                if(text.getText().toString().equals("Join Event")){
+                    LambencyAPIHelper.getInstance().getRegisterEvent(UserModel.myUserModel.getOauthToken(),event_id).enqueue(new retrofit2.Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                System.out.println("Error cause body returned null or bad response code in register response.");
+                                Toast.makeText(getApplicationContext(), "Problem registering.", Toast.LENGTH_LONG).show();
+                            }
+                            //when response is back
+                            Integer ret = response.body();
+                            if(ret == 0){
+                                System.out.println("successfully registerd for an event");
+                                UserModel.myUserModel.registerForEvent(event_id);
+                                Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG).show();
+                                text.setText("Joined Event");
+                            }
+                            else if (ret == 1){
+                                System.out.println("failed to find user or organization");
+                                Toast.makeText(getApplicationContext(), "No Event to follow", Toast.LENGTH_LONG).show();
+                            }
+                            else if (ret == 2){
+                                System.out.println("undetermined error");
+                                Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable throwable) {
+                            //when failure
+                            System.out.println("FAILED CALL");
+                            Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "You cant actually unfollow. Sorry", Toast.LENGTH_LONG).show();
+                    text.setText("Join Event");
+                }
+            }
+        });
+//
+//        Button listUser = findViewById(R.id.reg);
+//
+//        listUser.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                Intent intent = new Intent(EventDetailsActivity.this, ListUserActivity.class);
+//                intent.putExtra("oauth",UserModel.myUserModel.getOauthToken());
+//                intent.putExtra("event_id", event_id );
+//                startActivity(intent);
+//            }
+//        });
+        System.out.println(UserModel.myUserModel);
+        System.out.println(event_id);
+        boolean creator = UserModel.myUserModel.isRegisterdForEvent(event_id); // API CALL HERE
         if(creator) {
             whosAttendingButton.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
@@ -119,7 +183,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             //TODO error check
-            int event_id = bundle.getInt("event_id");
+            event_id = bundle.getInt("event_id");
             callRetrofit(event_id);
         }
     }

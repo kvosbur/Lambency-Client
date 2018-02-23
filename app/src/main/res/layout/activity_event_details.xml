@@ -252,7 +252,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Edit Event"/>
-             
+
                     <TextView
                         android:id="@+id/eventInfo"
                         android:layout_width="wrap_content"
@@ -280,12 +280,12 @@
 
                 </RelativeLayout>
 
-                
 
-             
 
-                  
-  
+
+
+
+
             </android.support.v4.widget.NestedScrollView>
 
         </android.support.design.widget.CoordinatorLayout>

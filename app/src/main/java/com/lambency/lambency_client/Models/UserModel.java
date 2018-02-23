@@ -143,7 +143,17 @@ public class UserModel {
         this.eventsAttending.add(event_id);
     }
     public void unregisterForEvent(Integer event_id){
+        if(eventsAttending == null){
+            eventsAttending = new ArrayList<>();
+        }
         this.eventsAttending.remove(event_id);
+    }
+
+    public boolean isRegisterdForEvent(Integer event_id){
+        if(eventsAttending == null){
+            eventsAttending = new ArrayList<>();
+        }
+        return eventsAttending.contains(event_id);
     }
 
     public String toString(){
@@ -175,6 +185,7 @@ public class UserModel {
             }
             result += "\n";
         }else{
+            eventsAttending = new ArrayList<>();
             result += "Events Attending: None\n";
         }
 
