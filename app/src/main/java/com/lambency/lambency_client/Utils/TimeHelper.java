@@ -24,8 +24,12 @@ public class TimeHelper {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
         String result = Integer.toString(hour);
+        int correctTime = Integer.parseInt(result);
+
         if(hour > 12){
-            result+="PM";
+            correctTime -= 12;
+            result = Integer.toString(correctTime);
+            result += "PM";
         }else{
             result+="AM";
         }

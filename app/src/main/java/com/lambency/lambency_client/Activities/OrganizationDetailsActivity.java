@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -62,6 +63,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     Button requestJoin;
 
     public static int currentOrgId;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,16 +71,32 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organization_details);
 
         ButterKnife.bind(this);
+        context = this;
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        boolean followed = false;
+        for(int i = 0; i < UserModel.myUserModel.getFollowingOrgs().size(); i++)
+        {
+            if(UserModel.myUserModel.getFollowingOrgs().get(i) == currentOrgId)
+            {
+                checkBox.setText("Unfollow");
+                followed = true;
+            }
+        }
+
+        if(!followed)
+        {
+            checkBox.setText("Follow");
+        }
+
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkBox.isChecked()){
-                    LambencyAPIHelper.getInstance().getFollowOrg(UserModel.myUserModel.getOauthToken(),Integer.toString(currentOrgId)).enqueue(new retrofit2.Callback<Integer>() {
+                    LambencyAPIHelper.getInstance().getFollowOrg(UserModel.myUserModel.getOauthToken(),"" + currentOrgId).enqueue(new retrofit2.Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             if (response.body() == null || response.code() != 200) {
@@ -90,6 +108,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                             if(ret == 0){
                                 System.out.println("successfully followed organization");
                                 Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
+                                checkBox.setText("Unfollow");
                             }
                             else if (ret == 1){
                                 System.out.println("failed to find user or organization");
@@ -124,6 +143,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                             Integer ret = response.body();
                             if(ret == 0){
                                 System.out.println("successfully unfollowed organization");
+                                checkBox.setText("Follow");
                             }
                             else if (ret == 1){
                                 System.out.println("failed to find user or organization");
@@ -179,7 +199,11 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     descriptionOrg.setText(organization.getDescription());
                     emailOrg.setText(organization.getEmail());
                     addressOrg.setText(organization.getLocation());
-                    orgImage.setImageBitmap(ImageHelper.stringToBitmap(organization.getImage()));
+
+                    ImageHelper.loadWithGlide(context,
+                            ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                            orgImage);
+
 
                     mainLayout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);

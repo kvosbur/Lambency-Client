@@ -106,6 +106,8 @@ public class SearchActivity extends AppCompatActivity   {
 
             }
         });
+
+        searchByLocation();
     }
 
 
@@ -189,11 +191,12 @@ public class SearchActivity extends AppCompatActivity   {
 
     private void searchByLocation(){
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((SearchActivity) context,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     MY_PERMISSIONS_ACCESS_COARSE_LOCATION
             );
+
         }else {
             try {
                 mFusedLocationClient.getLastLocation()

@@ -71,11 +71,9 @@ public class EventCreationActivity extends AppCompatActivity {
     @BindView(R.id.descriptionOfEvent)
     EditText descriptionEdit;
 
-    @BindView(R.id.contactForEvent)
-    EditText contactEdit;
 
     private boolean editing = false;
-    String eventName, dateOfEvent, addressOfEvent, description, contact;
+    String eventName, dateOfEvent, addressOfEvent, description;
     private Context context;
 
     private EventModel eventModel;
@@ -141,13 +139,16 @@ public class EventCreationActivity extends AppCompatActivity {
         this.context = this;
         ButterKnife.bind(this);
 
+        editing = false;
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             //TODO error check
             int event_id = bundle.getInt("event_id");
-            getEventInfo(event_id);
-            editing = true;
+            if(event_id != 0) {
+                getEventInfo(event_id);
+                editing = true;
+            }
         }
 
 
@@ -192,7 +193,6 @@ public class EventCreationActivity extends AppCompatActivity {
             //EditText eDate = (EditText) findViewById(R.id.dateOfEvent);
             EditText eAddr = (EditText) findViewById(R.id.addressOfEvent);
             EditText eDescrip = (EditText) findViewById(R.id.descriptionOfEvent);
-            EditText eContact = (EditText) findViewById(R.id.contactForEvent);
 
 
             @Override
@@ -221,18 +221,15 @@ public class EventCreationActivity extends AppCompatActivity {
 
                         updateEvent(eventModel);
 
-                        Intent intent = new Intent(context, EventDetailsActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("event_id", eventModel.getEvent_id());
-                        intent.putExtras(bundle);
+                        Intent intent = new Intent(context, MainActivity.class);
                         context.startActivity(intent);
+
                 } else {
 
                     eventName = eName.getText().toString();
                     //dateOfEvent = eDate.getText().toString();
                     addressOfEvent = eAddr.getText().toString();
                     description = eDescrip.getText().toString();
-                    contact = eContact.getText().toString();
 
                     //making image string....
                     Bitmap bm;
@@ -249,15 +246,15 @@ public class EventCreationActivity extends AppCompatActivity {
                     //encoded profile is the image string
 
 
-                    if (eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("") || startingTime == null || endingTime == null) {
+                    if (eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null) {
                         Toast.makeText(getApplicationContext(), "You did not enter everything", Toast.LENGTH_LONG).show();
                         //saveDetails.setVisibility(View.GONE);
                     }
 
-                    //Go back to main page now
-                    if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || contact.matches("") || startingTime == null || endingTime == null)) {
-                        //the EventModel object to send to server(use this evan)
-                        eventModel = new EventModel(encodedProfile, eventName, 2, startingTime, endingTime, description, addressOfEvent);
+                //Go back to main page now
+                if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
+                    //the EventModel object to send to server(use this evan)
+                    eventModel = new EventModel(encodedProfile,eventName, UserModel.myUserModel.getMyOrgs().get(0),startingTime,endingTime,description,addressOfEvent);
 
                         LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override
@@ -401,10 +398,19 @@ public class EventCreationActivity extends AppCompatActivity {
 
                 imagePath = imagesFiles.get(0).getPath();
 
+                File file = imagesFiles.get(0);
+                String path = file.getPath();
+                ImageHelper.loadWithGlide(context,
+                        path,
+                        eventImage
+                        );
+
+                /*
                 builder.build()
                         .load(new File(imagesFiles.get(0).getPath()))
                         .error(R.drawable.ic_books)
                         .into(eventImage);
+                        */
 
                 /*
                 Bitmap bitmap = BitmapFactory.decodeFile(imagesFiles.get(0).getPath(), null);

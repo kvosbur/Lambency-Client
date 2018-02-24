@@ -108,18 +108,36 @@ public class UserModel {
     }
 
     public List<Integer> getMyOrgs() {
+        if(myOrgs == null){
+            System.out.println("null myOrgs");
+            return new ArrayList<>();
+        }
         return myOrgs;
     }
 
     public List<Integer> getEventsAttending() {
+
+        if(eventsAttending == null){
+            System.out.println("null events Attending");
+            return new ArrayList<>();
+        }
         return eventsAttending;
     }
 
     public List<Integer> getFollowingOrgs() {
+        if(followingOrgs == null){
+            System.out.println("null followingorgs");
+            return new ArrayList<>();
+        }
+
         return followingOrgs;
     }
 
     public List<Integer> getJoinedOrgs() {
+        if(joinedOrgs == null){
+            System.out.println("null joinedOrgs");
+            return new ArrayList<>();
+        }
         return joinedOrgs;
     }
 
@@ -140,10 +158,21 @@ public class UserModel {
     }
 
     public void registerForEvent(Integer event_id){
+
         this.eventsAttending.add(event_id);
     }
     public void unregisterForEvent(Integer event_id){
+        if(eventsAttending == null){
+            eventsAttending = new ArrayList<>();
+        }
         this.eventsAttending.remove(event_id);
+    }
+
+    public boolean isRegisterdForEvent(Integer event_id){
+        if(eventsAttending == null){
+            eventsAttending = new ArrayList<>();
+        }
+        return eventsAttending.contains(event_id);
     }
 
     public String toString(){
@@ -175,6 +204,7 @@ public class UserModel {
             }
             result += "\n";
         }else{
+            eventsAttending = new ArrayList<>();
             result += "Events Attending: None\n";
         }
 
