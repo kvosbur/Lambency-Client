@@ -18,7 +18,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        android.defaultConfig.vectorDrawables.useSupportLibrary = true;
+        android.defaultConfig.vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     buildTypes {
         release {
