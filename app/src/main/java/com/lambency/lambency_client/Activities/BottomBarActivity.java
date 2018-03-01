@@ -45,7 +45,7 @@ import com.lambency.lambency_client.R;
 import butterknife.BindView;
 
 
-public class MainActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener{
+public class BottomBarActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener{
 
 
     public static BottomNavigationView bottomNavigationView;

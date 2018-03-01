@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,8 +19,6 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.login.LoginBehavior;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
 
@@ -35,13 +32,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
-import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -91,7 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     System.out.println("got the user object");
 
                     //System.out.println("SUCCESS");
-                    Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
                     startActivity(myIntent);
                     finish();
                 }
@@ -203,12 +198,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                                 System.out.println("got the user object");
 
 
-                                                                Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                                                Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
                                                                 startActivity(myIntent);
                                                                 finish();
                                                                 //System.out.println("SUCCESS");
 
-                                                                //Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                                                //Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
                                                                 //startActivity(myIntent);
                                                                 //finish();
                                                             }
@@ -389,7 +384,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 System.out.println("got the user object");
 
                                 //System.out.println("SUCCESS");
-                                Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
                                 startActivity(myIntent);
                                 finish();
                             }
@@ -429,7 +424,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             /*updateUI(account);
 
-            Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
             startActivity(myIntent);
             finish();*/
         } catch (ApiException e) {

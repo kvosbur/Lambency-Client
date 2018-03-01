@@ -9,18 +9,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Adapters.EventsAdapter;
+import com.lambency.lambency_client.Adapters.EventsListAdapter;
+import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,8 +69,13 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.orgRequestJoin)
     Button requestJoin;
 
+    @BindView(R.id.eventList)
+    ListView eventListView;
+
     public static int currentOrgId;
     private Context context;
+    private OrganizationModel organizationModel;
+    private EventsListAdapter eventsListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,81 +104,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             checkBox.setText("Follow");
         }
 
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkBox.isChecked()){
-                    LambencyAPIHelper.getInstance().getFollowOrg(UserModel.myUserModel.getOauthToken(),"" + currentOrgId).enqueue(new retrofit2.Callback<Integer>() {
-                        @Override
-                        public void onResponse(Call<Integer> call, Response<Integer> response) {
-                            if (response.body() == null || response.code() != 200) {
-                                System.out.println("ERROR!!!!!");
-                                return;
-                            }
-                            //when response is back
-                            Integer ret = response.body();
-                            if(ret == 0){
-                                System.out.println("successfully followed organization");
-                                Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
-                                checkBox.setText("Unfollow");
-                            }
-                            else if (ret == 1){
-                                System.out.println("failed to find user or organization");
-                                Toast.makeText(getApplicationContext(), "NO ORG OR USER TO FOLLOW", Toast.LENGTH_LONG).show();
-                                checkBox.setChecked(false);
-                            }
-                            else if (ret == 2){
-                                System.out.println("undetermined error");
-                                Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
-                                checkBox.setChecked(false);
-                            }
-                        }
-                        @Override
-                        public void onFailure(Call<Integer> call, Throwable throwable) {
-                            //when failure
-                            System.out.println("FAILED CALL");
-                            Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
-                            checkBox.setChecked(false);
-                        }
-                    });
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
-                    LambencyAPIHelper.getInstance().getUnfollowOrg(UserModel.myUserModel.getOauthToken(), Integer.toString(currentOrgId)).enqueue(new Callback<Integer>() {
-                        @Override
-                        public void onResponse(Call<Integer> call, Response<Integer> response) {
-                            if (response.body() == null || response.code() != 200) {
-                                System.out.println("ERROR!!!!!");
-                                return;
-                            }
-                            //when response is back
-                            Integer ret = response.body();
-                            if(ret == 0){
-                                System.out.println("successfully unfollowed organization");
-                                checkBox.setText("Follow");
-                            }
-                            else if (ret == 1){
-                                System.out.println("failed to find user or organization");
-                                Toast.makeText(getApplicationContext(), "Failure to find org or user", Toast.LENGTH_LONG).show();
-                                checkBox.setChecked(true);
-                            }
-                            else if (ret == 2){
-                                System.out.println("undetermined error");
-                                Toast.makeText(getApplicationContext(), "Unkown Error", Toast.LENGTH_LONG).show();
-                                checkBox.setChecked(true);
-                            }
-                        }
-                        @Override
-                        public void onFailure(Call<Integer> call, Throwable throwable) {
-                            //when failure
-                            System.out.println("FAILED CALL");
-                            Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
-                            checkBox.setChecked(true);
-                        }
-                    });
-                }
-            }
-        });
 
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
@@ -185,6 +122,9 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     }
                     //when response is back
                     OrganizationModel organization= response.body();
+                    organizationModel = organization;
+
+                    getUpcomingEvents();
 
                     if(organization == null){
                         System.out.println("failed to find organization");
@@ -221,6 +161,114 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Bundle is broken... :(", Toast.LENGTH_LONG).show();
         }
 
+    }
+
+
+    public void getUpcomingEvents(){
+        LambencyAPIHelper.getInstance().getEventsByOrg(UserModel.myUserModel.getOauthToken(), organizationModel.getOrgID() + "").enqueue(new Callback<List<EventModel>>() {
+            @Override
+            public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("Error getting org events.");
+                    return;
+                }
+                //when response is back
+                List<EventModel> list = response.body();
+                if(list == null){
+                    System.out.println("Org has no events or error has occurred");
+                }
+                else{
+                    System.out.println("Got list of org events");
+
+                    ArrayList<EventModel> events = new ArrayList<>(list);
+                    eventsListAdapter = new EventsListAdapter(context, events);
+                    eventListView.setAdapter(eventsListAdapter);
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<EventModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
+    }
+
+
+    @OnClick(R.id.followUnFollow)
+    public void handleCheckClick(){
+        if (checkBox.isChecked()){
+            LambencyAPIHelper.getInstance().getFollowOrg(UserModel.myUserModel.getOauthToken(),"" + currentOrgId).enqueue(new retrofit2.Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("ERROR!!!!!");
+                        return;
+                    }
+                    //when response is back
+                    Integer ret = response.body();
+                    if(ret == 0){
+                        System.out.println("successfully followed organization");
+                        Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
+                        checkBox.setText("Unfollow");
+                    }
+                    else if (ret == 1){
+                        System.out.println("failed to find user or organization");
+                        Toast.makeText(getApplicationContext(), "NO ORG OR USER TO FOLLOW", Toast.LENGTH_LONG).show();
+                        checkBox.setChecked(false);
+                    }
+                    else if (ret == 2){
+                        System.out.println("undetermined error");
+                        Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
+                        checkBox.setChecked(false);
+                    }
+                }
+                @Override
+                public void onFailure(Call<Integer> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                    Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
+                    checkBox.setChecked(false);
+                }
+            });
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
+            LambencyAPIHelper.getInstance().getUnfollowOrg(UserModel.myUserModel.getOauthToken(), Integer.toString(currentOrgId)).enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("ERROR!!!!!");
+                        return;
+                    }
+                    //when response is back
+                    Integer ret = response.body();
+                    if(ret == 0){
+                        System.out.println("successfully unfollowed organization");
+                        checkBox.setText("Follow");
+                    }
+                    else if (ret == 1){
+                        System.out.println("failed to find user or organization");
+                        Toast.makeText(getApplicationContext(), "Failure to find org or user", Toast.LENGTH_LONG).show();
+                        checkBox.setChecked(true);
+                    }
+                    else if (ret == 2){
+                        System.out.println("undetermined error");
+                        Toast.makeText(getApplicationContext(), "Unkown Error", Toast.LENGTH_LONG).show();
+                        checkBox.setChecked(true);
+                    }
+                }
+                @Override
+                public void onFailure(Call<Integer> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                    Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+                    checkBox.setChecked(true);
+                }
+            });
+        }
     }
 
     @Override

@@ -16,8 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.lambency.lambency_client.Activities.LoginActivity;
-import com.lambency.lambency_client.Activities.MainActivity;
+import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.Adapters.EventsAdapter;
 import com.lambency.lambency_client.Models.EventModel;
@@ -96,7 +95,7 @@ public class EventsMainFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        ((MainActivity) getActivity())
+        ((BottomBarActivity) getActivity())
                 .setActionBarTitle("Feed");
         setHasOptionsMenu(true);
 
@@ -138,7 +137,7 @@ public class EventsMainFragment extends Fragment {
         loadingEvents();
         callRetrofit();
 
-        ((MainActivity) getActivity()).getSupportActionBar().setElevation(15);
+        ((BottomBarActivity) getActivity()).getSupportActionBar().setElevation(15);
 
         return view;
     }
