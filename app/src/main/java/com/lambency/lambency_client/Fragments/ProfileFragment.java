@@ -1,10 +1,8 @@
 package com.lambency.lambency_client.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,8 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lambency.lambency_client.Activities.MainActivity;
-import com.lambency.lambency_client.Activities.SearchActivity;
+import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
@@ -25,7 +22,6 @@ import com.lambency.lambency_client.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -114,9 +110,9 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, view);
 
-        ((MainActivity) getActivity())
+        ((BottomBarActivity) getActivity())
                 .setActionBarTitle("Profile");
-       ((MainActivity) getActivity()).getSupportActionBar().setElevation(0);
+       ((BottomBarActivity) getActivity()).getSupportActionBar().setElevation(0);
 
         setHasOptionsMenu(true);
 

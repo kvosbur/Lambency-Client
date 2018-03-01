@@ -6,24 +6,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.EventModel;
-import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -221,7 +216,7 @@ public class EventCreationActivity extends AppCompatActivity {
 
                         updateEvent(eventModel);
 
-                        Intent intent = new Intent(context, MainActivity.class);
+                        Intent intent = new Intent(context, BottomBarActivity.class);
                         context.startActivity(intent);
 
                 } else {
@@ -286,7 +281,7 @@ public class EventCreationActivity extends AppCompatActivity {
                         });
 
                         Intent myIntent = new Intent(EventCreationActivity.this,
-                                MainActivity.class);
+                                BottomBarActivity.class);
                         startActivity(myIntent);
                     }
                 }

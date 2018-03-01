@@ -1,18 +1,12 @@
 package com.lambency.lambency_client.Activities;
 
 import android.Manifest;
-import android.app.FragmentTransaction;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
-import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -23,17 +17,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
-import com.lambency.lambency_client.Fragments.OrgSearchResultFragment;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -262,7 +253,7 @@ public class SearchActivity extends AppCompatActivity   {
         switch(item.getItemId()){
 
             case android.R.id.home:
-                Intent intent = new Intent(context, MainActivity.class);
+                Intent intent = new Intent(context, BottomBarActivity.class);
                 startActivity(intent);
                 break;
 

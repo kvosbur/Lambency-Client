@@ -5,31 +5,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.EventCreationActivity;
 import com.lambency.lambency_client.Activities.LoginActivity;
-import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.OrgCreationActivity;
-import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -133,9 +126,9 @@ public class MyLambencyFragment extends Fragment {
             }
         });
 
-        ((MainActivity) getActivity())
+        ((BottomBarActivity) getActivity())
                 .setActionBarTitle("My Lambency");
-        ((MainActivity) getActivity()).getSupportActionBar().setElevation(0);
+        ((BottomBarActivity) getActivity()).getSupportActionBar().setElevation(0);
 
         return view;
     }

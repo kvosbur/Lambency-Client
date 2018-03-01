@@ -2,16 +2,12 @@ package com.lambency.lambency_client.Activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,15 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -153,7 +146,7 @@ public class OrgCreationActivity extends AppCompatActivity {
                         OrganizationModel.myOrgModel = orgModel;
 
                         //Go back to main page now
-                        Intent myIntent = new Intent(context, MainActivity.class);
+                        Intent myIntent = new Intent(context, BottomBarActivity.class);
                         startActivity(myIntent);
                         Toast.makeText(getApplicationContext(), "Organization made", Toast.LENGTH_SHORT).show();
                     }

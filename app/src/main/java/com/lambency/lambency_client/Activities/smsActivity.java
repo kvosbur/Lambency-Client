@@ -68,7 +68,7 @@ public class smsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Start main activity when back to main button pressed
                 Intent myIntent = new Intent(smsActivity.this,
-                        MainActivity.class);
+                        BottomBarActivity.class);
                 startActivity(myIntent);
             }
         });
