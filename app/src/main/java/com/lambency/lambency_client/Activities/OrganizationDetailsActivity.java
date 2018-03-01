@@ -73,6 +73,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
     public static int currentOrgId;
     private Context context;
+    public String img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,6 +210,8 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     emailOrg.setText(organization.getEmail());
                     addressOrg.setText(organization.getLocation());
 
+                    img = organization.getImage();
+
                     ImageHelper.loadWithGlide(context,
                             ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
                             orgImage);
@@ -327,12 +330,18 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             LayoutInflater factory = LayoutInflater.from(OrganizationDetailsActivity.this);
             final View view = factory.inflate(R.layout.dialog_view, null);
 
-
             alertDialog.setTitle("Warning!");
             alertDialog.setView(view);
 
 
+            TextView orgtitle = view.findViewById(R.id.LeaveTitleOrg);
+            orgtitle.setText(titleOrg.getText());
 
+            CircleImageView leaveOrgImg = view.findViewById(R.id.LeaveOrgImg);
+
+            ImageHelper.loadWithGlide(context,
+                    ImageHelper.saveImage(context, img, "orgImage" + currentOrgId),
+                    leaveOrgImg);
 
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Leave",
                     new DialogInterface.OnClickListener() {
@@ -348,9 +357,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         }
                     });
             alertDialog.show();
-
-            TextView LeaveOrgImage = findViewById(R.id.LeaveTitleOrg);
-            LeaveOrgImage.setText("Test123");
         }
         else
         {
