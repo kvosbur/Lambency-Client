@@ -1,14 +1,18 @@
 package com.lambency.lambency_client.Activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -34,6 +38,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OrganizationDetailsActivity extends AppCompatActivity {
+
+    /*
+    @BindView(R.id.LeaveOrgImg)
+    CircleImageView leaveOrgImg;
+    */
 
     @BindView(R.id.mainLayout)
     ScrollView mainLayout;
@@ -170,7 +179,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
-            int org_id = bundle.getInt("org_id");
+            final int org_id = bundle.getInt("org_id");
             currentOrgId = org_id;
 
             mainLayout.setVisibility(View.GONE);
@@ -203,7 +212,11 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     ImageHelper.loadWithGlide(context,
                             ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
                             orgImage);
-
+                    /*
+                    ImageHelper.loadWithGlide(context,
+                            ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                            leaveOrgImg);
+                            */
 
                     mainLayout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
@@ -308,33 +321,59 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
     @OnClick(R.id.orgRequestJoin)
     public void onClickRequest(){
-        System.out.println("CURRENT ORG ID: " + currentOrgId);
-        LambencyAPIHelper.getInstance().postJoinOrganization(UserModel.myUserModel.getOauthToken(), currentOrgId).enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                if (response.body() == null || response.code() != 200) {
-                    Toast.makeText(getApplicationContext(), "NULL ERROR", Toast.LENGTH_LONG).show();
-                    return;
+        if(requestJoin.getText().equals("Leave Organization"))
+        {
+            AlertDialog alertDialog = new AlertDialog.Builder(OrganizationDetailsActivity.this).create();
+            LayoutInflater factory = LayoutInflater.from(OrganizationDetailsActivity.this);
+            final View view = factory.inflate(R.layout.dialog_view, null);
+
+            alertDialog.setTitle("Warning!");
+            alertDialog.setView(view);
+
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Leave",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), "You have successfully left", Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+        }
+        else
+        {
+            System.out.println("CURRENT ORG ID: " + currentOrgId);
+            LambencyAPIHelper.getInstance().postJoinOrganization(UserModel.myUserModel.getOauthToken(), currentOrgId).enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        Toast.makeText(getApplicationContext(), "NULL ERROR", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    //when response is back
+                    Integer status = response.body();
+                    System.out.println(status);
+                    if(status == 0){
+                        Toast.makeText(getApplicationContext(), "Successfully requested to join", Toast.LENGTH_LONG).show();
+                        requestJoin.setText("Request pending");
+                    }
+                    else if(status == 1){
+                        Toast.makeText(getApplicationContext(), "Error requesting to join", Toast.LENGTH_LONG).show();
+                    }
                 }
 
-                //when response is back
-                Integer status = response.body();
-                System.out.println(status);
-                if(status == 0){
-                    Toast.makeText(getApplicationContext(), "Successfully requested to join", Toast.LENGTH_LONG).show();
-                    requestJoin.setText("Request pending");
+                @Override
+                public void onFailure(Call<Integer> call, Throwable throwable) {
+                    Toast.makeText(getApplicationContext(), "Failed call!", Toast.LENGTH_LONG).show();
+                    System.out.println("FAILED CALL");
                 }
-                else if(status == 1){
-                    Toast.makeText(getApplicationContext(), "Error requesting to join", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Integer> call, Throwable throwable) {
-                Toast.makeText(getApplicationContext(), "Failed call!", Toast.LENGTH_LONG).show();
-                System.out.println("FAILED CALL");
-            }
-        });
-        return;
+            });
+        }
     }
 }
