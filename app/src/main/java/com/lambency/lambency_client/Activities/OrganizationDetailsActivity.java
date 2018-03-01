@@ -327,8 +327,12 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             LayoutInflater factory = LayoutInflater.from(OrganizationDetailsActivity.this);
             final View view = factory.inflate(R.layout.dialog_view, null);
 
+
             alertDialog.setTitle("Warning!");
             alertDialog.setView(view);
+
+
+
 
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Leave",
                     new DialogInterface.OnClickListener() {
@@ -344,6 +348,9 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         }
                     });
             alertDialog.show();
+
+            TextView LeaveOrgImage = findViewById(R.id.LeaveTitleOrg);
+            LeaveOrgImage.setText("Test123");
         }
         else
         {
