@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -25,6 +28,7 @@ import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
+import com.lambency.lambency_client.Utils.LayoutHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,13 +73,13 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.orgRequestJoin)
     Button requestJoin;
 
-    @BindView(R.id.eventList)
-    ListView eventListView;
+    @BindView(R.id.eventsRecyclerView)
+    RecyclerView eventsRecyclerView;
 
     public static int currentOrgId;
     private Context context;
     private OrganizationModel organizationModel;
-    private EventsListAdapter eventsListAdapter;
+    private EventsAdapter eventsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,7 +167,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
     }
 
-
     public void getUpcomingEvents(){
         LambencyAPIHelper.getInstance().getEventsByOrg(UserModel.myUserModel.getOauthToken(), organizationModel.getOrgID() + "").enqueue(new Callback<List<EventModel>>() {
             @Override
@@ -181,10 +184,15 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     System.out.println("Got list of org events");
 
                     ArrayList<EventModel> events = new ArrayList<>(list);
-                    eventsListAdapter = new EventsListAdapter(context, events);
+                    eventsAdapter = new EventsAdapter(context, events);
+                    eventsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    eventsRecyclerView.setAdapter(eventsAdapter);
+
+
+                    /*eventsListAdapter = new EventsListAdapter(context, R.id.card_event, events);
                     eventListView.setAdapter(eventsListAdapter);
 
-
+                    LayoutHelper.setListViewHeightBasedOnChildren(eventListView);*/
                 }
             }
 

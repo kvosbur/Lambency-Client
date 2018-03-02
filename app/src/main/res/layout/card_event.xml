@@ -37,36 +37,52 @@
                 android:layout_height="wrap_content"
                 android:text="Event Name"
                 android:textColor="#000000"
-                android:textSize="14sp" />
+                android:textSize="18sp"
+                />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/descriptionOfEvent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/nameOfEvent"
-            android:layout_toRightOf="@+id/pictureOfEvent"
-            android:text="Here is info about the event, you should come! It will be great! Come support your community!"
-            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/dateOfEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/pictureOfEvent"
-            android:layout_below="@id/descriptionOfEvent"
+            android:layout_below="@id/nameOfEvent"
 
-            android:text="Date: 03/10/1998 "/>
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp"
+
+            android:text="03/10/1998 "/>
 
         <TextView
             android:id="@+id/timeOfEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Time: 3 - 5 pm"
-            android:layout_alignParentRight="true"
-            android:paddingRight="10dp"
-            android:layout_below="@id/descriptionOfEvent"/>
+            android:text="3 - 5 pm"
+            android:layout_toRightOf="@id/dateOfEvent"
+            android:layout_below="@id/nameOfEvent"
 
-    </RelativeLayout>
+            android:textColor="@color/colorAccent"
+
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:id="@+id/descriptionOfEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dateOfEvent"
+            android:layout_toRightOf="@+id/pictureOfEvent"
+            android:text="Here is info about the event, you should come! It will be great! Come support your community!"
+            android:maxLines="3"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:layout_marginBottom="3dp"/>
+
+
+        </RelativeLayout>
+
 
 </android.support.v7.widget.CardView>
