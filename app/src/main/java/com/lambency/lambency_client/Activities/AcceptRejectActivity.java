@@ -13,6 +13,7 @@ import com.lambency.lambency_client.Adapters.UserListAdapter;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.SwipeController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +53,12 @@ public class AcceptRejectActivity extends AppCompatActivity {
         */
 
         userList.add(new UserModel("Evan", "Honeysett", "ehoneyse@purdue.edu", null, null, null, null, 0, 0, ""));
+        userList.add(new UserModel("Barack", "Obama", "potus@wh.gov", null, null, null, null, 0, 0, ""));
 
-        //itemTouchHelper.attachToRecyclerView(mRecyclerView);
+        SwipeController swipeController = new SwipeController();
+
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(mRecyclerView);
 
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
