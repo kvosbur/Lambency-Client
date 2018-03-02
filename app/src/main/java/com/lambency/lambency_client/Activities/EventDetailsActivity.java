@@ -445,6 +445,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
         context.startActivity(intent);
     }
 
+    //start methods for getting current location
     @Override
     protected void onResume() {
         super.onResume();
@@ -538,4 +539,5 @@ public class EventDetailsActivity extends AppCompatActivity implements
             Log.e("Error", "Location services connection failed with code " + connectionResult.getErrorCode());
         }
     }
+    //end methods for getting current location
 }
