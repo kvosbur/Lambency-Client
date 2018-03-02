@@ -59,6 +59,9 @@
             android:name=".Activities.OrgCreationActivity"
             android:exported="true" />
         <activity
+            android:name=".Activities.AcceptRejectActivity"
+            android:exported="true" />
+        <activity
             android:name=".Activities.SearchActivity"
             android:exported="true"
             android:noHistory="true"

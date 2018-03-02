@@ -13,10 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.lambency.lambency_client.Activities.AcceptRejectActivity;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.EventCreationActivity;
 import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.OrgCreationActivity;
+import com.lambency.lambency_client.Adapters.AcceptRejectAdapter;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SharedPrefsHelper;
@@ -50,6 +52,9 @@ public class MyLambencyFragment extends Fragment {
 
     @BindView(R.id.logoutButton)
     Button logout;
+
+    @BindView(R.id.acceptRejectButton)
+    Button acceptReject;
 
     private OnFragmentInteractionListener mListener;
 
@@ -105,6 +110,13 @@ public class MyLambencyFragment extends Fragment {
         createEventButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EventCreationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        acceptReject.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AcceptRejectActivity.class);
                 startActivity(intent);
             }
         });

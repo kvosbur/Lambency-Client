@@ -19,6 +19,13 @@
         />
 
     <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/acceptRejectButton"
+        android:text="Accept or reject "
+        android:layout_centerHorizontal="true" />
+
+    <Button
         android:layout_marginTop="100dp"
         android:id="@+id/createEventButton"
         android:layout_width="wrap_content"
