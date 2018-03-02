@@ -1,17 +1,27 @@
 package com.lambency.lambency_client.Activities;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +38,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.lambency.lambency_client.Models.EventModel;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
@@ -52,7 +66,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EventDetailsActivity extends AppCompatActivity {
+public class EventDetailsActivity extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     String eventName = "";
 
 
@@ -104,11 +119,34 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private EventModel event;
     private Context context;
+    String addressForGmaps;
+    double latitude, longitude;
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    private double currentLatitude;
+    private double currentLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
+
+        //for getting current address
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                // The next two lines tell the new client that “this” current class will handle connection stuff
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                //fourth line adds the LocationServices API endpoint from GooglePlayServices
+                .addApi(LocationServices.API)
+                .build();
+
+        // Create the LocationRequest object
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
+                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+        //end -farhan
 
         ButterKnife.bind(this);
         context = this;
@@ -125,15 +163,14 @@ public class EventDetailsActivity extends AppCompatActivity {
         text = findViewById(R.id.joinButtonText);
 
 
+        linearLayout.setOnClickListener(new View.OnClickListener() {
 
-        linearLayout.setOnClickListener(new View.OnClickListener(){
-
-            public void onClick(View v){
+            public void onClick(View v) {
                 ImageView imageView = findViewById(R.id.check);
 
                 text = findViewById(R.id.joinButtonText);
-                if(text.getText().toString().equals("Join Event")){
-                    LambencyAPIHelper.getInstance().getRegisterEvent(UserModel.myUserModel.getOauthToken(),""+event_id).enqueue(new retrofit2.Callback<Integer>() {
+                if (text.getText().toString().equals("Join Event")) {
+                    LambencyAPIHelper.getInstance().getRegisterEvent(UserModel.myUserModel.getOauthToken(), "" + event_id).enqueue(new retrofit2.Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             if (response.body() == null || response.code() != 200) {
@@ -142,31 +179,29 @@ public class EventDetailsActivity extends AppCompatActivity {
                             }
                             //when response is back
                             Integer ret = response.body();
-                            if(ret == 0){
+                            if (ret == 0) {
                                 System.out.println("successfully registerd for an event");
                                 UserModel.myUserModel.registerForEvent(event_id);
-                                System.out.println("REgistering for an event: "+event_id);
-                                System.out.println("Is it joined: "+UserModel.myUserModel.isRegisterdForEvent(event_id));
+                                System.out.println("REgistering for an event: " + event_id);
+                                System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
                                 Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG).show();
                                 text.setText("Joined");
                                 checkMark.setVisibility(View.VISIBLE);
 
-                            }
-                            else if (ret == 1){
+                            } else if (ret == 1) {
                                 System.out.println("failed to find user or organization");
                                 Toast.makeText(getApplicationContext(), "No Event to follow", Toast.LENGTH_LONG).show();
-                            }
-                            else if (ret == 2){
+                            } else if (ret == 2) {
                                 System.out.println("undetermined error");
                                 Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
-                            }
-                            else if(ret == 3){
+                            } else if (ret == 3) {
                                 UserModel.myUserModel.registerForEvent(event_id);
-                                System.out.println("REgistering for an event: "+event_id);
-                                System.out.println("Is it joined: "+UserModel.myUserModel.isRegisterdForEvent(event_id));
+                                System.out.println("REgistering for an event: " + event_id);
+                                System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
                                 Toast.makeText(getApplicationContext(), "Already registered for an event", Toast.LENGTH_LONG).show();
                             }
                         }
+
                         @Override
                         public void onFailure(Call<Integer> call, Throwable throwable) {
                             //when failure
@@ -174,8 +209,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
                         }
                     });
-                }
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "You cant actually unfollow. Sorry", Toast.LENGTH_LONG).show();
                     text.setText("Join Event");
                 }
@@ -194,7 +228,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 //        });
 
 
-
         final Button shareButton = findViewById(R.id.shareEvent);
 
         shareButton.setOnClickListener(new View.OnClickListener() {
@@ -210,29 +243,42 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null){
+        if (bundle != null) {
             //TODO error check
             event_id = bundle.getInt("event_id");
             callRetrofit(event_id);
         }
 
-        System.out.println("This event id is: "+event_id);
-        if(UserModel.myUserModel.isRegisterdForEvent(event_id)){
+        System.out.println("This event id is: " + event_id);
+        if (UserModel.myUserModel.isRegisterdForEvent(event_id)) {
             text.setText("Joined");
             checkMark.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             text.setText("Join Event");
             checkMark.setVisibility(View.GONE);
         }
+
+        //Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
+
+        //redirection to google maps when address is clicked
+        addressView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //lat and long of starting and destination
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?saddr="+currentLatitude+","+currentLongitude+
+                                "&daddr="+latitude+","+longitude));
+                        startActivity(intent);
+            }
+        });
     }
 
-    private void setTitle(String title){
+    private void setTitle(String title) {
         CollapsingToolbarLayout mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         mCollapsingToolbarLayout.setTitle(title);
     }
 
-    private void callRetrofit(final int event_id){
+    private void callRetrofit(final int event_id) {
 
 
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
@@ -242,23 +288,25 @@ public class EventDetailsActivity extends AppCompatActivity {
                     System.out.println("ERROR!!!!!");
                 }
                 //when response is back
-                EventModel eventModel= response.body();
-                if(eventModel == null){
+                EventModel eventModel = response.body();
+                if (eventModel == null) {
                     System.out.println("failed to event");
-                }
-                else{
+                } else {
                     System.out.println("Got event data!");
 
                     setTitle(eventModel.getName());
                     eventName = eventModel.getName();
 
                     String currDate = TimeHelper.dateFromTimestamp(eventModel.getStart());
-                    currDate = currDate.substring(0, currDate.length()-4);
+                    currDate = currDate.substring(0, currDate.length() - 4);
                     currDate += "18";
 
                     dateView.setText(currDate); //TimeHelper.dateFromTimestamp(eventModel.getStart()));
                     descriptionView.setText(eventModel.getDescription());
                     timeView.setText(TimeHelper.hourFromTimestamp(eventModel.getStart()) + " - " + TimeHelper.hourFromTimestamp(eventModel.getEnd()));
+                    addressForGmaps = eventModel.getLocation();
+                    latitude = eventModel.getLattitude();
+                    longitude = eventModel.getLongitude();
                     addressView.setText(eventModel.getLocation());
 
                     RequestOptions requestOptions = new RequestOptions();
@@ -284,7 +332,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                     getOrgInfo(eventModel.getOrg_id());
 
-                    if(! UserModel.myUserModel.getMyOrgs().contains(eventModel.getOrg_id())){
+                    if (!UserModel.myUserModel.getMyOrgs().contains(eventModel.getOrg_id())) {
                         editEventButton.setVisibility(View.GONE);
                     }
 
@@ -293,7 +341,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                     progressBar.setVisibility(View.GONE);
 
-                    if(UserModel.myUserModel.getMyOrgs().contains(event.getOrg_id())) {
+                    if (UserModel.myUserModel.getMyOrgs().contains(event.getOrg_id())) {
                         //if(creator) {
                         whosAttendingButton.setVisibility(View.VISIBLE);
                         linearLayout.setVisibility(View.GONE);
@@ -311,7 +359,8 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void getOrgInfo(int org_id){
+
+    private void getOrgInfo(int org_id) {
         LambencyAPIHelper.getInstance().getOrgSearchByID("" + org_id).enqueue(new Callback<OrganizationModel>() {
             @Override
             public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
@@ -320,9 +369,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                     return;
                 }
                 //when response is back
-                OrganizationModel organization= response.body();
+                OrganizationModel organization = response.body();
 
-                if(organization == null){
+                if (organization == null) {
                     System.out.println("failed to find organization");
                     Toast.makeText(getApplicationContext(), "No Organization Object", Toast.LENGTH_LONG).show();
                     return;
@@ -344,7 +393,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private void shareIt() {
-    //sharing implementation here
+        //sharing implementation here
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         String shareBody = eventName + ", This is a cool event I found on Lambency and I think you will be interested in it.";
@@ -365,20 +414,20 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.whosAttending)
-    public void handleWhosAttendingClick(){
-        if(event != null){
+    public void handleWhosAttendingClick() {
+        if (event != null) {
             Bundle bundle = new Bundle();
             bundle.putInt("event_id", event.getEvent_id());
             Intent intent = new Intent(this, ListUserActivity.class);
             intent.putExtras(bundle);
             startActivity(intent);
-        }else{
+        } else {
             System.out.println("Error - no event found.");
         }
     }
 
     @OnClick(R.id.editEventButton)
-    public void handleEditClick(){
+    public void handleEditClick() {
         Bundle bundle = new Bundle();
         bundle.putInt("event_id", event.getEvent_id());
         Intent intent = new Intent(this, EventCreationActivity.class);
@@ -387,7 +436,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.organizationLayout)
-    public void handleOrgClick(){
+    public void handleOrgClick() {
         Intent intent = new Intent(context, OrganizationDetailsActivity.class);
         Bundle bundle = new Bundle();
 
@@ -396,4 +445,97 @@ public class EventDetailsActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Now lets connect to the API
+        mGoogleApiClient.connect();
+    }
+
+    /**
+     * If locationChanges change lat and long
+     *
+     *
+     * @param location
+     */
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLatitude = location.getLatitude();
+        currentLongitude = location.getLongitude();
+
+        Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    /**
+     * If connected get lat and long
+     *
+     */
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        @SuppressLint("MissingPermission") Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        /*if (location == null) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        } else {
+            //If everything went fine lets get latitude and longitude
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+
+            Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+        }*/
+        //If everything went fine lets get latitude and longitude
+        currentLatitude = location.getLatitude();
+        currentLongitude = location.getLongitude();
+
+        Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        /*
+             * Google Play services can resolve some errors it detects.
+             * If the error has a resolution, try sending an Intent to
+             * start a Google Play services activity that can resolve
+             * error.
+             */
+        if (connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+                    /*
+                     * Thrown if Google Play services canceled the original
+                     * PendingIntent
+                     */
+            } catch (IntentSender.SendIntentException e) {
+                // Log the error
+                e.printStackTrace();
+            }
+        } else {
+                /*
+                 * If no resolution is available, display a dialog to the
+                 * user with the error.
+                 */
+            Log.e("Error", "Location services connection failed with code " + connectionResult.getErrorCode());
+        }
+    }
 }
