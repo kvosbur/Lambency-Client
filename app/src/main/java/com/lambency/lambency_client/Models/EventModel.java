@@ -16,6 +16,8 @@ public class EventModel {
     private int event_id;
     private double latitude;
     private double longitude;
+    private String clockInCode;
+    private String clockOutCode;
 
     static int x = 54545;
     static Timestamp testTime = new Timestamp((long)x);
@@ -185,5 +187,13 @@ public class EventModel {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getClockInCode() {
+        return clockInCode;
+    }
+
+    public String getClockOutCode() {
+        return clockOutCode;
     }
 }
