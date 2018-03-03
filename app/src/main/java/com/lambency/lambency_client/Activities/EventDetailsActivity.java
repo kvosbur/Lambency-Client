@@ -249,13 +249,18 @@ public class EventDetailsActivity extends AppCompatActivity implements
             callRetrofit(event_id);
         }
 
-        System.out.println("This event id is: " + event_id);
-        if (UserModel.myUserModel.isRegisterdForEvent(event_id)) {
-            text.setText("Joined");
-            checkMark.setVisibility(View.VISIBLE);
-        } else {
-            text.setText("Join Event");
-            checkMark.setVisibility(View.GONE);
+        if (UserModel.myUserModel != null) {
+            System.out.println("This event id is: " + event_id);
+            if (UserModel.myUserModel.isRegisterdForEvent(event_id)) {
+                text.setText("Joined");
+                checkMark.setVisibility(View.VISIBLE);
+            } else {
+                text.setText("Join Event");
+                checkMark.setVisibility(View.GONE);
+            }
+        }
+        else{
+            text.setText("Login to see");
         }
 
         //Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
