@@ -128,8 +128,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.joinButton);
         text = findViewById(R.id.joinButtonText);
 
-
-
         linearLayout.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v){

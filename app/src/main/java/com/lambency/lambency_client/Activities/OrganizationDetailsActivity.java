@@ -8,11 +8,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -20,15 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Adapters.EventsAdapter;
-import com.lambency.lambency_client.Adapters.EventsListAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
-import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
-import com.lambency.lambency_client.Utils.LayoutHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +35,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class OrganizationDetailsActivity extends AppCompatActivity {
 
@@ -51,6 +43,9 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+
+    @BindView(R.id.upcomingEventsProgress)
+    ProgressBar upcomingEventsProgress;
 
     @BindView(R.id.followUnFollow)
     CheckBox checkBox;
@@ -73,8 +68,15 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.orgRequestJoin)
     Button requestJoin;
 
+    @BindView(R.id.upcomingEventsContainer)
+    RelativeLayout upcomingEventsContainer;
+
     @BindView(R.id.eventsRecyclerView)
     RecyclerView eventsRecyclerView;
+
+    @BindView(R.id.showAllButton)
+    Button showAllButton;
+
 
     public static int currentOrgId;
     private Context context;
@@ -168,6 +170,11 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     }
 
     public void getUpcomingEvents(){
+
+        showAllButton.setVisibility(View.GONE);
+        upcomingEventsContainer.setVisibility(View.GONE);
+        upcomingEventsContainer.setVisibility(View.VISIBLE);
+
         LambencyAPIHelper.getInstance().getEventsByOrg(UserModel.myUserModel.getOauthToken(), organizationModel.getOrgID() + "").enqueue(new Callback<List<EventModel>>() {
             @Override
             public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
@@ -184,15 +191,24 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     System.out.println("Got list of org events");
 
                     ArrayList<EventModel> events = new ArrayList<>(list);
+                    if(list.size() > 3){
+                        events = new ArrayList<>(list.subList(0, 3));
+                    }else{
+                        events = new ArrayList<>(list);
+                    }
+
                     eventsAdapter = new EventsAdapter(context, events);
                     eventsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                     eventsRecyclerView.setAdapter(eventsAdapter);
 
+                    upcomingEventsContainer.setVisibility(View.VISIBLE);
+                    upcomingEventsProgress.setVisibility(View.GONE);
 
-                    /*eventsListAdapter = new EventsListAdapter(context, R.id.card_event, events);
-                    eventListView.setAdapter(eventsListAdapter);
-
-                    LayoutHelper.setListViewHeightBasedOnChildren(eventListView);*/
+                    if(events.size() <= 3){
+                        showAllButton.setVisibility(View.GONE);
+                    }else{
+                        showAllButton.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
@@ -392,5 +408,13 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             }
         });
         return;
+    }
+
+
+    @OnClick(R.id.showAllButton)
+    public void handleShowAllClick(){
+        Intent intent = new Intent(context, ListEventsActivity.class);
+        intent.putExtra("org_id", organizationModel.getOrgID());
+        startActivity(intent);
     }
 }
