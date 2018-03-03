@@ -132,6 +132,11 @@ public class EventDetailsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
 
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        Uri data = intent.getData();
+
+
         //TODO; you can do stuff with this data
         /*Intent intent = getIntent();
         String action = intent.getAction();
@@ -248,9 +253,14 @@ public class EventDetailsActivity extends AppCompatActivity implements
         });
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
+        if (bundle != null || data != null) {
             //TODO error check
-            event_id = bundle.getInt("event_id");
+            if(data == null) {
+                event_id = bundle.getInt("event_id");
+            }else{
+                String event_string = data.getQueryParameter("eventid");
+                event_id = Integer.parseInt(event_string);
+            }
             callRetrofit(event_id);
         }
 
