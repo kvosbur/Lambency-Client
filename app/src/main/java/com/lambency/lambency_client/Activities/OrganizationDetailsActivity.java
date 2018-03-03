@@ -87,6 +87,14 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        for(int i = 0; i < UserModel.myUserModel.getMyOrgs().size(); i++)
+        {
+            if(UserModel.myUserModel.getMyOrgs().get(i) == currentOrgId)
+            {
+                requestJoin.setText("Leave Organization");
+            }
+        }
+
         boolean followed = false;
         for(int i = 0; i < UserModel.myUserModel.getFollowingOrgs().size(); i++)
         {
@@ -371,11 +379,11 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                                         System.out.println("Database error caught.");
                                     }
                                     else if (ret == 1){
-                                        Toast.makeText(getApplicationContext(), "Failed to Leave: Unkown User.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "Failed to Leave: Unknown User.", Toast.LENGTH_LONG).show();
                                         System.out.println("User not found");
                                     }
                                     else if (ret == 2){
-                                        Toast.makeText(getApplicationContext(), "Failed to Leave: Unkown Org.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "Failed to Leave: Unknown Org.", Toast.LENGTH_LONG).show();
                                         System.out.println("Org does not exist");
                                     }
                                     else if(ret == 3){
