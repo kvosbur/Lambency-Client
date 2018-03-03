@@ -324,7 +324,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
     @OnClick(R.id.orgRequestJoin)
     public void onClickRequest(){
-        if(requestJoin.getText().equals("Leave Organization"))
+        if(requestJoin.getText().equals("Leave Organization") || requestJoin.getText().equals("Cancel Request"))
         {
             AlertDialog alertDialog = new AlertDialog.Builder(OrganizationDetailsActivity.this).create();
             LayoutInflater factory = LayoutInflater.from(OrganizationDetailsActivity.this);
@@ -346,7 +346,51 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Leave",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getApplicationContext(), "You have successfully left", Toast.LENGTH_LONG).show();
+                            final String JoinText = "Join Organization";
+                            LambencyAPIHelper.getInstance().postLeaveOrganization(UserModel.myUserModel.getOauthToken(),currentOrgId).enqueue(new Callback<Integer>() {
+                                @Override
+                                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                    if (response.body() == null || response.code() != 200) {
+                                        Toast.makeText(getApplicationContext(), "Failed to Leave: Connection Error.", Toast.LENGTH_LONG).show();
+                                        System.out.println("ERROR!!!!!");
+                                        return;
+                                    }
+                                    //when response is back
+                                    Integer ret = response.body();
+                                    if(ret == 0){
+                                        Toast.makeText(getApplicationContext(), "You have successfully left", Toast.LENGTH_LONG).show();
+                                        requestJoin.setText(JoinText);
+                                        System.out.println("successfully left organization");
+                                    }
+                                    else if(ret == 100){
+                                        Toast.makeText(getApplicationContext(), "Your request has been terminated.", Toast.LENGTH_LONG).show();
+                                        System.out.println("Join request canceled");
+                                    }
+                                    else if (ret == -1){
+                                        Toast.makeText(getApplicationContext(), "Failed to Leave: Database Error.", Toast.LENGTH_LONG).show();
+                                        System.out.println("Database error caught.");
+                                    }
+                                    else if (ret == 1){
+                                        Toast.makeText(getApplicationContext(), "Failed to Leave: Unkown User.", Toast.LENGTH_LONG).show();
+                                        System.out.println("User not found");
+                                    }
+                                    else if (ret == 2){
+                                        Toast.makeText(getApplicationContext(), "Failed to Leave: Unkown Org.", Toast.LENGTH_LONG).show();
+                                        System.out.println("Org does not exist");
+                                    }
+                                    else if(ret == 3){
+                                        Toast.makeText(getApplicationContext(), "Failed to Leave: You are not a member.", Toast.LENGTH_LONG).show();
+                                        System.out.println("Not a member of the organization, so can not leave.");
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Integer> call, Throwable throwable) {
+                                    Toast.makeText(getApplicationContext(), "Failed to Leave: Connection Error.", Toast.LENGTH_LONG).show();
+                                    System.out.println("FAILED CALL");
+                                }
+                            });
+
                             dialog.dismiss();
                         }
                     });
@@ -374,7 +418,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     System.out.println(status);
                     if(status == 0){
                         Toast.makeText(getApplicationContext(), "Successfully requested to join", Toast.LENGTH_LONG).show();
-                        requestJoin.setText("Request pending");
+                        requestJoin.setText("Cancel Request");
                     }
                     else if(status == 1){
                         Toast.makeText(getApplicationContext(), "Error requesting to join", Toast.LENGTH_LONG).show();

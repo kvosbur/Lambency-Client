@@ -57,6 +57,9 @@ public interface LambencyAPI {
     @POST("User/requestJoinOrg")
     Call<Integer> postJoinOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgId") int orgID);
 
+    @POST("User/leaveOrg")
+    Call<Integer> postLeaveOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
+
     @GET("User/followOrg")
     Call<Integer> getFollowOrg(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID);
 
