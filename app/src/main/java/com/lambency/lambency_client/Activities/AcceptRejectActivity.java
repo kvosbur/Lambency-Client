@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Activities;
 
+import android.graphics.Canvas;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Adapters.AcceptRejectAdapter;
 import com.lambency.lambency_client.Adapters.UserListAdapter;
@@ -14,6 +16,7 @@ import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SwipeController;
+import com.lambency.lambency_client.Utils.SwipeControllerActions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,7 @@ public class AcceptRejectActivity extends AppCompatActivity {
     private AcceptRejectAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ItemTouchHelper itemTouchHelper;
+    private SwipeController swipeController;
 
     List<UserModel> userList = new ArrayList<>();
 
@@ -55,7 +59,20 @@ public class AcceptRejectActivity extends AppCompatActivity {
         userList.add(new UserModel("Evan", "Honeysett", "ehoneyse@purdue.edu", null, null, null, null, 0, 0, ""));
         userList.add(new UserModel("Barack", "Obama", "potus@wh.gov", null, null, null, null, 0, 0, ""));
 
-        SwipeController swipeController = new SwipeController();
+        setupRecyclerView();
+        //SwipeController swipeController = new SwipeController();
+        swipeController = new SwipeController(new SwipeControllerActions() {
+            @Override
+            public void onRightClicked(int position) {
+                Toast.makeText(getApplicationContext(), "Accepted user!", Toast.LENGTH_LONG).show();
+            }
+
+            public void onLeftClicked(int position) {
+                userList.remove(position);
+                mAdapter.notifyDataSetChanged(); // how we update
+                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+            }
+        });
 
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
         itemTouchhelper.attachToRecyclerView(mRecyclerView);
@@ -116,5 +133,15 @@ public class AcceptRejectActivity extends AppCompatActivity {
             default:
                 return true;
         }
+    }
+
+    private void setupRecyclerView() {
+
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                swipeController.onDraw(c);
+            }
+        });
     }
 }
