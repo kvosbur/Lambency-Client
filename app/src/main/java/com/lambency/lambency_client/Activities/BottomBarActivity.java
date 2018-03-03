@@ -78,7 +78,7 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         switchToFragment3();
 
         BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) bar.getChildAt(0);
-        View v = bottomNavigationMenuView.getChildAt(2);
+        View v = bottomNavigationMenuView.getChildAt(1);
         BottomNavigationItemView itemView = (BottomNavigationItemView) v;
 
         View badge = LayoutInflater.from(this)
