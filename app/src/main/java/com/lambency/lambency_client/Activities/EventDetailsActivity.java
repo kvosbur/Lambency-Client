@@ -132,6 +132,11 @@ public class EventDetailsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
 
+        //TODO; you can do stuff with this data
+        /*Intent intent = getIntent();
+        String action = intent.getAction();
+        Uri data = intent.getData();*/
+
         //for getting current address
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 // The next two lines tell the new client that “this” current class will handle connection stuff
