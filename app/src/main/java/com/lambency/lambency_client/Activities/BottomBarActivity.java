@@ -19,7 +19,9 @@ import android.widget.TextView;
 
 
 import com.lambency.lambency_client.Fragments.EventsMainFragment;
+import com.lambency.lambency_client.Fragments.MyLambencyEventsFragment;
 import com.lambency.lambency_client.Fragments.MyLambencyFragment;
+import com.lambency.lambency_client.Fragments.MyLambencyOrgsFragment;
 import com.lambency.lambency_client.Fragments.ProfileFragment;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
@@ -45,7 +47,7 @@ import com.lambency.lambency_client.R;
 import butterknife.BindView;
 
 
-public class BottomBarActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener{
+public class BottomBarActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener, MyLambencyEventsFragment.OnFragmentInteractionListener, MyLambencyOrgsFragment.OnFragmentInteractionListener{
 
 
     public static BottomNavigationView bottomNavigationView;
@@ -145,5 +147,10 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
     public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
