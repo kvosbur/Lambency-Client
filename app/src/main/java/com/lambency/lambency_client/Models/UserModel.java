@@ -13,6 +13,7 @@ public class UserModel {
     private List<Integer> eventsAttending;
     private List<Integer> followingOrgs;
     private List<Integer> joinedOrgs;
+    private List<Integer> requestedJoinOrgIds; // orgIDs for all join requests that are still unconfirmed
     private int userId;
     private int hoursWorked;
     private String oauthToken;
@@ -153,6 +154,21 @@ public class UserModel {
         return oauthToken;
     }
 
+    public List<Integer> getRequestedJoinOrgIds() {
+        if(requestedJoinOrgIds == null){
+            requestedJoinOrgIds = new ArrayList<>();
+        }
+        return requestedJoinOrgIds;
+    }
+
+    public void setRequestedJoinOrgIds(List<Integer> requestedJoinOrgId) {
+        if(requestedJoinOrgId == null){
+            System.out.println("WILL NOT SET JOIN REQUESTS TO NULL.");
+            return;
+        }
+        this.requestedJoinOrgIds = requestedJoinOrgId;
+    }
+
     public void organizeGroup(int group_id){
         myOrgs.add(group_id);
     }
@@ -173,6 +189,15 @@ public class UserModel {
             eventsAttending = new ArrayList<>();
         }
         return eventsAttending.contains(event_id);
+
+    }
+
+    public void requestToJoinOrganization(int org_id){
+        requestedJoinOrgIds.add(org_id);
+    }
+
+    public void removeRequestToJoinOrganization(int org_id){
+        requestedJoinOrgIds.remove(new Integer (org_id));
     }
 
     public String toString(){
@@ -230,6 +255,15 @@ public class UserModel {
 
         return result;
     }
+
+    public boolean equals(Object o){
+        if(o.getClass().equals(UserModel.class)){
+            return(((UserModel)o).getUserId() == getUserId());
+        }
+        return false;
+    }
+
+
     /**
      *
      * @param oAuthCode oAuthCode for the user
