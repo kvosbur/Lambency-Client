@@ -117,7 +117,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.check)
     ImageView checkMark;
 
-    private EventModel event;
+    private EventModel event,eventModel;
     private Context context;
     String addressForGmaps;
     double latitude, longitude;
@@ -131,6 +131,11 @@ public class EventDetailsActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
+
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        Uri data = intent.getData();
+
 
         //for getting current address
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -238,24 +243,34 @@ public class EventDetailsActivity extends AppCompatActivity implements
                 /*Intent myIntent = new Intent(EventDetailsActivity.this,
                         smsActivity.class);
                 startActivity(myIntent);*/
-                shareIt();
+                shareIt(eventModel);
             }
         });
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
+        if (bundle != null || data != null) {
             //TODO error check
-            event_id = bundle.getInt("event_id");
+            if(data == null) {
+                event_id = bundle.getInt("event_id");
+            }else{
+                String event_string = data.getQueryParameter("eventid");
+                event_id = Integer.parseInt(event_string);
+            }
             callRetrofit(event_id);
         }
 
-        System.out.println("This event id is: " + event_id);
-        if (UserModel.myUserModel.isRegisterdForEvent(event_id)) {
-            text.setText("Joined");
-            checkMark.setVisibility(View.VISIBLE);
-        } else {
-            text.setText("Join Event");
-            checkMark.setVisibility(View.GONE);
+        if (UserModel.myUserModel != null) {
+            System.out.println("This event id is: " + event_id);
+            if (UserModel.myUserModel.isRegisterdForEvent(event_id)) {
+                text.setText("Joined");
+                checkMark.setVisibility(View.VISIBLE);
+            } else {
+                text.setText("Join Event");
+                checkMark.setVisibility(View.GONE);
+            }
+        }
+        else{
+            text.setText("Login to see");
         }
 
         //Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
@@ -288,7 +303,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     System.out.println("ERROR!!!!!");
                 }
                 //when response is back
-                EventModel eventModel = response.body();
+                eventModel = response.body();
                 if (eventModel == null) {
                     System.out.println("failed to event");
                 } else {
@@ -332,8 +347,10 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                     getOrgInfo(eventModel.getOrg_id());
 
-                    if (!UserModel.myUserModel.getMyOrgs().contains(eventModel.getOrg_id())) {
-                        editEventButton.setVisibility(View.GONE);
+                    if (UserModel.myUserModel!=null) {
+                        if (!UserModel.myUserModel.getMyOrgs().contains(eventModel.getOrg_id())) {
+                            editEventButton.setVisibility(View.GONE);
+                        }
                     }
 
                     event = eventModel;
@@ -341,10 +358,12 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                     progressBar.setVisibility(View.GONE);
 
-                    if (UserModel.myUserModel.getMyOrgs().contains(event.getOrg_id())) {
-                        //if(creator) {
-                        whosAttendingButton.setVisibility(View.VISIBLE);
-                        linearLayout.setVisibility(View.GONE);
+                    if (UserModel.myUserModel!=null) {
+                        if (UserModel.myUserModel.getMyOrgs().contains(event.getOrg_id())) {
+                            //if(creator) {
+                            whosAttendingButton.setVisibility(View.VISIBLE);
+                            linearLayout.setVisibility(View.GONE);
+                        }
                     }
                 }
             }
@@ -392,11 +411,13 @@ public class EventDetailsActivity extends AppCompatActivity implements
         });
     }
 
-    private void shareIt() {
+    private void shareIt(EventModel eventModel) {
         //sharing implementation here
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        String shareBody = eventName + ", This is a cool event I found on Lambency and I think you will be interested in it.";
+        String shareBody = eventName + ", This is a cool event I found on Lambency and I think you will be interested in it." +
+                "this is the link to join the event have a look\n" +
+                "http://www.mylambencyclient.com?eventid=" + eventModel.getEvent_id() ;
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Lambency event shared");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
