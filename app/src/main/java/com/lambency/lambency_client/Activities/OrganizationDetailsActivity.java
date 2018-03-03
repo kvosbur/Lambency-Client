@@ -372,6 +372,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                                     }
                                     else if(ret == 100){
                                         Toast.makeText(getApplicationContext(), "Your request has been terminated.", Toast.LENGTH_LONG).show();
+                                        requestJoin.setText(JoinText);
                                         System.out.println("Join request canceled");
                                     }
                                     else if (ret == -1){
