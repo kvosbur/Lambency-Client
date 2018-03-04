@@ -4,11 +4,25 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
+import com.lambency.lambency_client.Adapters.EventsAdapter;
+import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.ImageHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +43,21 @@ public class MyLambencyEventsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private EventsAdapter myEventsAdapter;
+    private EventsAdapter registeredEventsAdapter;
+
+    @BindView(R.id.registeredEventsRecyclerView)
+    RecyclerView registeredEventsRecyclerView;
+
+    @BindView(R.id.myEventsRecyclerView)
+    RecyclerView myEventsRecyclerView;
+
+
+    @BindView(R.id.registeredEventsArrow)
+    ImageView registeredEventsArrow;
+
+    @BindView(R.id.myEventsArrow)
+    ImageView myEventsArrow;
 
     public MyLambencyEventsFragment() {
         // Required empty public constructor
@@ -64,8 +93,26 @@ public class MyLambencyEventsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_lambency_events, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_my_lambency_events, container, false);
+
+        ButterKnife.bind(this ,view);
+
+        List<EventModel> events = new ArrayList<EventModel>();
+        for (int i = 0; i < 10; i++) {
+            events.add(new EventModel());
+        }
+
+        myEventsAdapter = new EventsAdapter(getContext(), events);
+        myEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        myEventsRecyclerView.setAdapter(myEventsAdapter);
+
+        registeredEventsAdapter = new EventsAdapter(getContext(), events);
+        registeredEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        registeredEventsRecyclerView.setAdapter(registeredEventsAdapter);
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -106,4 +153,28 @@ public class MyLambencyEventsFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
+    @OnClick(R.id.registeredEventsTitleLayout)
+    public void handleRegisteredEventsTitleClick(){
+        if(registeredEventsRecyclerView.getVisibility() == View.VISIBLE){
+            registeredEventsArrow.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
+            registeredEventsRecyclerView.setVisibility(View.GONE);
+        }else{
+            registeredEventsRecyclerView.setVisibility(View.VISIBLE);
+            registeredEventsArrow.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
+        }
+    }
+
+    @OnClick(R.id.myEventsTitleLayout)
+    public void handleMyEventsTitleClick(){
+        if(myEventsRecyclerView.getVisibility() == View.VISIBLE){
+            myEventsArrow.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
+            myEventsRecyclerView.setVisibility(View.GONE);
+        }else{
+            myEventsArrow.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
+            myEventsRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
 }

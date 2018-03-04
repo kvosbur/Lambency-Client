@@ -110,7 +110,6 @@ public class MyLambencyFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_my_lambency, container, false);
         ButterKnife.bind(this, view);
 
-
         tabLayout.addTab(tabLayout.newTab().setText("Events"));
         tabLayout.addTab(tabLayout.newTab().setText("Organizations"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
