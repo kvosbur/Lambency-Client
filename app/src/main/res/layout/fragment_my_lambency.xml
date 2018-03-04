@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/eventsMainLayout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -23,6 +24,42 @@
         android:layout_height="fill_parent"
         android:layout_below="@id/tabLayout" />
 
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/fabMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="5dp"
+        app:fab_addButtonColorNormal="@color/colorAccent"
+        app:fab_addButtonColorPressed="@color/colorAccent"
+        app:fab_labelsPosition="left"
+        app:fab_labelStyle="@color/lightGray"
+        >
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/eventFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            fab:fab_title="Create Event"
+            app:fab_size="mini"
+            app:fab_colorPressed="@color/lightGray"
+            android:src="@drawable/ic_event_black_24dp"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/orgFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_size="mini"
+            fab:fab_title="Create Organization"
+            app:fab_colorPressed="@color/lightGray"
+            android:src="@drawable/ic_supervisor_account_black_24dp"
+            />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
     <!--
 

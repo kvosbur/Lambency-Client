@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.EventCreationActivity;
 import com.lambency.lambency_client.Activities.LoginActivity;
@@ -27,6 +29,7 @@ import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -54,6 +57,15 @@ public class MyLambencyFragment extends Fragment {
 
     @BindView(R.id.viewPager)
     ViewPager viewPager;
+
+    @BindView(R.id.fabMenu)
+    FloatingActionsMenu floatingActionsMenu;
+
+    @BindView(R.id.eventFab)
+    FloatingActionButton eventFab;
+
+    @BindView(R.id.orgFab)
+    FloatingActionButton orgFab;
 
     private OnFragmentInteractionListener mListener;
     private MyLambencyTabsAdapter myLambencyTabsAdapter;
@@ -99,7 +111,6 @@ public class MyLambencyFragment extends Fragment {
         ButterKnife.bind(this, view);
 
 
-
         tabLayout.addTab(tabLayout.newTab().setText("Events"));
         tabLayout.addTab(tabLayout.newTab().setText("Organizations"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -128,22 +139,7 @@ public class MyLambencyFragment extends Fragment {
         });
 
         /*
-        Button createOrgButton = view.findViewById(R.id.createOrgButton);
-        createOrgButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), OrgCreationActivity.class);
-                startActivity(intent);
-            }
-        });
 
-
-        Button createEventButton = view.findViewById(R.id.createEventButton);
-        createEventButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), EventCreationActivity.class);
-                startActivity(intent);
-            }
-        });
 
         if(UserModel.myUserModel.getMyOrgs().size() == 0)
         {
@@ -199,6 +195,18 @@ public class MyLambencyFragment extends Fragment {
         menuInflater.inflate(R.menu.menu_edit, menu);
     }
 
+
+    @OnClick(R.id.eventFab)
+    public void handleEventFabClick(){
+        Intent intent = new Intent(getActivity(), EventCreationActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.orgFab)
+    public void handleOrgFabClick(){
+        Intent intent = new Intent(getActivity(), OrgCreationActivity.class);
+        startActivity(intent);
+    }
 
 
     /**
