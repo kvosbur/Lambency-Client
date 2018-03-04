@@ -234,7 +234,15 @@ public class EventDetailsActivity extends AppCompatActivity implements
 //        });
 
 
+
+
         final Button shareButton = findViewById(R.id.shareEvent);
+
+        if(UserModel.myUserModel.getMyOrgs().size() == 0)
+        {
+            endorseText.setVisibility(View.GONE);
+            endorseButton.setVisibility(View.GONE);
+        }
 
         endorseButton.setOnClickListener(new View.OnClickListener() {
             @Override
