@@ -35,7 +35,7 @@
         app:fab_addButtonColorNormal="@color/colorAccent"
         app:fab_addButtonColorPressed="@color/colorAccent"
         app:fab_labelsPosition="left"
-        app:fab_labelStyle="@color/lightGray"
+        app:fab_labelStyle="@style/fabTitle"
         >
 
         <com.getbase.floatingactionbutton.FloatingActionButton
