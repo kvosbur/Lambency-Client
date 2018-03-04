@@ -289,11 +289,28 @@
                     </TextView>
 
 
+
+                    <TextView
+                        android:id="@+id/endorseText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#000000"
+                        android:textSize="15dp"
+                        android:text="\nEndorse this event as organization! "
+                        android:layout_below="@id/description"/>
+
+                    <Button
+                        android:id="@+id/endorseButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/description"
+                        android:layout_toRightOf="@id/endorseText"
+
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="Endorse" />
+
                 </RelativeLayout>
-
-
-
-
 
 
 
