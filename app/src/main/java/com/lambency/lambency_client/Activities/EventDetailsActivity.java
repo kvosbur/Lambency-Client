@@ -75,6 +75,12 @@ public class EventDetailsActivity extends AppCompatActivity implements
     private TextView text;
     private LinearLayout linearLayout;
 
+    @BindView(R.id.endorseText)
+    TextView endorseText;
+
+    @BindView(R.id.endorseButton)
+    Button endorseButton;
+
     @BindView(R.id.mainLayout)
     CoordinatorLayout mainLayout;
 
@@ -229,6 +235,13 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
 
         final Button shareButton = findViewById(R.id.shareEvent);
+
+        endorseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
+            }
+        });
 
         shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
