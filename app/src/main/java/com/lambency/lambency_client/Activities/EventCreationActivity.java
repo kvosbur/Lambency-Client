@@ -219,14 +219,17 @@ public class EventCreationActivity extends AppCompatActivity {
                     arr1 = address.split(",");
                     // code to execute when EditText loses focus
                     if (address.matches("")){
-                        showAlert("Please enter a valid address", EventCreationActivity.this,1);
+                        showAlert("Enter address of format\nstreet number,city,zipcode", EventCreationActivity.this,1);
                     }
-                    if (arr1.length == 3) {
+                    else if (arr1.length == 3) {
                         if (!arr1[0].equals("") && !arr1[1].equals("") && !arr1[2].equals("") && (arr1[2].matches("[0-9]+") ||
                                 arr1[2].matches(" [0-9]+"))) {
                             System.out.println("string is address");
                         } else
                         showAlert("Enter address of format\nstreet number,city,zipcode", EventCreationActivity.this,1);
+                    }
+                    else{
+                        showAlert("Enter address of format\nstreet number, city, zipcode", EventCreationActivity.this,1);
                     }
                 }
             }
