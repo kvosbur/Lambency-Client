@@ -4,11 +4,22 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.lambency.lambency_client.Adapters.OrganizationAdapter;
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +40,22 @@ public class MyLambencyOrgsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private OrganizationAdapter memberOrgAdapter;
+    private OrganizationAdapter organizerOrgAdapter;
+
+
+    @BindView(R.id.memberOrgsRecyclerView)
+    RecyclerView memberOrgsRecyclerView;
+
+    @BindView(R.id.organizerOrgsRecyclerView)
+    RecyclerView organizerOrgsRecyclerView;
+
+    @BindView(R.id.memberOrgsArrow)
+    ImageView memberOrgsArrow;
+
+    @BindView(R.id.organizerOrgsArrow)
+    ImageView organizerOrgsArrow;
+
 
     public MyLambencyOrgsFragment() {
         // Required empty public constructor
@@ -64,8 +91,24 @@ public class MyLambencyOrgsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_lambency_orgs, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_lambency_orgs, container, false);
+
+        ButterKnife.bind(this ,view);
+
+        List<OrganizationModel> orgs = new ArrayList<OrganizationModel>();
+        for (int i = 0; i < 10; i++) {
+            orgs.add(new OrganizationModel());
+        }
+
+        memberOrgAdapter = new OrganizationAdapter(getContext(), orgs);
+        memberOrgsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        memberOrgsRecyclerView.setAdapter(memberOrgAdapter);
+
+        organizerOrgAdapter = new OrganizationAdapter(getContext(), orgs);
+        organizerOrgsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        organizerOrgsRecyclerView.setAdapter(memberOrgAdapter);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

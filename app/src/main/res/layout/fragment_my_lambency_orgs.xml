@@ -1,13 +1,87 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.lambency.lambency_client.Fragments.MyLambencyOrgsFragment">
+    tools:context="com.lambency.lambency_client.Fragments.MyLambencyEventsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Org Fragment" />
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/memberOrgsTitleLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="10dp"
+                android:clickable="true">
+
+                <TextView
+                    android:id="@+id/memberOrgsTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Organizations I'm a Member Of"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"/>
+
+                <ImageView
+                    android:id="@+id/memberOrgsArrow"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/memberOrgsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/memberOrgsTitleLayout"
+                android:nestedScrollingEnabled="false"/>
+
+            <LinearLayout
+                android:id="@+id/organizerOrgsTitleLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:layout_below="@id/memberOrgsRecyclerView">
+
+                <TextView
+                    android:id="@+id/organizerOrgsTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Organizations I'm an Organizer For"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"/>
+
+                <ImageView
+                    android:id="@+id/organizerOrgsArrow"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
+
+            </LinearLayout>
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/organizerOrgsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/organizerOrgsTitleLayout"
+                android:nestedScrollingEnabled="false"/>
+
+        </RelativeLayout>
+
+
+
+
+    </ScrollView>
 
 </FrameLayout>
