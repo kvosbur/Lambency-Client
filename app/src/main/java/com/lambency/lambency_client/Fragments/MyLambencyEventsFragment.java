@@ -52,12 +52,12 @@ public class MyLambencyEventsFragment extends Fragment {
     @BindView(R.id.myEventsRecyclerView)
     RecyclerView myEventsRecyclerView;
 
-
     @BindView(R.id.registeredEventsArrow)
     ImageView registeredEventsArrow;
 
     @BindView(R.id.myEventsArrow)
     ImageView myEventsArrow;
+
 
     public MyLambencyEventsFragment() {
         // Required empty public constructor
@@ -106,6 +106,7 @@ public class MyLambencyEventsFragment extends Fragment {
         myEventsAdapter = new EventsAdapter(getContext(), events);
         myEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         myEventsRecyclerView.setAdapter(myEventsAdapter);
+
 
         registeredEventsAdapter = new EventsAdapter(getContext(), events);
         registeredEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

@@ -7,11 +7,14 @@
 
    <ScrollView
        android:layout_width="match_parent"
-       android:layout_height="wrap_content">
+       android:layout_height="wrap_content"
+       android:focusableInTouchMode="true"
+       >
 
        <RelativeLayout
            android:layout_width="match_parent"
-           android:layout_height="wrap_content">
+           android:layout_height="wrap_content"
+           android:descendantFocusability="blocksDescendants">
 
            <LinearLayout
                android:id="@+id/registeredEventsTitleLayout"
@@ -19,7 +22,8 @@
                android:layout_height="wrap_content"
                android:orientation="horizontal"
                android:layout_margin="10dp"
-               android:clickable="true">
+               android:clickable="true"
+               android:focusable="true">
 
                <TextView
                    android:id="@+id/registeredEventsTitle"
@@ -42,7 +46,8 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:layout_below="@+id/registeredEventsTitleLayout"
-               android:nestedScrollingEnabled="false"/>
+               android:nestedScrollingEnabled="false"
+               />
 
            <LinearLayout
                android:id="@+id/myEventsTitleLayout"
@@ -75,12 +80,10 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:layout_below="@id/myEventsTitleLayout"
-               android:nestedScrollingEnabled="false"/>
+               android:nestedScrollingEnabled="false"
+               />
 
        </RelativeLayout>
-
-
-
 
    </ScrollView>
 

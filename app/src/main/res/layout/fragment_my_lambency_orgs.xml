@@ -11,7 +11,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants">
 
             <LinearLayout
                 android:id="@+id/memberOrgsTitleLayout"
@@ -42,7 +43,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/memberOrgsTitleLayout"
-                android:nestedScrollingEnabled="false"/>
+                android:nestedScrollingEnabled="false"
+                android:focusable="false"/>
 
             <LinearLayout
                 android:id="@+id/organizerOrgsTitleLayout"
@@ -75,7 +77,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/organizerOrgsTitleLayout"
-                android:nestedScrollingEnabled="false"/>
+                android:nestedScrollingEnabled="false"
+                android:focusable="false"/>
 
         </RelativeLayout>
 

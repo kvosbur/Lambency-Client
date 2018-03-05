@@ -20,6 +20,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -148,5 +149,28 @@ public class MyLambencyOrgsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+
+    @OnClick(R.id.memberOrgsTitleLayout)
+    public void handleRegisteredEventsTitleClick(){
+        if(memberOrgsRecyclerView.getVisibility() == View.VISIBLE){
+            memberOrgsArrow.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
+            memberOrgsRecyclerView.setVisibility(View.GONE);
+        }else{
+            memberOrgsRecyclerView.setVisibility(View.VISIBLE);
+            memberOrgsArrow.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
+        }
+    }
+
+    @OnClick(R.id.organizerOrgsTitleLayout)
+    public void handleMyEventsTitleClick(){
+        if(organizerOrgsRecyclerView.getVisibility() == View.VISIBLE){
+            organizerOrgsArrow.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
+            organizerOrgsRecyclerView.setVisibility(View.GONE);
+        }else{
+            organizerOrgsArrow.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
+            organizerOrgsRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 }
