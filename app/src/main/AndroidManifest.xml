@@ -68,7 +68,7 @@
                 <data android:scheme="http" android:host="www.mylambencyclient.com"/>
             </intent-filter>
             <!-- navigating to either
-            http://www.mylambencyclient.com or lambency://deeplink will
+            http://www.mylambencyclient.com?eventid=(eventIDhere) or lambency://deeplink will
             take the user to the EventDetailsActivity activity. -->
         </activity>
 
