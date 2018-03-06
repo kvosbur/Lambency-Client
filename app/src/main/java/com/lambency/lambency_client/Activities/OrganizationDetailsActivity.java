@@ -77,6 +77,8 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.showAllButton)
     Button showAllButton;
 
+    @BindView(R.id.noEventsText)
+    TextView noEventsTextView;
 
     public static int currentOrgId;
     private Context context;
@@ -146,10 +148,11 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     emailOrg.setText(organization.getEmail());
                     addressOrg.setText(organization.getLocation());
 
-                    ImageHelper.loadWithGlide(context,
-                            ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
-                            orgImage);
-
+                    if(organization.getImage() != null) {
+                        ImageHelper.loadWithGlide(context,
+                                ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                                orgImage);
+                    }
 
                     mainLayout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
@@ -178,7 +181,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         LambencyAPIHelper.getInstance().getEventsByOrg(UserModel.myUserModel.getOauthToken(), organizationModel.getOrgID() + "").enqueue(new Callback<List<EventModel>>() {
             @Override
             public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
-                if (response.body() == null || response.code() != 200) {
+                if (response.code() != 200) {
                     System.out.println("Error getting org events.");
                     return;
                 }
@@ -186,8 +189,12 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 List<EventModel> list = response.body();
                 if(list == null){
                     System.out.println("Org has no events or error has occurred");
+                    noEventsTextView.setVisibility(View.VISIBLE);
+                    upcomingEventsProgress.setVisibility(View.GONE);
                 }
                 else{
+                    noEventsTextView.setVisibility(View.GONE);
+
                     System.out.println("Got list of org events");
 
                     ArrayList<EventModel> events = new ArrayList<>(list);
