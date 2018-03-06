@@ -61,36 +61,5 @@
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
-    <!--
-
-    <Button
-        android:id="@+id/createOrgButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:text="Create an Organization"
-        android:layout_centerHorizontal="true"
-        />
-
-    <Button
-        android:layout_marginTop="100dp"
-        android:id="@+id/createEventButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create an Event"
-        android:layout_below="@id/createOrgButton"
-        android:layout_centerHorizontal="true"
-        />
-
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/createEventButton"
-        android:layout_marginTop="50dp"
-        android:text="Logout"
-        android:layout_centerHorizontal="true"/>
-        -->
-
 </RelativeLayout>
 

@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -18,12 +19,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
 import com.lambency.lambency_client.Fragments.EventsMainFragment;
 import com.lambency.lambency_client.Fragments.MyLambencyEventsFragment;
 import com.lambency.lambency_client.Fragments.MyLambencyFragment;
 import com.lambency.lambency_client.Fragments.MyLambencyOrgsFragment;
 import com.lambency.lambency_client.Fragments.ProfileFragment;
+import com.lambency.lambency_client.Models.MyLambencyModel;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -45,6 +49,10 @@ import com.facebook.login.LoginResult;
 import com.lambency.lambency_client.R;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class BottomBarActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener, MyLambencyEventsFragment.OnFragmentInteractionListener, MyLambencyOrgsFragment.OnFragmentInteractionListener{
@@ -71,6 +79,8 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
 
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
         bar.setSelectedItemId(R.id.lamBot);
@@ -142,7 +152,34 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
     public void switchToFragment3() {
         FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.fragContainer, new MyLambencyFragment()).commit();
+        manager.beginTransaction().replace(R.id.fragContainer, new MyLambencyFragment(), "MyLambencyFragment").commit();
+
+        LambencyAPIHelper.getInstance().getMyLambencyModel(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<MyLambencyModel>() {
+            @Override
+            public void onResponse(Call<MyLambencyModel> call, Response<MyLambencyModel> response) {
+                MyLambencyModel myLambencyModel = response.body();
+                System.out.println("Got myLambency Model");
+
+                MyLambencyFragment myLambencyFragment =
+                        (MyLambencyFragment)
+                        getSupportFragmentManager().findFragmentByTag("MyLambencyFragment");
+
+                if(myLambencyFragment == null){
+                    Log.e("Fragment", "null MyLambency fragment");
+                }else{
+                    MyLambencyTabsAdapter myLambencyTabsAdapter = myLambencyFragment.getMyLambencyTabsAdapter();
+                    myLambencyTabsAdapter.getEventsFragment().setEvents(myLambencyModel);
+                    myLambencyTabsAdapter.getOrgsFragment().setOrgs(myLambencyModel);
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MyLambencyModel> call, Throwable t) {
+                Log.e("Retrofit", "Error getting myLambency model");
+            }
+        });
     }
 
     public void setActionBarTitle(String title) {

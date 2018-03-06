@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,13 +24,18 @@ import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.OrgCreationActivity;
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
+import com.lambency.lambency_client.Models.MyLambencyModel;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -221,5 +227,10 @@ public class MyLambencyFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onProfileFragmentInteraction(Uri uri);
+    }
+
+
+    public MyLambencyTabsAdapter getMyLambencyTabsAdapter(){
+        return myLambencyTabsAdapter;
     }
 }

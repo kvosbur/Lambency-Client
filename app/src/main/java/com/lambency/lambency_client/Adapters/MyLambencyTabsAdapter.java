@@ -22,6 +22,7 @@ public class MyLambencyTabsAdapter extends FragmentStatePagerAdapter {
     private MyLambencyEventsFragment eventsFragment;
     private MyLambencyOrgsFragment orgsFragment;
 
+
     public MyLambencyTabsAdapter(FragmentManager fm, int numTabs, Context context) {
         super(fm);
         this.context = context;
@@ -48,4 +49,13 @@ public class MyLambencyTabsAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return numTabs;
     }
+
+    public MyLambencyEventsFragment getEventsFragment(){
+        return eventsFragment;
+    }
+
+    public MyLambencyOrgsFragment getOrgsFragment(){
+        return orgsFragment;
+    }
+
 }

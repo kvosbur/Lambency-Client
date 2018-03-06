@@ -10,12 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.lambency.lambency_client.Adapters.EventsAdapter;
 import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.MyLambencyModel;
 import com.lambency.lambency_client.R;
-import com.lambency.lambency_client.Utils.ImageHelper;
+import com.lambency.lambency_client.Utils.CustomLinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +43,7 @@ public class MyLambencyEventsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
     private EventsAdapter myEventsAdapter;
     private EventsAdapter registeredEventsAdapter;
 
@@ -104,12 +105,22 @@ public class MyLambencyEventsFragment extends Fragment {
         }
 
         myEventsAdapter = new EventsAdapter(getContext(), events);
-        myEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        myEventsRecyclerView.setLayoutManager(new CustomLinearLayoutManager(getContext()){
+            @Override
+            public boolean canScrollVertically(){
+                return false;
+            }
+        });
         myEventsRecyclerView.setAdapter(myEventsAdapter);
 
 
         registeredEventsAdapter = new EventsAdapter(getContext(), events);
-        registeredEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        registeredEventsRecyclerView.setLayoutManager(new CustomLinearLayoutManager(getContext()){
+            @Override
+            public boolean canScrollVertically(){
+                return false;
+            }
+        });
         registeredEventsRecyclerView.setAdapter(registeredEventsAdapter);
 
 
@@ -176,6 +187,15 @@ public class MyLambencyEventsFragment extends Fragment {
             myEventsArrow.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
             myEventsRecyclerView.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void setEvents(MyLambencyModel myLambencyModel){
+        if(myLambencyModel == null){
+            return;
+        }
+
+        myEventsAdapter.updateEvents(myLambencyModel.getEventsOrganizing());
+        registeredEventsAdapter.updateEvents(myLambencyModel.getEventsAttending());
     }
 
 }
