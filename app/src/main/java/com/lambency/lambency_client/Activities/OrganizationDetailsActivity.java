@@ -23,6 +23,7 @@ import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.CustomLinearLayoutManager;
 import com.lambency.lambency_client.Utils.ImageHelper;
 
 import java.util.ArrayList;
@@ -205,13 +206,18 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     }
 
                     eventsAdapter = new EventsAdapter(context, events);
-                    eventsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    eventsRecyclerView.setLayoutManager(new CustomLinearLayoutManager(context){
+                        @Override
+                        public boolean canScrollVertically(){
+                            return false;
+                        }
+                    });
                     eventsRecyclerView.setAdapter(eventsAdapter);
 
                     upcomingEventsContainer.setVisibility(View.VISIBLE);
                     upcomingEventsProgress.setVisibility(View.GONE);
 
-                    if(events.size() <= 3){
+                    if(list.size() <= 3){
                         showAllButton.setVisibility(View.GONE);
                     }else{
                         showAllButton.setVisibility(View.VISIBLE);
