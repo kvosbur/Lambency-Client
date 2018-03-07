@@ -71,12 +71,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
         }
 
         if(eventModel.getStart() != null){
-            String date = "Date: " + TimeHelper.dateFromTimestamp(eventModel.getStart());
+            String date = TimeHelper.dateFromTimestamp(eventModel.getStart());
             holder.dateView.setText(date);
         }
 
         if(eventModel.getStart() != null && eventModel.getEnd() != null){
-            String time = "Time: " + TimeHelper.hourFromTimestamp(eventModel.getStart()) +
+            String time = TimeHelper.hourFromTimestamp(eventModel.getStart()) +
                     "-" + TimeHelper.hourFromTimestamp(eventModel.getEnd());
             holder.timeView.setText(time);
         }

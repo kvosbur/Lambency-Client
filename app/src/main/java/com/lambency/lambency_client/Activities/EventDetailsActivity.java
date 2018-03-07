@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -74,6 +75,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
     private int event_id;
     private TextView text;
     private LinearLayout linearLayout;
+
+    @BindView(R.id.contentLayout)
+    FrameLayout contentLayout;
 
     @BindView(R.id.mainLayout)
     CoordinatorLayout mainLayout;
@@ -167,10 +171,10 @@ public class EventDetailsActivity extends AppCompatActivity implements
         linearLayout = findViewById(R.id.joinButton);
         text = findViewById(R.id.joinButtonText);
 
+        linearLayout.setOnClickListener(new View.OnClickListener(){
 
-        linearLayout.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v){
 
-            public void onClick(View v) {
                 ImageView imageView = findViewById(R.id.check);
 
                 text = findViewById(R.id.joinButtonText);
@@ -295,6 +299,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
     private void callRetrofit(final int event_id) {
 
+        isLoading(true);
 
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
             @Override
@@ -306,7 +311,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
                 eventModel = response.body();
                 if (eventModel == null) {
                     System.out.println("failed to event");
-                } else {
+
+                }else{
+
                     System.out.println("Got event data!");
 
                     setTitle(eventModel.getName());
@@ -387,6 +394,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     System.out.println("ERROR!!!!!");
                     return;
                 }
+
                 //when response is back
                 OrganizationModel organization = response.body();
 
@@ -400,6 +408,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
                 ImageHelper.loadWithGlide(context,
                         ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
                         orgImageView);
+
+                isLoading(false);
 
             }
 
@@ -464,6 +474,17 @@ public class EventDetailsActivity extends AppCompatActivity implements
         bundle.putInt("org_id", event.getOrg_id());
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+
+    private void isLoading(boolean loading){
+        if(loading){
+            contentLayout.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        }else{
+            contentLayout.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     //start methods for getting current location
@@ -561,4 +582,5 @@ public class EventDetailsActivity extends AppCompatActivity implements
         }
     }
     //end methods for getting current location
+
 }
