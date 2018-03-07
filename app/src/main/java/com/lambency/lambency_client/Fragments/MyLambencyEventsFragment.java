@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 
 import com.lambency.lambency_client.Adapters.EventsAdapter;
 import com.lambency.lambency_client.Models.EventModel;
@@ -47,6 +49,12 @@ public class MyLambencyEventsFragment extends Fragment {
     private EventsAdapter myEventsAdapter;
     private EventsAdapter registeredEventsAdapter;
 
+    @BindView(R.id.eventsProgress)
+    ProgressBar eventsProgressBar;
+
+    @BindView(R.id.eventsScroll)
+    ScrollView eventsScrollView;
+
     @BindView(R.id.registeredEventsRecyclerView)
     RecyclerView registeredEventsRecyclerView;
 
@@ -58,6 +66,7 @@ public class MyLambencyEventsFragment extends Fragment {
 
     @BindView(R.id.myEventsArrow)
     ImageView myEventsArrow;
+
 
 
     public MyLambencyEventsFragment() {
@@ -196,6 +205,16 @@ public class MyLambencyEventsFragment extends Fragment {
 
         myEventsAdapter.updateEvents(myLambencyModel.getEventsOrganizing());
         registeredEventsAdapter.updateEvents(myLambencyModel.getEventsAttending());
+    }
+
+    public void showProgressBar(boolean flag){
+        if(flag){
+            eventsScrollView.setVisibility(View.GONE);
+            eventsProgressBar.setVisibility(View.VISIBLE);
+        }else{
+            eventsScrollView.setVisibility(View.VISIBLE);
+            eventsProgressBar.setVisibility(View.GONE);
+        }
     }
 
 }

@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 
 import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.MyLambencyModel;
@@ -47,6 +49,12 @@ public class MyLambencyOrgsFragment extends Fragment {
     private OrganizationAdapter organizerOrgAdapter;
 
 
+    @BindView(R.id.orgsProgress)
+    ProgressBar orgsProgress;
+
+    @BindView(R.id.orgsScroll)
+    ScrollView orgsScroll;
+
     @BindView(R.id.memberOrgsRecyclerView)
     RecyclerView memberOrgsRecyclerView;
 
@@ -58,7 +66,6 @@ public class MyLambencyOrgsFragment extends Fragment {
 
     @BindView(R.id.organizerOrgsArrow)
     ImageView organizerOrgsArrow;
-
 
     public MyLambencyOrgsFragment() {
         // Required empty public constructor
@@ -193,5 +200,15 @@ public class MyLambencyOrgsFragment extends Fragment {
 
         ArrayList<OrganizationModel> organizerOrgs = new ArrayList<>(myLambencyModel.getMyOrgs());
         organizerOrgAdapter.updateOrgs(organizerOrgs);
+    }
+
+    public void showProgressBar(boolean flag){
+        if(flag){
+            orgsScroll.setVisibility(View.GONE);
+            orgsProgress.setVisibility(View.VISIBLE);
+        }else{
+            orgsScroll.setVisibility(View.VISIBLE);
+            orgsProgress.setVisibility(View.GONE);
+        }
     }
 }

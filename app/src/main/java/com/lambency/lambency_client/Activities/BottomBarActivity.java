@@ -162,14 +162,21 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
                 MyLambencyFragment myLambencyFragment =
                         (MyLambencyFragment)
-                        getSupportFragmentManager().findFragmentByTag("MyLambencyFragment");
+                                getSupportFragmentManager().findFragmentByTag("MyLambencyFragment");
+
 
                 if(myLambencyFragment == null){
                     Log.e("Fragment", "null MyLambency fragment");
                 }else{
+
+                    //Set events and hide progress bars
                     MyLambencyTabsAdapter myLambencyTabsAdapter = myLambencyFragment.getMyLambencyTabsAdapter();
+
                     myLambencyTabsAdapter.getEventsFragment().setEvents(myLambencyModel);
+                    myLambencyTabsAdapter.getEventsFragment().showProgressBar(false);
+
                     myLambencyTabsAdapter.getOrgsFragment().setOrgs(myLambencyModel);
+                    myLambencyTabsAdapter.getOrgsFragment().showProgressBar(false);
 
                 }
 

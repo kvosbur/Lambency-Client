@@ -6,8 +6,10 @@
     tools:context="com.lambency.lambency_client.Fragments.MyLambencyEventsFragment">
 
     <ScrollView
+        android:id="@+id/orgsScroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -82,9 +84,12 @@
 
         </RelativeLayout>
 
-
-
-
     </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/orgsProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 
 </FrameLayout>
