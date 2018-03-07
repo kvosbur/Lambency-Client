@@ -32,6 +32,7 @@ android {
 dependencies {
     //noinspection GradleCompatible,GradleCompatible
     compile 'com.android.support:design:26.1.0'
+    compile 'com.google.android.gms:play-services-location:11.8.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:27.0.2'

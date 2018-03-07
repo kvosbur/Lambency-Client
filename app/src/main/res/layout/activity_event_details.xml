@@ -202,6 +202,7 @@
                         android:id="@+id/address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:clickable="true"
 
                         android:text="610 Purdue Mall, West Lafayette, IN 47907"
 

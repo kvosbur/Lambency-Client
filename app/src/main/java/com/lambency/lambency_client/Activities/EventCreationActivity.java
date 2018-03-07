@@ -1,8 +1,11 @@
 package com.lambency.lambency_client.Activities;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -82,6 +85,11 @@ public class EventCreationActivity extends AppCompatActivity {
     Calendar myCalendar = Calendar.getInstance();
 
 
+    //For address validate
+    private void validateInput(String address){
+
+    }
+
     //for date
     DatePickerDialog.OnDateSetListener dateD = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -126,6 +134,26 @@ public class EventCreationActivity extends AppCompatActivity {
 
             date.setText(sdf.format(myCalendar.getTime()));
         }
+
+
+
+    public static void showAlert(String message, Activity context, int which) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        if (which ==1) {
+            builder.setMessage(message).setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+        }
+        try {
+            builder.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,12 +209,41 @@ public class EventCreationActivity extends AppCompatActivity {
             }
         });
 
+        //checking address
+        addressEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String address = addressEdit.getText().toString();
+                    String arr1[];
+                    arr1 = address.split(",");
+                    // code to execute when EditText loses focus
+                    if (address.matches("")){
+                        showAlert("Enter address of format\nstreet number,city,zipcode", EventCreationActivity.this,1);
+                    }
+                    else if (arr1.length == 3) {
+                        if (!arr1[0].equals("") && !arr1[1].equals("") && !arr1[2].equals("") && (arr1[2].matches("[0-9]+") ||
+                                arr1[2].matches(" [0-9]+"))) {
+                            System.out.println("string is address");
+                        } else
+                        showAlert("Enter address of format\nstreet number,city,zipcode", EventCreationActivity.this,1);
+                    }
+                    else{
+                        showAlert("Enter address of format\nstreet number, city, zipcode", EventCreationActivity.this,1);
+                    }
+                }
+            }
+        });
+
 
 
         saveDetails.setOnClickListener(new View.OnClickListener() {
             EditText eName = (EditText) findViewById(R.id.nameOfEvent);
             //EditText eDate = (EditText) findViewById(R.id.dateOfEvent);
+
+            //Checking address edit text for valid input
             EditText eAddr = (EditText) findViewById(R.id.addressOfEvent);
+
             EditText eDescrip = (EditText) findViewById(R.id.descriptionOfEvent);
 
 

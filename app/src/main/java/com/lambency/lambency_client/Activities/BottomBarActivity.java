@@ -102,6 +102,9 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
                         switchToFragment3();
                         break;
 
+                    case R.id.checkinBot:
+                        //TODO::change to new activity
+
                 }
 
                 // One possibility of action is to replace the contents above the nav bar
