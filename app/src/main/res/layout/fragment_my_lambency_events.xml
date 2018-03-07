@@ -5,89 +5,95 @@
     android:layout_height="match_parent"
     tools:context="com.lambency.lambency_client.Fragments.MyLambencyEventsFragment">
 
-   <ScrollView
-       android:id="@+id/eventsScroll"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:focusableInTouchMode="true"
-       android:visibility="gone"
-       >
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/eventsSwipeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-       <RelativeLayout
+       <ScrollView
+           android:id="@+id/eventsScroll"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
-           android:descendantFocusability="blocksDescendants">
+           android:focusableInTouchMode="true"
+           >
 
-           <LinearLayout
-               android:id="@+id/registeredEventsTitleLayout"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal"
-               android:layout_margin="10dp"
-               android:clickable="true"
-               android:focusable="true">
-
-               <TextView
-                   android:id="@+id/registeredEventsTitle"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Registered Events"
-                   android:textColor="@android:color/black"
-                   android:textSize="20sp"/>
-
-               <ImageView
-                   android:id="@+id/registeredEventsArrow"
-                   android:layout_width="30dp"
-                   android:layout_height="30dp"
-                   app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
-
-           </LinearLayout>
-
-           <android.support.v7.widget.RecyclerView
-               android:id="@+id/registeredEventsRecyclerView"
+           <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_below="@+id/registeredEventsTitleLayout"
-               android:nestedScrollingEnabled="false"
-               />
+               android:descendantFocusability="blocksDescendants">
 
-           <LinearLayout
-               android:id="@+id/myEventsTitleLayout"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal"
-               android:layout_margin="10dp"
-               android:clickable="true"
-               android:layout_below="@id/registeredEventsRecyclerView">
-
-               <TextView
-                   android:id="@+id/myEventsTitle"
+               <LinearLayout
+                   android:id="@+id/registeredEventsTitleLayout"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:text="My Events"
-                   android:textColor="@android:color/black"
-                   android:textSize="20sp"/>
+                   android:orientation="horizontal"
+                   android:layout_margin="10dp"
+                   android:clickable="true"
+                   android:focusable="true">
 
-               <ImageView
-                   android:id="@+id/myEventsArrow"
-                   android:layout_width="30dp"
-                   android:layout_height="30dp"
-                   app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
+                   <TextView
+                       android:id="@+id/registeredEventsTitle"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="Registered Events"
+                       android:textColor="@android:color/black"
+                       android:textSize="20sp"/>
 
-           </LinearLayout>
+                   <ImageView
+                       android:id="@+id/registeredEventsArrow"
+                       android:layout_width="30dp"
+                       android:layout_height="30dp"
+                       app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
+
+               </LinearLayout>
+
+               <android.support.v7.widget.RecyclerView
+                   android:id="@+id/registeredEventsRecyclerView"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@+id/registeredEventsTitleLayout"
+                   android:nestedScrollingEnabled="false"
+                   />
+
+               <LinearLayout
+                   android:id="@+id/myEventsTitleLayout"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:layout_margin="10dp"
+                   android:clickable="true"
+                   android:layout_below="@id/registeredEventsRecyclerView">
+
+                   <TextView
+                       android:id="@+id/myEventsTitle"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="My Events"
+                       android:textColor="@android:color/black"
+                       android:textSize="20sp"/>
+
+                   <ImageView
+                       android:id="@+id/myEventsArrow"
+                       android:layout_width="30dp"
+                       android:layout_height="30dp"
+                       app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
+
+               </LinearLayout>
 
 
-           <android.support.v7.widget.RecyclerView
-               android:id="@+id/myEventsRecyclerView"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_below="@id/myEventsTitleLayout"
-               android:nestedScrollingEnabled="false"
-               />
+               <android.support.v7.widget.RecyclerView
+                   android:id="@+id/myEventsRecyclerView"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/myEventsTitleLayout"
+                   android:nestedScrollingEnabled="false"
+                   />
 
-       </RelativeLayout>
+           </RelativeLayout>
 
-   </ScrollView>
+       </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/eventsProgress"

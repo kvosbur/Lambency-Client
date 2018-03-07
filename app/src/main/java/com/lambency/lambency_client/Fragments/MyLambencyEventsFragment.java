@@ -4,8 +4,10 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +16,11 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
 import com.lambency.lambency_client.Adapters.EventsAdapter;
+import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.MyLambencyModel;
+import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.CustomLinearLayoutManager;
 
@@ -25,6 +30,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,6 +56,9 @@ public class MyLambencyEventsFragment extends Fragment {
 
     private EventsAdapter myEventsAdapter;
     private EventsAdapter registeredEventsAdapter;
+
+    @BindView(R.id.eventsSwipeLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @BindView(R.id.eventsProgress)
     ProgressBar eventsProgressBar;
@@ -133,7 +144,43 @@ public class MyLambencyEventsFragment extends Fragment {
         registeredEventsRecyclerView.setAdapter(registeredEventsAdapter);
 
 
+        swipeRefreshLayout.setOnRefreshListener( new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.i("MyLambency Events", "onRefresh called from SwipeRefreshLayout");
+
+                // This method performs the actual data-refresh operation.
+                // The method calls setRefreshing(false) when it's finished.
+                getMyLambencyModel();
+            }
+        });
+
+
         return view;
+    }
+
+    private void getMyLambencyModel(){
+        LambencyAPIHelper.getInstance().getMyLambencyModel(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<MyLambencyModel>() {
+            @Override
+            public void onResponse(Call<MyLambencyModel> call, Response<MyLambencyModel> response) {
+                MyLambencyModel myLambencyModel = response.body();
+                System.out.println("Got myLambency Model");
+                if(myLambencyModel != null) {
+                    setEvents(myLambencyModel);
+                }
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Call<MyLambencyModel> call, Throwable t) {
+                Log.e("Retrofit", "Error getting myLambency model");
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -209,10 +256,10 @@ public class MyLambencyEventsFragment extends Fragment {
 
     public void showProgressBar(boolean flag){
         if(flag){
-            eventsScrollView.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.GONE);
             eventsProgressBar.setVisibility(View.VISIBLE);
         }else{
-            eventsScrollView.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
             eventsProgressBar.setVisibility(View.GONE);
         }
     }

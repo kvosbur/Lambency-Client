@@ -5,86 +5,94 @@
     android:layout_height="match_parent"
     tools:context="com.lambency.lambency_client.Fragments.MyLambencyEventsFragment">
 
-    <ScrollView
-        android:id="@+id/orgsScroll"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/orgsSwipeLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:visibility="gone">
 
-        <RelativeLayout
+        <ScrollView
+            android:id="@+id/orgsScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:descendantFocusability="blocksDescendants">
+            >
 
-            <LinearLayout
-                android:id="@+id/memberOrgsTitleLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="10dp"
-                android:clickable="true">
-
-                <TextView
-                    android:id="@+id/memberOrgsTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Organizations I'm a Member Of"
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp"/>
-
-                <ImageView
-                    android:id="@+id/memberOrgsArrow"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
-
-            </LinearLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/memberOrgsRecyclerView"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/memberOrgsTitleLayout"
-                android:nestedScrollingEnabled="false"
-                android:focusable="false"/>
+                android:descendantFocusability="blocksDescendants">
 
-            <LinearLayout
-                android:id="@+id/organizerOrgsTitleLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="10dp"
-                android:clickable="true"
-                android:layout_below="@id/memberOrgsRecyclerView">
-
-                <TextView
-                    android:id="@+id/organizerOrgsTitle"
+                <LinearLayout
+                    android:id="@+id/memberOrgsTitleLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Organizations I'm an Organizer For"
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp"/>
+                    android:orientation="horizontal"
+                    android:layout_margin="10dp"
+                    android:clickable="true">
 
-                <ImageView
-                    android:id="@+id/organizerOrgsArrow"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
+                    <TextView
+                        android:id="@+id/memberOrgsTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Organizations I'm a Member Of"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp"/>
 
-            </LinearLayout>
+                    <ImageView
+                        android:id="@+id/memberOrgsArrow"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/memberOrgsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/memberOrgsTitleLayout"
+                    android:nestedScrollingEnabled="false"
+                    android:focusable="false"/>
+
+                <LinearLayout
+                    android:id="@+id/organizerOrgsTitleLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_margin="10dp"
+                    android:clickable="true"
+                    android:layout_below="@id/memberOrgsRecyclerView">
+
+                    <TextView
+                        android:id="@+id/organizerOrgsTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Organizations I'm an Organizer For"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp"/>
+
+                    <ImageView
+                        android:id="@+id/organizerOrgsArrow"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
+
+                </LinearLayout>
 
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/organizerOrgsRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/organizerOrgsTitleLayout"
-                android:nestedScrollingEnabled="false"
-                android:focusable="false"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/organizerOrgsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/organizerOrgsTitleLayout"
+                    android:nestedScrollingEnabled="false"
+                    android:focusable="false"/>
 
-        </RelativeLayout>
+            </RelativeLayout>
 
-    </ScrollView>
+        </ScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/orgsProgress"
