@@ -62,12 +62,14 @@ public class AcceptRejectActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "The number of member join requests is" + users.size(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "The number of member join requests is " + users.size(), Toast.LENGTH_LONG).show();
 
                     for(int i = 0; i < users.size(); i++)
                     {
                         userList.add(users.get(i));
                     }
+                    mAdapter.notifyDataSetChanged(); // how we update
+
                 }
             }
 
