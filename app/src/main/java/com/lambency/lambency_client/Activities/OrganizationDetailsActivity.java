@@ -359,6 +359,11 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             alertDialog.setTitle("Warning!");
             alertDialog.setView(view);
 
+            if(UserModel.myUserModel.getMyOrgs().get(0) == currentOrgId)
+            {
+                alertDialog.setMessage("WARNING: You are an organizer of this organization! If you are the last member, you" +
+                        "organization will be deleted.");
+            }
 
             TextView orgtitle = view.findViewById(R.id.LeaveTitleOrg);
             orgtitle.setText(titleOrg.getText());
