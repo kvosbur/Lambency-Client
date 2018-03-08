@@ -252,7 +252,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                 {
                     //TODO Endorse retrofit here
 
-                    LambencyAPIHelper.getInstance().getEndorse(UserModel.myUserModel.getOauthToken(), "" + EventModel.myEventModel.getOrg_id(), "" + event_id).enqueue(new Callback<Integer>() {
+                    LambencyAPIHelper.getInstance().getEndorse(UserModel.myUserModel.getOauthToken(), "" + UserModel.myUserModel.getMyOrgs().get(0), "" + event_id).enqueue(new Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             if (response.body() == null || response.code() != 200) {
@@ -290,7 +290,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                 else
                 {
                     //TODO Unendorse retrofit here
-                    LambencyAPIHelper.getInstance().getUnendorse(UserModel.myUserModel.getOauthToken(), "" + EventModel.myEventModel.getOrg_id(), "" + event_id).enqueue(new Callback<Integer>() {
+                    LambencyAPIHelper.getInstance().getUnendorse(UserModel.myUserModel.getOauthToken(), "" + UserModel.myUserModel.getMyOrgs().get(0), "" + event_id).enqueue(new Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             if (response.body() == null || response.code() != 200) {
