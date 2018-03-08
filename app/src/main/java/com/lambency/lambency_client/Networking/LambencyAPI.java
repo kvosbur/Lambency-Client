@@ -78,6 +78,10 @@ public interface LambencyAPI {
     @GET("Organization/events")
     Call<List<EventModel>> getEventsByOrg(@Query("oAuthCode") String oAuthCode, @Query("id") String org_id);
 
+    @GET("Organization/joinRequests")
+    Call<ArrayList<UserModel>> getRequestsToJoin(@Query("oAuthCode") String oAuthCode, @Query("orgID") int org_id);
+
+
 
 }
 

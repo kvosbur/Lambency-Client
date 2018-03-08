@@ -47,6 +47,36 @@ public class AcceptRejectActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Pending Requests");
 
+        LambencyAPIHelper.getInstance().getRequestsToJoin(UserModel.myUserModel.getOauthToken(),UserModel.myUserModel.getMyOrgs().get(0)).enqueue(new Callback<ArrayList<UserModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<UserModel>> call, Response<ArrayList<UserModel>> response) {
+
+                if (response.body() == null || response.code() != 200) {
+                    Toast.makeText(getApplicationContext(), "Error!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                //when response is back
+                ArrayList<UserModel> users = response.body();
+                if(users == null ){
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "The number of member join requests is" + users.size(), Toast.LENGTH_LONG).show();
+
+                    for(int i = 0; i < users.size(); i++)
+                    {
+                        userList.add(users.get(i));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<UserModel>> call, Throwable throwable) {
+                System.out.println("FAILED CALL");
+            }
+        });
+
         /*
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
@@ -56,8 +86,8 @@ public class AcceptRejectActivity extends AppCompatActivity {
         }
         */
 
-        userList.add(new UserModel("Evan", "Honeysett", "ehoneyse@purdue.edu", null, null, null, null, 0, 0, ""));
-        userList.add(new UserModel("Barack", "Obama", "potus@wh.gov", null, null, null, null, 0, 0, ""));
+        //userList.add(new UserModel("Evan", "Honeysett", "ehoneyse@purdue.edu", null, null, null, null, 0, 0, ""));
+        //userList.add(new UserModel("Barack", "Obama", "potus@wh.gov", null, null, null, null, 0, 0, ""));
 
         setupRecyclerView();
         //SwipeController swipeController = new SwipeController();
