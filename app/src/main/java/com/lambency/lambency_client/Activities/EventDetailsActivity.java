@@ -168,8 +168,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
         linearLayout = findViewById(R.id.joinButton);
         text = findViewById(R.id.joinButtonText);
 
-        Toast.makeText(getApplicationContext(), "Ord Id:" + UserModel.myUserModel.getMyOrgs().get(0), Toast.LENGTH_LONG).show();
-
 
         linearLayout.setOnClickListener(new View.OnClickListener() {
 
