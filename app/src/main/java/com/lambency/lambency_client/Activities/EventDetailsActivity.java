@@ -247,7 +247,25 @@ public class EventDetailsActivity extends AppCompatActivity implements
         endorseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
+
+                if(endorseButton.getText().equals("Endorse"))
+                {
+                    //TODO Endorse retrofit here
+
+                    endorseButton.setText("Revoke");
+                    endorseText.setText("\nClick to no longer endorse this event! ");
+                    Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    //TODO Unendorse retrofit here
+
+
+                    endorseText.setText("\nEndorse this event as organization! ");
+                    endorseButton.setText("Endorse");
+                    Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -300,8 +318,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
     }
 
     private void callRetrofit(final int event_id) {
-
-
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
             @Override
             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
