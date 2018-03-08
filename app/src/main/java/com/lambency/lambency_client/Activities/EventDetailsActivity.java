@@ -168,6 +168,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
         linearLayout = findViewById(R.id.joinButton);
         text = findViewById(R.id.joinButtonText);
 
+        Toast.makeText(getApplicationContext(), "Ord Id:" + UserModel.myUserModel.getMyOrgs().get(0), Toast.LENGTH_LONG).show();
+
 
         linearLayout.setOnClickListener(new View.OnClickListener() {
 
@@ -252,18 +254,75 @@ public class EventDetailsActivity extends AppCompatActivity implements
                 {
                     //TODO Endorse retrofit here
 
-                    endorseButton.setText("Revoke");
-                    endorseText.setText("\nClick to no longer endorse this event! ");
-                    Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
+                    LambencyAPIHelper.getInstance().getEndorse(UserModel.myUserModel.getOauthToken(), "" + EventModel.myEventModel.getOrg_id(), "" + event_id).enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                System.out.println("ERROR!!!!!");
+                                return;
+                            }
+                            //when response is back
+                            Integer ret = response.body();
+                            if(ret == 0){
+                                System.out.println("Success");
+
+                                endorseButton.setText("Revoke");
+                                endorseText.setText("\nClick to no longer endorse this event! ");
+                                Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
+
+                            }
+                            else if(ret == -1){
+                                Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
+                            }
+                            else if(ret == -2){
+                                Toast.makeText(getApplicationContext(), "already endorsed", Toast.LENGTH_LONG).show();
+                            }
+                            else if(ret == -3){
+                                Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable throwable) {
+                            //when failure
+                            Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
                 else
                 {
                     //TODO Unendorse retrofit here
+                    LambencyAPIHelper.getInstance().getUnendorse(UserModel.myUserModel.getOauthToken(), "" + EventModel.myEventModel.getOrg_id(), "" + event_id).enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                System.out.println("ERROR!!!!!");
+                                return;
+                            }
+                            //when response is back
+                            Integer ret = response.body();
+                            if(ret == 0){
+                                endorseText.setText("\nEndorse this event as organization! ");
+                                endorseButton.setText("Endorse");
+                                Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
+                            }
+                            else if(ret == -1){
+                                Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
+                            }
+                            else if(ret == -2){
+                                Toast.makeText(getApplicationContext(), "not endorsed", Toast.LENGTH_LONG).show();
+                            }
+                            else if(ret == -3){
+                                Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                            }
+                        }
 
-
-                    endorseText.setText("\nEndorse this event as organization! ");
-                    endorseButton.setText("Endorse");
-                    Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable throwable) {
+                            //when failure
+                            Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
 
             }
