@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.lambency.lambency_client"
-    >
+    package="com.lambency.lambency_client">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:remove="android:maxSdkVersion" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        tools:remove="android:maxSdkVersion" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
 
     <application
         android:allowBackup="true"
@@ -21,6 +20,7 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -41,8 +41,8 @@
         <activity
             android:name=".Activities.LoginActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,17 +52,18 @@
         <activity
             android:name=".Activities.ListUserActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.EventCreationActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.EventDetailsActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
+
                 <!-- Sets the intent action to view the activity -->
                 <action android:name="android.intent.action.VIEW" />
                 <!-- Allows the link to be opened from a web browser -->
@@ -70,34 +71,42 @@
                 <!-- Allows the deep link to be used without specifying the app name -->
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- URI Lambency://deeplink -->
-                <data android:scheme="lambency" android:host="deeplink"/>
+                <data
+                    android:host="deeplink"
+                    android:scheme="lambency" />
                 <!-- URI http://www.mylambencyclient.com -->
-                <data android:scheme="http" android:host="www.mylambencyclient.com"/>
+                <data
+                    android:host="www.mylambencyclient.com"
+                    android:scheme="http" />
             </intent-filter>
-            <!-- navigating to either
+            <!--
+            navigating to either
             http://www.mylambencyclient.com?eventid=(eventIDhere) or lambency://deeplink will
-            take the user to the EventDetailsActivity activity. -->
+            take the user to the EventDetailsActivity activity.
+            -->
         </activity>
-
-
         <activity
             android:name=".Activities.OrgCreationActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.SearchActivity"
             android:exported="true"
             android:noHistory="true"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.OrganizationDetailsActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.BottomBarActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.ListEventsActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.BottomBarActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.ListEventsActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Activities.OrgUsersActivity"
+            android:exported="true"></activity>
     </application>
 
 </manifest>

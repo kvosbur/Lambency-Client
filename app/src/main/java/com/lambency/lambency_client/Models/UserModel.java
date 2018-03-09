@@ -6,6 +6,9 @@ import java.util.List;
 
 public class UserModel {
 
+    public final static int MEMBER = 1;
+    public final static int ORGANIZER = 2;
+
     private String firstName;
     private String lastName;
     private String email;
@@ -16,6 +19,7 @@ public class UserModel {
     private int userId;
     private int hoursWorked;
     private String oauthToken;
+    private int orgStatus;
 
     public static UserModel myUserModel;
 
@@ -44,6 +48,8 @@ public class UserModel {
         if(joinedOrgs == null){
             joinedOrgs = new ArrayList<>();
         }
+
+        orgStatus = 0;
 
     }
 
@@ -173,6 +179,14 @@ public class UserModel {
             eventsAttending = new ArrayList<>();
         }
         return eventsAttending.contains(event_id);
+    }
+
+    public void setOrgStatus(int orgStatus) {
+        this.orgStatus = orgStatus;
+    }
+
+    public int getOrgStatus() {
+        return orgStatus;
     }
 
     public String toString(){

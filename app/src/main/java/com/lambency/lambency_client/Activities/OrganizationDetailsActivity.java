@@ -69,6 +69,9 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.orgRequestJoin)
     Button requestJoin;
 
+    @BindView(R.id.seeMembersButton)
+    Button seeMembersButton;
+
     @BindView(R.id.upcomingEventsContainer)
     RelativeLayout upcomingEventsContainer;
 
@@ -97,6 +100,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         boolean followed = false;
         for(int i = 0; i < UserModel.myUserModel.getFollowingOrgs().size(); i++)
@@ -142,6 +146,10 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     }
 
                     Toast.makeText(getApplicationContext(), "Got Organization Object", Toast.LENGTH_LONG).show();
+
+                    if(organization.checkPermissions(UserModel.myUserModel) == 0){
+                        seeMembersButton.setVisibility(View.GONE);
+                    }
 
                     //change screen to show organization information
                     titleOrg.setText(organization.getName());
@@ -427,6 +435,13 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @OnClick(R.id.showAllButton)
     public void handleShowAllClick(){
         Intent intent = new Intent(context, ListEventsActivity.class);
+        intent.putExtra("org_id", organizationModel.getOrgID());
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.seeMembersButton)
+    public void handleSeeMembersClick(){
+        Intent intent = new Intent(context, OrgUsersActivity.class);
         intent.putExtra("org_id", organizationModel.getOrgID());
         startActivity(intent);
     }

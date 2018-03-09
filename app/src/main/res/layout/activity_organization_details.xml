@@ -66,6 +66,16 @@
                 android:layout_height="wrap_content"
                 android:text="Send Join Request"
                 android:textSize="15sp"/>
+
+            <Button
+                android:id="@+id/seeMembersButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See Members"
+                android:background="@android:color/transparent"
+                android:textColor="@android:color/black"
+                />
+
         </LinearLayout>
 
         <LinearLayout
@@ -74,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/titleLayout"
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="0dp"
             >
 
             <LinearLayout
