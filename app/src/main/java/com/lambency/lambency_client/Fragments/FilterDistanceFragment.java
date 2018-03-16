@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -43,6 +44,12 @@ public class FilterDistanceFragment extends Fragment {
 
     @BindView(R.id.fiftyMiles)
     Button b3;
+
+    @BindView(R.id.newTextAddr)
+    EditText diffAddr;
+
+    @BindView(R.id.doneButton)
+    Button doneButton;
 
     public FilterDistanceFragment() {
         // Required empty public constructor
@@ -120,6 +127,13 @@ public class FilterDistanceFragment extends Fragment {
                 seekBarText.setText(updateText);
 
                 seekBar.setProgress(50);
+            }
+        });
+
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO swap back to search page
             }
         });
     }
