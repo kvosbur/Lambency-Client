@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
 import com.lambency.lambency_client.Fragments.EventsMainFragment;
+import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
 import com.lambency.lambency_client.Fragments.MyLambencyEventsFragment;
 import com.lambency.lambency_client.Fragments.MyLambencyFragment;
 import com.lambency.lambency_client.Fragments.MyLambencyOrgsFragment;
@@ -190,6 +191,11 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
                 Log.e("Retrofit", "Error getting myLambency model");
             }
         });
+    }
+
+    public void switchToFragment4() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.fragContainer, new FilterDistanceFragment()).commit();
     }
 
     public void setActionBarTitle(String title) {
