@@ -142,7 +142,7 @@ public class UserListFragment extends Fragment {
 
 
     public void updateUserList(ArrayList<UserModel> users){
-        userListAdapter.updateUserList(users);
+        userListAdapter.replaceAll(users);
     }
 
     public void isLoading(boolean flag){
