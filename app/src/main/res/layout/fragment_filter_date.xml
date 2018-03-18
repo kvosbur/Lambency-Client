@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please select your dates below..."
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="10dp"/>
+
+    <Button
+        android:id="@+id/startDateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/dateText"
+        android:layout_alignStart="@+id/dateText"
+        android:layout_below="@+id/dateText"
+        android:layout_marginTop="40dp"
+        android:text="Select Start" />
+
+    <Button
+        android:id="@+id/endDateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignBaseline="@+id/startDateButton"
+        android:layout_alignBottom="@+id/startDateButton"
+        android:layout_alignEnd="@+id/dateText"
+        android:layout_alignRight="@+id/dateText"
+        android:text="Select End" />
+
+
+</RelativeLayout>
