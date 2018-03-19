@@ -82,6 +82,8 @@ public interface LambencyAPI {
     @GET("User/MyLambency")
     Call<MyLambencyModel> getMyLambencyModel(@Query("oAuthCode") String oAuthCode);
 
+    @GET("Organization/getMembersAndOrganizers")
+    Call<ArrayList<UserModel>[]> getMembersAndOrganizers(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
 
 }
 

@@ -54,7 +54,7 @@ public class ListUserActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new UserListAdapter(userList);
+        mAdapter = new UserListAdapter(this, userList);
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.notifyDataSetChanged(); // how we update
