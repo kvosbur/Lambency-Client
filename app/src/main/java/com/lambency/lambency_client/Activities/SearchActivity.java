@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -17,9 +18,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
+import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
@@ -259,7 +262,11 @@ public class SearchActivity extends AppCompatActivity   {
 
             case R.id.location:
                 System.out.println("Location Pressed");
-                searchByLocation();
+                Intent i = new Intent(context,FilterDistanceActivity.class);
+                startActivity(i);
+
+                //FragmentManager manager = getSupportFragmentManager();
+                //manager.beginTransaction().replace(R.id.fragContainer, new FilterDistanceFragment()).commit();
                 return true;
         }
 

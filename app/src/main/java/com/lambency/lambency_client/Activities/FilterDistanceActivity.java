@@ -1,9 +1,13 @@
-package com.lambency.lambency_client.Fragments;
+package com.lambency.lambency_client.Activities;
 
+import android.app.ActionBar;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,13 +32,13 @@ import butterknife.ButterKnife;
  * Created by Evan on 3/16/2018.
  */
 
-public class FilterDistanceFragment extends Fragment {
+public class FilterDistanceActivity extends AppCompatActivity {
 
 
     @BindView(R.id.seekBar)
     SeekBar seekBar;
 
-    @BindView(R.id.seekBarText)
+    @BindView(R.id.distanceText)
     TextView seekBarText;
 
     @BindView(R.id.tenMiles)
@@ -52,18 +56,20 @@ public class FilterDistanceFragment extends Fragment {
     @BindView(R.id.doneButton)
     Button doneButton;
 
-    public FilterDistanceFragment() {
+    public FilterDistanceActivity() {
         // Required empty public constructor
     }
 
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_filter_distance, container, false);
-        ButterKnife.bind(this, view);
-
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_filter_distance);
+        ButterKnife.bind(this);
         seekBar.setMax(100);
+
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -81,7 +87,7 @@ public class FilterDistanceFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
 
-                String updateText = progress + "miles";
+                String updateText = progress + " miles";
                 seekBarText.setText(updateText);
             }
         });
@@ -126,18 +132,21 @@ public class FilterDistanceFragment extends Fragment {
             }
         });
 
-        return view;
-    }
-
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        //ButterKnife.bind(this, getView());
 
         //((SearchActivity) getActivity())
-         //       .setActionBarTitle("FilterDistance");
-        setHasOptionsMenu(true);
+        //       .setActionBarTitle("FilterDistance");
+    }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; goto parent activity.
+                Intent intent = new Intent(this, SearchActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -85,6 +85,10 @@
             android:exported="true"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".Activities.FilterDistanceActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".Activities.SearchActivity"
             android:exported="true"
             android:noHistory="true"
