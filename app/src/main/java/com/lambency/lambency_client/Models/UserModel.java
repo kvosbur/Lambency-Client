@@ -20,6 +20,7 @@ public class UserModel {
     private int hoursWorked;
     private String oauthToken;
     private int orgStatus;
+    private boolean editable = false;
 
     public static UserModel myUserModel;
 
@@ -286,6 +287,15 @@ public class UserModel {
 
         return result;
     }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
     /**
      *
      * @param oAuthCode oAuthCode for the user

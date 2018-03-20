@@ -1,18 +1,30 @@
 package com.lambency.lambency_client.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.util.SortedList;
+import android.support.v7.widget.AlertDialogLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+import com.lambency.lambency_client.Activities.OrgUsersActivity;
+import com.lambency.lambency_client.Fragments.UserListFragment;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
@@ -25,6 +37,8 @@ import java.util.List;
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHolder> {
 
     private Context context;
+    private String org_id;
+
     private final SortedList<UserModel> users = new SortedList<UserModel>(UserModel.class, new SortedList.Callback<UserModel>() {
         @Override
         public int compare(UserModel o1, UserModel o2) {
@@ -68,6 +82,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         add(users);
     }
 
+    public UserListAdapter(Context context, List<UserModel> users, String org_id){
+        this.context = context;
+        this.org_id = org_id;
+        add(users);
+    }
+
 
 
     @Override
@@ -79,7 +99,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     @Override
     public void onBindViewHolder(UserListAdapter.ViewHolder holder, int position) {
 
-        UserModel userModel = users.get(position);
+        final UserModel userModel = users.get(position);
 
         String name = userModel.getFirstName() + " " + userModel.getLastName();
         holder.nameView.setText(name);
@@ -97,6 +117,109 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             holder.permissionButton.setText("ORGANIZER");
             holder.permissionButton.setTextColor(context.getResources().getColor(R.color.colorAccent));
         }
+
+        if(userModel.isEditable()){
+            holder.editButton.setVisibility(View.VISIBLE);
+        }
+
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editPermissions(userModel);
+            }
+        });
+
+        holder.permissionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editPermissions(userModel);
+            }
+        });
+    }
+
+    private void editPermissions(final UserModel userModel){
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        final View dialogView = layoutInflater.inflate(R.layout.dialog_permissions, null);
+
+        alertDialog.setTitle("Change Permissions");
+        alertDialog.setMessage("Change permissions for " + userModel.getFirstName() + " " + userModel.getLastName() + ":");
+        alertDialog.setView(dialogView);
+
+        dialogView.getRootView().findViewById(R.id.memberButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callPermissionsRetrofit(userModel, 1 + "");
+
+                Toast.makeText(context, userModel.getFirstName() + " " + userModel.getLastName() + " is now a member", Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+
+                OrgUsersActivity.getCurInstance().getUsers(Integer.parseInt(org_id));
+            }
+        });
+
+        dialogView.getRootView().findViewById(R.id.organizerButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callPermissionsRetrofit(userModel, 2 + "");
+
+                Toast.makeText(context, userModel.getFirstName() + " " + userModel.getLastName() + " is now an organizer", Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+
+                OrgUsersActivity.getCurInstance().getUsers(Integer.parseInt(org_id));
+            }
+        });
+
+        dialogView.getRootView().findViewById(R.id.removeButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callPermissionsRetrofit(userModel, 0 + "");
+
+                Toast.makeText(context, userModel.getFirstName() + " " + userModel.getLastName() + " has been removed from this organization", Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+
+                OrgUsersActivity.getCurInstance().getUsers(Integer.parseInt(org_id));
+            }
+        });
+
+        alertDialog.show();
+    }
+
+
+    private void callPermissionsRetrofit(UserModel userModel, String type){
+        //type  0 is remove from group
+        //      1 is set to member
+        //      2 is set to organizer
+
+        LambencyAPIHelper.getInstance().getChangeUserPermissions(UserModel.myUserModel.getOauthToken(), org_id, userModel.getUserId() + "", type).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("ERROR!!!!!");
+                    return;
+                }
+                //when response is back
+                Integer ret = response.body();
+                if(ret == 0){
+                    System.out.println("Success");
+                }
+                else if(ret == -1){
+                    System.out.println("an error has occurred");
+                }
+                else if(ret == -2){
+                    System.out.println("insufficient permissions");
+                }
+                else if(ret == -3){
+                    System.out.println("invalid arguments");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
     }
 
     @Override
@@ -115,10 +238,15 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         @BindView(R.id.permissionButton)
         Button permissionButton;
 
+        @BindView(R.id.editButton)
+        ImageButton editButton;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
+
     }
 
     public void updateUserList(ArrayList<UserModel> users){

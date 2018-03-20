@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.lambency.lambency_client.Adapters.OrgUsersTabsAdapter;
 import com.lambency.lambency_client.Fragments.UserListFragment;
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -40,9 +41,15 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
     List<UserModel> members;
     List<UserModel> organizers;
 
+    private boolean canEdit = false;
+    private String org_id;
+
+    private static OrgUsersActivity curInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        curInstance = this;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_org_users);
 
@@ -55,12 +62,27 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
         actionBar.setElevation(0);
 
 
-
         tabLayout.addTab(tabLayout.newTab().setText("Members"));
         tabLayout.addTab(tabLayout.newTab().setText("Organizers"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        orgUsersTabsAdapter = new OrgUsersTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), this);
+
+        //orgId should be changed below
+        int orgId = -1;
+
+        Bundle b = getIntent().getExtras();
+        if(b != null){
+            orgId = b.getInt("org_id");
+            org_id = orgId + "";
+
+            //Determines whether a user can change member permissions
+            if(UserModel.myUserModel.getMyOrgs().contains(orgId)){
+                canEdit = true;
+            }
+
+        }
+
+        orgUsersTabsAdapter = new OrgUsersTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), this, org_id);
         viewPager.setAdapter(orgUsersTabsAdapter);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -79,16 +101,17 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
             }
         });
 
-        Bundle b = getIntent().getExtras();
-        if(b != null){
-            int orgId = b.getInt("org_id");
-            getUsers(orgId);
-        }
+
+
+
+        getUsers(orgId);
 
     }
 
 
-    private void getUsers(int orgId){
+    public void getUsers(int orgId){
+
+        System.out.println("Getting users for org list...");
 
         //orgUsersTabsAdapter.getMemberListFragment().isLoading(true);
         //orgUsersTabsAdapter.getOrganizerListFragment().isLoading(true);
@@ -114,10 +137,16 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
 
                             for(UserModel user: members){
                                 user.setOrgStatus(UserModel.MEMBER);
+                                if(canEdit){
+                                    user.setEditable(true);
+                                }
                             }
 
                             for(UserModel user: organizers){
                                 user.setOrgStatus(UserModel.ORGANIZER);
+                                if(canEdit){
+                                    user.setEditable(true);
+                                }
                             }
 
                             updateMembers(members);
@@ -211,6 +240,10 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
 
     private void updateOrganizers(ArrayList<UserModel> organizers){
         orgUsersTabsAdapter.getOrganizerListFragment().updateUserList(organizers);
+    }
+
+    public static OrgUsersActivity getCurInstance(){
+        return curInstance;
     }
 
 }
