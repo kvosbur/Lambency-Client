@@ -1,16 +1,20 @@
 package com.lambency.lambency_client.Activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -84,10 +88,14 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.noEventsText)
     TextView noEventsTextView;
 
+    @BindView(R.id.inviteUsersToJoin)
+    Button inviteUsers;
+
     public static int currentOrgId;
     private Context context;
     private OrganizationModel organizationModel;
     private EventsAdapter eventsAdapter;
+    private String usersEmail = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +126,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         }
 
 
+
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
             int org_id = bundle.getInt("org_id");
@@ -136,6 +145,12 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     //when response is back
                     OrganizationModel organization= response.body();
                     organizationModel = organization;
+
+                    //hiding or showing invite button
+                    if (UserModel.myUserModel.getMyOrgs().contains(organizationModel.getOrgID())){
+                        inviteUsers.setVisibility(View.VISIBLE);
+                    }
+                    else inviteUsers.setVisibility(View.GONE);
 
                     getUpcomingEvents();
 
@@ -178,6 +193,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         }else{
             Toast.makeText(getApplicationContext(), "Bundle is broken... :(", Toast.LENGTH_LONG).show();
         }
+
 
     }
 
@@ -397,6 +413,32 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             });
             Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @OnClick(R.id.inviteUsersToJoin)
+    public void onInviteJoin(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter email to send invite");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(input);
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                usersEmail = input.getText().toString();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
     }
 
     @OnClick(R.id.orgRequestJoin)
