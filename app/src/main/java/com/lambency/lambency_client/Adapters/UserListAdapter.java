@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -118,6 +120,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             holder.permissionButton.setTextColor(context.getResources().getColor(R.color.colorAccent));
         }
 
+
+        holder.emailLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendEmail(userModel);
+            }
+        });
+
         if(userModel.isEditable()){
             holder.editButton.setVisibility(View.VISIBLE);
         }
@@ -135,6 +145,20 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 editPermissions(userModel);
             }
         });
+    }
+
+
+    private void sendEmail(final UserModel userModel){
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{userModel.getEmail()});
+        i.putExtra(Intent.EXTRA_SUBJECT, "Lambency Volunteering");
+        //i.putExtra(Intent.EXTRA_TEXT   , "body of email");
+        try {
+            context.startActivity(Intent.createChooser(i, "Email " + userModel.getFirstName() + "..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(context, "No email clients installed", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void editPermissions(final UserModel userModel){
@@ -231,6 +255,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         @BindView(R.id.name)
         TextView nameView;
+
+        @BindView(R.id.emailLayout)
+        LinearLayout emailLayout;
 
         @BindView(R.id.email)
         TextView emailView;
