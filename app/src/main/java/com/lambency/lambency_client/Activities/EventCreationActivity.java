@@ -14,14 +14,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -33,6 +38,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -46,7 +52,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EventCreationActivity extends AppCompatActivity {
+public class EventCreationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.eventImage)
     ImageView eventImage;
@@ -69,6 +75,8 @@ public class EventCreationActivity extends AppCompatActivity {
     @BindView(R.id.descriptionOfEvent)
     EditText descriptionEdit;
 
+    @BindView(R.id.orgSpinner)
+    Spinner orgSpinner;
 
     private boolean editing = false;
     String eventName, dateOfEvent, addressOfEvent, description;
@@ -174,6 +182,8 @@ public class EventCreationActivity extends AppCompatActivity {
             }
         }
 
+        orgSpinner.setOnItemSelectedListener(this);
+        getOrgs();
 
         //Saving details when button pressed
         final Button saveDetails = findViewById(R.id.saveDetailsButton);
@@ -234,7 +244,6 @@ public class EventCreationActivity extends AppCompatActivity {
                 }
             }
         });
-
 
 
         saveDetails.setOnClickListener(new View.OnClickListener() {
@@ -473,7 +482,38 @@ public class EventCreationActivity extends AppCompatActivity {
     }
 
 
+    //Get the orgs for the spinner
+    private void getOrgs(){
 
+        LambencyAPIHelper.getInstance().getOrgSearchByID(UserModel.myUserModel.getMyOrgs().get(0) + "").enqueue(new Callback<OrganizationModel>() {
+            @Override
+            public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
+                List<OrganizationModel> orgs = new ArrayList<>();
+                orgs.add(response.body());
+                OrgSpinnerAdapter orgSpinnerAdapter = new OrgSpinnerAdapter(context, orgs);
+                orgSpinner.setAdapter(orgSpinnerAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<OrganizationModel> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+
+    /***** Methods for handling the org select spinner *****/
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }
 
 

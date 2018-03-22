@@ -129,6 +129,12 @@
         android:maxLines="4"
         />
 
+    <Spinner
+        android:id="@+id/orgSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/descriptionOfEvent"/>
+
     <Button
         android:id="@+id/saveDetailsButton"
         android:layout_width="wrap_content"
@@ -139,7 +145,7 @@
         tools:layout_editor_absoluteX="173dp"
         tools:layout_editor_absoluteY="0dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/descriptionOfEvent"/>
+        android:layout_below="@id/orgSpinner"/>
 
 
 

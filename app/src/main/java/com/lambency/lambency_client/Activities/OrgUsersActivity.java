@@ -55,7 +55,6 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
         actionBar.setElevation(0);
 
 
-
         tabLayout.addTab(tabLayout.newTab().setText("Members"));
         tabLayout.addTab(tabLayout.newTab().setText("Organizers"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
