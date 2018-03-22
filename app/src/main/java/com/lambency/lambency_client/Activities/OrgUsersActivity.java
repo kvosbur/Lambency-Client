@@ -1,19 +1,26 @@
 package com.lambency.lambency_client.Activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Adapters.OrgUsersTabsAdapter;
 import com.lambency.lambency_client.Fragments.UserListFragment;
-import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -43,6 +50,11 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
 
     private boolean canEdit = false;
     private String org_id;
+
+    //Option codes for email
+    public static final int MEMBERS = 0;
+    public static final int ORGANIZERS = 1;
+    public static final int ALL = 2;
 
     private static OrgUsersActivity curInstance;
 
@@ -171,7 +183,7 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate( R.menu.menu_search_plain, menu);
+        getMenuInflater().inflate( R.menu.menu_search_users, menu);
 
         final MenuItem searchAction = menu.findItem( R.id.search );
         SearchView searchView = (SearchView) searchAction.getActionView();
@@ -221,6 +233,48 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.email:
+
+                final AlertDialog alertDialog = new AlertDialog.Builder(context).create();;
+
+                LayoutInflater layoutInflater = LayoutInflater.from(context);
+                final View dialogView = layoutInflater.inflate(R.layout.dialog_email_options, null);
+
+                dialogView.findViewById(R.id.membersButton).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        emailAll(MEMBERS);
+                    }
+                });
+
+                dialogView.findViewById(R.id.organizersButton).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        emailAll(ORGANIZERS);
+                    }
+                });
+
+                dialogView.findViewById(R.id.allButton).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        emailAll(ALL);
+                    }
+                });
+
+                dialogView.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                alertDialog.setView(dialogView);
+                alertDialog.setTitle("Mass Email");
+                alertDialog.setMessage("Who do you want to email?");
+                alertDialog.show();
+
+                return true;
             default:
                 return true;
         }
@@ -240,6 +294,57 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
 
     private void updateOrganizers(ArrayList<UserModel> organizers){
         orgUsersTabsAdapter.getOrganizerListFragment().updateUserList(organizers);
+    }
+
+
+    private void emailAll(int option){
+        Intent i = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        i.setType("message/rfc822");
+
+        ArrayList<String> addresses = new ArrayList<>();
+        String userType = "";
+        switch(option){
+            case MEMBERS:
+                for(UserModel userModel : members){
+                    addresses.add(userModel.getEmail());
+                }
+                userType = "members";
+                break;
+
+            case ORGANIZERS:
+                for(UserModel userModel : organizers){
+                    addresses.add(userModel.getEmail());
+                }
+                userType = "organizers";
+                break;
+
+            case ALL:
+                for(UserModel userModel : members){
+                    addresses.add(userModel.getEmail());
+                }
+                for(UserModel userModel : organizers){
+                    addresses.add(userModel.getEmail());
+                }
+                userType = "members and organizers";
+                break;
+
+            default:
+                Log.e("Email All", "Unexpected email option.");
+        }
+
+        String[] addressArray = new String[addresses.size()];
+        for (int j = 0; j < addresses.size(); j++) {
+            addressArray[j] = addresses.get(j);
+        }
+
+        i.putExtra(Intent.EXTRA_EMAIL  , addressArray);
+        i.putExtra(Intent.EXTRA_SUBJECT, "Lambency Volunteering");
+        //i.putExtra(Intent.EXTRA_TEXT   , "body of email");
+        try {
+            context.startActivity(Intent.createChooser(i, "Email " + userType + "..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(context, "No email clients installed", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static OrgUsersActivity getCurInstance(){

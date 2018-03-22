@@ -8,4 +8,12 @@
         app:showAsAction="always"
         app:actionViewClass="android.support.v7.widget.SearchView"
         />
+
+    <item
+        android:id="@+id/email"
+        android:title="Email All"
+        android:icon="@drawable/ic_email_white_24dp"
+        app:showAsAction="ifRoom"
+        />
+
 </menu>
