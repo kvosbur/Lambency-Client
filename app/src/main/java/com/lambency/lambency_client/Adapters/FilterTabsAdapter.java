@@ -43,16 +43,16 @@ public class FilterTabsAdapter extends FragmentStatePagerAdapter {
                 Toast.LENGTH_LONG).show();
         switch (position) {
             case 0:
-
+                FilterDateFragment tab2 = new FilterDateFragment();
+                this.dateFragment = tab2;
+                return tab2;
             case 1:
                 FilterDistanceFragment tab1 = new FilterDistanceFragment();
                 this.distanceFragment  = tab1;
                 return tab1;
 
             default:
-                FilterDateFragment tab2 = new FilterDateFragment();
-                this.dateFragment = tab2;
-                return tab2;
+                return null;
         }
     }
 

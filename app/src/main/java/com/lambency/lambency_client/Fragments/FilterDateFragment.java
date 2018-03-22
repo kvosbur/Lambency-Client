@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
 
 public class FilterDateFragment extends Fragment
 {
+    /*
     @BindView(R.id.startTimeButton)
     Button startTime;
 
@@ -41,6 +42,7 @@ public class FilterDateFragment extends Fragment
     Button endTime;
 
     String startDate = "";
+
     String endDate = "";
 
     Calendar myCalendar = Calendar.getInstance();
@@ -73,12 +75,15 @@ public class FilterDateFragment extends Fragment
             endDate = endTime.toString();
         }
     };
-
+    */
 
     public FilterDateFragment() {
         // Required empty public constructor
     }
 
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -86,19 +91,32 @@ public class FilterDateFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_filter_date, container, false);
         ButterKnife.bind(this, view);
 
+        return view;
+    }
+
+
+    /*
+    public void initObjects()
+    {
+        //startTime = (Button) getView().findViewById(R.id.startDateButton);
+
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(getActivity(), dateStart, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                //new DatePickerDialog(getActivity(), dateStart, myCalendar
+                //        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                //        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                Toast.makeText(getActivity(), "Yey", Toast.LENGTH_LONG).show();
             }
         });
+
+        //endTime = getView().findViewById(R.id.endDateButton);
 
         endTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                /*
                 if(startDate.compareTo("") == 0)
                 {
                     Toast.makeText(getActivity(), "Please select a start date first!", Toast.LENGTH_LONG).show();
@@ -108,18 +126,19 @@ public class FilterDateFragment extends Fragment
                 new DatePickerDialog(getActivity(), dateEnd, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+
+                Toast.makeText(getActivity(), "Yey", Toast.LENGTH_LONG).show();
             }
         });
-
-        return view;
-    }
-
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    */
 
 
-        setHasOptionsMenu(true);
-    }
+
+    //public void onCreate(Bundle savedInstanceState) {
+    //    super.onCreate(savedInstanceState);
+    //
+    //    setHasOptionsMenu(true);
+    //}
 
 
 }

@@ -1,6 +1,7 @@
 package com.lambency.lambency_client.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -8,10 +9,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.google.android.gms.location.LocationServices;
 import com.lambency.lambency_client.Adapters.FilterTabsAdapter;
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
+import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
+import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.R;
 
 import butterknife.BindView;
@@ -36,7 +40,6 @@ public class FilterActivity extends AppCompatActivity {
 
     FilterTabsAdapter searchTabsAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +51,13 @@ public class FilterActivity extends AppCompatActivity {
 
         //setSupportActionBar(toolbar);
 
-        //ActionBar actionBar = getSupportActionBar();
-        //actionBar.setTitle("");
-        //actionBar.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Filter Options");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setElevation(0);
 
-        tabLayout.addTab(tabLayout.newTab().setText("Distance"));
         tabLayout.addTab(tabLayout.newTab().setText("Date"));
+        tabLayout.addTab(tabLayout.newTab().setText("Distance"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         searchTabsAdapter = new FilterTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), this);
@@ -78,5 +82,17 @@ public class FilterActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+
+                Intent intent = new Intent(context, SearchActivity.class);
+                startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
