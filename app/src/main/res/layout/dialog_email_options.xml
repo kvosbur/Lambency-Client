@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/membersButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Members"
+                android:layout_marginRight="10dp"
+                android:background="@android:color/transparent"
+                />
+
+            <Button
+                android:id="@+id/organizersButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Organizers"
+                android:background="@android:color/transparent"
+                android:layout_marginRight="10dp"
+                />
+
+
+            <Button
+                android:id="@+id/allButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All"
+                android:background="@android:color/transparent"
+                android:layout_marginRight="10dp"
+                />
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout"
+            android:text="Cancel"
+            android:textColor="@android:color/holo_red_light"
+            android:background="@android:color/transparent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            />
+
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

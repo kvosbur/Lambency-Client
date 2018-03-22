@@ -28,7 +28,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_below="@+id/name"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:clickable="true">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -47,16 +48,35 @@
 
         </LinearLayout>
 
-        <Button
-            android:visibility="gone"
-            android:id="@+id/permissionButton"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:background="@android:color/transparent"
-            android:text="member"
-            android:textColor="@android:color/holo_green_light"
-            android:textSize="16sp"/>
+            android:layout_alignParentRight="true">
+            <Button
+                android:visibility="gone"
+                android:id="@+id/permissionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/editButton"
+                android:textAlignment="center"
+                android:background="@android:color/transparent"
+                android:text="member"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="16sp"/>
+
+            <ImageButton
+                android:visibility="gone"
+                android:id="@+id/editButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_edit_gray_24dp"
+                android:background="@android:color/transparent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
