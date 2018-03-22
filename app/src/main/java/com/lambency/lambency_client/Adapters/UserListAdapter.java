@@ -108,16 +108,34 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         holder.emailView.setText(userModel.getEmail());
 
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editPermissions(userModel);
+            }
+        });
+
+        holder.permissionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editPermissions(userModel);
+            }
+        });
+
         if(userModel.getOrgStatus() == UserModel.MEMBER){
             holder.permissionButton.setVisibility(View.VISIBLE);
             holder.permissionButton.setText("MEMBER");
             holder.permissionButton.setTextColor(context.getResources().getColor(R.color.androidGreen));
+            holder.permissionButton.setClickable(false);
+            holder.editButton.setClickable(false);
         }
 
         if(userModel.getOrgStatus() == UserModel.ORGANIZER){
             holder.permissionButton.setVisibility(View.VISIBLE);
             holder.permissionButton.setText("ORGANIZER");
             holder.permissionButton.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            holder.permissionButton.setClickable(true);
+            holder.editButton.setClickable(true);
         }
 
 
@@ -132,19 +150,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             holder.editButton.setVisibility(View.VISIBLE);
         }
 
-        holder.editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editPermissions(userModel);
-            }
-        });
 
-        holder.permissionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editPermissions(userModel);
-            }
-        });
     }
 
 
@@ -303,25 +309,28 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     }
 
 
-    public void replaceAll(List<UserModel> users){
-        if(users == null || users.size() == 0){
-            for (int i = 0; i < this.users.size(); i++) {
+    public void replaceAll(List<UserModel> filteredUsers){
+
+        this.users.beginBatchedUpdates();
+
+        if(filteredUsers == null || filteredUsers.size() == 0){
+            for (int i = this.users.size() - 1; i >= 0 ; i--) {
                 remove(this.users.get(i));
             }
+
+            this.users.endBatchedUpdates();
 
             return;
         }
 
-        this.users.beginBatchedUpdates();
-
-        for (int i = users.size() - 1; i >= 0; i--) {
-            UserModel user = users.get(i);
-            if(!users.contains(user)) {
+        for (int i = this.users.size() - 1; i >= 0; i--) {
+            UserModel user = this.users.get(i);
+            if(!filteredUsers.contains(user)) {
                 this.users.remove(user);
             }
         }
 
-        this.users.addAll(users);
+        this.users.addAll(filteredUsers);
         this.users.endBatchedUpdates();
     }
 
