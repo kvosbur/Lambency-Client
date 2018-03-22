@@ -34,12 +34,13 @@ import butterknife.ButterKnife;
 
 public class FilterDateFragment extends Fragment
 {
-    /*
-    @BindView(R.id.startTimeButton)
+
+    @BindView(R.id.startDateButtonFilter)
     Button startTime;
 
-    @BindView(R.id.endTimeButton)
+    @BindView(R.id.endDateButtonFilter)
     Button endTime;
+
 
     String startDate = "";
 
@@ -75,7 +76,6 @@ public class FilterDateFragment extends Fragment
             endDate = endTime.toString();
         }
     };
-    */
 
     public FilterDateFragment() {
         // Required empty public constructor
@@ -91,22 +91,23 @@ public class FilterDateFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_filter_date, container, false);
         ButterKnife.bind(this, view);
 
+        initObjects();
+
         return view;
     }
 
 
-    /*
-    public void initObjects()
-    {
+
+    public void initObjects() {
         //startTime = (Button) getView().findViewById(R.id.startDateButton);
 
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //new DatePickerDialog(getActivity(), dateStart, myCalendar
-                //        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                //        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                Toast.makeText(getActivity(), "Yey", Toast.LENGTH_LONG).show();
+                 new DatePickerDialog(getActivity(), dateStart, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                //Toast.makeText(getActivity(), "Yey", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -116,9 +117,8 @@ public class FilterDateFragment extends Fragment
             @Override
             public void onClick(View view) {
 
-                /*
-                if(startDate.compareTo("") == 0)
-                {
+
+                if (startDate.compareTo("") == 0) {
                     Toast.makeText(getActivity(), "Please select a start date first!", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -130,9 +130,9 @@ public class FilterDateFragment extends Fragment
                 Toast.makeText(getActivity(), "Yey", Toast.LENGTH_LONG).show();
             }
         });
-    */
 
 
+    }
 
     //public void onCreate(Bundle savedInstanceState) {
     //    super.onCreate(savedInstanceState);

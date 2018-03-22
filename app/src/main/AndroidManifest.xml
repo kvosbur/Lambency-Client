@@ -107,7 +107,9 @@
             android:exported="true"
             />
         <activity android:name=".Activities.ListEventsActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
     </application>
 
 </manifest>

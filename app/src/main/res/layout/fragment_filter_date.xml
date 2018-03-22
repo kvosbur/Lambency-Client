@@ -15,7 +15,7 @@
         android:paddingTop="10dp"/>
 
     <Button
-        android:id="@+id/startDateButton"
+        android:id="@+id/startDateButtonFilter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/dateText"
@@ -25,12 +25,12 @@
         android:text="Select Start" />
 
     <Button
-        android:id="@+id/endDateButton"
+        android:id="@+id/endDateButtonFilter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_alignBaseline="@+id/startDateButton"
-        android:layout_alignBottom="@+id/startDateButton"
+        android:layout_alignBaseline="@+id/startDateButtonFilter"
+        android:layout_alignBottom="@+id/startDateButtonFilter"
         android:layout_alignEnd="@+id/dateText"
         android:layout_alignRight="@+id/dateText"
         android:text="Select End" />
