@@ -34,7 +34,7 @@ public class FilterDistanceFragment extends Fragment {
     @BindView(R.id.seekBar)
     SeekBar seekBar;
 
-    @BindView(R.id.seekBarText)
+    @BindView(R.id.distanceText)
     TextView seekBarText;
 
     @BindView(R.id.tenMiles)
@@ -81,7 +81,7 @@ public class FilterDistanceFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
 
-                String updateText = progress + "miles";
+                String updateText = progress + " miles";
                 seekBarText.setText(updateText);
             }
         });

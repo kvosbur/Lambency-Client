@@ -23,8 +23,8 @@ import butterknife.ButterKnife;
 
 public class FilterActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbarFilter)
-    Toolbar toolbar;
+    //@BindView(R.id.toolbarFilter)
+    //Toolbar toolbar;
 
     @BindView(R.id.tabLayoutFilter)
     TabLayout tabLayout;

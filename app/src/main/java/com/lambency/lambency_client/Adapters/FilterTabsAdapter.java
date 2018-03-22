@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.Fragments.EventSearchResultFragment;
@@ -38,17 +39,20 @@ public class FilterTabsAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        Toast.makeText(context, "Position: " + position,
+                Toast.LENGTH_LONG).show();
         switch (position) {
             case 0:
 
             case 1:
-                FilterDateFragment tab2 = new FilterDateFragment();
-                this.dateFragment = tab2;
-                return tab2;
-            default:
                 FilterDistanceFragment tab1 = new FilterDistanceFragment();
                 this.distanceFragment  = tab1;
                 return tab1;
+
+            default:
+                FilterDateFragment tab2 = new FilterDateFragment();
+                this.dateFragment = tab2;
+                return tab2;
         }
     }
 
