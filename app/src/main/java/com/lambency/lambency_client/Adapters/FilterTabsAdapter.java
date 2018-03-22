@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.Fragments.EventSearchResultFragment;
+import com.lambency.lambency_client.Fragments.FilterDateFragment;
 import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
 import com.lambency.lambency_client.Fragments.OrgSearchResultFragment;
 import com.lambency.lambency_client.Models.EventModel;
@@ -26,8 +27,8 @@ public class FilterTabsAdapter extends FragmentStatePagerAdapter {
     int numTabs;
     Context context;
 
-    FilterDistanceFragment eventFragment;
-    //OrgSearchResultFragment orgFragment;
+    FilterDistanceFragment distanceFragment;
+    FilterDateFragment dateFragment;
 
     public FilterTabsAdapter(FragmentManager fm, int numTabs, Context context){
         super(fm);
@@ -37,21 +38,18 @@ public class FilterTabsAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        FilterDistanceFragment tab1 = new FilterDistanceFragment();
-        this.eventFragment  = tab1;
-        return tab1;
-        /*
         switch (position) {
             case 0:
 
-            //case 1:
-            //    OrgSearchResultFragment tab2 = new OrgSearchResultFragment();
-            //    this.orgFragment = tab2;
-            //    return tab2;
+            case 1:
+                FilterDateFragment tab2 = new FilterDateFragment();
+                this.dateFragment = tab2;
+                return tab2;
             default:
-                return null;
+                FilterDistanceFragment tab1 = new FilterDistanceFragment();
+                this.distanceFragment  = tab1;
+                return tab1;
         }
-        */
     }
 
     /*

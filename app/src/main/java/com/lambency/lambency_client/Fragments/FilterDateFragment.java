@@ -34,7 +34,6 @@ import butterknife.ButterKnife;
 
 public class FilterDateFragment extends Fragment
 {
-
     @BindView(R.id.startTimeButton)
     Button startTime;
 
@@ -87,18 +86,6 @@ public class FilterDateFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_filter_date, container, false);
         ButterKnife.bind(this, view);
 
-        return view;
-    }
-
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        ButterKnife.bind(this, getView());
-
-        ((BottomBarActivity) getActivity())
-                .setActionBarTitle("FilterDate");
-        setHasOptionsMenu(true);
-
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,6 +110,15 @@ public class FilterDateFragment extends Fragment
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
+        return view;
+    }
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+        setHasOptionsMenu(true);
     }
 
 
