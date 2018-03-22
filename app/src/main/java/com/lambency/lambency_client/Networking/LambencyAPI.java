@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Networking;
 
+import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.MyLambencyModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
@@ -81,6 +82,9 @@ public interface LambencyAPI {
 
     @GET("User/MyLambency")
     Call<MyLambencyModel> getMyLambencyModel(@Query("oAuthCode") String oAuthCode);
+
+    @GET("Event/searchWithFilter")
+    Call<List<EventModel>> getEventsFromFilter(@Body EventFilterModel efm);
 
 
 }
