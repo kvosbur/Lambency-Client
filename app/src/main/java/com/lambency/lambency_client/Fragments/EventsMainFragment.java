@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
+import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -55,7 +56,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * create an instance of this fragment.
  */
 public class EventsMainFragment extends Fragment implements
-        GoogleApiClient.ConnectionCallbacks, OnConnectionFailedListener{
+        GoogleApiClient.ConnectionCallbacks, OnConnectionFailedListener,LocationListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -115,15 +116,6 @@ public class EventsMainFragment extends Fragment implements
                 .setActionBarTitle("Feed");
         setHasOptionsMenu(true);
 
-        //for getting current address
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                // The next two lines tell the new client that “this” current class will handle connection stuff
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                //fourth line adds the LocationServices API endpoint from GooglePlayServices
-                .addApi(LocationServices.API)
-                .build();
-
     }
 
     private void startAdapter(List<EventModel> events){
@@ -158,6 +150,15 @@ public class EventsMainFragment extends Fragment implements
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_events_main, container, false);
         ButterKnife.bind(this, view);
+
+        //for getting current address
+        mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                // The next two lines tell the new client that “this” current class will handle connection stuff
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                //fourth line adds the LocationServices API endpoint from GooglePlayServices
+                .addApi(LocationServices.API)
+                .build();
 
         loadingEvents();
         callRetrofit();
@@ -262,6 +263,7 @@ public class EventsMainFragment extends Fragment implements
         eventMainProgress_bar.setVisibility(View.GONE);
     }
 
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         @SuppressLint("MissingPermission") Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -270,6 +272,14 @@ public class EventsMainFragment extends Fragment implements
         currentLongitude = location.getLongitude();
 
         Toast.makeText(getActivity(), currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+    }
+
+    //start methods for getting current location
+    @Override
+    public void onResume() {
+        super.onResume();
+        //Now lets connect to the API
+        mGoogleApiClient.connect();
     }
 
     @Override
@@ -304,6 +314,29 @@ public class EventsMainFragment extends Fragment implements
                  */
             Log.e("Error", "Location services connection failed with code " + connectionResult.getErrorCode());
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLatitude = location.getLatitude();
+        currentLongitude = location.getLongitude();
+
+        Toast.makeText(getActivity(), currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
     /**
