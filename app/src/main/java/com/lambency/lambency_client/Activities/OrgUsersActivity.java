@@ -191,6 +191,13 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
         searchView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         searchView.setOnQueryTextListener(this);
 
+        final MenuItem emailAction = menu.findItem(R.id.email);
+        if(UserModel.myUserModel.getMyOrgs().contains(Integer.parseInt(org_id))){
+            emailAction.setVisible(true);
+        }else{
+            emailAction.setVisible(false);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
