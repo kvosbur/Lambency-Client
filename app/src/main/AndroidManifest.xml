@@ -79,6 +79,10 @@
             take the user to the EventDetailsActivity activity. -->
         </activity>
 
+        <activity
+            android:name=".Activities.FilterActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".Activities.OrgCreationActivity"

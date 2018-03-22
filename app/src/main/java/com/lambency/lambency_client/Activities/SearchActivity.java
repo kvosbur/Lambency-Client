@@ -262,7 +262,7 @@ public class SearchActivity extends AppCompatActivity   {
 
             case R.id.location:
                 System.out.println("Location Pressed");
-                Intent i = new Intent(context,FilterDistanceActivity.class);
+                Intent i = new Intent(context,FilterActivity.class);
                 startActivity(i);
 
                 //FragmentManager manager = getSupportFragmentManager();
