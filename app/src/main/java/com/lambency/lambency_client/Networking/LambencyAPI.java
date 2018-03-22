@@ -88,5 +88,7 @@ public interface LambencyAPI {
     @GET("User/eventsFeed")
     Call<List<EventModel>> getEventsFeed(@Query("oAuthCode") String oAuthCode, @Query("latitude") String latitude, @Query("longitude") String longitude);
 
+    @POST("Organization/InviteUser")
+    Call<Integer> inviteUser(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID, @Query("emailString") String userEmail);
 }
 

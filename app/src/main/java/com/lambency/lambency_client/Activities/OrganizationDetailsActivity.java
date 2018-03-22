@@ -423,13 +423,39 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         // Set up the input
         final EditText input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         builder.setView(input);
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 usersEmail = input.getText().toString();
+
+                //Retrofit to send the users email to the server
+                LambencyAPIHelper.getInstance().inviteUser(UserModel.myUserModel.getOauthToken(),
+                        organizationModel.getOrgID()+"",usersEmail).enqueue(new Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        if (response.body() == null || response.code() != 200) {
+                            Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        //when response is back
+                        Integer ret = response.body();
+                        if(ret == 0){
+                            System.out.println("Success in sending email");
+                            Toast.makeText(getApplicationContext(), "Email was sent successfully ", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == -1){
+                            System.out.println("an error has occurred");
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Integer> call, Throwable throwable) {
+                        Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                });
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
