@@ -1,12 +1,22 @@
 package com.lambency.lambency_client.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +27,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.lambency.lambency_client.Adapters.EventsAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
@@ -26,6 +40,12 @@ import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.CustomLinearLayoutManager;
 import com.lambency.lambency_client.Utils.ImageHelper;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +104,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.noEventsText)
     TextView noEventsTextView;
 
+
     public static int currentOrgId;
     private Context context;
     private OrganizationModel organizationModel;
@@ -100,6 +121,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
+
 
 
         boolean followed = false;
@@ -136,6 +158,8 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     //when response is back
                     OrganizationModel organization= response.body();
                     organizationModel = organization;
+
+
 
                     getUpcomingEvents();
 
@@ -178,8 +202,9 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         }else{
             Toast.makeText(getApplicationContext(), "Bundle is broken... :(", Toast.LENGTH_LONG).show();
         }
-
     }
+
+
 
     public void getUpcomingEvents(){
 
