@@ -16,6 +16,8 @@ import com.lambency.lambency_client.Utils.ImageHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by lshan on 3/22/2018.
  */
@@ -56,7 +58,7 @@ public class OrgSpinnerAdapter extends BaseAdapter{
         TextView orgTitle = view.findViewById(R.id.orgTitle);
         orgTitle.setText(orgModel.getName());
 
-        ImageView orgImage = view.findViewById(R.id.orgImage);
+        CircleImageView orgImage = view.findViewById(R.id.orgImage);
         ImageHelper.loadWithGlide(context,
                 ImageHelper.saveImage(context, orgs.get(i).getImage(), "orgImage" + orgModel.getOrgID()),
                 orgImage);

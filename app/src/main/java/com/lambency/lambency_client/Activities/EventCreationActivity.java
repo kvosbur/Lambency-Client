@@ -385,7 +385,6 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
     private void getEventInfo(final int event_id){
 
-
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
             @Override
             public void onResponse(Call<EventModel> call, Response<EventModel> response) {

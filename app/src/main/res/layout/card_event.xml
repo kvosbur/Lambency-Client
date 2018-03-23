@@ -9,78 +9,111 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="140dp">
 
         <ImageView
             android:id="@+id/pictureOfEvent"
             android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_height="match_parent"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="5dp"
             android:layout_marginRight="10dp"
             android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+
 
             android:src="@drawable/ic_books" />
 
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/nameOfEvent"
-            android:layout_toRightOf="@+id/pictureOfEvent">
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Event Name"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/dateOfEvent"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/pictureOfEvent"
-            android:layout_below="@id/nameOfEvent"
+            android:layout_marginLeft="4dp">
 
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/nameOfEvent"
+                >
 
-            android:textColor="@color/colorAccent"
-            android:textSize="16sp"
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Event Name"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    />
+            </LinearLayout>
 
-            android:text="03/10/1998 "/>
+            <TextView
+                android:id="@+id/dateOfEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/nameOfEvent"
 
-        <TextView
-            android:id="@+id/timeOfEvent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3 - 5 pm"
-            android:layout_toRightOf="@id/dateOfEvent"
-            android:layout_below="@id/nameOfEvent"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
 
-            android:textColor="@color/colorAccent"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp"
 
-            android:textSize="16sp"
-            />
+                android:text="03/10/1998 "/>
 
-        <TextView
-            android:id="@+id/descriptionOfEvent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/dateOfEvent"
-            android:layout_toRightOf="@+id/pictureOfEvent"
-            android:text="Here is info about the event, you should come! It will be great! Come support your community!"
-            android:maxLines="3"
-            android:scrollHorizontally="true"
-            android:ellipsize="end"
-            android:layout_marginBottom="3dp"/>
+            <TextView
+                android:id="@+id/timeOfEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3 - 5 pm"
+                android:layout_toRightOf="@id/dateOfEvent"
+                android:layout_below="@id/nameOfEvent"
 
+                android:textColor="@color/colorAccent"
+
+                android:textSize="16sp"
+                />
+
+            <TextView
+                android:id="@+id/descriptionOfEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dateOfEvent"
+                android:text="Here is info about the event, you should come! It will be great! Come support your community!"
+                android:maxLines="3"
+                android:scrollHorizontally="true"
+                android:ellipsize="end"
+                android:layout_marginBottom="3dp"/>
+
+
+            <LinearLayout
+                android:id="@+id/orgLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/descriptionOfEvent"
+                android:layout_marginTop="4dp"
+                >
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/orgImage"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_books"
+                    android:layout_marginRight="5dp"
+                    android:layout_gravity="center_vertical"/>
+
+                <TextView
+                    android:id="@+id/orgTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Organization Name"
+                    android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         </RelativeLayout>
 
