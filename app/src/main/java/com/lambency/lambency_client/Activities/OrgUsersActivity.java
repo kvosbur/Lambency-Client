@@ -73,7 +73,6 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setElevation(0);
 
-
         tabLayout.addTab(tabLayout.newTab().setText("Members"));
         tabLayout.addTab(tabLayout.newTab().setText("Organizers"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -156,7 +155,7 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
 
                             for(UserModel user: organizers){
                                 user.setOrgStatus(UserModel.ORGANIZER);
-                                if(canEdit){
+                                if(canEdit && user.getUserId() != UserModel.myUserModel.getUserId()){
                                     user.setEditable(true);
                                 }
                             }

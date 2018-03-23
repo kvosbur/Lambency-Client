@@ -114,7 +114,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 editPermissions(userModel);
             }
         });
-        
 
         if(userModel.getOrgStatus() == UserModel.MEMBER){
             holder.permissionButton.setVisibility(View.VISIBLE);
@@ -174,7 +173,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 Toast.makeText(context, userModel.getFirstName() + " " + userModel.getLastName() + " is now a member", Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
 
-                OrgUsersActivity.getCurInstance().getUsers(Integer.parseInt(org_id));
             }
         });
 
@@ -185,8 +183,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
                 Toast.makeText(context, userModel.getFirstName() + " " + userModel.getLastName() + " is now an organizer", Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
-
-                OrgUsersActivity.getCurInstance().getUsers(Integer.parseInt(org_id));
             }
         });
 
@@ -198,7 +194,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 Toast.makeText(context, userModel.getFirstName() + " " + userModel.getLastName() + " has been removed from this organization", Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
 
-                OrgUsersActivity.getCurInstance().getUsers(Integer.parseInt(org_id));
             }
         });
 
@@ -232,6 +227,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 else if(ret == -3){
                     System.out.println("invalid arguments");
                 }
+
+                OrgUsersActivity.getCurInstance().getUsers(Integer.parseInt(org_id));
             }
 
             @Override
