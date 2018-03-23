@@ -114,28 +114,18 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 editPermissions(userModel);
             }
         });
-
-        holder.permissionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editPermissions(userModel);
-            }
-        });
+        
 
         if(userModel.getOrgStatus() == UserModel.MEMBER){
             holder.permissionButton.setVisibility(View.VISIBLE);
             holder.permissionButton.setText("MEMBER");
             holder.permissionButton.setTextColor(context.getResources().getColor(R.color.androidGreen));
-            holder.permissionButton.setClickable(false);
-            holder.editButton.setClickable(false);
         }
 
         if(userModel.getOrgStatus() == UserModel.ORGANIZER){
             holder.permissionButton.setVisibility(View.VISIBLE);
             holder.permissionButton.setText("ORGANIZER");
             holder.permissionButton.setTextColor(context.getResources().getColor(R.color.colorAccent));
-            holder.permissionButton.setClickable(true);
-            holder.editButton.setClickable(true);
         }
 
 
