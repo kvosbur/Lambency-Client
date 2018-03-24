@@ -219,8 +219,48 @@ public class EventDetailsActivity extends AppCompatActivity implements
                         }
                     });
                 } else {
-                    Toast.makeText(getApplicationContext(), "You cant actually unfollow. Sorry", Toast.LENGTH_LONG).show();
-                    text.setText("Join Event");
+                    //Toast.makeText(getApplicationContext(), "You cant actually unfollow. Sorry", Toast.LENGTH_LONG).show();
+                    //text.setText("Join Event");
+                    LambencyAPIHelper.getInstance().unRegisterForEvent(UserModel.myUserModel.getOauthToken(), "" + event_id).enqueue(new retrofit2.Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                System.out.println("Error cause body returned null or bad response code in register response.");
+                                Toast.makeText(getApplicationContext(), "Problem deleting registration.", Toast.LENGTH_LONG).show();
+                            }
+                            //when response is back
+                            Integer ret = response.body();
+                            if (ret == 0) {
+                                System.out.println("successfully unregistered for event");
+                                UserModel.myUserModel.unregisterForEvent(event_id);
+                                System.out.println("Unregistering for an event: " + event_id);
+                                System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
+                                Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
+                                text.setText("Join Event");
+                                checkMark.setVisibility(View.INVISIBLE);
+
+                            } else if (ret == 1) {
+                                System.out.println("failed to find user or organization");
+                                Toast.makeText(getApplicationContext(), "No Event to follow", Toast.LENGTH_LONG).show();
+                            } else if (ret == 2) {
+                                System.out.println("undetermined error");
+                                Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
+                            } else if (ret == 3) {
+                                UserModel.myUserModel.unregisterForEvent(event_id);
+                                System.out.println("UnREgistering for an event: " + event_id);
+                                System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
+                                System.out.println("Technically they were not registered for the event, but I guess the user object was not updated... so oops. Fail quietly.");
+                                Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable throwable) {
+                            //when failure
+                            System.out.println("FAILED CALL");
+                            Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
             }
         });
