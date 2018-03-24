@@ -208,16 +208,15 @@ public class SearchActivity extends AppCompatActivity   {
 
                                     searchTabsAdapter.setEventVisiblity(View.VISIBLE, View.GONE);
 
-                                    LambencyAPIHelper.getInstance().getEventsWithParams(location.getLatitude(), location.getLongitude(), "", "").enqueue(new Callback<List<EventModel>>() {
+                                    EventFilterModel.currentFilter.setLongitude(location.getLongitude());
+                                    EventFilterModel.currentFilter.setLatitude(location.getLatitude());
+
+                                    LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter).enqueue(new Callback<List<EventModel>>() {
                                         @Override
                                         public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
                                             List<EventModel> events = response.body();
                                             searchTabsAdapter.updateEvents(events);
                                             searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
-
-                                            EventFilterModel.currentFilter.setLatitude(location.getLatitude());
-                                            EventFilterModel.currentFilter.setLongitude(location.getLongitude());
-
                                         }
 
                                         @Override

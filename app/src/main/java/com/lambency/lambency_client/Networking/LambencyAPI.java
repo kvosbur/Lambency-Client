@@ -83,7 +83,7 @@ public interface LambencyAPI {
     @GET("User/MyLambency")
     Call<MyLambencyModel> getMyLambencyModel(@Query("oAuthCode") String oAuthCode);
 
-    @GET("Event/searchWithFilter")
+    @POST("Event/searchWithFilter")
     Call<List<EventModel>> getEventsFromFilter(@Body EventFilterModel efm);
 
 
