@@ -231,14 +231,12 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 }
             });
             //this checks to see if they are a member
-            for(int i = 0; i < UserModel.myUserModel.getMyOrgs().size(); i++)
-            {
-                if(UserModel.myUserModel.getMyOrgs().get(i) == currentOrgId)
-                {
+           if(UserModel.myUserModel.getMyOrgs().contains( currentOrgId) || UserModel.myUserModel.getJoinedOrgs().contains(currentOrgId))
+           {
 
-                    requestJoin.setText("Leave Organization");
-                }
-            }
+               requestJoin.setText("Leave Organization");
+           }
+
 
             // This checks to see if there is a request present
             System.out.println(UserModel.myUserModel.getRequestedJoinOrgIds());
