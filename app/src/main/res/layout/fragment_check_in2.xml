@@ -1,0 +1,105 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/androidGreen">
+
+
+    <LinearLayout
+        android:id="@+id/checkedInTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/checkInDisp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Check in time is:    "
+            android:textSize="25dp"/>
+        <TextView
+            android:id="@+id/checkInDispTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:textColor="@color/com_facebook_blue"
+            android:text="00:00:00"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/checkedOutTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/checkedInTime">
+
+        <TextView
+            android:id="@+id/checkOutDisp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Check out time is: "
+            android:textSize="25dp"/>
+        <TextView
+            android:id="@+id/checkOutDispTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:textColor="@color/com_facebook_blue"
+            android:text="00:00:00"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+    android:id="@+id/dateAndtime"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerVertical="true">
+    <TextView
+        android:id="@+id/textViewDateValue"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Current date"
+        android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/textViewTImeValue"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/textViewDateValue"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Current time"
+        android:textSize="30dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dateAndtime"
+        android:layout_centerHorizontal="true">
+    <EditText
+        android:id="@+id/enterCode"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:hint="Enter the code to check in/out here..." />
+
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Send" />
+    </LinearLayout>
+
+
+
+
+
+
+
+
+</RelativeLayout>

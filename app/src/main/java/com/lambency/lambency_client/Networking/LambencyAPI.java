@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Networking;
 
+import com.lambency.lambency_client.Models.EventAttendanceModel;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.MyLambencyModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
@@ -108,5 +109,7 @@ public interface LambencyAPI {
     @GET("/Organization/changeUserPermissions")
     Call<Integer> getChangeUserPermissions(@Query("oAuthCode") String oAuthCode, @Query("orgID") String org_id, @Query("userChanged") String changedID, @Query("type") String type);
 
+    @POST("/User/ClockInOut")
+    Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
 }
 
