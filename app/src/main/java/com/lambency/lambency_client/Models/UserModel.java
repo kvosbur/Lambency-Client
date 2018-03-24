@@ -314,14 +314,6 @@ public class UserModel {
     }
 
 
-    public boolean equals(Object o){
-        if(o.getClass().equals(UserModel.class)){
-            return(((UserModel)o).getUserId() == getUserId());
-        }
-        return false;
-    }
-
-
     public void setEditable(boolean editable) {
         this.editable = editable;
     }

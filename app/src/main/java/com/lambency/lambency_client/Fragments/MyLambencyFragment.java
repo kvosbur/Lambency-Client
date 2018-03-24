@@ -116,6 +116,11 @@ public class MyLambencyFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_my_lambency, container, false);
         ButterKnife.bind(this, view);
 
+        //Make sure they can't create an event if they don't have any orgs
+        if(UserModel.myUserModel.getMyOrgs().size() == 0){
+            eventFab.setVisibility(View.GONE);
+        }
+
         tabLayout.addTab(tabLayout.newTab().setText("Events"));
         tabLayout.addTab(tabLayout.newTab().setText("Organizations"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
