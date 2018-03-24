@@ -64,8 +64,18 @@
                 android:id="@+id/orgRequestJoin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Send Join Request"
+                android:text="Request to join"
                 android:textSize="15sp"/>
+
+            <Button
+                android:id="@+id/seeMembersButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See Members"
+                android:background="@android:color/transparent"
+                android:textColor="@android:color/black"
+                />
+
         </LinearLayout>
 
         <LinearLayout
@@ -74,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/titleLayout"
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="0dp"
             >
 
             <LinearLayout
@@ -117,6 +127,7 @@
 
                 <TextView
                     android:id="@+id/addressOrg"
+                    android:clickable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1275 Third Street, West Lafayette IN 47906"
@@ -128,6 +139,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/upcomingEventsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/infoLayout"
@@ -136,6 +148,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/upcomingEventsText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Upcoming Events"
@@ -143,24 +156,59 @@
                 android:textSize="18sp"
                 android:layout_marginBottom="10dp"/>
 
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/eventList">
-
-            </ListView>
-
-
-
         </LinearLayout>
 
+        <ProgressBar
+            android:id="@+id/upcomingEventsProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/upcomingEventsLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/noEventsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/upcomingEventsLayout"
+            android:layout_marginTop="10dp"
+            android:text="No Upcoming Events"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:id="@+id/upcomingEventsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/upcomingEventsLayout">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/eventsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp" />
+
+            <Button
+                android:id="@+id/showAllButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="Show All"
+                android:layout_below="@+id/eventsRecyclerView"
+                android:gravity="center_horizontal"
+                android:layout_centerHorizontal="true"/>
+
+        </RelativeLayout>
 
     </RelativeLayout>
+
 </ScrollView>
+
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         />
+
 </FrameLayout>

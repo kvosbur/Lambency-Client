@@ -6,6 +6,9 @@ import java.util.List;
 
 public class UserModel {
 
+    public final static int MEMBER = 1;
+    public final static int ORGANIZER = 2;
+
     private String firstName;
     private String lastName;
     private String email;
@@ -13,9 +16,12 @@ public class UserModel {
     private List<Integer> eventsAttending;
     private List<Integer> followingOrgs;
     private List<Integer> joinedOrgs;
+    private List<Integer> requestedJoinOrgIds; // orgIDs for all join requests that are still unconfirmed
     private int userId;
     private int hoursWorked;
     private String oauthToken;
+    private int orgStatus;
+    private boolean editable = false;
 
     public static UserModel myUserModel;
 
@@ -44,6 +50,8 @@ public class UserModel {
         if(joinedOrgs == null){
             joinedOrgs = new ArrayList<>();
         }
+
+        orgStatus = 0;
 
     }
 
@@ -153,6 +161,21 @@ public class UserModel {
         return oauthToken;
     }
 
+    public List<Integer> getRequestedJoinOrgIds() {
+        if(requestedJoinOrgIds == null){
+            requestedJoinOrgIds = new ArrayList<>();
+        }
+        return requestedJoinOrgIds;
+    }
+
+    public void setRequestedJoinOrgIds(List<Integer> requestedJoinOrgId) {
+        if(requestedJoinOrgId == null){
+            System.out.println("WILL NOT SET JOIN REQUESTS TO NULL.");
+            return;
+        }
+        this.requestedJoinOrgIds = requestedJoinOrgId;
+    }
+
     public void organizeGroup(int group_id){
         myOrgs.add(group_id);
     }
@@ -173,6 +196,65 @@ public class UserModel {
             eventsAttending = new ArrayList<>();
         }
         return eventsAttending.contains(event_id);
+
+    }
+
+    public void requestToJoinOrganization(int org_id){
+        requestedJoinOrgIds.add(org_id);
+    }
+
+    public void removeRequestToJoinOrganization(int org_id){
+        requestedJoinOrgIds.remove(new Integer (org_id));
+    }
+
+    public void setOrgStatus(int orgStatus) {
+        this.orgStatus = orgStatus;
+    }
+
+    public int getOrgStatus() {
+        return orgStatus;
+    }
+
+
+    //Auto generated equals and hash code
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserModel userModel = (UserModel) o;
+
+        if (getUserId() != userModel.getUserId()) return false;
+        if (getHoursWorked() != userModel.getHoursWorked()) return false;
+        if (getOrgStatus() != userModel.getOrgStatus()) return false;
+        if (getFirstName() != null ? !getFirstName().equals(userModel.getFirstName()) : userModel.getFirstName() != null)
+            return false;
+        if (getLastName() != null ? !getLastName().equals(userModel.getLastName()) : userModel.getLastName() != null)
+            return false;
+        if (getEmail() != null ? !getEmail().equals(userModel.getEmail()) : userModel.getEmail() != null)
+            return false;
+        if (getMyOrgs() != null ? !getMyOrgs().equals(userModel.getMyOrgs()) : userModel.getMyOrgs() != null)
+            return false;
+        if (getEventsAttending() != null ? !getEventsAttending().equals(userModel.getEventsAttending()) : userModel.getEventsAttending() != null)
+            return false;
+        if (getFollowingOrgs() != null ? !getFollowingOrgs().equals(userModel.getFollowingOrgs()) : userModel.getFollowingOrgs() != null)
+            return false;
+        return getJoinedOrgs() != null ? getJoinedOrgs().equals(userModel.getJoinedOrgs()) : userModel.getJoinedOrgs() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getFirstName() != null ? getFirstName().hashCode() : 0;
+        result = 31 * result + (getLastName() != null ? getLastName().hashCode() : 0);
+        result = 31 * result + (getEmail() != null ? getEmail().hashCode() : 0);
+        result = 31 * result + (getMyOrgs() != null ? getMyOrgs().hashCode() : 0);
+        result = 31 * result + (getEventsAttending() != null ? getEventsAttending().hashCode() : 0);
+        result = 31 * result + (getFollowingOrgs() != null ? getFollowingOrgs().hashCode() : 0);
+        result = 31 * result + (getJoinedOrgs() != null ? getJoinedOrgs().hashCode() : 0);
+        result = 31 * result + getUserId();
+        result = 31 * result + getHoursWorked();
+        result = 31 * result + getOrgStatus();
+        return result;
     }
 
     public String toString(){
@@ -230,6 +312,25 @@ public class UserModel {
 
         return result;
     }
+
+
+    public boolean equals(Object o){
+        if(o.getClass().equals(UserModel.class)){
+            return(((UserModel)o).getUserId() == getUserId());
+        }
+        return false;
+    }
+
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+
     /**
      *
      * @param oAuthCode oAuthCode for the user

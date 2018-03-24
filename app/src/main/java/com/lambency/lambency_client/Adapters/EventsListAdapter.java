@@ -33,13 +33,8 @@ import butterknife.ButterKnife;
 
 public class EventsListAdapter extends ArrayAdapter<EventModel> {
 
-    private Context context;
-    private ArrayList<EventModel> events;
-
-    public EventsListAdapter(Context context, ArrayList<EventModel> events) {
-        super(context, R.layout.card_event);
-        this.events = events;
-        this.context = context;
+    public EventsListAdapter(@NonNull Context context, int resource, List<EventModel> eventModels) {
+        super(context, resource, eventModels);
     }
 
     @NonNull
@@ -56,7 +51,7 @@ public class EventsListAdapter extends ArrayAdapter<EventModel> {
             v = vi.inflate(R.layout.card_event, null);
         }
 
-        viewHolder.titleView = convertView.findViewById(R.id.title);
+        viewHolder.titleView = v.findViewById(R.id.title);
         if(viewHolder.titleView != null){
             viewHolder.titleView.setText(eventModel.getName());
         }

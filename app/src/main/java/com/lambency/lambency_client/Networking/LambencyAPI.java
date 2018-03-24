@@ -1,6 +1,7 @@
 package com.lambency.lambency_client.Networking;
 
 import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.MyLambencyModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
@@ -51,11 +52,17 @@ public interface LambencyAPI {
     @POST("Event/create")
     Call<EventModel> createEvent(@Body EventModel eventModel);
 
+    @GET("Event/numAttending")
+    Call<Integer> getEventNumAttending(@Query("oAuthCode") String oAuthCode, @Query("id") String event_id);
+
     @GET("Organization/searchByID")
     Call<OrganizationModel> getOrgSearchByID(@Query("id") String org_id);
 
     @POST("User/requestJoinOrg")
     Call<Integer> postJoinOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgId") int orgID);
+
+    @POST("User/leaveOrg")
+    Call<Integer> postLeaveOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
 
     @GET("User/followOrg")
     Call<Integer> getFollowOrg(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID);
@@ -82,6 +89,24 @@ public interface LambencyAPI {
     Call<ArrayList<UserModel>> getRequestsToJoin(@Query("oAuthCode") String oAuthCode, @Query("orgID") int org_id);
 
 
+
+    @GET("Organization/endorse")
+    Call<Integer> getEndorse(@Query("oAuthCode") String oAuthCode, @Query("orgID") String org_id, @Query("eventID") String event_id);
+
+    @GET("Organization/unendorse")
+    Call<Integer> getUnendorse(@Query("oAuthCode") String oAuthCode, @Query("orgID") String org_id, @Query("eventID") String event_id);
+
+    @GET("Event/endorsedOrgs")
+    Call<List<OrganizationModel>> getEndorsedOrgs(@Query("oAuthCode") String oAuthCode, @Query("eventId") String eventID);
+
+    @GET("User/MyLambency")
+    Call<MyLambencyModel> getMyLambencyModel(@Query("oAuthCode") String oAuthCode);
+
+    @GET("Organization/getMembersAndOrganizers")
+    Call<ArrayList<UserModel>[]> getMembersAndOrganizers(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
+
+    @GET("/Organization/changeUserPermissions")
+    Call<Integer> getChangeUserPermissions(@Query("oAuthCode") String oAuthCode, @Query("orgID") String org_id, @Query("userChanged") String changedID, @Query("type") String type);
 
 }
 
