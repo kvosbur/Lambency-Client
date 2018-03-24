@@ -89,11 +89,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
                     holder.eventImageView);
         }
 
-        if(eventModel.getNameOfOrg() != null && eventModel.getNameOfOrg() != ""){
-            holder.orgTitleView.setText(eventModel.getNameOfOrg());
-        }
-
-        holder.orgTitleView.setText(eventModel.getOr());
+        holder.orgTitleView.setText(eventModel.getOrgName());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

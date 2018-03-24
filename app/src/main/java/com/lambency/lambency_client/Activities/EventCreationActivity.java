@@ -285,7 +285,6 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                         eventModel.setEnd(endingTime);
                         eventModel.setDescription(descriptionEdit.getText().toString());
                         eventModel.setLocation(addressEdit.getText().toString());
-                        eventModel.setNameOfOrg(eventOrgModel.getName());
                         eventModel.setOrg_id(eventOrgModel.getOrgID());
 
                         updateEvent(eventModel);
@@ -323,9 +322,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 //Go back to main page now
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
-                    eventModel = new EventModel(encodedProfile,eventName, UserModel.myUserModel.getMyOrgs().get(0),startingTime,endingTime,description,addressOfEvent);
-                    eventModel.setNameOfOrg(eventOrgModel.getName());
-                    eventModel.setOrg_id(eventOrgModel.getOrgID());
+                    eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,addressOfEvent, eventOrgModel.getName());
 
                     LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override
@@ -530,11 +527,9 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if(orgSpinnerAdapter != null){
-            OrganizationModel orgModel = (OrganizationModel) orgSpinnerAdapter.getItem(i);
+            OrganizationModel orgModel = orgSpinnerAdapter.getOrgs().get(i);
             eventOrgModel = orgModel;
         }
-
-
     }
 
     @Override

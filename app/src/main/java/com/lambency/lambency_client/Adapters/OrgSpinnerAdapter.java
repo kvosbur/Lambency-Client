@@ -66,4 +66,8 @@ public class OrgSpinnerAdapter extends BaseAdapter{
 
         return view;
     }
+
+    public List<OrganizationModel> getOrgs() {
+        return orgs;
+    }
 }
