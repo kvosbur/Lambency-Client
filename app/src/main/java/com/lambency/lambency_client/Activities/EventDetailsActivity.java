@@ -20,6 +20,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -29,6 +31,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ShareActionProvider;
@@ -43,9 +46,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 
 import com.lambency.lambency_client.Models.UserModel;
@@ -75,6 +80,13 @@ public class EventDetailsActivity extends AppCompatActivity implements
     private int event_id;
     private TextView text;
     private LinearLayout linearLayout;
+
+
+    @BindView(R.id.endorseText)
+    TextView endorseText;
+
+    @BindView(R.id.endorseButton)
+    Button endorseButton;
 
     @BindView(R.id.contentLayout)
     FrameLayout contentLayout;
@@ -121,10 +133,20 @@ public class EventDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.check)
     ImageView checkMark;
 
+
     @BindView(R.id.numPeopleAttending)
     TextView numberOfPeopleAttending;
 
+
+
+    @BindView(R.id.orgEndorseList)
+    RecyclerView orgEndorseList;
+
+    @BindView(R.id.endorseLayout)
+    LinearLayout endorseLinLayout;
+
     private EventModel event,eventModel;
+
     private Context context;
     String addressForGmaps;
     double latitude, longitude;
@@ -133,6 +155,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
     private LocationRequest mLocationRequest;
     private double currentLatitude;
     private double currentLongitude;
+
+    private OrganizationAdapter listOfEndorseOrg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,9 +198,12 @@ public class EventDetailsActivity extends AppCompatActivity implements
         linearLayout = findViewById(R.id.joinButton);
         text = findViewById(R.id.joinButtonText);
 
+
+
         linearLayout.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v){
+
 
                 ImageView imageView = findViewById(R.id.check);
 
@@ -239,8 +266,99 @@ public class EventDetailsActivity extends AppCompatActivity implements
 //            }
 //        });
 
-
         final Button shareButton = findViewById(R.id.shareEvent);
+
+        if(UserModel.myUserModel.getMyOrgs().size() == 0)
+        {
+            endorseText.setVisibility(View.GONE);
+            endorseButton.setVisibility(View.GONE);
+        }
+
+        endorseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(endorseButton.getText().equals("Endorse"))
+                {
+                    //TODO Endorse retrofit here
+
+                    LambencyAPIHelper.getInstance().getEndorse(UserModel.myUserModel.getOauthToken(), "" + UserModel.myUserModel.getMyOrgs().get(0), "" + event_id).enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                System.out.println("ERROR!!!!!");
+                                return;
+                            }
+                            //when response is back
+                            Integer ret = response.body();
+                            if(ret == 0){
+                                System.out.println("Success");
+
+                                endorseButton.setText("Revoke");
+                                endorseText.setText("\nClick to no longer endorse this event! ");
+                                Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
+
+                                getAllOrgs();
+
+                            }
+                            else if(ret == -1){
+                                Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
+                            }
+                            else if(ret == -2){
+                                Toast.makeText(getApplicationContext(), "already endorsed", Toast.LENGTH_LONG).show();
+                            }
+                            else if(ret == -3){
+                                Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable throwable) {
+                            //when failure
+                            Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                else
+                {
+                    //TODO Unendorse retrofit here
+                    LambencyAPIHelper.getInstance().getUnendorse(UserModel.myUserModel.getOauthToken(), "" + UserModel.myUserModel.getMyOrgs().get(0), "" + event_id).enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                System.out.println("ERROR!!!!!");
+                                return;
+                            }
+                            //when response is back
+                            Integer ret = response.body();
+                            if(ret == 0){
+                                endorseText.setText("\nEndorse this event as organization! ");
+                                endorseButton.setText("Endorse");
+                                Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
+
+                                getAllOrgs();
+                            }
+                            else if(ret == -1){
+                                Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
+                            }
+                            else if(ret == -2){
+                                Toast.makeText(getApplicationContext(), "not endorsed", Toast.LENGTH_LONG).show();
+                            }
+                            else if(ret == -3){
+                                Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable throwable) {
+                            //when failure
+                            Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+            }
+        });
 
         shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -282,6 +400,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
         //Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
 
+        getAllOrgs();
+
         //redirection to google maps when address is clicked
         addressView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -293,6 +413,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                         startActivity(intent);
             }
         });
+
     }
 
     private void setTitle(String title) {
@@ -417,6 +538,42 @@ public class EventDetailsActivity extends AppCompatActivity implements
         });
     }
 
+
+    private void getAllOrgs()
+    {
+        LambencyAPIHelper.getInstance().getEndorsedOrgs("" + UserModel.myUserModel.getOauthToken(), "" + event_id).enqueue(new Callback<List<OrganizationModel>>() {
+            @Override
+            public void onResponse(Call<List<OrganizationModel>> call, Response<List<OrganizationModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred or no organizations were found");
+                    return;
+                }
+                //when response is back
+                List<OrganizationModel> orgList = response.body();
+                if(orgList == null){
+                    Toast.makeText(getApplicationContext(), "Null", Toast.LENGTH_LONG).show();
+                }
+                else if(orgList.size() == 0){
+                    //Toast.makeText(getApplicationContext(), "Size = 0", Toast.LENGTH_LONG).show();
+                    endorseLinLayout.setVisibility(View.GONE);
+                }
+                else
+                {
+                    // TODO fill here
+                    endorseLinLayout.setVisibility(View.VISIBLE);
+                    listOfEndorseOrg = new OrganizationAdapter(context, orgList);
+                    orgEndorseList.setAdapter(listOfEndorseOrg);
+                    orgEndorseList.setLayoutManager(new LinearLayoutManager(context));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<OrganizationModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
+    }
 
     private void getOrgInfo(int org_id) {
         LambencyAPIHelper.getInstance().getOrgSearchByID("" + org_id).enqueue(new Callback<OrganizationModel>() {

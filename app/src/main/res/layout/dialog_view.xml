@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/LeaveOrgImg"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/ic_books"
+        app:civ_border_color="@color/lightGray"
+        app:civ_border_width="1dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/LeaveTitleOrg"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:id="@+id/LeaveTitleOrg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Organization Name"
+        android:textColor="@android:color/black"
+        android:textSize="29sp"
+        android:textStyle="bold"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:layout_below="@id/aboutToLeave"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:paddingTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to do this?"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/LeaveOrgImg"
+        android:textColor="#000000"
+        android:textSize="15sp"
+        />
+    <TextView
+        android:id="@+id/aboutToLeave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You are about to leave..."
+        android:textColor="#000000"
+        android:layout_centerHorizontal="true"
+        android:textSize="15sp" />
+
+
+</RelativeLayout>
