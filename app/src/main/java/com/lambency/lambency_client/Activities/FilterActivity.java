@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.EventLog;
 import android.view.MenuItem;
 
 import com.google.android.gms.location.LocationServices;
@@ -50,6 +51,8 @@ public class FilterActivity extends AppCompatActivity {
         this.context = this;
 
         //setSupportActionBar(toolbar);
+
+        EventFilterModel.currentFilter = new EventFilterModel();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Filter Options");

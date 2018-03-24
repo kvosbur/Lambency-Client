@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
+import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
 
@@ -83,6 +84,7 @@ public class FilterDistanceFragment extends Fragment {
 
                 String updateText = progress + " miles";
                 seekBarText.setText(updateText);
+                EventFilterModel.currentFilter.setDistanceMiles(progress);
             }
         });
 
@@ -92,7 +94,7 @@ public class FilterDistanceFragment extends Fragment {
 
                 String updateText = "10 miles";
                 seekBarText.setText(updateText);
-
+                EventFilterModel.currentFilter.setDistanceMiles(10);
                 seekBar.setProgress(10);
             }
         });
@@ -103,7 +105,7 @@ public class FilterDistanceFragment extends Fragment {
 
                 String updateText = "25 miles";
                 seekBarText.setText(updateText);
-
+                EventFilterModel.currentFilter.setDistanceMiles(25);
                 seekBar.setProgress(25);
             }
         });
@@ -114,15 +116,8 @@ public class FilterDistanceFragment extends Fragment {
 
                 String updateText = "50 miles";
                 seekBarText.setText(updateText);
-
+                EventFilterModel.currentFilter.setDistanceMiles(50);
                 seekBar.setProgress(50);
-            }
-        });
-
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO swap back to search page
             }
         });
 

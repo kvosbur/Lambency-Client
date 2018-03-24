@@ -1,5 +1,7 @@
 package com.lambency.lambency_client.Models;
 
+import android.util.EventLog;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -10,6 +12,13 @@ public class EventFilterModel {
     private Timestamp startStamp;
     private Timestamp endStamp;
     private int distanceMiles = -1;
+
+    public static EventFilterModel currentFilter;
+
+    public EventFilterModel()
+    {
+
+    }
 
     public EventFilterModel(double latitude, double longitude){
         this.latitude = latitude;
