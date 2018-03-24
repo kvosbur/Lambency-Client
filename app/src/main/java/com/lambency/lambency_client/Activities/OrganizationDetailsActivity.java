@@ -5,12 +5,13 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -18,13 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Adapters.EventsAdapter;
-import com.lambency.lambency_client.Adapters.EventsListAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
-import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.CustomLinearLayoutManager;
 import com.lambency.lambency_client.Utils.ImageHelper;
 
 import java.util.ArrayList;
@@ -37,9 +37,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class OrganizationDetailsActivity extends AppCompatActivity {
 
@@ -48,6 +45,9 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+
+    @BindView(R.id.upcomingEventsProgress)
+    ProgressBar upcomingEventsProgress;
 
     @BindView(R.id.followUnFollow)
     CheckBox checkBox;
@@ -70,13 +70,25 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.orgRequestJoin)
     Button requestJoin;
 
-    @BindView(R.id.eventList)
-    ListView eventListView;
+    @BindView(R.id.seeMembersButton)
+    Button seeMembersButton;
+
+    @BindView(R.id.upcomingEventsContainer)
+    RelativeLayout upcomingEventsContainer;
+
+    @BindView(R.id.eventsRecyclerView)
+    RecyclerView eventsRecyclerView;
+
+    @BindView(R.id.showAllButton)
+    Button showAllButton;
+
+    @BindView(R.id.noEventsText)
+    TextView noEventsTextView;
 
     public static int currentOrgId;
     private Context context;
     private OrganizationModel organizationModel;
-    private EventsListAdapter eventsListAdapter;
+    private EventsAdapter eventsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +101,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         boolean followed = false;
         for(int i = 0; i < UserModel.myUserModel.getFollowingOrgs().size(); i++)
@@ -135,16 +148,21 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
                     Toast.makeText(getApplicationContext(), "Got Organization Object", Toast.LENGTH_LONG).show();
 
+                    if(organization.checkPermissions(UserModel.myUserModel) == 0){
+                        seeMembersButton.setVisibility(View.GONE);
+                    }
+
                     //change screen to show organization information
                     titleOrg.setText(organization.getName());
                     descriptionOrg.setText(organization.getDescription());
                     emailOrg.setText(organization.getEmail());
                     addressOrg.setText(organization.getLocation());
 
-                    ImageHelper.loadWithGlide(context,
-                            ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
-                            orgImage);
-
+                    if(organization.getImage() != null) {
+                        ImageHelper.loadWithGlide(context,
+                                ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                                orgImage);
+                    }
 
                     mainLayout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
@@ -164,12 +182,16 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
     }
 
-
     public void getUpcomingEvents(){
+
+        showAllButton.setVisibility(View.GONE);
+        upcomingEventsContainer.setVisibility(View.GONE);
+        upcomingEventsContainer.setVisibility(View.VISIBLE);
+
         LambencyAPIHelper.getInstance().getEventsByOrg(UserModel.myUserModel.getOauthToken(), organizationModel.getOrgID() + "").enqueue(new Callback<List<EventModel>>() {
             @Override
             public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
-                if (response.body() == null || response.code() != 200) {
+                if (response.code() != 200) {
                     System.out.println("Error getting org events.");
                     return;
                 }
@@ -177,15 +199,38 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 List<EventModel> list = response.body();
                 if(list == null){
                     System.out.println("Org has no events or error has occurred");
+                    noEventsTextView.setVisibility(View.VISIBLE);
+                    upcomingEventsProgress.setVisibility(View.GONE);
                 }
                 else{
+                    noEventsTextView.setVisibility(View.GONE);
+
                     System.out.println("Got list of org events");
 
                     ArrayList<EventModel> events = new ArrayList<>(list);
-                    eventsListAdapter = new EventsListAdapter(context, events);
-                    eventListView.setAdapter(eventsListAdapter);
+                    if(list.size() > 3){
+                        events = new ArrayList<>(list.subList(0, 3));
+                    }else{
+                        events = new ArrayList<>(list);
+                    }
 
+                    eventsAdapter = new EventsAdapter(context, events);
+                    eventsRecyclerView.setLayoutManager(new CustomLinearLayoutManager(context){
+                        @Override
+                        public boolean canScrollVertically(){
+                            return false;
+                        }
+                    });
+                    eventsRecyclerView.setAdapter(eventsAdapter);
 
+                    upcomingEventsContainer.setVisibility(View.VISIBLE);
+                    upcomingEventsProgress.setVisibility(View.GONE);
+
+                    if(list.size() <= 3){
+                        showAllButton.setVisibility(View.GONE);
+                    }else{
+                        showAllButton.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
@@ -385,5 +430,20 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             }
         });
         return;
+    }
+
+
+    @OnClick(R.id.showAllButton)
+    public void handleShowAllClick(){
+        Intent intent = new Intent(context, ListEventsActivity.class);
+        intent.putExtra("org_id", organizationModel.getOrgID());
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.seeMembersButton)
+    public void handleSeeMembersClick(){
+        Intent intent = new Intent(context, OrgUsersActivity.class);
+        intent.putExtra("org_id", organizationModel.getOrgID());
+        startActivity(intent);
     }
 }

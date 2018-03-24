@@ -13,6 +13,12 @@
         android:visibility="gone"
         />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/contentLayout">
+
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/mainLayout"
         android:layout_width="match_parent"
@@ -344,6 +350,9 @@
 
         </android.support.design.widget.CoordinatorLayout>
 
- </FrameLayout>
+    </FrameLayout>
+
+</FrameLayout>
+
 
 
