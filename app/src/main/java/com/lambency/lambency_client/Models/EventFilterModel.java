@@ -12,6 +12,8 @@ public class EventFilterModel {
     private Timestamp startStamp;
     private Timestamp endStamp;
     private int distanceMiles = -1;
+    private String title;
+    private String location;
 
     public static EventFilterModel currentFilter = new EventFilterModel();
 
@@ -75,6 +77,22 @@ public class EventFilterModel {
 
     public void setDistanceMiles(int distanceMiles) {
         this.distanceMiles = distanceMiles;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
 
