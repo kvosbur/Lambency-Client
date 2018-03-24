@@ -131,6 +131,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.orgEndorseList)
     RecyclerView orgEndorseList;
 
+    @BindView(R.id.endorseLayout)
+    LinearLayout endorseLinLayout;
+
     private EventModel event;
     private Context context;
     String addressForGmaps;
@@ -274,6 +277,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                 endorseText.setText("\nClick to no longer endorse this event! ");
                                 Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
 
+                                getAllOrgs();
+
                             }
                             else if(ret == -1){
                                 Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
@@ -309,6 +314,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                 endorseText.setText("\nEndorse this event as organization! ");
                                 endorseButton.setText("Endorse");
                                 Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
+
+                                getAllOrgs();
                             }
                             else if(ret == -1){
                                 Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
@@ -478,12 +485,13 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     Toast.makeText(getApplicationContext(), "Null", Toast.LENGTH_LONG).show();
                 }
                 else if(orgList.size() == 0){
-                    Toast.makeText(getApplicationContext(), "Size = 0", Toast.LENGTH_LONG).show();
-
+                    //Toast.makeText(getApplicationContext(), "Size = 0", Toast.LENGTH_LONG).show();
+                    endorseLinLayout.setVisibility(View.GONE);
                 }
                 else
                 {
                     // TODO fill here
+                    endorseLinLayout.setVisibility(View.VISIBLE);
                     listOfEndorseOrg = new OrganizationAdapter(context, orgList);
                     orgEndorseList.setAdapter(listOfEndorseOrg);
                     orgEndorseList.setLayoutManager(new LinearLayoutManager(context));
