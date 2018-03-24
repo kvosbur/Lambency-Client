@@ -321,7 +321,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                 else{
                     System.out.println("the number of users attending this event is" + ret);
                     Toast.makeText(getApplicationContext(), "number people attending is" + ret, Toast.LENGTH_LONG).show();
-                    numberOfPeopleAttending.setText(ret);
+                    numberOfPeopleAttending.setText(ret+"");
                 }
             }
 
