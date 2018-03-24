@@ -49,10 +49,12 @@ public class CheckInFragment extends Fragment {
     Button sendButton;
     @BindView(R.id.enterCode)
     EditText code2Send;
-    @BindView(R.id.textViewTImeValue)
-    TextView textViewtime;
     @BindView(R.id.textViewDateValue)
     TextView textViewdate;
+    @BindView(R.id.checkInDisp)
+    TextView checkInDisplay;
+    @BindView(R.id.checkOutDisp)
+    TextView checkOutDisplay;
 
     private String codeString;
     private Timestamp startingTime, endingTime;
@@ -103,33 +105,9 @@ public class CheckInFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_check_in2, container, false);
         ButterKnife.bind(this, v);
 
-        // Inflate the layout for this fragment
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(1000);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                String timeFull[];
-                                /// For Show Time
-                                String currentTimeString = DateFormat.getTimeInstance().format(new Date());
-                                timeFull = currentTimeString.split(":");
-                                hours = Integer.parseInt(timeFull[0]);
-                                minutes = Integer.parseInt(timeFull[1]);
-                                // textView is the TextView view that should display it
-                                textViewtime.setText(currentTimeString);
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-                }
-            }
-        };
-        t.start();
 
+        String oAuth = UserModel.myUserModel.getOauthToken();
+        System.out.println(oAuth);
 
         /// For Show Date
         String currentDateString = DateFormat.getDateInstance().format(new Date());
@@ -172,9 +150,17 @@ public class CheckInFragment extends Fragment {
                 if (ret == 0) {
                     System.out.println("successfully checked in for the event");
                     Toast.makeText(getApplicationContext(), "You have successfully checked in", Toast.LENGTH_LONG).show();
-                } else if (ret == 2) {
+                    checkInDisplay.setText(startingTime.getHours() + ":" + startingTime.getMinutes());
+                }
+                else if (ret ==1){
+                    Toast.makeText(getApplicationContext(), "the oauth token is invalid", Toast.LENGTH_LONG).show();
+                }
+                else if (ret == 2) {
                     System.out.println("undetermined error");
                     Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
+                }
+                else if (ret ==1){
+                    Toast.makeText(getApplicationContext(), "You are not signed up for the event", Toast.LENGTH_LONG).show();
                 }
             }
             @Override

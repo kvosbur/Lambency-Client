@@ -63,15 +63,6 @@
         android:text="Current date"
         android:textSize="30dp" />
 
-    <TextView
-        android:id="@+id/textViewTImeValue"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_below="@id/textViewDateValue"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Current time"
-        android:textSize="30dp" />
     </LinearLayout>
 
     <LinearLayout
