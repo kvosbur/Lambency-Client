@@ -159,7 +159,7 @@ public class CheckInFragment extends Fragment {
                     System.out.println("undetermined error");
                     Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
                 }
-                else if (ret ==1){
+                else if (ret ==3){
                     Toast.makeText(getApplicationContext(), "You are not signed up for the event", Toast.LENGTH_LONG).show();
                 }
             }
