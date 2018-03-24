@@ -309,12 +309,13 @@ public class EventDetailsActivity extends AppCompatActivity implements
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response.body() == null || response.code() != 200) {
-                    System.out.println("ERROR!!!!!");
+                    //System.out.println("ERROR!!!!!");
+                    numberOfPeopleAttending.setText(0);
                     return;
                 }
                 //when response is back
                 Integer ret = response.body();
-                if(ret == null || ret == -1){
+                if(ret == -1){
                     System.out.println("Error has occurred");
                 }
                 else{
