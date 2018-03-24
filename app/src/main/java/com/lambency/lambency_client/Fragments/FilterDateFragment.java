@@ -1,6 +1,8 @@
 package com.lambency.lambency_client.Fragments;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Activities.BottomBarActivity;
+import com.lambency.lambency_client.Activities.FilterActivity;
+import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
 
@@ -46,9 +50,11 @@ public class FilterDateFragment extends Fragment
 
     String endDate = "";
 
-    Calendar myCalendar = Calendar.getInstance();
+    Calendar myStartCalendar = Calendar.getInstance();
+    Calendar myEndCalander = Calendar.getInstance();
 
-    private void updateLabel(Button date) {
+
+    private void updateLabel(Button date, Calendar myCalendar) {
         String myFormat = "MM/dd/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
 
@@ -58,21 +64,53 @@ public class FilterDateFragment extends Fragment
     DatePickerDialog.OnDateSetListener dateStart = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, month);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel(startTime);
+            myStartCalendar.set(Calendar.YEAR, year);
+            myStartCalendar.set(Calendar.MONTH, month);
+            myStartCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            if(myEndCalander.getTime().compareTo(myStartCalendar.getTime()) < 0 && endDate.compareTo("") != 0)
+            {
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                alertDialog.setTitle("Alert");
+                alertDialog.setMessage("Invalid range selected. Please select a valid range.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+
+            updateLabel(startTime, myStartCalendar);
             startDate = startTime.toString();
+
+
         }
     };
 
     DatePickerDialog.OnDateSetListener dateEnd = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, month);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel(endTime);
+            myEndCalander.set(Calendar.YEAR, year);
+            myEndCalander.set(Calendar.MONTH, month);
+            myEndCalander.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            if(myEndCalander.getTime().compareTo(myStartCalendar.getTime()) < 0)
+            {
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                alertDialog.setTitle("Alert");
+                alertDialog.setMessage("Invalid range selected. Please select a valid range.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+
+            updateLabel(endTime, myEndCalander);
             endDate = endTime.toString();
         }
     };
@@ -104,9 +142,9 @@ public class FilterDateFragment extends Fragment
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 new DatePickerDialog(getActivity(), dateStart, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                 new DatePickerDialog(getActivity(), dateStart, myStartCalendar
+                        .get(Calendar.YEAR), myStartCalendar.get(Calendar.MONTH),
+                        myStartCalendar.get(Calendar.DAY_OF_MONTH)).show();
                 //Toast.makeText(getActivity(), "Yey", Toast.LENGTH_LONG).show();
             }
         });
@@ -123,11 +161,11 @@ public class FilterDateFragment extends Fragment
                     return;
                 }
 
-                new DatePickerDialog(getActivity(), dateEnd, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(getActivity(), dateEnd, myEndCalander
+                        .get(Calendar.YEAR), myEndCalander.get(Calendar.MONTH),
+                        myEndCalander.get(Calendar.DAY_OF_MONTH)).show();
 
-                Toast.makeText(getActivity(), "Yey", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getActivity(), "Yey", Toast.LENGTH_LONG).show();
             }
         });
 
