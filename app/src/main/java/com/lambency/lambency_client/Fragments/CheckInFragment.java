@@ -3,6 +3,8 @@ package com.lambency.lambency_client.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,13 +55,18 @@ public class CheckInFragment extends Fragment {
     TextView textViewdate;
     @BindView(R.id.checkInDisp)
     TextView checkInDisplay;
-    @BindView(R.id.checkOutDisp)
-    TextView checkOutDisplay;
+    @BindView(R.id.textTimer)
+    TextView countUpTimer;
 
     private String codeString;
-    private Timestamp startingTime, endingTime;
-    private Calendar myCalendar = Calendar.getInstance();
-    private int hours, minutes;
+    private long startTimeCounter = 0L;
+    private Handler myHandler = new Handler();
+    long timeInMillies = 0L;
+    long timeSwap = 0L;
+    long finalTime = 0L;
+
+
+
 
 
     // TODO: Rename and change types of parameters
@@ -99,12 +106,29 @@ public class CheckInFragment extends Fragment {
         }
     }
 
+    private Runnable updateTimerMethod = new Runnable() {
+
+        public void run() {
+            timeInMillies = SystemClock.uptimeMillis() - startTimeCounter;
+            finalTime = timeSwap + timeInMillies;
+
+            int seconds = (int) (finalTime / 1000);
+            int minutes = seconds / 60;
+            seconds = seconds % 60;
+            int milliseconds = (int) (finalTime % 1000);
+            countUpTimer.setText("" + minutes + ":"
+                    + String.format("%02d", seconds) + ":"
+                    + String.format("%03d", milliseconds));
+            myHandler.postDelayed(this, 0);
+        }
+
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_check_in2, container, false);
         ButterKnife.bind(this, v);
-
 
         String oAuth = UserModel.myUserModel.getOauthToken();
         System.out.println(oAuth);
@@ -123,18 +147,15 @@ public class CheckInFragment extends Fragment {
     public void handleSendClick() {
         codeString = code2Send.getText().toString();
 
-        //TODO:don't know when to initalize the end time
-        endingTime = new Timestamp(myCalendar.get(Calendar.YEAR) - 1900, myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DATE),
-                hours, minutes, 0, 0);
-        startingTime = new Timestamp(myCalendar.get(Calendar.YEAR) - 1900, myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DATE),
-                hours, minutes, 0, 0);
+        int time = (int) (System.currentTimeMillis());
+        final Timestamp tsTemp = new Timestamp(time);
 
 
         if (codeString.matches("")) {
             Toast.makeText(getContext(), "Please enter the event start code", Toast.LENGTH_LONG).show();
         } else Toast.makeText(getContext(), codeString, Toast.LENGTH_LONG).show();
 
-        EventAttendanceModel eventAttendanceModel = new EventAttendanceModel(UserModel.myUserModel.getUserId(),startingTime,codeString);
+        EventAttendanceModel eventAttendanceModel = new EventAttendanceModel(UserModel.myUserModel.getUserId(),tsTemp,codeString);
 
 
         //Retrofits
@@ -150,7 +171,18 @@ public class CheckInFragment extends Fragment {
                 if (ret == 0) {
                     System.out.println("successfully checked in for the event");
                     Toast.makeText(getApplicationContext(), "You have successfully checked in", Toast.LENGTH_LONG).show();
-                    checkInDisplay.setText(startingTime.getHours() + ":" + startingTime.getMinutes());
+                    if (startTimeCounter<1) {
+                        Toast.makeText(getApplicationContext(), "time sent was" + tsTemp.getHours()+":"
+                                +tsTemp.getMinutes(), Toast.LENGTH_LONG).show();
+                        startTimeCounter = SystemClock.uptimeMillis();
+                        myHandler.postDelayed(updateTimerMethod, 0);
+                    }
+                    else{
+                        timeSwap += timeInMillies;
+                        myHandler.removeCallbacks(updateTimerMethod);
+                        Toast.makeText(getApplicationContext(), "time sent was" + tsTemp.getHours()+":"
+                                +tsTemp.getMinutes(), Toast.LENGTH_LONG).show();
+                    }
                 }
                 else if (ret ==1){
                     Toast.makeText(getApplicationContext(), "the oauth token is invalid", Toast.LENGTH_LONG).show();

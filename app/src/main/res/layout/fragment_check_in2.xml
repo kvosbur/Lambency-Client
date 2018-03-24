@@ -15,38 +15,16 @@
             android:id="@+id/checkInDisp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Check in time is:    "
+            android:text="Time in event: "
             android:textSize="25dp"/>
         <TextView
-            android:id="@+id/checkInDispTime"
+            android:id="@+id/textTimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:textSize="25dp"
             android:textColor="@color/com_facebook_blue"
-            android:text="00:00:00"
-            />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/checkedOutTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/checkedInTime">
-
-        <TextView
-            android:id="@+id/checkOutDisp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Check out time is: "
-            android:textSize="25dp"/>
-        <TextView
-            android:id="@+id/checkOutDispTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="25dp"
-            android:textColor="@color/com_facebook_blue"
-            android:text="00:00:00"
-            />
+            android:text="00:00:00" />
     </LinearLayout>
 
     <LinearLayout
@@ -85,6 +63,8 @@
             android:layout_centerHorizontal="true"
             android:text="Send" />
     </LinearLayout>
+
+
 
 
 
