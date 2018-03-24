@@ -68,7 +68,7 @@ public class SearchActivity extends AppCompatActivity   {
 
         this.context = this;
 
-        EventFilterModel.currentFilter = new EventFilterModel();
+        //EventFilterModel.currentFilter = new EventFilterModel();
 
         setSupportActionBar(toolbar);
 
@@ -217,6 +217,8 @@ public class SearchActivity extends AppCompatActivity   {
                                             List<EventModel> events = response.body();
                                             searchTabsAdapter.updateEvents(events);
                                             searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
+
+                                            EventFilterModel.currentFilter = new EventFilterModel();
                                         }
 
                                         @Override

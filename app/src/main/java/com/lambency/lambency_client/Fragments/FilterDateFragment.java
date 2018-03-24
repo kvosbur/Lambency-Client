@@ -115,7 +115,7 @@ public class FilterDateFragment extends Fragment
             updateLabel(endTime, myEndCalander);
             endDate = endTime.toString();
 
-            EventFilterModel.currentFilter.setStartStamp(new Timestamp(myEndCalander.getTime().getTime()));
+            EventFilterModel.currentFilter.setEndStamp(new Timestamp(myEndCalander.getTime().getTime()));
         }
     };
 

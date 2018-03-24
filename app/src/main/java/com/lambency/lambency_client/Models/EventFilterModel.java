@@ -13,7 +13,7 @@ public class EventFilterModel {
     private Timestamp endStamp;
     private int distanceMiles = -1;
 
-    public static EventFilterModel currentFilter;
+    public static EventFilterModel currentFilter = new EventFilterModel();
 
     public EventFilterModel()
     {
