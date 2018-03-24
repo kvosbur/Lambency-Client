@@ -20,6 +20,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -29,6 +31,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ShareActionProvider;
@@ -43,9 +46,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 
 import com.lambency.lambency_client.Models.UserModel;
@@ -75,6 +80,13 @@ public class EventDetailsActivity extends AppCompatActivity implements
     private int event_id;
     private TextView text;
     private LinearLayout linearLayout;
+
+
+    @BindView(R.id.endorseText)
+    TextView endorseText;
+
+    @BindView(R.id.endorseButton)
+    Button endorseButton;
 
     @BindView(R.id.contentLayout)
     FrameLayout contentLayout;
@@ -121,7 +133,20 @@ public class EventDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.check)
     ImageView checkMark;
 
+
+    @BindView(R.id.numPeopleAttending)
+    TextView numberOfPeopleAttending;
+
+
+
+    @BindView(R.id.orgEndorseList)
+    RecyclerView orgEndorseList;
+
+    @BindView(R.id.endorseLayout)
+    LinearLayout endorseLinLayout;
+
     private EventModel event,eventModel;
+
     private Context context;
     String addressForGmaps;
     double latitude, longitude;
@@ -130,6 +155,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
     private LocationRequest mLocationRequest;
     private double currentLatitude;
     private double currentLongitude;
+
+    private OrganizationAdapter listOfEndorseOrg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,89 +168,136 @@ public class EventDetailsActivity extends AppCompatActivity implements
         Uri data = intent.getData();
 
 
-        //for getting current address
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                // The next two lines tell the new client that “this” current class will handle connection stuff
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                //fourth line adds the LocationServices API endpoint from GooglePlayServices
-                .addApi(LocationServices.API)
-                .build();
+        if (ActivityCompat.checkSelfPermission(EventDetailsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(EventDetailsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(EventDetailsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        } else {
 
-        // Create the LocationRequest object
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
-        //end -farhan
+            //for getting current address
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    // The next two lines tell the new client that “this” current class will handle connection stuff
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    //fourth line adds the LocationServices API endpoint from GooglePlayServices
+                    .addApi(LocationServices.API)
+                    .build();
 
-        ButterKnife.bind(this);
-        context = this;
+            // Create the LocationRequest object
+            mLocationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(10 * 1000)        // 10 seconds, in milliseconds
+                    .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+            //end -farhan
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ButterKnife.bind(this);
+            context = this;
 
-        CollapsingToolbarLayout mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        mCollapsingToolbarLayout.setTitle("Event Title");
-        mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        linearLayout = findViewById(R.id.joinButton);
-        text = findViewById(R.id.joinButtonText);
+            CollapsingToolbarLayout mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+            mCollapsingToolbarLayout.setTitle("Event Title");
+            mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
 
-        linearLayout.setOnClickListener(new View.OnClickListener(){
+            linearLayout = findViewById(R.id.joinButton);
+            text = findViewById(R.id.joinButtonText);
 
-            public void onClick(View v){
 
-                ImageView imageView = findViewById(R.id.check);
+            linearLayout.setOnClickListener(new View.OnClickListener() {
 
-                text = findViewById(R.id.joinButtonText);
-                if (text.getText().toString().equals("Join Event")) {
-                    LambencyAPIHelper.getInstance().getRegisterEvent(UserModel.myUserModel.getOauthToken(), "" + event_id).enqueue(new retrofit2.Callback<Integer>() {
-                        @Override
-                        public void onResponse(Call<Integer> call, Response<Integer> response) {
-                            if (response.body() == null || response.code() != 200) {
-                                System.out.println("Error cause body returned null or bad response code in register response.");
-                                Toast.makeText(getApplicationContext(), "Problem registering.", Toast.LENGTH_LONG).show();
+                public void onClick(View v) {
+
+
+                    ImageView imageView = findViewById(R.id.check);
+
+                    text = findViewById(R.id.joinButtonText);
+                    if (text.getText().toString().equals("Join Event")) {
+                        LambencyAPIHelper.getInstance().getRegisterEvent(UserModel.myUserModel.getOauthToken(), "" + event_id).enqueue(new retrofit2.Callback<Integer>() {
+                            @Override
+                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                if (response.body() == null || response.code() != 200) {
+                                    System.out.println("Error cause body returned null or bad response code in register response.");
+                                    Toast.makeText(getApplicationContext(), "Problem registering.", Toast.LENGTH_LONG).show();
+                                }
+                                //when response is back
+                                Integer ret = response.body();
+                                if (ret == 0) {
+                                    System.out.println("successfully registerd for an event");
+                                    UserModel.myUserModel.registerForEvent(event_id);
+                                    System.out.println("REgistering for an event: " + event_id);
+                                    System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
+                                    Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG).show();
+                                    text.setText("Joined");
+                                    checkMark.setVisibility(View.VISIBLE);
+
+                                } else if (ret == 1) {
+                                    System.out.println("failed to find user or organization");
+                                    Toast.makeText(getApplicationContext(), "No Event to follow", Toast.LENGTH_LONG).show();
+                                } else if (ret == 2) {
+                                    System.out.println("undetermined error");
+                                    Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
+                                } else if (ret == 3) {
+                                    UserModel.myUserModel.registerForEvent(event_id);
+                                    System.out.println("REgistering for an event: " + event_id);
+                                    System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
+                                    Toast.makeText(getApplicationContext(), "Already registered for an event", Toast.LENGTH_LONG).show();
+                                }
                             }
-                            //when response is back
-                            Integer ret = response.body();
-                            if (ret == 0) {
-                                System.out.println("successfully registerd for an event");
-                                UserModel.myUserModel.registerForEvent(event_id);
-                                System.out.println("REgistering for an event: " + event_id);
-                                System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
-                                Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG).show();
-                                text.setText("Joined");
-                                checkMark.setVisibility(View.VISIBLE);
 
-                            } else if (ret == 1) {
-                                System.out.println("failed to find user or organization");
-                                Toast.makeText(getApplicationContext(), "No Event to follow", Toast.LENGTH_LONG).show();
-                            } else if (ret == 2) {
-                                System.out.println("undetermined error");
-                                Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
-                            } else if (ret == 3) {
-                                UserModel.myUserModel.registerForEvent(event_id);
-                                System.out.println("REgistering for an event: " + event_id);
-                                System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
-                                Toast.makeText(getApplicationContext(), "Already registered for an event", Toast.LENGTH_LONG).show();
+                            @Override
+                            public void onFailure(Call<Integer> call, Throwable throwable) {
+                                //when failure
+                                System.out.println("FAILED CALL");
+                                Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
                             }
-                        }
+                        });
+                    } else {
+                        //Toast.makeText(getApplicationContext(), "You cant actually unfollow. Sorry", Toast.LENGTH_LONG).show();
+                        //text.setText("Join Event");
+                        LambencyAPIHelper.getInstance().unRegisterForEvent(UserModel.myUserModel.getOauthToken(), "" + event_id).enqueue(new retrofit2.Callback<Integer>() {
+                            @Override
+                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                if (response.body() == null || response.code() != 200) {
+                                    System.out.println("Error cause body returned null or bad response code in register response.");
+                                    Toast.makeText(getApplicationContext(), "Problem deleting registration.", Toast.LENGTH_LONG).show();
+                                }
+                                //when response is back
+                                Integer ret = response.body();
+                                if (ret == 0) {
+                                    System.out.println("successfully unregistered for event");
+                                    UserModel.myUserModel.unregisterForEvent(event_id);
+                                    System.out.println("Unregistering for an event: " + event_id);
+                                    System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
+                                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
+                                    text.setText("Join Event");
+                                    checkMark.setVisibility(View.INVISIBLE);
 
-                        @Override
-                        public void onFailure(Call<Integer> call, Throwable throwable) {
-                            //when failure
-                            System.out.println("FAILED CALL");
-                            Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } else {
-                    Toast.makeText(getApplicationContext(), "You cant actually unfollow. Sorry", Toast.LENGTH_LONG).show();
-                    text.setText("Join Event");
+                                } else if (ret == 1) {
+                                    System.out.println("failed to find user or organization");
+                                    Toast.makeText(getApplicationContext(), "No Event to follow", Toast.LENGTH_LONG).show();
+                                } else if (ret == 2) {
+                                    System.out.println("undetermined error");
+                                    Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
+                                } else if (ret == 3) {
+                                    UserModel.myUserModel.unregisterForEvent(event_id);
+                                    System.out.println("UnREgistering for an event: " + event_id);
+                                    System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
+                                    System.out.println("Technically they were not registered for the event, but I guess the user object was not updated... so oops. Fail quietly.");
+                                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Integer> call, Throwable throwable) {
+                                //when failure
+                                System.out.println("FAILED CALL");
+                                Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
 //
 //        Button listUser = findViewById(R.id.reg);
 //
@@ -236,60 +310,144 @@ public class EventDetailsActivity extends AppCompatActivity implements
 //            }
 //        });
 
+            final Button shareButton = findViewById(R.id.shareEvent);
 
-        final Button shareButton = findViewById(R.id.shareEvent);
+            if (UserModel.myUserModel.getMyOrgs().size() == 0) {
+                endorseText.setVisibility(View.GONE);
+                endorseButton.setVisibility(View.GONE);
+            }
 
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // if statement for user will go here
+            endorseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                // Start smsActivity.class
+                    if (endorseButton.getText().equals("Endorse")) {
+                        //TODO Endorse retrofit here
+
+                        LambencyAPIHelper.getInstance().getEndorse(UserModel.myUserModel.getOauthToken(), "" + UserModel.myUserModel.getMyOrgs().get(0), "" + event_id).enqueue(new Callback<Integer>() {
+                            @Override
+                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                if (response.body() == null || response.code() != 200) {
+                                    System.out.println("ERROR!!!!!");
+                                    return;
+                                }
+                                //when response is back
+                                Integer ret = response.body();
+                                if (ret == 0) {
+                                    System.out.println("Success");
+
+                                    endorseButton.setText("Revoke");
+                                    endorseText.setText("\nClick to no longer endorse this event! ");
+                                    Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
+
+                                    getAllOrgs();
+
+                                } else if (ret == -1) {
+                                    Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
+                                } else if (ret == -2) {
+                                    Toast.makeText(getApplicationContext(), "already endorsed", Toast.LENGTH_LONG).show();
+                                } else if (ret == -3) {
+                                    Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Integer> call, Throwable throwable) {
+                                //when failure
+                                Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        //TODO Unendorse retrofit here
+                        LambencyAPIHelper.getInstance().getUnendorse(UserModel.myUserModel.getOauthToken(), "" + UserModel.myUserModel.getMyOrgs().get(0), "" + event_id).enqueue(new Callback<Integer>() {
+                            @Override
+                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                if (response.body() == null || response.code() != 200) {
+                                    System.out.println("ERROR!!!!!");
+                                    return;
+                                }
+                                //when response is back
+                                Integer ret = response.body();
+                                if (ret == 0) {
+                                    endorseText.setText("\nEndorse this event as organization! ");
+                                    endorseButton.setText("Endorse");
+                                    Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
+
+                                    getAllOrgs();
+                                } else if (ret == -1) {
+                                    Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
+                                } else if (ret == -2) {
+                                    Toast.makeText(getApplicationContext(), "not endorsed", Toast.LENGTH_LONG).show();
+                                } else if (ret == -3) {
+                                    Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Integer> call, Throwable throwable) {
+                                //when failure
+                                Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                }
+            });
+
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // if statement for user will go here
+
+                    // Start smsActivity.class
                 /*Intent myIntent = new Intent(EventDetailsActivity.this,
                         smsActivity.class);
                 startActivity(myIntent);*/
-                shareIt(eventModel);
-            }
-        });
+                    shareIt(eventModel);
+                }
+            });
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null || data != null) {
-            //TODO error check
-            if(data == null) {
-                event_id = bundle.getInt("event_id");
-            }else{
-                String event_string = data.getQueryParameter("eventid");
-                event_id = Integer.parseInt(event_string);
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null || data != null) {
+                //TODO error check
+                if (data == null) {
+                    event_id = bundle.getInt("event_id");
+                } else {
+                    String event_string = data.getQueryParameter("eventid");
+                    event_id = Integer.parseInt(event_string);
+                }
+                callRetrofit(event_id);
             }
-            callRetrofit(event_id);
-        }
 
-        if (UserModel.myUserModel != null) {
-            System.out.println("This event id is: " + event_id);
-            if (UserModel.myUserModel.isRegisterdForEvent(event_id)) {
-                text.setText("Joined");
-                checkMark.setVisibility(View.VISIBLE);
+            if (UserModel.myUserModel != null) {
+                System.out.println("This event id is: " + event_id);
+                if (UserModel.myUserModel.isRegisterdForEvent(event_id)) {
+                    text.setText("Joined");
+                    checkMark.setVisibility(View.VISIBLE);
+                } else {
+                    text.setText("Join Event");
+                    checkMark.setVisibility(View.GONE);
+                }
             } else {
-                text.setText("Join Event");
-                checkMark.setVisibility(View.GONE);
+                text.setText("Login to see");
             }
-        }
-        else{
-            text.setText("Login to see");
-        }
 
-        //Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
+            //Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
 
-        //redirection to google maps when address is clicked
-        addressView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //lat and long of starting and destination
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?saddr="+currentLatitude+","+currentLongitude+
-                                "&daddr="+latitude+","+longitude));
-                        startActivity(intent);
-            }
-        });
+            getAllOrgs();
+
+            //redirection to google maps when address is clicked
+            addressView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //lat and long of starting and destination
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse("http://maps.google.com/maps?saddr=" + currentLatitude + "," + currentLongitude +
+                                    "&daddr=" + latitude + "," + longitude));
+                    startActivity(intent);
+                }
+            });
+
+        }
     }
 
     private void setTitle(String title) {
@@ -300,6 +458,35 @@ public class EventDetailsActivity extends AppCompatActivity implements
     private void callRetrofit(final int event_id) {
 
         isLoading(true);
+
+        //To Dislplay number attending
+        LambencyAPIHelper.getInstance().getEventNumAttending(UserModel.myUserModel.getOauthToken(),""+event_id).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    //System.out.println("ERROR!!!!!");
+                    numberOfPeopleAttending.setText(0);
+                    return;
+                }
+                //when response is back
+                Integer ret = response.body();
+                if(ret == -1){
+                    System.out.println("Error has occurred");
+                }
+                else{
+                    System.out.println("the number of users attending this event is" + ret);
+                    Toast.makeText(getApplicationContext(), "number people attending is" + ret, Toast.LENGTH_LONG).show();
+                    numberOfPeopleAttending.setText(ret+"");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
+
 
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
             @Override
@@ -385,6 +572,42 @@ public class EventDetailsActivity extends AppCompatActivity implements
         });
     }
 
+
+    private void getAllOrgs()
+    {
+        LambencyAPIHelper.getInstance().getEndorsedOrgs("" + UserModel.myUserModel.getOauthToken(), "" + event_id).enqueue(new Callback<List<OrganizationModel>>() {
+            @Override
+            public void onResponse(Call<List<OrganizationModel>> call, Response<List<OrganizationModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred or no organizations were found");
+                    return;
+                }
+                //when response is back
+                List<OrganizationModel> orgList = response.body();
+                if(orgList == null){
+                    Toast.makeText(getApplicationContext(), "Null", Toast.LENGTH_LONG).show();
+                }
+                else if(orgList.size() == 0){
+                    //Toast.makeText(getApplicationContext(), "Size = 0", Toast.LENGTH_LONG).show();
+                    endorseLinLayout.setVisibility(View.GONE);
+                }
+                else
+                {
+                    // TODO fill here
+                    endorseLinLayout.setVisibility(View.VISIBLE);
+                    listOfEndorseOrg = new OrganizationAdapter(context, orgList);
+                    orgEndorseList.setAdapter(listOfEndorseOrg);
+                    orgEndorseList.setLayoutManager(new LinearLayoutManager(context));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<OrganizationModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
+    }
 
     private void getOrgInfo(int org_id) {
         LambencyAPIHelper.getInstance().getOrgSearchByID("" + org_id).enqueue(new Callback<OrganizationModel>() {
@@ -532,15 +755,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
     public void onConnected(@Nullable Bundle bundle) {
         @SuppressLint("MissingPermission") Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        /*if (location == null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        } else {
-            //If everything went fine lets get latitude and longitude
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-
-            Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
-        }*/
+    
         //If everything went fine lets get latitude and longitude
         currentLatitude = location.getLatitude();
         currentLongitude = location.getLongitude();

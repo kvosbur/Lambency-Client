@@ -12,19 +12,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.lambency.lambency_client.Activities.AcceptRejectActivity;
+
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.EventCreationActivity;
 import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.OrgCreationActivity;
+
+import com.lambency.lambency_client.Adapters.AcceptRejectAdapter;
+
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
 import com.lambency.lambency_client.Models.MyLambencyModel;
+
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -73,6 +81,7 @@ public class MyLambencyFragment extends Fragment {
     @BindView(R.id.orgFab)
     FloatingActionButton orgFab;
 
+
     private OnFragmentInteractionListener mListener;
     private MyLambencyTabsAdapter myLambencyTabsAdapter;
     private Context context;
@@ -107,6 +116,8 @@ public class MyLambencyFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -115,6 +126,11 @@ public class MyLambencyFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_lambency, container, false);
         ButterKnife.bind(this, view);
+
+        //Make sure they can't create an event if they don't have any orgs
+        if(UserModel.myUserModel.getMyOrgs().size() == 0){
+            eventFab.setVisibility(View.GONE);
+        }
 
         tabLayout.addTab(tabLayout.newTab().setText("Events"));
         tabLayout.addTab(tabLayout.newTab().setText("Organizations"));
@@ -144,8 +160,6 @@ public class MyLambencyFragment extends Fragment {
         });
 
         /*
-
-
         if(UserModel.myUserModel.getMyOrgs().size() == 0)
         {
             createEventButton.setVisibility(View.GONE);
@@ -163,6 +177,7 @@ public class MyLambencyFragment extends Fragment {
             }
         });
         */
+
 
         ((BottomBarActivity) getActivity())
                 .setActionBarTitle("My Lambency");
@@ -197,7 +212,7 @@ public class MyLambencyFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.menu_edit, menu);
+        menuInflater.inflate(R.menu.menu_my_lambency, menu);
     }
 
 
@@ -232,5 +247,20 @@ public class MyLambencyFragment extends Fragment {
 
     public MyLambencyTabsAdapter getMyLambencyTabsAdapter(){
         return myLambencyTabsAdapter;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id){
+            case R.id.action_join_requests:
+                Intent intent = new Intent(getActivity(), AcceptRejectActivity.class);
+                startActivity(intent);
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

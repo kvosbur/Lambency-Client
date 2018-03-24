@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <TextView
+        android:layout_marginTop="3dp"
+        android:layout_width="match_parent"
+        android:id="@+id/topBar"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:text="Swipe to accept or reject a user!"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:id="@+id/lineSeparate"
+        android:layout_below="@+id/topBar"
+        android:background="@color/colorPrimary"
+        android:layout_marginBottom="3dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/acceptRejectRecycle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/lineSeparate">
+
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>
