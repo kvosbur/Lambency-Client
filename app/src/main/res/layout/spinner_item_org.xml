@@ -10,7 +10,7 @@
         android:orientation="horizontal"
         android:padding="5dp">
 
-        <android.support.v4.widget.CircleImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/orgImage"
             android:layout_width="45dp"
             android:layout_height="45dp"

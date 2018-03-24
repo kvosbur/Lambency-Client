@@ -201,4 +201,8 @@ public class EventModel {
     public String getNameOfOrg(){
         return nameOfOrg;
     }
+
+    public void setNameOfOrg(String nameOfOrg) {
+        this.nameOfOrg = nameOfOrg;
+    }
 }

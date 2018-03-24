@@ -80,6 +80,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
 
     OrgSpinnerAdapter orgSpinnerAdapter;
+    OrganizationModel eventOrgModel;
     private boolean editing = false;
     String eventName, dateOfEvent, addressOfEvent, description;
     private Context context;
@@ -281,6 +282,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                         eventModel.setEnd(endingTime);
                         eventModel.setDescription(descriptionEdit.getText().toString());
                         eventModel.setLocation(addressEdit.getText().toString());
+                        eventModel.setNameOfOrg(eventOrgModel.getName());
+                        eventModel.setOrg_id(eventOrgModel.getOrgID());
 
                         updateEvent(eventModel);
 
@@ -318,8 +321,10 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
                     eventModel = new EventModel(encodedProfile,eventName, UserModel.myUserModel.getMyOrgs().get(0),startingTime,endingTime,description,addressOfEvent);
+                    eventModel.setNameOfOrg(eventOrgModel.getName());
+                    eventModel.setOrg_id(eventOrgModel.getOrgID());
 
-                        LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
+                    LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override
                             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
                                 if (response.body() == null || response.code() != 200) {
@@ -513,9 +518,12 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        /*if(orgSpinnerAdapter != null){
+        if(orgSpinnerAdapter != null){
             OrganizationModel orgModel = (OrganizationModel) orgSpinnerAdapter.getItem(i);
-        }*/
+            eventOrgModel = orgModel;
+        }
+
+
     }
 
     @Override
