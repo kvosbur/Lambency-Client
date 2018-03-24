@@ -16,15 +16,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.lambency.lambency_client.Activities.AcceptRejectActivity;
+
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.EventCreationActivity;
 import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.OrgCreationActivity;
+
+import com.lambency.lambency_client.Adapters.AcceptRejectAdapter;
+
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
 import com.lambency.lambency_client.Models.MyLambencyModel;
+
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -72,6 +79,7 @@ public class MyLambencyFragment extends Fragment {
 
     @BindView(R.id.orgFab)
     FloatingActionButton orgFab;
+
 
     private OnFragmentInteractionListener mListener;
     private MyLambencyTabsAdapter myLambencyTabsAdapter;
@@ -149,8 +157,6 @@ public class MyLambencyFragment extends Fragment {
         });
 
         /*
-
-
         if(UserModel.myUserModel.getMyOrgs().size() == 0)
         {
             createEventButton.setVisibility(View.GONE);
@@ -168,6 +174,7 @@ public class MyLambencyFragment extends Fragment {
             }
         });
         */
+
 
         ((BottomBarActivity) getActivity())
                 .setActionBarTitle("My Lambency");
