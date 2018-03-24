@@ -28,4 +28,11 @@
         android:icon="@drawable/ic_account_circle_black_24dp"
         android:title="Profile"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/checkinBot"
+        android:enabled="true"
+        android:icon="@drawable/ic_checkin_24dp"
+        android:title="Check In"
+        app:showAsAction="ifRoom" />
 </menu>
