@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
@@ -78,6 +79,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     @BindView(R.id.orgSpinner)
     Spinner orgSpinner;
 
+    @BindView(R.id.spinnerProgress)
+    ProgressBar spinnerProgress;
 
     OrgSpinnerAdapter orgSpinnerAdapter;
     OrganizationModel eventOrgModel;
@@ -482,6 +485,9 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     //Get the orgs for the spinner
     private void getOrgs(){
 
+        orgSpinner.setVisibility(View.GONE);
+        spinnerProgress.setVisibility(View.VISIBLE);
+
         LambencyAPIHelper.getInstance().getMyOrganizedOrgs(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<OrganizationModel>>() {
             @Override
             public void onResponse(Call<ArrayList<OrganizationModel>> call,
@@ -500,6 +506,11 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     OrgSpinnerAdapter orgSpinnerAdapter = new OrgSpinnerAdapter(context, ret);
                     orgSpinner.setAdapter(orgSpinnerAdapter);
                     setOrgSpinnerAdapter(orgSpinnerAdapter);
+
+                    eventOrgModel = ret.get(0);
+
+                    orgSpinner.setVisibility(View.VISIBLE);
+                    spinnerProgress.setVisibility(View.GONE);
                 }
 
             }
