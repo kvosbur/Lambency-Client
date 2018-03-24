@@ -113,8 +113,6 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
         });
 
 
-
-
         getUsers(orgId);
 
     }
