@@ -80,8 +80,6 @@ public class MyLambencyFragment extends Fragment {
     @BindView(R.id.orgFab)
     FloatingActionButton orgFab;
 
-    @BindView(R.id.acceptRejectButton)
-    Button acceptReject;
 
     private OnFragmentInteractionListener mListener;
     private MyLambencyTabsAdapter myLambencyTabsAdapter;
@@ -153,6 +151,7 @@ public class MyLambencyFragment extends Fragment {
             }
         });
 
+        /*
         if(UserModel.myUserModel.getMyOrgs().size() == 0)
         {
             createEventButton.setVisibility(View.GONE);
@@ -170,6 +169,7 @@ public class MyLambencyFragment extends Fragment {
             }
         });
         */
+
 
         ((BottomBarActivity) getActivity())
                 .setActionBarTitle("My Lambency");

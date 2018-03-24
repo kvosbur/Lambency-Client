@@ -249,7 +249,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 }
             }
 
-            boolean followed = false;
+            followed = false;
             for(int i = 0; i < UserModel.myUserModel.getFollowingOrgs().size(); i++)
             {
                 if(UserModel.myUserModel.getFollowingOrgs().get(i) == currentOrgId)
