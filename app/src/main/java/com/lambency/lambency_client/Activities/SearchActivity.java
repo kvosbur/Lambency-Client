@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.EventLog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
 import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
+import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
@@ -65,6 +67,8 @@ public class SearchActivity extends AppCompatActivity   {
         ButterKnife.bind(this);
 
         this.context = this;
+
+        EventFilterModel.currentFilter = new EventFilterModel();
 
         setSupportActionBar(toolbar);
 
@@ -196,7 +200,7 @@ public class SearchActivity extends AppCompatActivity   {
                 mFusedLocationClient.getLastLocation()
                         .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                             @Override
-                            public void onSuccess(Location location) {
+                            public void onSuccess(final Location location) {
                                 if (location == null) {
                                     System.out.println("Null location.");
                                 } else {
@@ -210,6 +214,10 @@ public class SearchActivity extends AppCompatActivity   {
                                             List<EventModel> events = response.body();
                                             searchTabsAdapter.updateEvents(events);
                                             searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
+
+                                            EventFilterModel.currentFilter.setLatitude(location.getLatitude());
+                                            EventFilterModel.currentFilter.setLongitude(location.getLongitude());
+
                                         }
 
                                         @Override

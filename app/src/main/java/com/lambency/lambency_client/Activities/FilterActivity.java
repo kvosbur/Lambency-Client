@@ -52,7 +52,6 @@ public class FilterActivity extends AppCompatActivity {
 
         //setSupportActionBar(toolbar);
 
-        EventFilterModel.currentFilter = new EventFilterModel();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Filter Options");

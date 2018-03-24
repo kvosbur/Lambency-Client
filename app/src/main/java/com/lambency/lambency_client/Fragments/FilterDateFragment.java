@@ -20,9 +20,11 @@ import android.widget.Toast;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.FilterActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
+import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -85,7 +87,7 @@ public class FilterDateFragment extends Fragment
             updateLabel(startTime, myStartCalendar);
             startDate = startTime.toString();
 
-
+            EventFilterModel.currentFilter.setStartStamp(new Timestamp(myStartCalendar.getTime().getTime()));
         }
     };
 
@@ -112,6 +114,8 @@ public class FilterDateFragment extends Fragment
 
             updateLabel(endTime, myEndCalander);
             endDate = endTime.toString();
+
+            EventFilterModel.currentFilter.setStartStamp(new Timestamp(myEndCalander.getTime().getTime()));
         }
     };
 
