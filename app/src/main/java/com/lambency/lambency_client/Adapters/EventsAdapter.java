@@ -93,6 +93,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
             holder.orgTitleView.setText(eventModel.getNameOfOrg());
         }
 
+        holder.orgTitleView.setText(eventModel.getOr());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

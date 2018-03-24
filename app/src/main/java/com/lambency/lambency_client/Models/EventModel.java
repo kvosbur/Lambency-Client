@@ -7,7 +7,6 @@ public class EventModel {
 
     private String name;
     private int org_id;
-    private String nameOfOrg;
     private Timestamp start;
     private Timestamp end;
     private String description;
@@ -198,11 +197,5 @@ public class EventModel {
         return clockOutCode;
     }
 
-    public String getNameOfOrg(){
-        return nameOfOrg;
-    }
 
-    public void setNameOfOrg(String nameOfOrg) {
-        this.nameOfOrg = nameOfOrg;
-    }
 }
