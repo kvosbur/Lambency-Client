@@ -36,6 +36,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/nameOfEvent"
+                android:layout_marginTop="4dp"
                 >
 
                 <TextView
@@ -96,20 +97,14 @@
                 android:layout_marginTop="4dp"
                 >
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/orgImage"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@drawable/ic_books"
-                    android:layout_marginRight="5dp"
-                    android:layout_gravity="center_vertical"/>
-
                 <TextView
                     android:id="@+id/orgTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="italic"
                     android:text="Organization Name"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@android:color/black"/>
 
             </LinearLayout>
 

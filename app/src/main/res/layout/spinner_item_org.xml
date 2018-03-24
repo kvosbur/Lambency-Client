@@ -10,13 +10,14 @@
         android:orientation="horizontal"
         android:padding="5dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <android.support.v4.widget.CircleImageView
             android:id="@+id/orgImage"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:src="@drawable/ic_books"
             android:layout_marginRight="10dp"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            />
 
         <TextView
             android:id="@+id/orgTitle"

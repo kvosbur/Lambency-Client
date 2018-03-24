@@ -1,6 +1,7 @@
 package com.lambency.lambency_client.Adapters;
 
 import android.content.Context;
+import android.media.Image;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;

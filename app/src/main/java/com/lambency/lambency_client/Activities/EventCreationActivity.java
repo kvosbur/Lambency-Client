@@ -78,6 +78,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     @BindView(R.id.orgSpinner)
     Spinner orgSpinner;
 
+
+    OrgSpinnerAdapter orgSpinnerAdapter;
     private boolean editing = false;
     String eventName, dateOfEvent, addressOfEvent, description;
     private Context context;
@@ -431,6 +433,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
         EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -465,17 +469,6 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                         eventImage
                         );
 
-                /*
-                builder.build()
-                        .load(new File(imagesFiles.get(0).getPath()))
-                        .error(R.drawable.ic_books)
-                        .into(eventImage);
-                        */
-
-                /*
-                Bitmap bitmap = BitmapFactory.decodeFile(imagesFiles.get(0).getPath(), null);
-                profileImage.setImageBitmap(bitmap);
-                */
             }
         });
     }
@@ -484,18 +477,32 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     //Get the orgs for the spinner
     private void getOrgs(){
 
-        LambencyAPIHelper.getInstance().getOrgSearchByID(UserModel.myUserModel.getMyOrgs().get(0) + "").enqueue(new Callback<OrganizationModel>() {
+        LambencyAPIHelper.getInstance().getMyOrganizedOrgs(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<OrganizationModel>>() {
             @Override
-            public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
-                List<OrganizationModel> orgs = new ArrayList<>();
-                orgs.add(response.body());
-                OrgSpinnerAdapter orgSpinnerAdapter = new OrgSpinnerAdapter(context, orgs);
-                orgSpinner.setAdapter(orgSpinnerAdapter);
+            public void onResponse(Call<ArrayList<OrganizationModel>> call,
+                                   Response<ArrayList<OrganizationModel>> response) {
+
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("ERROR!!!!!");
+                    return;
+                }
+                //when response is back
+                ArrayList<OrganizationModel> ret = response.body();
+                if(ret == null){
+                    System.out.println("Error");
+                }else{
+                    //ret is the list of orgs
+                    OrgSpinnerAdapter orgSpinnerAdapter = new OrgSpinnerAdapter(context, ret);
+                    orgSpinner.setAdapter(orgSpinnerAdapter);
+                    setOrgSpinnerAdapter(orgSpinnerAdapter);
+                }
+
             }
 
             @Override
-            public void onFailure(Call<OrganizationModel> call, Throwable t) {
-
+            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
             }
         });
 
@@ -506,12 +513,18 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+        /*if(orgSpinnerAdapter != null){
+            OrganizationModel orgModel = (OrganizationModel) orgSpinnerAdapter.getItem(i);
+        }*/
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    private void setOrgSpinnerAdapter(OrgSpinnerAdapter orgSpinnerAdapter){
+        this.orgSpinnerAdapter = orgSpinnerAdapter;
     }
 }
 
