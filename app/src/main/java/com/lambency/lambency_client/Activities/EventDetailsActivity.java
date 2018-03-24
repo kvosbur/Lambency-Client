@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ShareActionProvider;
@@ -42,9 +44,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 
 import com.lambency.lambency_client.Models.UserModel;
@@ -123,6 +127,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.check)
     ImageView checkMark;
 
+    @BindView(R.id.orgEndorseList)
+    RecyclerView orgEndorseList;
+
     private EventModel event;
     private Context context;
     String addressForGmaps;
@@ -132,6 +139,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
     private LocationRequest mLocationRequest;
     private double currentLatitude;
     private double currentLongitude;
+
+    private OrganizationAdapter listOfEndorseOrg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +176,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
         linearLayout = findViewById(R.id.joinButton);
         text = findViewById(R.id.joinButtonText);
-
 
         linearLayout.setOnClickListener(new View.OnClickListener() {
 
@@ -232,9 +240,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
 //                startActivity(intent);
 //            }
 //        });
-
-
-
 
         final Button shareButton = findViewById(R.id.shareEvent);
 
@@ -356,6 +361,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
         //Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
 
+        getAllOrgs();
+
         //redirection to google maps when address is clicked
         addressView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -367,6 +374,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                         startActivity(intent);
             }
         });
+
     }
 
     private void setTitle(String title) {
@@ -453,6 +461,42 @@ public class EventDetailsActivity extends AppCompatActivity implements
         });
     }
 
+
+    private void getAllOrgs()
+    {
+        LambencyAPIHelper.getInstance().getEndorsedOrgs("" + UserModel.myUserModel.getOauthToken(), "" + event_id).enqueue(new Callback<List<OrganizationModel>>() {
+            @Override
+            public void onResponse(Call<List<OrganizationModel>> call, Response<List<OrganizationModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred or no organizations were found");
+                    return;
+                }
+                //when response is back
+                List<OrganizationModel> orgList = response.body();
+                if(orgList == null){
+                    Toast.makeText(getApplicationContext(), "Null", Toast.LENGTH_LONG).show();
+                }
+                else if(orgList.size() == 0){
+                    Toast.makeText(getApplicationContext(), "Size = 0", Toast.LENGTH_LONG).show();
+
+                }
+                else
+                {
+                    // TODO fill here
+                    listOfEndorseOrg = new OrganizationAdapter(context, orgList);
+                    orgEndorseList.setAdapter(listOfEndorseOrg);
+                    Toast.makeText(getApplicationContext(), orgList.size(), Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<OrganizationModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
+    }
 
     private void getOrgInfo(int org_id) {
         LambencyAPIHelper.getInstance().getOrgSearchByID("" + org_id).enqueue(new Callback<OrganizationModel>() {

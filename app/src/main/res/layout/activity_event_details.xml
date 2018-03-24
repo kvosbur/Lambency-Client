@@ -326,12 +326,12 @@
                             android:textSize="18sp"
                             android:layout_marginBottom="10dp"/>
 
-                        <ListView
+                        <android.support.v7.widget.RecyclerView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/orgEndorseList">
 
-                        </ListView>
+                        </android.support.v7.widget.RecyclerView>
 
                     </LinearLayout>
 

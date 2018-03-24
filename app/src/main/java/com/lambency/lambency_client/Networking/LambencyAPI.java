@@ -84,6 +84,8 @@ public interface LambencyAPI {
     @GET("Organization/unendorse")
     Call<Integer> getUnendorse(@Query("oAuthCode") String oAuthCode, @Query("orgID") String org_id, @Query("eventID") String event_id);
 
+    @GET("Event/endorsedOrgs")
+    Call<List<OrganizationModel>> getEndorsedOrgs(@Query("oAuthCode") String oAuthCode, @Query("eventId") String eventID);
 
 }
 

@@ -7,6 +7,7 @@ public class EventModel {
 
     private String name;
     private int org_id;
+    private String nameOfOrg;
     private Timestamp start;
     private Timestamp end;
     private String description;
