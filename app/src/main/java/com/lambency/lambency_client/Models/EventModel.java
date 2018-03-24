@@ -19,10 +19,11 @@ public class EventModel {
     private double longitude;
     private String clockInCode;
     private String clockOutCode;
+    private String orgName;
 
     static int x = 54545;
     static Timestamp testTime = new Timestamp((long)x);
-    public static EventModel myEventModel = new EventModel("tester",11,testTime,testTime,"fake test","testing123",0,0);
+    public static EventModel myEventModel = new EventModel("tester",11,testTime,testTime,"fake test","testing123",0,0, "org test Name");
 
 
 
@@ -31,22 +32,32 @@ public class EventModel {
 
     }
 
-    public EventModel(String name, int org_id, Timestamp start, Timestamp end, String description, String location,
-                 double latitude, double longitude) {
+    public EventModel(String name, int org_id, Timestamp start, Timestamp end, String description, String location, String orgName) {
         this.name = name;
         this.org_id = org_id;
         this.start = start;
         this.end = end;
         this.description = description;
         this.location = location;
+        this.orgName = orgName;
+    }
+
+    public EventModel(String name, int org_id, Timestamp start, Timestamp end, String description, String location, double latitude,
+                      double longitude, String orgName) {
+        this(name, org_id, start, end, description, location, orgName);
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-
     public EventModel(String name, int org_id, Timestamp start, Timestamp end, String description, String location,
-                 String imageFile, double latitude, double longitude) {
-        this(name, org_id, start, end, description, location, latitude, longitude);
+                      String imageFile, double latitude, double longitude, String orgName) {
+
+        this(name, org_id, start, end, description, location, latitude, longitude, orgName);
+    }
+
+    public EventModel(String name, int org_id, Timestamp start, Timestamp end, String description, String location, String orgName,
+                      String imageFile) {
+        this(name, org_id, start, end, description, location, orgName);
         try {
             updateImage(imageFile);
         } catch (IOException e) {
@@ -54,29 +65,17 @@ public class EventModel {
         }
     }
 
-    public EventModel(String image, String name, int org_id, Timestamp start,
-                 Timestamp end, String description, String location, double latitude, double longitude) {
-        this(name, org_id, start, end, description, location, latitude, longitude);
-        this.imageFile = image;
-    }
 
-    //one without longitude latitude
-    public EventModel(String imageFile, String name, int org_id, Timestamp start,
-                      Timestamp end, String description, String location){
-        this.name = name;
-        this.org_id = org_id;
-        this.start = start;
-        this.end = end;
-        this.description = description;
-        this.location = location;
-        this.imageFile = imageFile;
-    }
+
 
     public EventModel(String name, int org_id, Timestamp start, Timestamp end, String description, String location,
-                 String image_path, int event_id, double latitude, double longitude) {
-        this(name, org_id, start, end, description, location, latitude, longitude);
+                      String image_path, int event_id, double latitude, double longitude, String clockInCode,
+                      String clockOutCode, String orgName) {
+        this(name, org_id, start, end, description, location, latitude, longitude, orgName);
         this.image_path = image_path;
         this.event_id = event_id;
+        this.clockInCode = clockInCode;
+        this.clockOutCode = clockOutCode;
     }
 
     /**
@@ -204,5 +203,13 @@ public class EventModel {
 
     public void setNameOfOrg(String nameOfOrg) {
         this.nameOfOrg = nameOfOrg;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
     }
 }
