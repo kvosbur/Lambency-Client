@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -115,6 +116,8 @@ public class MyLambencyFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -209,7 +212,7 @@ public class MyLambencyFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.menu_edit, menu);
+        menuInflater.inflate(R.menu.menu_my_lambency, menu);
     }
 
 
@@ -244,5 +247,20 @@ public class MyLambencyFragment extends Fragment {
 
     public MyLambencyTabsAdapter getMyLambencyTabsAdapter(){
         return myLambencyTabsAdapter;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id){
+            case R.id.action_join_requests:
+                Intent intent = new Intent(getActivity(), AcceptRejectActivity.class);
+                startActivity(intent);
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
