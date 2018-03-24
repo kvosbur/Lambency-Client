@@ -52,6 +52,9 @@ public interface LambencyAPI {
     @POST("Event/create")
     Call<EventModel> createEvent(@Body EventModel eventModel);
 
+    @GET("Event/numAttending")
+    Call<Integer> getEventNumAttending(@Query("oAuthCode") String oAuthCode, @Query("id") String event_id);
+
     @GET("Organization/searchByID")
     Call<OrganizationModel> getOrgSearchByID(@Query("id") String org_id);
 

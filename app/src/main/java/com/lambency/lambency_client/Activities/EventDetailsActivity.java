@@ -134,12 +134,17 @@ public class EventDetailsActivity extends AppCompatActivity implements
     ImageView checkMark;
 
 
+    @BindView(R.id.numPeopleAttending)
+    TextView numberOfPeopleAttending;
+
+
+
     @BindView(R.id.orgEndorseList)
     RecyclerView orgEndorseList;
 
     @BindView(R.id.endorseLayout)
     LinearLayout endorseLinLayout;
-  
+
     private EventModel event,eventModel;
 
     private Context context;
@@ -419,6 +424,35 @@ public class EventDetailsActivity extends AppCompatActivity implements
     private void callRetrofit(final int event_id) {
 
         isLoading(true);
+
+        //To Dislplay number attending
+        LambencyAPIHelper.getInstance().getEventNumAttending(UserModel.myUserModel.getOauthToken(),""+event_id).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    //System.out.println("ERROR!!!!!");
+                    numberOfPeopleAttending.setText(0);
+                    return;
+                }
+                //when response is back
+                Integer ret = response.body();
+                if(ret == -1){
+                    System.out.println("Error has occurred");
+                }
+                else{
+                    System.out.println("the number of users attending this event is" + ret);
+                    Toast.makeText(getApplicationContext(), "number people attending is" + ret, Toast.LENGTH_LONG).show();
+                    numberOfPeopleAttending.setText(ret+"");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
+
 
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
             @Override
