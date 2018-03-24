@@ -153,7 +153,7 @@ public class CheckInFragment extends Fragment {
 
         if (codeString.matches("")) {
             Toast.makeText(getContext(), "Please enter the event start code", Toast.LENGTH_LONG).show();
-        } else Toast.makeText(getContext(), codeString, Toast.LENGTH_LONG).show();
+        }
 
         EventAttendanceModel eventAttendanceModel = new EventAttendanceModel(UserModel.myUserModel.getUserId(),tsTemp,codeString);
 
