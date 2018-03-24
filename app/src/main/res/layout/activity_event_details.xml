@@ -75,10 +75,11 @@
                         android:id="@+id/labelFornumPeople"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Number Of People Attending:  "
+                        android:text="People Attending:  "
                         android:textSize="20dp"
                         android:textStyle="bold"
-                        android:textColor="@color/colorPrimary"/>
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginLeft="50dp"/>
                         <TextView
                             android:id="@+id/numPeopleAttending"
                             android:layout_height="wrap_content"

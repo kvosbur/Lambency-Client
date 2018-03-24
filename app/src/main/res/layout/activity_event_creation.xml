@@ -129,6 +129,35 @@
         android:maxLines="4"
         />
 
+
+    <TextView
+        android:id="@+id/orgSelectLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/descriptionOfEvent"
+        android:textColor="@android:color/black"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:textSize="16sp"
+        android:text="Host Organization:"
+    />
+
+    <ProgressBar
+        android:id="@+id/spinnerProgress"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/descriptionOfEvent"
+        android:layout_toRightOf="@id/orgSelectLabel"
+        android:layout_marginLeft="5dp"
+        />
+
+    <Spinner
+        android:id="@+id/orgSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/orgSelectLabel"/>
+
     <Button
         android:id="@+id/saveDetailsButton"
         android:layout_width="wrap_content"
@@ -139,7 +168,7 @@
         tools:layout_editor_absoluteX="173dp"
         tools:layout_editor_absoluteY="0dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/descriptionOfEvent"/>
+        android:layout_below="@id/orgSpinner"/>
 
 
 

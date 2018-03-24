@@ -14,14 +14,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -33,6 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -46,7 +53,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EventCreationActivity extends AppCompatActivity {
+public class EventCreationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.eventImage)
     ImageView eventImage;
@@ -69,7 +76,14 @@ public class EventCreationActivity extends AppCompatActivity {
     @BindView(R.id.descriptionOfEvent)
     EditText descriptionEdit;
 
+    @BindView(R.id.orgSpinner)
+    Spinner orgSpinner;
 
+    @BindView(R.id.spinnerProgress)
+    ProgressBar spinnerProgress;
+
+    OrgSpinnerAdapter orgSpinnerAdapter;
+    OrganizationModel eventOrgModel;
     private boolean editing = false;
     String eventName, dateOfEvent, addressOfEvent, description;
     private Context context;
@@ -174,6 +188,8 @@ public class EventCreationActivity extends AppCompatActivity {
             }
         }
 
+        orgSpinner.setOnItemSelectedListener(this);
+        getOrgs();
 
         //Saving details when button pressed
         final Button saveDetails = findViewById(R.id.saveDetailsButton);
@@ -236,7 +252,6 @@ public class EventCreationActivity extends AppCompatActivity {
         });
 
 
-
         saveDetails.setOnClickListener(new View.OnClickListener() {
             EditText eName = (EditText) findViewById(R.id.nameOfEvent);
             //EditText eDate = (EditText) findViewById(R.id.dateOfEvent);
@@ -270,6 +285,7 @@ public class EventCreationActivity extends AppCompatActivity {
                         eventModel.setEnd(endingTime);
                         eventModel.setDescription(descriptionEdit.getText().toString());
                         eventModel.setLocation(addressEdit.getText().toString());
+                        eventModel.setOrg_id(eventOrgModel.getOrgID());
 
                         updateEvent(eventModel);
 
@@ -306,9 +322,9 @@ public class EventCreationActivity extends AppCompatActivity {
                 //Go back to main page now
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
-                    eventModel = new EventModel(encodedProfile,eventName, UserModel.myUserModel.getMyOrgs().get(0),startingTime,endingTime,description,addressOfEvent);
+                    eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,addressOfEvent, eventOrgModel.getName());
 
-                        LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
+                    LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override
                             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
                                 if (response.body() == null || response.code() != 200) {
@@ -376,7 +392,6 @@ public class EventCreationActivity extends AppCompatActivity {
 
     private void getEventInfo(final int event_id){
 
-
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
             @Override
             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
@@ -423,6 +438,8 @@ public class EventCreationActivity extends AppCompatActivity {
         EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -457,23 +474,72 @@ public class EventCreationActivity extends AppCompatActivity {
                         eventImage
                         );
 
-                /*
-                builder.build()
-                        .load(new File(imagesFiles.get(0).getPath()))
-                        .error(R.drawable.ic_books)
-                        .into(eventImage);
-                        */
-
-                /*
-                Bitmap bitmap = BitmapFactory.decodeFile(imagesFiles.get(0).getPath(), null);
-                profileImage.setImageBitmap(bitmap);
-                */
             }
         });
     }
 
 
+    //Get the orgs for the spinner
+    private void getOrgs(){
 
+        orgSpinner.setVisibility(View.GONE);
+        spinnerProgress.setVisibility(View.VISIBLE);
+
+        LambencyAPIHelper.getInstance().getMyOrganizedOrgs(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<OrganizationModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<OrganizationModel>> call,
+                                   Response<ArrayList<OrganizationModel>> response) {
+
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("ERROR!!!!!");
+                    return;
+                }
+                //when response is back
+                ArrayList<OrganizationModel> ret = response.body();
+                if(ret == null){
+                    System.out.println("Error");
+                }else{
+                    //ret is the list of orgs
+                    OrgSpinnerAdapter orgSpinnerAdapter = new OrgSpinnerAdapter(context, ret);
+                    orgSpinner.setAdapter(orgSpinnerAdapter);
+                    setOrgSpinnerAdapter(orgSpinnerAdapter);
+
+                    eventOrgModel = ret.get(0);
+
+                    orgSpinner.setVisibility(View.VISIBLE);
+                    spinnerProgress.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
+
+    }
+
+
+    /***** Methods for handling the org select spinner *****/
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if(orgSpinnerAdapter != null){
+            OrganizationModel orgModel = orgSpinnerAdapter.getOrgs().get(i);
+            eventOrgModel = orgModel;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    private void setOrgSpinnerAdapter(OrgSpinnerAdapter orgSpinnerAdapter){
+        this.orgSpinnerAdapter = orgSpinnerAdapter;
+    }
 }
 
 

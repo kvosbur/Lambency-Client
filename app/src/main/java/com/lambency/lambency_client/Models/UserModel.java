@@ -313,6 +313,7 @@ public class UserModel {
         return result;
     }
 
+
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
