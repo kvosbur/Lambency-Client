@@ -1,7 +1,9 @@
 package com.lambency.lambency_client.Activities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -235,6 +237,21 @@ public class SearchActivity extends AppCompatActivity   {
                                         @Override
                                         public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
                                             List<EventModel> events = response.body();
+
+                                            if(events == null || events.size() == 0)
+                                            {
+                                                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                                                alertDialog.setTitle("Alert");
+                                                alertDialog.setMessage("There are no events within your range. Please select a different range.");
+                                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                                        new DialogInterface.OnClickListener() {
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
+                                                alertDialog.show();
+                                            }
+
                                             searchTabsAdapter.updateEvents(events);
                                             searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
 
