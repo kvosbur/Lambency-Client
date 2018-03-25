@@ -406,8 +406,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                                         return;
                                                     }
                                                     //when response is back
-                                                    Integer ret = response.body();
-                                                    if (ret == 0) {
+                                                    Integer ret2 = response.body();
+                                                    if (ret2 == 0) {
                                                         System.out.println("Success");
 
                                                         endorseButton.setText("Revoke");
@@ -416,11 +416,11 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                                                         getAllOrgs();
 
-                                                    } else if (ret == -1) {
+                                                    } else if (ret2 == -1) {
                                                         Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
-                                                    } else if (ret == -2) {
+                                                    } else if (ret2 == -2) {
                                                         Toast.makeText(getApplicationContext(), "already endorsed", Toast.LENGTH_LONG).show();
-                                                    } else if (ret == -3) {
+                                                    } else if (ret2 == -3) {
                                                         Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
                                                     }
                                                 }
@@ -735,6 +735,18 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     listOfEndorseOrg = new OrganizationAdapter(context, orgList);
                     orgEndorseList.setAdapter(listOfEndorseOrg);
                     orgEndorseList.setLayoutManager(new LinearLayoutManager(context));
+
+                    for(int i = 0; i < UserModel.myUserModel.getMyOrgs().size(); i++)
+                    {
+                        for (int j = 0; j < orgList.size(); j++)
+                        {
+                            if(UserModel.myUserModel.getMyOrgs().get(i) == orgList.get(j).getOrgID())
+                            {
+                                endorseButton.setText("Revoke");
+                                endorseText.setText("\nClick to no longer endorse this event! ");
+                            }
+                        }
+                    }
                 }
             }
 
