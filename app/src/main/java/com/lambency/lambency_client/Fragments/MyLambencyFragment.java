@@ -117,7 +117,6 @@ public class MyLambencyFragment extends Fragment {
         }
 
         setHasOptionsMenu(true);
-
     }
 
     @Override
