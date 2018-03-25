@@ -279,6 +279,12 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
                 alertDialog.show();
 
                 return true;
+            case R.id.action_join_requests:
+                Intent intent = new Intent(context, AcceptRejectActivity.class);
+                intent.putExtra("org_id", org_id);
+                startActivity(intent);
+
+                return true;
             default:
                 return true;
         }

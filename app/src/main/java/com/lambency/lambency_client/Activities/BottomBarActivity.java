@@ -31,6 +31,7 @@ import com.lambency.lambency_client.Fragments.MyLambencyFragment;
 import com.lambency.lambency_client.Fragments.MyLambencyOrgsFragment;
 import com.lambency.lambency_client.Fragments.ProfileFragment;
 import com.lambency.lambency_client.Models.MyLambencyModel;
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -53,6 +54,9 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.lambency.lambency_client.R;
 
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -62,6 +66,8 @@ import retrofit2.Response;
 
 public class BottomBarActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener, MyLambencyEventsFragment.OnFragmentInteractionListener, MyLambencyOrgsFragment.OnFragmentInteractionListener, CheckInFragment.OnFragmentInteractionListener{
 
+    int notifyAmount = 0;
+    View badge;
 
     public static BottomNavigationView bottomNavigationView;
 
@@ -95,10 +101,12 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         View v = bottomNavigationMenuView.getChildAt(1);
         BottomNavigationItemView itemView = (BottomNavigationItemView) v;
 
-        View badge = LayoutInflater.from(this)
+        /*
+        badge = LayoutInflater.from(this)
                 .inflate(R.layout.bottom_badge, bottomNavigationMenuView, false);
 
         itemView.addView(badge);
+        */
 
         bar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -195,6 +203,7 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
                     myLambencyTabsAdapter.getOrgsFragment().setOrgs(myLambencyModel);
                     myLambencyTabsAdapter.getOrgsFragment().showProgressBar(false);
+
 
                 }
 

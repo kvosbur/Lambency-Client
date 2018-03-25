@@ -115,6 +115,9 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.noEventsText)
     TextView noEventsTextView;
 
+    @BindView(R.id.notificationNumTextDetails)
+    TextView notificationNum;
+
 
     @BindView(R.id.inviteUsersToJoin)
     Button inviteUsers;
@@ -158,6 +161,11 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             checkBox.setText("Follow");
         }
 
+        for(int og_id : UserModel.myUserModel.getRequestedJoinOrgIds()){
+            if(og_id == currentOrgId){
+                requestJoin.setText("Cancel Request");
+            }
+        }
 
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
@@ -207,11 +215,32 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
                     img = organization.getImage();
 
+
+
                     //This is the case where the user model is out of date and thinks that there is still a request, but in reality they are offically members
                     if(UserModel.myUserModel.getRequestedJoinOrgIds().contains(org_id) && organization.getMembers().contains(UserModel.myUserModel)){
                         UserModel.myUserModel.removeRequestToJoinOrganization(org_id);
                         requestJoin.setText("Leave Organization");
                         UserModel.myUserModel.joinOrg(org_id);
+                    }
+
+                    for(int i = 0; i < UserModel.myUserModel.getMyOrgs().size(); i++)
+                    {
+                        if(UserModel.myUserModel.getMyOrgs().get(i) == currentOrgId)
+                        {
+                            getNotifications();
+                            requestJoin.setText("Leave Organization");
+
+                        }
+                    }
+
+                    for(int i = 0; i < UserModel.myUserModel.getJoinedOrgs().size(); i++)
+                    {
+                        if(UserModel.myUserModel.getJoinedOrgs().get(i) == currentOrgId)
+                        {
+
+                            requestJoin.setText("Leave Organization");
+                        }
                     }
 
                     ImageHelper.loadWithGlide(context,
@@ -243,6 +272,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 }
             });
             //this checks to see if they are a member
+
            if(UserModel.myUserModel.getMyOrgs().contains( currentOrgId) || UserModel.myUserModel.getJoinedOrgs().contains(currentOrgId))
            {
 
@@ -250,14 +280,11 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
            }
 
 
+
             // This checks to see if there is a request present
             System.out.println(UserModel.myUserModel.getRequestedJoinOrgIds());
             System.out.println(currentOrgId);
-            for(int og_id : UserModel.myUserModel.getRequestedJoinOrgIds()){
-                if(og_id == currentOrgId){
-                    requestJoin.setText("Cancel Request");
-                }
-            }
+
 
             followed = false;
             for(int i = 0; i < UserModel.myUserModel.getFollowingOrgs().size(); i++)
@@ -418,6 +445,40 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         });
     }
 
+
+    private void getNotifications(){
+
+            LambencyAPIHelper.getInstance().getRequestsToJoin(UserModel.myUserModel.getOauthToken(),currentOrgId).enqueue(new retrofit2.Callback<ArrayList<UserModel>>() {
+                @Override
+                public void onResponse(Call<ArrayList<UserModel>> call, Response<ArrayList<UserModel>> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("ERROR!!!!!");
+                        return;
+                    }
+                    //when response is back
+                    ArrayList<UserModel> ret = response.body();
+
+                    int notifyAmount = 0;
+                    if(ret != null){
+                        notifyAmount += ret.size();
+                    }
+
+                    if(notifyAmount == 0){
+                        notificationNum.setVisibility(View.GONE);
+                    }else{
+
+                        notificationNum.setText("" + notifyAmount);
+                        notificationNum.setVisibility(View.VISIBLE);
+                    }
+                }
+                @Override
+                public void onFailure(Call<ArrayList<UserModel>> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                    Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
+                }
+            });
+    }
 
     @OnClick(R.id.followUnFollow)
     public void handleCheckClick(){

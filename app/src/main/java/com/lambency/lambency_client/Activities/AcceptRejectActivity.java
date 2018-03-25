@@ -34,6 +34,8 @@ public class AcceptRejectActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private ItemTouchHelper itemTouchHelper;
     private SwipeController swipeController;
+    private int org_id;
+    public int position;
 
     List<UserModel> userList = new ArrayList<>();
 
@@ -47,7 +49,9 @@ public class AcceptRejectActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Pending Requests");
 
-        LambencyAPIHelper.getInstance().getRequestsToJoin(UserModel.myUserModel.getOauthToken(),UserModel.myUserModel.getMyOrgs().get(0)).enqueue(new Callback<ArrayList<UserModel>>() {
+        org_id = Integer.parseInt(getIntent().getStringExtra("org_id"));
+
+        LambencyAPIHelper.getInstance().getRequestsToJoin(UserModel.myUserModel.getOauthToken(),org_id).enqueue(new Callback<ArrayList<UserModel>>() {
             @Override
             public void onResponse(Call<ArrayList<UserModel>> call, Response<ArrayList<UserModel>> response) {
 
@@ -96,13 +100,13 @@ public class AcceptRejectActivity extends AppCompatActivity {
         swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
-                Toast.makeText(getApplicationContext(), "Accepted user!", Toast.LENGTH_LONG).show();
+                callRetrofit(true,position);
+                //Toast.makeText(getApplicationContext(), "Accepted user!", Toast.LENGTH_LONG).show();
             }
 
             public void onLeftClicked(int position) {
-                userList.remove(position);
-                mAdapter.notifyDataSetChanged(); // how we update
-                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+                callRetrofit(false,position);
+                //Toast.makeText(getApplicationContext(), "Rejected user!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -122,34 +126,38 @@ public class AcceptRejectActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void callRetrofit(int event_id){
-        LambencyAPIHelper.getInstance().getListOfUsers(UserModel.myUserModel.getOauthToken(), event_id).enqueue(new Callback<ArrayList<UserModel>>() {
+    public int getCardPosition(){
+        return this.position;
+    }
+
+    private void callRetrofit(final boolean approved, int position){
+        this.position = position;
+        UserModel user = userList.get(position);
+        LambencyAPIHelper.getInstance().respondToJoinRequest(UserModel.myUserModel.getOauthToken(),org_id,
+                user.getUserId(),approved).enqueue(new Callback<Integer>() {
             @Override
-            public void onResponse(Call<ArrayList<UserModel>> call, Response<ArrayList<UserModel>> response) {
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response.body() == null || response.code() != 200) {
                     System.out.println("ERROR!!!!!");
                 }
 
-                ArrayList<UserModel> userList = response.body();
+                Integer ret = response.body();
 
-                if(userList == null)
+                if(ret == -1)
                 {
-                    userList = new ArrayList<UserModel>();
+                    //there was an error
+                    Toast.makeText(getApplicationContext(), "There was an error with request", Toast.LENGTH_LONG).show();
+                    return;
                 }
 
-                if (userList.size() == 0) {
-                    System.out.println("No users attending");
-                } else {
-                    System.out.println("Users found");
-                }
-
-                //numAttendingView.setText("Looks like " + userList.size() + " people are coming!");
-
-                mAdapter.updateUserList(userList);
+                userList.remove(getCardPosition());
+                mAdapter.notifyDataSetChanged(); // how we update
+                mAdapter.notifyItemRangeChanged(getCardPosition(), mAdapter.getItemCount());
+                Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onFailure(Call<ArrayList<UserModel>> call, Throwable throwable) {
+            public void onFailure(Call<Integer> call, Throwable throwable) {
                 //when failure
                 System.out.println("FAILED CALL");
             }

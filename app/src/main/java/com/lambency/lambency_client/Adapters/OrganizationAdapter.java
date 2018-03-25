@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 import com.lambency.lambency_client.Activities.EventDetailsActivity;
 import com.lambency.lambency_client.Activities.OrganizationDetailsActivity;
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
 
@@ -26,6 +29,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by lshan on 2/20/2018.
@@ -48,7 +54,7 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
     }
 
     @Override
-    public void onBindViewHolder(OrganizationAdapter.AreaViewHolder holder, int position) {
+    public void onBindViewHolder(final OrganizationAdapter.AreaViewHolder holder, int position) {
         OrganizationModel orgModel = orgs.get(position);
 
         if(orgModel.name != null) {
@@ -70,6 +76,26 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
                     ImageHelper.saveImage(context, orgModel.getImage(), "orgImage" + orgModel.getOrgID()),
                     holder.profileImage);
         }
+
+        LambencyAPIHelper.getInstance().getRequestsToJoin(UserModel.myUserModel.getOauthToken(), orgModel.getOrgID()).enqueue(new Callback<ArrayList<UserModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<UserModel>> call, Response<ArrayList<UserModel>> response) {
+                if(response.body() == null){
+                    Log.e("Retrofit", "Org get user request is null");
+                }else{
+                    int numRequests = response.body().size();
+                    if(numRequests > 0){
+                        holder.notificationNumText.setText(numRequests + "");
+                        holder.notificationNumText.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<UserModel>> call, Throwable t) {
+
+            }
+        });
 
     }
 
@@ -96,6 +122,9 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
 
         @BindView(R.id.card_organization)
         CardView cardView;
+
+        @BindView(R.id.notificationNumText)
+        TextView notificationNumText;
 
         public AreaViewHolder(View itemView) {
             super(itemView);

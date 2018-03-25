@@ -367,6 +367,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                                 if (response.body() == null || response.code() != 200) {
                                     System.out.println("ERROR!!!!!");
+                                    System.out.println("1");
                                     return;
                                 }
                                 //when response is back
@@ -441,6 +442,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                                 if (response.body() == null || response.code() != 200) {
                                     System.out.println("ERROR!!!!!");
+                                    System.out.println("2");
                                     return;
                                 }
                                 //when response is back
@@ -610,6 +612,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
                 if (response.body() == null || response.code() != 200) {
                     System.out.println("ERROR!!!!!");
+                    System.out.println("4");
                 }
                 //when response is back
                 Toast.makeText(getApplicationContext(), "the event id was   " + event_id, Toast.LENGTH_LONG).show();
@@ -721,6 +724,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
             public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
                 if (response.body() == null || response.code() != 200) {
                     System.out.println("ERROR!!!!!");
+                    System.out.println("5");
                     return;
                 }
 
