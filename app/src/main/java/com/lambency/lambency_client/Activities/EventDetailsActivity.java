@@ -547,9 +547,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     callRetrofit(event_id);
                 }
 
-            //setting the codes
-            checkInCode.setText(eventModel.getClockInCode());
-            checkOutCode.setText(eventModel.getClockOutCode());
+
 
 
             if (UserModel.myUserModel != null) {
@@ -660,6 +658,17 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     longitude = eventModel.getLongitude();
                     addressView.setText(eventModel.getLocation());
 
+                    //setting the codes
+                    if(eventModel.getClockInCode() != null && eventModel.getClockOutCode() != null
+                            && UserModel.myUserModel.getMyOrgs().contains(eventModel.getOrg_id())) {
+                        checkInCode.setText(eventModel.getClockInCode());
+                        checkOutCode.setText(eventModel.getClockOutCode());
+                    }else{
+                        checkInCode.setVisibility(View.GONE);
+                        checkOutCode.setVisibility(View.GONE);
+                        checkinCodeDisp.setVisibility(View.GONE);
+                        checkoutCodeDisp.setVisibility(View.GONE);
+                    }
 
                     RequestOptions requestOptions = new RequestOptions();
 
