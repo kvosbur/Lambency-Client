@@ -1,7 +1,6 @@
 package com.lambency.lambency_client.Activities;
 
 
-import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
