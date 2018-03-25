@@ -329,6 +329,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                             public void onResponse(Call<Integer> call, Response<Integer> response) {
                                 if (response.body() == null || response.code() != 200) {
                                     System.out.println("ERROR!!!!!");
+                                    System.out.println("1");
                                     return;
                                 }
                                 //when response is back
@@ -364,6 +365,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                             public void onResponse(Call<Integer> call, Response<Integer> response) {
                                 if (response.body() == null || response.code() != 200) {
                                     System.out.println("ERROR!!!!!");
+                                    System.out.println("2");
                                     return;
                                 }
                                 //when response is back
@@ -493,6 +495,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
                 if (response.body() == null || response.code() != 200) {
                     System.out.println("ERROR!!!!!");
+                    System.out.println("4");
                 }
                 //when response is back
                 eventModel = response.body();
@@ -615,6 +618,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
             public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
                 if (response.body() == null || response.code() != 200) {
                     System.out.println("ERROR!!!!!");
+                    System.out.println("5");
                     return;
                 }
 

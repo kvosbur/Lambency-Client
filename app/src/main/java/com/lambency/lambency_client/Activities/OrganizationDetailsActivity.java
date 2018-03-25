@@ -210,6 +210,24 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         UserModel.myUserModel.joinOrg(org_id);
                     }
 
+                    for(int i = 0; i < UserModel.myUserModel.getMyOrgs().size(); i++)
+                    {
+                        if(UserModel.myUserModel.getMyOrgs().get(i) == currentOrgId)
+                        {
+
+                            requestJoin.setText("Leave Organization");
+                        }
+                    }
+
+                    for(int i = 0; i < UserModel.myUserModel.getJoinedOrgs().size(); i++)
+                    {
+                        if(UserModel.myUserModel.getJoinedOrgs().get(i) == currentOrgId)
+                        {
+
+                            requestJoin.setText("Leave Organization");
+                        }
+                    }
+
                     ImageHelper.loadWithGlide(context,
                             ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
                             orgImage);
@@ -239,14 +257,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 }
             });
             //this checks to see if they are a member
-            for(int i = 0; i < UserModel.myUserModel.getMyOrgs().size(); i++)
-            {
-                if(UserModel.myUserModel.getMyOrgs().get(i) == currentOrgId)
-                {
 
-                    requestJoin.setText("Leave Organization");
-                }
-            }
 
             // This checks to see if there is a request present
             System.out.println(UserModel.myUserModel.getRequestedJoinOrgIds());

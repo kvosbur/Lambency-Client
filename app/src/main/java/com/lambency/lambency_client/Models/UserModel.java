@@ -224,22 +224,10 @@ public class UserModel {
 
         UserModel userModel = (UserModel) o;
 
-        if (getUserId() != userModel.getUserId()) return false;
-        if (getHoursWorked() != userModel.getHoursWorked()) return false;
-        if (getOrgStatus() != userModel.getOrgStatus()) return false;
-        if (getFirstName() != null ? !getFirstName().equals(userModel.getFirstName()) : userModel.getFirstName() != null)
+        if(userModel.getUserId() != userId){
             return false;
-        if (getLastName() != null ? !getLastName().equals(userModel.getLastName()) : userModel.getLastName() != null)
-            return false;
-        if (getEmail() != null ? !getEmail().equals(userModel.getEmail()) : userModel.getEmail() != null)
-            return false;
-        if (getMyOrgs() != null ? !getMyOrgs().equals(userModel.getMyOrgs()) : userModel.getMyOrgs() != null)
-            return false;
-        if (getEventsAttending() != null ? !getEventsAttending().equals(userModel.getEventsAttending()) : userModel.getEventsAttending() != null)
-            return false;
-        if (getFollowingOrgs() != null ? !getFollowingOrgs().equals(userModel.getFollowingOrgs()) : userModel.getFollowingOrgs() != null)
-            return false;
-        return getJoinedOrgs() != null ? getJoinedOrgs().equals(userModel.getJoinedOrgs()) : userModel.getJoinedOrgs() == null;
+        }
+        return true;
     }
 
     @Override
@@ -312,7 +300,6 @@ public class UserModel {
 
         return result;
     }
-
 
     public void setEditable(boolean editable) {
         this.editable = editable;
