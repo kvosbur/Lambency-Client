@@ -771,9 +771,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
-//                Intent intent = new Intent(context, SearchActivity.class);
-  //              startActivity(intent);
+                //finish();
+                  Intent intent = new Intent(context, SearchActivity.class);
+                  startActivity(intent);
                 return true;
             default:
                 return true;

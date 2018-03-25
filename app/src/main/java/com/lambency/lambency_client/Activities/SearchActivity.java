@@ -184,7 +184,7 @@ public class SearchActivity extends AppCompatActivity   {
                                 searchTabsAdapter.updateEvents(events);
                                 searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
 
-                                EventFilterModel.currentFilter = new EventFilterModel();
+                                //EventFilterModel.currentFilter = new EventFilterModel();
                             }
 
                             @Override
@@ -310,6 +310,8 @@ public class SearchActivity extends AppCompatActivity   {
                 System.out.println("Location Pressed");
                 Intent i = new Intent(context,FilterActivity.class);
                 startActivity(i);
+
+                EventFilterModel.currentFilter = new EventFilterModel();
 
                 //FragmentManager manager = getSupportFragmentManager();
                 //manager.beginTransaction().replace(R.id.fragContainer, new FilterDistanceFragment()).commit();
