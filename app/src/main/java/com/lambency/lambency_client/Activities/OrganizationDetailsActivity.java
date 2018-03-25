@@ -1,5 +1,7 @@
 package com.lambency.lambency_client.Activities;
 
+
+import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,11 +21,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -114,6 +118,10 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     TextView noEventsTextView;
 
 
+    @BindView(R.id.inviteUsersToJoin)
+    Button inviteUsers;
+
+
     public static int currentOrgId;
     private Context context;
 
@@ -121,6 +129,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
     private OrganizationModel organizationModel;
     private EventsAdapter eventsAdapter;
+    private String usersEmail = "";
 
 
     @Override
@@ -151,6 +160,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             checkBox.setText("Follow");
         }
 
+
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
             final int org_id = bundle.getInt("org_id");
@@ -170,7 +180,11 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     OrganizationModel organization= response.body();
                     organizationModel = organization;
 
-
+                    //hiding or showing invite button
+                    if (UserModel.myUserModel.getMyOrgs().contains(organizationModel.getOrgID())){
+                        inviteUsers.setVisibility(View.VISIBLE);
+                    }
+                    else inviteUsers.setVisibility(View.GONE);
 
                     getUpcomingEvents();
 
@@ -341,6 +355,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         }else{
             Toast.makeText(getApplicationContext(), "Bundle is broken... :(", Toast.LENGTH_LONG).show();
         }
+
     }
 
 
@@ -561,6 +576,87 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             });
             Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @OnClick(R.id.inviteUsersToJoin)
+    public void onInviteJoin(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter email to send invite");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        builder.setView(input);
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                usersEmail = input.getText().toString();
+
+                //Retrofit to send the users email to the server
+                LambencyAPIHelper.getInstance().inviteUser(UserModel.myUserModel.getOauthToken(),
+                        organizationModel.getOrgID()+"",usersEmail).enqueue(new Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        if (response.body() == null || response.code() != 200) {
+                            Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        //when response is back
+                        Integer ret = response.body();
+                        if(ret == 0){
+                            System.out.println("Success in sending email");
+                            Toast.makeText(getApplicationContext(), "Email was sent successfully ", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == -1){
+                            System.out.println("an error has occurred");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 1){
+                            System.out.println("SQL EXCEPTION in Invite User");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 2){
+                            System.out.println("Some random fucking exception in Invite User");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 3){
+                            System.out.println("Invalid oAuthCode");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 4){
+                            System.out.println("Invalid permissions to invite user.");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 5){
+                            System.out.println("No email found");
+                            Toast.makeText(getApplicationContext(), "No user with that email.", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 6){
+                            System.out.println("Multiple matches found");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 7){
+                            System.out.println("Issue sending email to user.");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Integer> call, Throwable throwable) {
+                        Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
     }
 
     @OnClick(R.id.orgRequestJoin)
