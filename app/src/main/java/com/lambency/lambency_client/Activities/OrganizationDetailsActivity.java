@@ -448,6 +448,35 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         }
                         else if(ret == -1){
                             System.out.println("an error has occurred");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 1){
+                            System.out.println("SQL EXCEPTION in Invite User");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 2){
+                            System.out.println("Some random fucking exception in Invite User");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 3){
+                            System.out.println("Invalid oAuthCode");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 4){
+                            System.out.println("Invalid permissions to invite user.");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 5){
+                            System.out.println("No email found");
+                            Toast.makeText(getApplicationContext(), "No user with that email.", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 6){
+                            System.out.println("Multiple matches found");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ret == 7){
+                            System.out.println("Issue sending email to user.");
+                            Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
