@@ -67,6 +67,31 @@
                         android:layout_gravity="bottom"
                         android:background="@drawable/scrim"/>
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom">
+                    <TextView
+                        android:id="@+id/labelFornumPeople"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="People Attending:  "
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginLeft="50dp"/>
+                        <TextView
+                            android:id="@+id/numPeopleAttending"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:text="#"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimary"/>
+
+                    </LinearLayout>
+
+
                     <android.support.v7.widget.Toolbar
                         android:id="@+id/anim_toolbar"
                         android:layout_width="match_parent"
@@ -295,11 +320,54 @@
                     </TextView>
 
 
+
+                    <TextView
+                        android:id="@+id/endorseText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#000000"
+                        android:textSize="15dp"
+                        android:text="\nEndorse this event as organization! "
+                        android:layout_below="@id/description"/>
+
+                    <Button
+                        android:id="@+id/endorseButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/description"
+                        android:layout_toRightOf="@id/endorseText"
+
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="Endorse" />
+
+                    <LinearLayout
+                        android:id="@+id/endorseLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/endorseButton"
+                        android:paddingHorizontal="20dp"
+                        android:layout_marginTop="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Organizations that have endorsed"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:layout_marginBottom="10dp"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/orgEndorseList">
+
+                        </android.support.v7.widget.RecyclerView>
+
+                    </LinearLayout>
+
                 </RelativeLayout>
-
-
-
-
 
 
 
@@ -310,5 +378,6 @@
     </FrameLayout>
 
 </FrameLayout>
+
 
 

@@ -3,11 +3,15 @@ package com.lambency.lambency_client.Activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+
+import android.view.LayoutInflater;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +24,7 @@ import android.widget.TextView;
 
 
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
+import com.lambency.lambency_client.Fragments.CheckInFragment;
 import com.lambency.lambency_client.Fragments.EventsMainFragment;
 import com.lambency.lambency_client.Fragments.MyLambencyEventsFragment;
 import com.lambency.lambency_client.Fragments.MyLambencyFragment;
@@ -55,7 +60,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class BottomBarActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener, MyLambencyEventsFragment.OnFragmentInteractionListener, MyLambencyOrgsFragment.OnFragmentInteractionListener{
+public class BottomBarActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener, MyLambencyEventsFragment.OnFragmentInteractionListener, MyLambencyOrgsFragment.OnFragmentInteractionListener, CheckInFragment.OnFragmentInteractionListener{
 
 
     public static BottomNavigationView bottomNavigationView;
@@ -86,6 +91,15 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         bar.setSelectedItemId(R.id.lamBot);
         switchToFragment3();
 
+        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) bar.getChildAt(0);
+        View v = bottomNavigationMenuView.getChildAt(1);
+        BottomNavigationItemView itemView = (BottomNavigationItemView) v;
+
+        View badge = LayoutInflater.from(this)
+                .inflate(R.layout.bottom_badge, bottomNavigationMenuView, false);
+
+        itemView.addView(badge);
+
         bar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -103,7 +117,8 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
                         break;
 
                     case R.id.checkinBot:
-                        //TODO::change to new activity
+                        switchToFragment4();
+                        break;
 
                 }
 
@@ -190,6 +205,11 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
                 Log.e("Retrofit", "Error getting myLambency model");
             }
         });
+    }
+
+    public void switchToFragment4(){
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.fragContainer, new CheckInFragment()).commit();
     }
 
     public void setActionBarTitle(String title) {

@@ -46,6 +46,16 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/noJoinedOrgsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You Haven't Joined Any Organizations"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/memberOrgsTitleLayout"
+                    android:visibility="gone"
+                    />
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/memberOrgsRecyclerView"
                     android:layout_width="match_parent"
@@ -79,6 +89,15 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/noMyOrgsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You Haven't Created Any Organizations"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/organizerOrgsTitleLayout"
+                    android:visibility="gone"
+                    />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/organizerOrgsRecyclerView"

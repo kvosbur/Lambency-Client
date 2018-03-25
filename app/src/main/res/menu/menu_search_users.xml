@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/search"
+        android:title="Search"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="always"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        />
+
+    <item
+        android:id="@+id/email"
+        android:title="Email All"
+        android:icon="@drawable/ic_email_white_24dp"
+        app:showAsAction="ifRoom"
+        />
+
+</menu>

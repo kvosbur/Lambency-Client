@@ -56,6 +56,16 @@
                    android:nestedScrollingEnabled="false"
                    />
 
+               <TextView
+                   android:id="@+id/noRegisteredEventsText"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Not Registered For Any Events"
+                   android:layout_below="@id/registeredEventsTitleLayout"
+                   android:layout_centerHorizontal="true"
+                   android:visibility="gone"
+                   android:layout_marginBottom="5dp"/>
+
                <LinearLayout
                    android:id="@+id/myEventsTitleLayout"
                    android:layout_width="wrap_content"
@@ -81,6 +91,15 @@
 
                </LinearLayout>
 
+               <TextView
+                   android:id="@+id/noMyEventsText"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="You Haven't Created Any Events"
+                   android:layout_below="@id/myEventsTitleLayout"
+                   android:layout_centerHorizontal="true"
+                   android:visibility="gone"
+                   android:layout_marginBottom="5dp"/>
 
                <android.support.v7.widget.RecyclerView
                    android:id="@+id/myEventsRecyclerView"

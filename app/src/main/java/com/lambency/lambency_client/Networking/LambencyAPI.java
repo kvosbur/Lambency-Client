@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Networking;
 
+import com.lambency.lambency_client.Models.EventAttendanceModel;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.MyLambencyModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
@@ -52,11 +53,17 @@ public interface LambencyAPI {
     @POST("Event/create")
     Call<EventModel> createEvent(@Body EventModel eventModel);
 
+    @GET("Event/numAttending")
+    Call<Integer> getEventNumAttending(@Query("oAuthCode") String oAuthCode, @Query("id") String event_id);
+
     @GET("Organization/searchByID")
     Call<OrganizationModel> getOrgSearchByID(@Query("id") String org_id);
 
     @POST("User/requestJoinOrg")
     Call<Integer> postJoinOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgId") int orgID);
+
+    @POST("User/leaveOrg")
+    Call<Integer> postLeaveOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
 
     @GET("User/followOrg")
     Call<Integer> getFollowOrg(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID);
@@ -73,11 +80,26 @@ public interface LambencyAPI {
     @GET("/User/registerForEvent")
     Call<Integer> getRegisterEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID);
 
+    @GET("/User/unregisterForEvent")
+    Call<Integer> unRegisterForEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID);
+
     @GET("/Event/searchByIDs")
     Call<List<EventModel>> getUserEvents(@Query("oAuthCode") String oAuthCode, @Query("userID") int userID);
 
     @GET("Organization/events")
     Call<List<EventModel>> getEventsByOrg(@Query("oAuthCode") String oAuthCode, @Query("id") String org_id);
+
+    @GET("Organization/joinRequests")
+    Call<ArrayList<UserModel>> getRequestsToJoin(@Query("oAuthCode") String oAuthCode, @Query("orgID") int org_id);
+
+    @GET("Organization/endorse")
+    Call<Integer> getEndorse(@Query("oAuthCode") String oAuthCode, @Query("orgID") String org_id, @Query("eventID") String event_id);
+
+    @GET("Organization/unendorse")
+    Call<Integer> getUnendorse(@Query("oAuthCode") String oAuthCode, @Query("orgID") String org_id, @Query("eventID") String event_id);
+
+    @GET("Event/endorsedOrgs")
+    Call<List<OrganizationModel>> getEndorsedOrgs(@Query("oAuthCode") String oAuthCode, @Query("eventId") String eventID);
 
     @GET("User/MyLambency")
     Call<MyLambencyModel> getMyLambencyModel(@Query("oAuthCode") String oAuthCode);
@@ -90,5 +112,15 @@ public interface LambencyAPI {
 
     @POST("Organization/InviteUser")
     Call<Integer> inviteUser(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID, @Query("emailString") String userEmail);
+
+    @GET("User/getOrgs")
+    Call<ArrayList<OrganizationModel>> getMyOrganizedOrgs(@Query("oAuthCode") String oAuthCode);
+
+    @GET("/Organization/changeUserPermissions")
+    Call<Integer> getChangeUserPermissions(@Query("oAuthCode") String oAuthCode, @Query("orgID") String org_id, @Query("userChanged") String changedID, @Query("type") String type);
+
+    @POST("/User/ClockInOut")
+    Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
+
 }
 
