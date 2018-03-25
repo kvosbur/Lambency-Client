@@ -1,15 +1,18 @@
 package com.lambency.lambency_client.Fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +31,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
+import com.lambency.lambency_client.Activities.EventDetailsActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.Adapters.EventsAdapter;
 import com.lambency.lambency_client.Models.EventModel;
@@ -106,15 +110,20 @@ public class EventsMainFragment extends Fragment implements
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        } else {
+            super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            if (getArguments() != null) {
+                mParam1 = getArguments().getString(ARG_PARAM1);
+                mParam2 = getArguments().getString(ARG_PARAM2);
+            }
+            ((BottomBarActivity) getActivity())
+                    .setActionBarTitle("Feed");
+            setHasOptionsMenu(true);
         }
-        ((BottomBarActivity) getActivity())
-                .setActionBarTitle("Feed");
-        setHasOptionsMenu(true);
 
     }
 
@@ -147,25 +156,25 @@ public class EventsMainFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_events_main, container, false);
-        ButterKnife.bind(this, view);
+            // Inflate the layout for this fragment
+            View view = inflater.inflate(R.layout.fragment_events_main, container, false);
+            ButterKnife.bind(this, view);
 
-        //for getting current address
-        mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
-                // The next two lines tell the new client that “this” current class will handle connection stuff
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                //fourth line adds the LocationServices API endpoint from GooglePlayServices
-                .addApi(LocationServices.API)
-                .build();
+            //for getting current address
+            mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                    // The next two lines tell the new client that “this” current class will handle connection stuff
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    //fourth line adds the LocationServices API endpoint from GooglePlayServices
+                    .addApi(LocationServices.API)
+                    .build();
 
-        loadingEvents();
-        callRetrofit();
+            loadingEvents();
+            callRetrofit();
 
-        ((BottomBarActivity) getActivity()).getSupportActionBar().setElevation(15);
+            ((BottomBarActivity) getActivity()).getSupportActionBar().setElevation(15);
 
-        return view;
+            return view;
     }
 
     public void callRetrofit(){
