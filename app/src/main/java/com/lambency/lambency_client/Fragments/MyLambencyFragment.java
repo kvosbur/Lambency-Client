@@ -253,13 +253,6 @@ public class MyLambencyFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch(id){
-            case R.id.action_join_requests:
-                Intent intent = new Intent(getActivity(), AcceptRejectActivity.class);
-                startActivity(intent);
-
-                break;
-        }
 
         return super.onOptionsItemSelected(item);
     }

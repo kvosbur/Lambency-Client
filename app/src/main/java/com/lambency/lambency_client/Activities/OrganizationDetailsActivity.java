@@ -151,6 +151,12 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             checkBox.setText("Follow");
         }
 
+        for(int og_id : UserModel.myUserModel.getRequestedJoinOrgIds()){
+            if(og_id == currentOrgId){
+                requestJoin.setText("Cancel Request");
+            }
+        }
+
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
             final int org_id = bundle.getInt("org_id");
@@ -194,6 +200,8 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
 
                     img = organization.getImage();
+
+
 
                     //This is the case where the user model is out of date and thinks that there is still a request, but in reality they are offically members
                     if(UserModel.myUserModel.getRequestedJoinOrgIds().contains(org_id) && organization.getMembers().contains(UserModel.myUserModel)){
@@ -243,11 +251,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             // This checks to see if there is a request present
             System.out.println(UserModel.myUserModel.getRequestedJoinOrgIds());
             System.out.println(currentOrgId);
-            for(int og_id : UserModel.myUserModel.getRequestedJoinOrgIds()){
-                if(og_id == currentOrgId){
-                    requestJoin.setText("Cancel Request");
-                }
-            }
+
 
             followed = false;
             for(int i = 0; i < UserModel.myUserModel.getFollowingOrgs().size(); i++)
