@@ -121,59 +121,78 @@ public class SearchActivity extends AppCompatActivity   {
         //searchView.setIconifiedByDefault(false);
         searchView.requestFocus();
 
-        if(tabLayout.getSelectedTabPosition() == 1) {
-
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     System.out.println(query);
 
+                    if(tabLayout.getSelectedTabPosition() == 1)
+                    {
+                        searchTabsAdapter.setOrgVisiblity(View.VISIBLE, View.GONE);
 
-                    searchTabsAdapter.setOrgVisiblity(View.VISIBLE, View.GONE);
+                        LambencyAPIHelper.getInstance().getOrganizationSearch(query).enqueue(new Callback<ArrayList<OrganizationModel>>() {
+                            @Override
+                            public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
+                                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
 
-                    LambencyAPIHelper.getInstance().getOrganizationSearch(query).enqueue(new Callback<ArrayList<OrganizationModel>>() {
-                        @Override
-                        public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
-                            searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
+                                if (response.body() == null || response.code() != 200) {
+                                    System.out.println("ERROR!!!!!");
+                                }
+                                //when response is back
+                                ArrayList<OrganizationModel> orgList = response.body();
+                                if (orgList == null || orgList.size() == 0) {
+                                    //no results found
+                                    if (orgList == null) {
+                                        orgList = new ArrayList<OrganizationModel>();
+                                    }
 
-                            if (response.body() == null || response.code() != 200) {
-                                System.out.println("ERROR!!!!!");
+                                    if (searchTabsAdapter == null) {
+                                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                                    }
+                                    searchTabsAdapter.updateOrgs(orgList);
+                                } else {
+                                    //results found
+                                    System.out.println("Orgs found!");
+
+
+                                    if (searchTabsAdapter == null) {
+                                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                                    }
+                                    //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
+                                    searchTabsAdapter.updateOrgs(orgList);
+                                }
                             }
-                            //when response is back
-                            ArrayList<OrganizationModel> orgList = response.body();
-                            if (orgList == null || orgList.size() == 0) {
-                                //no results found
-                                if (orgList == null) {
-                                    orgList = new ArrayList<OrganizationModel>();
-                                }
 
-                                if (searchTabsAdapter == null) {
-                                    searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
-                                }
-                                searchTabsAdapter.updateOrgs(orgList);
-                            } else {
-                                //results found
-                                System.out.println("Orgs found!");
+                            @Override
+                            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
+                                //when failure
+                                System.out.println("FAILED CALL");
 
-
-                                if (searchTabsAdapter == null) {
-                                    searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
-                                }
-                                //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
-                                searchTabsAdapter.updateOrgs(orgList);
+                                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
                             }
-                        }
+                        });
+                    } else {
+                        EventFilterModel.currentFilter.setTitle(query);
 
-                        @Override
-                        public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
-                            //when failure
-                            System.out.println("FAILED CALL");
+                        LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter).enqueue(new Callback<List<EventModel>>() {
+                            @Override
+                            public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
+                                List<EventModel> events = response.body();
+                                searchTabsAdapter.updateEvents(events);
+                                searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
 
-                            searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
-                        }
-                    });
+                                EventFilterModel.currentFilter = new EventFilterModel();
+                            }
 
+                            @Override
+                            public void onFailure(Call<List<EventModel>> call, Throwable t) {
+                                searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
+                            }
+                        });
+
+                        return true;
+                    }
                     return false;
                 }
 
@@ -183,36 +202,7 @@ public class SearchActivity extends AppCompatActivity   {
                 }
             });
 
-        }
-        else {
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                public boolean onQueryTextSubmit(String query) {
 
-                    EventFilterModel.currentFilter.setTitle(query);
-
-                    LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter).enqueue(new Callback<List<EventModel>>() {
-                        @Override
-                        public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
-                            List<EventModel> events = response.body();
-                            searchTabsAdapter.updateEvents(events);
-                            searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
-
-                            EventFilterModel.currentFilter = new EventFilterModel();
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<EventModel>> call, Throwable t) {
-                            searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
-                        }
-                    });
-
-                    return true;
-                }
-                public boolean onQueryTextChange(String newText) {
-                    return false;
-                }
-            });
-        }
         return super.onCreateOptionsMenu(menu);
     }
 

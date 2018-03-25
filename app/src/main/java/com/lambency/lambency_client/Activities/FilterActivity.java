@@ -94,6 +94,10 @@ public class FilterActivity extends AppCompatActivity {
 
                 EditText altAddr = findViewById(R.id.newTextAddr);
                 EventFilterModel.currentFilter.setLocation(altAddr.getText().toString());
+                if(EventFilterModel.currentFilter.getLocation().compareTo("") == 0)
+                {
+                    EventFilterModel.currentFilter.setLocation(null);
+                }
 
                 //finish();
                 Intent intent = new Intent(context, SearchActivity.class);
