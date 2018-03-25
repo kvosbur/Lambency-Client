@@ -133,17 +133,23 @@ public class EventDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.check)
     ImageView checkMark;
 
-
     @BindView(R.id.numPeopleAttending)
     TextView numberOfPeopleAttending;
-
-
 
     @BindView(R.id.orgEndorseList)
     RecyclerView orgEndorseList;
 
     @BindView(R.id.endorseLayout)
     LinearLayout endorseLinLayout;
+
+    @BindView(R.id.shareEvent)
+    Button shareButton;
+
+    @BindView(R.id.joinButton)
+    LinearLayout joinButton;
+
+    @BindView(R.id.orgListLabel)
+    TextView orgListLabel;
 
     private EventModel event,eventModel;
 
@@ -167,6 +173,16 @@ public class EventDetailsActivity extends AppCompatActivity implements
         String action = intent.getAction();
         Uri data = intent.getData();
 
+        ButterKnife.bind(this);
+
+        if(UserModel.myUserModel == null){
+            shareButton.setVisibility(View.GONE);
+            joinButton.setVisibility(View.GONE);
+            endorseButton.setVisibility(View.GONE);
+            endorseText.setVisibility(View.GONE);
+            orgEndorseList.setVisibility(View.GONE);
+            orgListLabel.setVisibility(View.GONE);
+        }
 
         if (ActivityCompat.checkSelfPermission(EventDetailsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(EventDetailsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(EventDetailsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -189,7 +205,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     .setFastestInterval(1 * 1000); // 1 second, in milliseconds
             //end -farhan
 
-            ButterKnife.bind(this);
             context = this;
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
@@ -321,9 +336,14 @@ public class EventDetailsActivity extends AppCompatActivity implements
 //            }
 //        });
 
+            if(UserModel.myUserModel == null){
+                orgLayout.setVisibility(View.GONE);
+            }
+
             final Button shareButton = findViewById(R.id.shareEvent);
 
-            if (UserModel.myUserModel.getMyOrgs().size() == 0) {
+
+            if (UserModel.myUserModel != null && UserModel.myUserModel.getMyOrgs().size() == 0) {
                 endorseText.setVisibility(View.GONE);
                 endorseButton.setVisibility(View.GONE);
             }
@@ -418,15 +438,17 @@ public class EventDetailsActivity extends AppCompatActivity implements
             });
 
             Bundle bundle = getIntent().getExtras();
-            if (bundle != null || data != null) {
-                //TODO error check
-                if (data == null) {
-                    event_id = bundle.getInt("event_id");
-                } else {
-                    String event_string = data.getQueryParameter("eventid");
-                    event_id = Integer.parseInt(event_string);
+            if(UserModel.myUserModel != null) {
+                if (bundle != null || data != null) {
+                    //TODO error check
+                    if (data == null) {
+                        event_id = bundle.getInt("event_id");
+                    } else {
+                        String event_string = data.getQueryParameter("eventid");
+                        event_id = Integer.parseInt(event_string);
+                    }
+                    callRetrofit(event_id);
                 }
-                callRetrofit(event_id);
             }
 
             if (UserModel.myUserModel != null) {
@@ -444,7 +466,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
             //Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
 
-            getAllOrgs();
+            if(UserModel.myUserModel != null) {
+                getAllOrgs();
+            }
 
             //redirection to google maps when address is clicked
             addressView.setOnClickListener(new View.OnClickListener() {

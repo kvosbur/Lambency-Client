@@ -175,6 +175,8 @@ public class ProfileFragment extends Fragment {
             case R.id.action_logout:
                 SharedPreferences sharedPreferences = SharedPrefsHelper.getSharedPrefs(getActivity());
                 sharedPreferences.edit().putString("myauth", "").apply();
+                UserModel.myUserModel = null;
+
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 break;
