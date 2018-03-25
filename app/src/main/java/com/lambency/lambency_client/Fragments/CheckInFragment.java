@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Models.EventAttendanceModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
@@ -138,6 +139,8 @@ public class CheckInFragment extends Fragment {
         // textView is the TextView view that should display it
         textViewdate.setText(currentDateString);
 
+        ((BottomBarActivity) getActivity())
+                .setActionBarTitle("Check In");
 
         return v;
     }
