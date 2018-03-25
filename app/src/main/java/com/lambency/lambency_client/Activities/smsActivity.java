@@ -24,8 +24,6 @@ public class smsActivity extends AppCompatActivity {
 
 
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

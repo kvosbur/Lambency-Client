@@ -659,7 +659,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
         //sharing implementation here
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        String shareBody = eventName + ", This is a cool event I found on Lambency and I think you will be interested in it." +
+        String shareBody = eventName + ", This is a cool event I found on Lambency and I think you will be interested in it. " +
                 "this is the link to join the event have a look\n" +
                 "http://www.mylambencyclient.com?eventid=" + eventModel.getEvent_id() ;
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Lambency event shared");
