@@ -170,6 +170,7 @@ public class MyLambencyEventsFragment extends Fragment {
             public void onResponse(Call<MyLambencyModel> call, Response<MyLambencyModel> response) {
                 MyLambencyModel myLambencyModel = response.body();
                 System.out.println("Got myLambency Model");
+                System.out.println("trying4");
                 if(myLambencyModel != null) {
                     setEvents(myLambencyModel);
                 }

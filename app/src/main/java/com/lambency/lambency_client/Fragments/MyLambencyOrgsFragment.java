@@ -85,8 +85,6 @@ public class MyLambencyOrgsFragment extends Fragment {
     @BindView(R.id.noJoinedOrgsText)
     TextView noJoinedOrgsText;
 
-    int notifyAmount = 0;
-
 
     public MyLambencyOrgsFragment() {
         // Required empty public constructor
@@ -172,16 +170,6 @@ public class MyLambencyOrgsFragment extends Fragment {
                 MyLambencyModel myLambencyModel = response.body();
                 if(myLambencyModel != null) {
                     System.out.println("Got myLambency Model");
-                    ArrayList<OrganizationModel> organizerOrgs = new ArrayList<>(myLambencyModel.getMyOrgs());
-                    for(OrganizationModel org: organizerOrgs){
-                        Response<ArrayList<UserModel>> resp = getNotifications(org.getOrgID());
-                        if(resp.body() != null) {
-                            notifyAmount += (resp.body()).size();
-                        }
-                    }
-                    System.out.println("UPDATING BADGE TO VALUE " + notifyAmount);
-                    TextView badge = getActivity().findViewById(R.id.notifications_badge);
-                    badge.setText(notifyAmount);
 
                     setOrgs(myLambencyModel);
                 }
@@ -203,15 +191,7 @@ public class MyLambencyOrgsFragment extends Fragment {
     }
 
 
-    private Response<ArrayList<UserModel>> getNotifications(int org_id){
-        try {
-            Response<ArrayList<UserModel>> resp = LambencyAPIHelper.getInstance().
-                    getRequestsToJoin(UserModel.myUserModel.getOauthToken(), org_id).execute();
-            return resp;
-        }catch(Exception e){
-            return null;
-        }
-    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
