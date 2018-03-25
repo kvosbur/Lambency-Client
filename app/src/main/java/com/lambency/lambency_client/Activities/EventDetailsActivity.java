@@ -2,7 +2,9 @@ package com.lambency.lambency_client.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -46,6 +48,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 
@@ -331,43 +334,79 @@ public class EventDetailsActivity extends AppCompatActivity implements
             endorseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     if (endorseButton.getText().equals("Endorse")) {
                         //TODO Endorse retrofit here
-
-                        LambencyAPIHelper.getInstance().getEndorse(UserModel.myUserModel.getOauthToken(), "" + UserModel.myUserModel.getMyOrgs().get(0), "" + event_id).enqueue(new Callback<Integer>() {
+                        LambencyAPIHelper.getInstance().getMyOrganizedOrgs(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<OrganizationModel>>() {
                             @Override
-                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            public void onResponse(Call<ArrayList<OrganizationModel>> call,
+                                                   Response<ArrayList<OrganizationModel>> response) {
+
                                 if (response.body() == null || response.code() != 200) {
                                     System.out.println("ERROR!!!!!");
                                     return;
                                 }
                                 //when response is back
-                                Integer ret = response.body();
-                                if (ret == 0) {
-                                    System.out.println("Success");
+                                final ArrayList<OrganizationModel> ret = response.body();
+                                if(ret == null){
+                                    System.out.println("Error");
+                                }else{
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    builder.setTitle("Pick an organization");
+                                    String[] items = new String[UserModel.myUserModel.getMyOrgs().size()];
+                                    for(int i = 0; i < UserModel.myUserModel.getMyOrgs().size(); i++)
+                                    {
+                                        items[i] = ret.get(i).getName();
+                                    }
+                                    builder.setItems(items, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int which) {
+                                            LambencyAPIHelper.getInstance().getEndorse(UserModel.myUserModel.getOauthToken(), "" + ret.get(which).getOrgID(), "" + event_id).enqueue(new Callback<Integer>() {
+                                                @Override
+                                                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                                    if (response.body() == null || response.code() != 200) {
+                                                        System.out.println("ERROR!!!!!");
+                                                        return;
+                                                    }
+                                                    //when response is back
+                                                    Integer ret = response.body();
+                                                    if (ret == 0) {
+                                                        System.out.println("Success");
 
-                                    endorseButton.setText("Revoke");
-                                    endorseText.setText("\nClick to no longer endorse this event! ");
-                                    Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
+                                                        endorseButton.setText("Revoke");
+                                                        endorseText.setText("\nClick to no longer endorse this event! ");
+                                                        Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
 
-                                    getAllOrgs();
+                                                        getAllOrgs();
 
-                                } else if (ret == -1) {
-                                    Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
-                                } else if (ret == -2) {
-                                    Toast.makeText(getApplicationContext(), "already endorsed", Toast.LENGTH_LONG).show();
-                                } else if (ret == -3) {
-                                    Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                                                    } else if (ret == -1) {
+                                                        Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
+                                                    } else if (ret == -2) {
+                                                        Toast.makeText(getApplicationContext(), "already endorsed", Toast.LENGTH_LONG).show();
+                                                    } else if (ret == -3) {
+                                                        Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<Integer> call, Throwable throwable) {
+                                                    //when failure
+                                                    Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                        }
+                                    });
+                                    builder.show();
                                 }
+
                             }
 
                             @Override
-                            public void onFailure(Call<Integer> call, Throwable throwable) {
+                            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
                                 //when failure
-                                Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                                System.out.println("FAILED CALL");
                             }
                         });
+
                     } else {
                         //TODO Unendorse retrofit here
                         LambencyAPIHelper.getInstance().getUnendorse(UserModel.myUserModel.getOauthToken(), "" + UserModel.myUserModel.getMyOrgs().get(0), "" + event_id).enqueue(new Callback<Integer>() {
