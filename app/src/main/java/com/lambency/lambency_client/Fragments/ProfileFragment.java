@@ -1,6 +1,8 @@
 package com.lambency.lambency_client.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,10 +17,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Activities.BottomBarActivity;
+import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -166,6 +170,15 @@ public class ProfileFragment extends Fragment {
                 }
 
                 clickSend();
+                break;
+
+            case R.id.action_logout:
+                SharedPreferences sharedPreferences = SharedPrefsHelper.getSharedPrefs(getActivity());
+                sharedPreferences.edit().putString("myauth", "").apply();
+                UserModel.myUserModel = null;
+
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
                 break;
         }
 

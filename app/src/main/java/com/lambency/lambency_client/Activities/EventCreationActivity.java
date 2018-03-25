@@ -10,11 +10,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -81,6 +84,17 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
     @BindView(R.id.spinnerProgress)
     ProgressBar spinnerProgress;
+
+    @BindView(R.id.cityEdit)
+    EditText cityEdit;
+
+    @BindView(R.id.stateAutocomplete)
+    AutoCompleteTextView stateAutocomplete;
+
+    @BindView(R.id.zipEdit)
+    TextInputEditText zipEdit;
+
+
 
     OrgSpinnerAdapter orgSpinnerAdapter;
     OrganizationModel eventOrgModel;
@@ -178,6 +192,13 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
         editing = false;
 
+        //Set up the state selector
+        final AutoCompleteTextView stateAutocomplete = (AutoCompleteTextView) findViewById(R.id.stateAutocomplete);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.states, android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stateAutocomplete.setAdapter(adapter);
+
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             //TODO error check
@@ -226,7 +247,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
         });
 
         //checking address
-        addressEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        /*addressEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
@@ -249,7 +270,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     }
                 }
             }
-        });
+        });*/
 
 
         saveDetails.setOnClickListener(new View.OnClickListener() {
@@ -264,6 +285,14 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
             @Override
             public void onClick(View v) {
+                eventName = eName.getText().toString();
+                //dateOfEvent = eDate.getText().toString();
+                addressOfEvent = eAddr.getText().toString();
+                description = eDescrip.getText().toString();
+                String city = cityEdit.getText().toString();
+                String state = stateAutocomplete.getText().toString();
+                String zip = zipEdit.getText().toString();
+                String location = addressOfEvent + " " + city + " " + state + " " + zip;
 
                 if (editing) {
                     Bitmap bm;
@@ -284,7 +313,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                         eventModel.setStart(startingTime);
                         eventModel.setEnd(endingTime);
                         eventModel.setDescription(descriptionEdit.getText().toString());
-                        eventModel.setLocation(addressEdit.getText().toString());
+                        eventModel.setLocation(location);
                         eventModel.setOrg_id(eventOrgModel.getOrgID());
 
                         updateEvent(eventModel);
@@ -314,15 +343,14 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     //encoded profile is the image string
 
 
-                    if (eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null) {
-                        Toast.makeText(getApplicationContext(), "You did not enter everything", Toast.LENGTH_LONG).show();
-                        //saveDetails.setVisibility(View.GONE);
+                    if (eventName.matches("") ||  description.matches("") || addressOfEvent.matches("") || city.matches("") || state.matches("") || zip.matches("") || zip.matches("")) {
+                        Toast.makeText(getApplicationContext(), "You did not enter all of the information", Toast.LENGTH_SHORT).show();
                     }
 
                 //Go back to main page now
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
-                    eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,addressOfEvent, eventOrgModel.getName());
+                    eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,location, eventOrgModel.getName());
 
                     LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override
@@ -334,6 +362,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                                 //when response is back
                                 EventModel createdEvent = response.body();
                                 System.out.println("Created Event: " + createdEvent);
+                                System.out.println("location send was   !!! "+ eventModel.getLocation());
 
                                 if (createdEvent == null) {
                                     Toast.makeText(getApplicationContext(), "Event error!", Toast.LENGTH_SHORT).show();

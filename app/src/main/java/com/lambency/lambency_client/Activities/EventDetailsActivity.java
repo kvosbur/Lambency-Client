@@ -2,7 +2,9 @@ package com.lambency.lambency_client.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -46,6 +48,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 
@@ -133,17 +136,23 @@ public class EventDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.check)
     ImageView checkMark;
 
-
     @BindView(R.id.numPeopleAttending)
     TextView numberOfPeopleAttending;
-
-
 
     @BindView(R.id.orgEndorseList)
     RecyclerView orgEndorseList;
 
     @BindView(R.id.endorseLayout)
     LinearLayout endorseLinLayout;
+
+    @BindView(R.id.shareEvent)
+    Button shareButton;
+
+    @BindView(R.id.joinButton)
+    LinearLayout joinButton;
+
+    @BindView(R.id.orgListLabel)
+    TextView orgListLabel;
 
     private EventModel event,eventModel;
 
@@ -167,6 +176,16 @@ public class EventDetailsActivity extends AppCompatActivity implements
         String action = intent.getAction();
         Uri data = intent.getData();
 
+        ButterKnife.bind(this);
+
+        if(UserModel.myUserModel == null){
+            shareButton.setVisibility(View.GONE);
+            joinButton.setVisibility(View.GONE);
+            endorseButton.setVisibility(View.GONE);
+            endorseText.setVisibility(View.GONE);
+            orgEndorseList.setVisibility(View.GONE);
+            orgListLabel.setVisibility(View.GONE);
+        }
 
         if (ActivityCompat.checkSelfPermission(EventDetailsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(EventDetailsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(EventDetailsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -189,7 +208,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     .setFastestInterval(1 * 1000); // 1 second, in milliseconds
             //end -farhan
 
-            ButterKnife.bind(this);
             context = this;
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
@@ -202,6 +220,10 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
             linearLayout = findViewById(R.id.joinButton);
             text = findViewById(R.id.joinButtonText);
+
+            if (UserModel.myUserModel == null){
+                editEventButton.setVisibility(View.GONE);
+            }
 
 
             linearLayout.setOnClickListener(new View.OnClickListener() {
@@ -230,6 +252,12 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                     Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG).show();
                                     text.setText("Joined");
                                     checkMark.setVisibility(View.VISIBLE);
+
+                                    //update num attending
+                                    int num = Integer.parseInt((String)numberOfPeopleAttending.getText());
+                                    num+=1;
+                                    numberOfPeopleAttending.setText("" + num);
+
 
                                 } else if (ret == 1) {
                                     System.out.println("failed to find user or organization");
@@ -273,6 +301,11 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                     text.setText("Join Event");
                                     checkMark.setVisibility(View.INVISIBLE);
 
+                                    //update num attending
+                                    int num = Integer.parseInt((String)numberOfPeopleAttending.getText());
+                                    num-=1;
+                                    numberOfPeopleAttending.setText("" + num);
+
                                 } else if (ret == 1) {
                                     System.out.println("failed to find user or organization");
                                     Toast.makeText(getApplicationContext(), "No Event to follow", Toast.LENGTH_LONG).show();
@@ -310,9 +343,14 @@ public class EventDetailsActivity extends AppCompatActivity implements
 //            }
 //        });
 
+            if(UserModel.myUserModel == null){
+                orgLayout.setVisibility(View.GONE);
+            }
+
             final Button shareButton = findViewById(R.id.shareEvent);
 
-            if (UserModel.myUserModel.getMyOrgs().size() == 0) {
+
+            if (UserModel.myUserModel != null && UserModel.myUserModel.getMyOrgs().size() == 0) {
                 endorseText.setVisibility(View.GONE);
                 endorseButton.setVisibility(View.GONE);
             }
@@ -320,77 +358,153 @@ public class EventDetailsActivity extends AppCompatActivity implements
             endorseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     if (endorseButton.getText().equals("Endorse")) {
                         //TODO Endorse retrofit here
-
-                        LambencyAPIHelper.getInstance().getEndorse(UserModel.myUserModel.getOauthToken(), "" + UserModel.myUserModel.getMyOrgs().get(0), "" + event_id).enqueue(new Callback<Integer>() {
+                        LambencyAPIHelper.getInstance().getMyOrganizedOrgs(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<OrganizationModel>>() {
                             @Override
-                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            public void onResponse(Call<ArrayList<OrganizationModel>> call,
+                                                   Response<ArrayList<OrganizationModel>> response) {
+
                                 if (response.body() == null || response.code() != 200) {
                                     System.out.println("ERROR!!!!!");
                                     System.out.println("1");
                                     return;
                                 }
                                 //when response is back
-                                Integer ret = response.body();
-                                if (ret == 0) {
-                                    System.out.println("Success");
+                                final ArrayList<OrganizationModel> ret = response.body();
+                                if(ret == null){
+                                    System.out.println("Error");
+                                }else{
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    builder.setTitle("Pick an organization");
+                                    String[] items = new String[UserModel.myUserModel.getMyOrgs().size()];
+                                    for(int i = 0; i < UserModel.myUserModel.getMyOrgs().size(); i++)
+                                    {
+                                        items[i] = ret.get(i).getName();
+                                    }
+                                    builder.setItems(items, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int which) {
+                                            LambencyAPIHelper.getInstance().getEndorse(UserModel.myUserModel.getOauthToken(), "" + ret.get(which).getOrgID(), "" + event_id).enqueue(new Callback<Integer>() {
+                                                @Override
+                                                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                                    if (response.body() == null || response.code() != 200) {
+                                                        System.out.println("ERROR!!!!!");
+                                                        return;
+                                                    }
+                                                    //when response is back
+                                                    Integer ret = response.body();
+                                                    if (ret == 0) {
+                                                        System.out.println("Success");
 
-                                    endorseButton.setText("Revoke");
-                                    endorseText.setText("\nClick to no longer endorse this event! ");
-                                    Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
+                                                        endorseButton.setText("Revoke");
+                                                        endorseText.setText("\nClick to no longer endorse this event! ");
+                                                        Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
 
-                                    getAllOrgs();
+                                                        getAllOrgs();
 
-                                } else if (ret == -1) {
-                                    Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
-                                } else if (ret == -2) {
-                                    Toast.makeText(getApplicationContext(), "already endorsed", Toast.LENGTH_LONG).show();
-                                } else if (ret == -3) {
-                                    Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                                                    } else if (ret == -1) {
+                                                        Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
+                                                    } else if (ret == -2) {
+                                                        Toast.makeText(getApplicationContext(), "already endorsed", Toast.LENGTH_LONG).show();
+                                                    } else if (ret == -3) {
+                                                        Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<Integer> call, Throwable throwable) {
+                                                    //when failure
+                                                    Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                        }
+                                    });
+                                    builder.show();
                                 }
+
                             }
 
                             @Override
-                            public void onFailure(Call<Integer> call, Throwable throwable) {
+                            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
                                 //when failure
-                                Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                                System.out.println("FAILED CALL");
                             }
                         });
+
                     } else {
                         //TODO Unendorse retrofit here
-                        LambencyAPIHelper.getInstance().getUnendorse(UserModel.myUserModel.getOauthToken(), "" + UserModel.myUserModel.getMyOrgs().get(0), "" + event_id).enqueue(new Callback<Integer>() {
+
+                        LambencyAPIHelper.getInstance().getMyOrganizedOrgs(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<OrganizationModel>>() {
                             @Override
-                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            public void onResponse(Call<ArrayList<OrganizationModel>> call,
+                                                   Response<ArrayList<OrganizationModel>> response) {
+
                                 if (response.body() == null || response.code() != 200) {
                                     System.out.println("ERROR!!!!!");
                                     System.out.println("2");
                                     return;
                                 }
                                 //when response is back
-                                Integer ret = response.body();
-                                if (ret == 0) {
-                                    endorseText.setText("\nEndorse this event as organization! ");
-                                    endorseButton.setText("Endorse");
-                                    Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
+                                final ArrayList<OrganizationModel> ret = response.body();
+                                if(ret == null){
+                                    System.out.println("Error");
+                                }else{
+                                    //ret is the list of orgs
+                                    AlertDialog.Builder builderUn = new AlertDialog.Builder(context);
+                                    builderUn.setTitle("Pick an organization");
+                                    String[] items = new String[UserModel.myUserModel.getMyOrgs().size()];
+                                    for(int i = 0; i < UserModel.myUserModel.getMyOrgs().size(); i++)
+                                    {
+                                        items[i] = ret.get(i).getName();
+                                    }
+                                    builderUn.setItems(items, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int which) {
+                                            LambencyAPIHelper.getInstance().getUnendorse(UserModel.myUserModel.getOauthToken(), "" + ret.get(which).getOrgID(), "" + event_id).enqueue(new Callback<Integer>() {
+                                                @Override
+                                                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                                    if (response.body() == null || response.code() != 200) {
+                                                        System.out.println("ERROR!!!!!");
+                                                        return;
+                                                    }
+                                                    //when response is back
+                                                    Integer ret = response.body();
+                                                    if (ret == 0) {
+                                                        endorseText.setText("\nEndorse this event as organization! ");
+                                                        endorseButton.setText("Endorse");
+                                                        Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
 
-                                    getAllOrgs();
-                                } else if (ret == -1) {
-                                    Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
-                                } else if (ret == -2) {
-                                    Toast.makeText(getApplicationContext(), "not endorsed", Toast.LENGTH_LONG).show();
-                                } else if (ret == -3) {
-                                    Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                                                        getAllOrgs();
+                                                    } else if (ret == -1) {
+                                                        Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
+                                                    } else if (ret == -2) {
+                                                        Toast.makeText(getApplicationContext(), "not endorsed", Toast.LENGTH_LONG).show();
+                                                    } else if (ret == -3) {
+                                                        Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<Integer> call, Throwable throwable) {
+                                                    //when failure
+                                                    Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                        }
+                                    });
+                                    builderUn.show();
                                 }
+
                             }
 
                             @Override
-                            public void onFailure(Call<Integer> call, Throwable throwable) {
+                            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
                                 //when failure
-                                Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                                System.out.println("FAILED CALL");
                             }
                         });
+
                     }
 
                 }
@@ -409,16 +523,16 @@ public class EventDetailsActivity extends AppCompatActivity implements
             });
 
             Bundle bundle = getIntent().getExtras();
-            if (bundle != null || data != null) {
-                //TODO error check
-                if (data == null) {
-                    event_id = bundle.getInt("event_id");
-                } else {
-                    String event_string = data.getQueryParameter("eventid");
-                    event_id = Integer.parseInt(event_string);
+                if (bundle != null || data != null) {
+                    //TODO error check
+                    if (data == null) {
+                        event_id = bundle.getInt("event_id");
+                    } else {
+                        String event_string = data.getQueryParameter("eventid");
+                        event_id = Integer.parseInt(event_string);
+                    }
+                    callRetrofit(event_id);
                 }
-                callRetrofit(event_id);
-            }
 
             if (UserModel.myUserModel != null) {
                 System.out.println("This event id is: " + event_id);
@@ -435,7 +549,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
             //Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
 
-            getAllOrgs();
+            if(UserModel.myUserModel != null) {
+                getAllOrgs();
+            }
 
             //redirection to google maps when address is clicked
             addressView.setOnClickListener(new View.OnClickListener() {
@@ -461,33 +577,34 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
         isLoading(true);
 
-        //To Dislplay number attending
-        LambencyAPIHelper.getInstance().getEventNumAttending(UserModel.myUserModel.getOauthToken(),""+event_id).enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                if (response.body() == null || response.code() != 200) {
-                    //System.out.println("ERROR!!!!!");
-                    numberOfPeopleAttending.setText(0);
-                    return;
+        if (UserModel.myUserModel!=null) {
+            //To Dislplay number attending
+            LambencyAPIHelper.getInstance().getEventNumAttending(UserModel.myUserModel.getOauthToken(), "" + event_id).enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        //System.out.println("ERROR!!!!!");
+                        numberOfPeopleAttending.setText(0);
+                        return;
+                    }
+                    //when response is back
+                    Integer ret = response.body();
+                    if (ret == -1) {
+                        System.out.println("Error has occurred");
+                    } else {
+                        System.out.println("the number of users attending this event is" + ret);
+                        Toast.makeText(getApplicationContext(), "number people attending is" + ret, Toast.LENGTH_LONG).show();
+                        numberOfPeopleAttending.setText(ret + "");
+                    }
                 }
-                //when response is back
-                Integer ret = response.body();
-                if(ret == -1){
-                    System.out.println("Error has occurred");
-                }
-                else{
-                    System.out.println("the number of users attending this event is" + ret);
-                    Toast.makeText(getApplicationContext(), "number people attending is" + ret, Toast.LENGTH_LONG).show();
-                    numberOfPeopleAttending.setText(ret+"");
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
-                //when failure
-                System.out.println("FAILED CALL");
-            }
-        });
+                @Override
+                public void onFailure(Call<Integer> call, Throwable t) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                }
+            });
+        }
 
 
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
@@ -498,6 +615,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     System.out.println("4");
                 }
                 //when response is back
+                Toast.makeText(getApplicationContext(), "the event id was   " + event_id, Toast.LENGTH_LONG).show();
                 eventModel = response.body();
                 if (eventModel == null) {
                     System.out.println("failed to event");
@@ -513,6 +631,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     currDate = currDate.substring(0, currDate.length() - 4);
                     currDate += "18";
 
+                    Toast.makeText(getApplicationContext(), eventModel.getName(), Toast.LENGTH_LONG).show();
+
+
                     dateView.setText(currDate); //TimeHelper.dateFromTimestamp(eventModel.getStart()));
                     descriptionView.setText(eventModel.getDescription());
                     timeView.setText(TimeHelper.hourFromTimestamp(eventModel.getStart()) + " - " + TimeHelper.hourFromTimestamp(eventModel.getEnd()));
@@ -523,22 +644,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                     RequestOptions requestOptions = new RequestOptions();
 
-                    /*Glide.with(context)
-                            .setDefaultRequestOptions(requestOptions)
-                            .asBitmap()
-                            .load(ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()))
-                            .into(new SimpleTarget() {
-                                @Override
-                                public void onResourceReady(@NonNull Object resource, @Nullable Transition transition) {
-                                    BitmapDrawable bd = new BitmapDrawable(getResources(), (Bitmap) resource);
-                                    eventImageView.setBackground(bd);
-                                }
-                            });*/
-
-
-                    /*BitmapDrawable bd = new BitmapDrawable(getResources(), ImageHelper.stringToBitmap(eventModel.getImageFile()));
-                    eventImageView.setBackground(bd);
-                    */
 
                     ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
 
@@ -574,6 +679,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
             }
         });
     }
+
 
 
     private void getAllOrgs()
@@ -652,9 +758,10 @@ public class EventDetailsActivity extends AppCompatActivity implements
         //sharing implementation here
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        String shareBody = eventName + ", This is a cool event I found on Lambency and I think you will be interested in it." +
-                "this is the link to join the event have a look\n" +
-                "http://www.mylambencyclient.com?eventid=" + eventModel.getEvent_id() ;
+        String shareBody =
+                "http://www.mylambencyclient.com?eventid=" + eventModel.getEvent_id() + "\n" +
+                eventName + ": This is a cool event I found on Lambency and I think you will be interested in it. " +
+                "Have a look!\n (You must have Lambency installed on your Android phone)";
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Lambency event shared");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, "Share via"));

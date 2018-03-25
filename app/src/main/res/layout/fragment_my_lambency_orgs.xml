@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="You Haven't Joined Any Organizations"
-                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
                     android:layout_below="@id/memberOrgsTitleLayout"
                     android:visibility="gone"
                     />
@@ -94,7 +94,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="You Haven't Created Any Organizations"
-                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
                     android:layout_below="@id/organizerOrgsTitleLayout"
                     android:visibility="gone"
                     />

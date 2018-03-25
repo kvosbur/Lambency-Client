@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Networking;
 
+import com.lambency.lambency_client.Models.EventAttendanceModel;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.MyLambencyModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
@@ -91,9 +92,6 @@ public interface LambencyAPI {
     @GET("Organization/joinRequests")
     Call<ArrayList<UserModel>> getRequestsToJoin(@Query("oAuthCode") String oAuthCode, @Query("orgID") int org_id);
 
-    //@GET("User/unregisterForEvent")
-    //Call<Integer> unRegisterForEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID);
-
     @GET("Organization/endorse")
     Call<Integer> getEndorse(@Query("oAuthCode") String oAuthCode, @Query("orgID") String org_id, @Query("eventID") String event_id);
 
@@ -109,6 +107,11 @@ public interface LambencyAPI {
     @GET("Organization/getMembersAndOrganizers")
     Call<ArrayList<UserModel>[]> getMembersAndOrganizers(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
 
+    @GET("User/eventsFeed")
+    Call<List<EventModel>> getEventsFeed(@Query("oAuthCode") String oAuthCode, @Query("latitude") String latitude, @Query("longitude") String longitude);
+
+    @POST("Organization/InviteUser")
+    Call<Integer> inviteUser(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID, @Query("emailString") String userEmail);
 
     @GET("User/getOrgs")
     Call<ArrayList<OrganizationModel>> getMyOrganizedOrgs(@Query("oAuthCode") String oAuthCode);
@@ -119,5 +122,9 @@ public interface LambencyAPI {
     @GET("Organization/respondToJoinRequest")
     Call<Integer> respondToJoinRequest(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID, @Query("userID") int userID, @Query("approved") boolean
             approved);
+
+    @POST("/User/ClockInOut")
+    Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
+
 }
 
