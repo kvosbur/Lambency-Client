@@ -316,7 +316,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/checkoutCodeDisp"
-                        android:text="Check in Code is: "
+                        android:text="Check out Code is: "
                         android:textStyle="bold"
                         android:layout_below="@id/checkinCodeDisp"
                         android:textSize="15dp"/>
