@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.EventLog;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import com.google.android.gms.location.LocationServices;
 import com.lambency.lambency_client.Adapters.FilterTabsAdapter;
@@ -90,6 +91,9 @@ public class FilterActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+
+                EditText altAddr = findViewById(R.id.newTextAddr);
+                EventFilterModel.currentFilter.setLocation(altAddr.getText().toString());
 
                 //finish();
                 Intent intent = new Intent(context, SearchActivity.class);
