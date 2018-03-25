@@ -170,6 +170,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             public void onClick(View view) {
                 callPermissionsRetrofit(userModel, 1 + "");
 
+
                 Toast.makeText(context, userModel.getFirstName() + " " + userModel.getLastName() + " is now a member", Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
 

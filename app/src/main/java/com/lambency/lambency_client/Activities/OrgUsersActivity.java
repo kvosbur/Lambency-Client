@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.lambency.lambency_client.Adapters.OrgUsersTabsAdapter;
 import com.lambency.lambency_client.Fragments.UserListFragment;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
@@ -67,6 +68,8 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
 
         context = this;
         ButterKnife.bind(this);
+
+        updateUserModel();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
@@ -115,6 +118,23 @@ public class OrgUsersActivity extends AppCompatActivity implements UserListFragm
 
         getUsers(orgId);
 
+    }
+
+
+    public void updateUserModel(){
+        LambencyAPIHelper.getInstance().userSearch(UserModel.myUserModel.getOauthToken(), UserModel.myUserModel.getUserId() + "").enqueue(new Callback<UserModel>() {
+            @Override
+            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                if(response.body() != null){
+                    UserModel.myUserModel = response.body();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserModel> call, Throwable t) {
+
+            }
+        });
     }
 
 

@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -153,6 +154,18 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
     @BindView(R.id.orgListLabel)
     TextView orgListLabel;
+
+    @BindView(R.id.checkinCode)
+    TextView checkInCode;
+
+    @BindView(R.id.checkoutCode)
+    TextView checkOutCode;
+
+    @BindView(R.id.checkinCodeDisp)
+    TextView checkinCodeDisp;
+
+    @BindView(R.id.checkoutCodeDisp)
+    TextView checkoutCodeDisp;
 
     private EventModel event,eventModel;
 
@@ -534,6 +547,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     callRetrofit(event_id);
                 }
 
+
+
+
             if (UserModel.myUserModel != null) {
                 System.out.println("This event id is: " + event_id);
                 if (UserModel.myUserModel.isRegisterdForEvent(event_id)) {
@@ -641,6 +657,18 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     latitude = eventModel.getLattitude();
                     longitude = eventModel.getLongitude();
                     addressView.setText(eventModel.getLocation());
+
+                    //setting the codes
+                    if(eventModel.getClockInCode() != null && eventModel.getClockOutCode() != null
+                            && UserModel.myUserModel.getMyOrgs().contains(eventModel.getOrg_id())) {
+                        checkInCode.setText(eventModel.getClockInCode());
+                        checkOutCode.setText(eventModel.getClockOutCode());
+                    }else{
+                        checkInCode.setVisibility(View.GONE);
+                        checkOutCode.setVisibility(View.GONE);
+                        checkinCodeDisp.setVisibility(View.GONE);
+                        checkoutCodeDisp.setVisibility(View.GONE);
+                    }
 
                     RequestOptions requestOptions = new RequestOptions();
 
@@ -839,8 +867,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
      */
     @Override
     public void onLocationChanged(Location location) {
-        currentLatitude = location.getLatitude();
-        currentLongitude = location.getLongitude();
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
 
         Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
     }
