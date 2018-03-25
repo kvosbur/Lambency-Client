@@ -113,6 +113,9 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.noEventsText)
     TextView noEventsTextView;
 
+    @BindView(R.id.notificationNumTextDetails)
+    TextView notificationNum;
+
 
     public static int currentOrgId;
     private Context context;
@@ -214,8 +217,9 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     {
                         if(UserModel.myUserModel.getMyOrgs().get(i) == currentOrgId)
                         {
-
+                            getNotifications();
                             requestJoin.setText("Leave Organization");
+
                         }
                     }
 
@@ -422,6 +426,40 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         });
     }
 
+
+    private void getNotifications(){
+
+            LambencyAPIHelper.getInstance().getRequestsToJoin(UserModel.myUserModel.getOauthToken(),currentOrgId).enqueue(new retrofit2.Callback<ArrayList<UserModel>>() {
+                @Override
+                public void onResponse(Call<ArrayList<UserModel>> call, Response<ArrayList<UserModel>> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("ERROR!!!!!");
+                        return;
+                    }
+                    //when response is back
+                    ArrayList<UserModel> ret = response.body();
+
+                    int notifyAmount = 0;
+                    if(ret != null){
+                        notifyAmount += ret.size();
+                    }
+
+                    if(notifyAmount == 0){
+                        notificationNum.setVisibility(View.GONE);
+                    }else{
+
+                        notificationNum.setText("" + notifyAmount);
+                        notificationNum.setVisibility(View.VISIBLE);
+                    }
+                }
+                @Override
+                public void onFailure(Call<ArrayList<UserModel>> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                    Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
+                }
+            });
+    }
 
     @OnClick(R.id.followUnFollow)
     public void handleCheckClick(){

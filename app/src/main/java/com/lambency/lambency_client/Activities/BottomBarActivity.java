@@ -54,6 +54,7 @@ import com.facebook.login.LoginResult;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,10 +100,12 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         View v = bottomNavigationMenuView.getChildAt(1);
         BottomNavigationItemView itemView = (BottomNavigationItemView) v;
 
+        /*
         badge = LayoutInflater.from(this)
                 .inflate(R.layout.bottom_badge, bottomNavigationMenuView, false);
 
         itemView.addView(badge);
+        */
 
         bar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -199,20 +202,6 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
                     myLambencyTabsAdapter.getOrgsFragment().setOrgs(myLambencyModel);
                     myLambencyTabsAdapter.getOrgsFragment().showProgressBar(false);
 
-                    ArrayList<OrganizationModel> organizerOrgs = new ArrayList<>(myLambencyModel.getMyOrgs());
-                    System.out.println("trying1");
-                    for(OrganizationModel org: organizerOrgs){
-                        System.out.println("trying2");
-                        Response<ArrayList<UserModel>> resp = getNotifications(org.getOrgID());
-                        if(resp != null && resp.body() != null) {
-                            notifyAmount += (resp.body()).size();
-                        }
-                    }
-                    System.out.println("UPDATING BADGE TO VALUE " + notifyAmount);
-
-                    TextView notifications_badge = badge.findViewById(R.id.notifications_badge);
-                    notifications_badge.setText("" + notifyAmount);
-
 
                 }
 
@@ -223,16 +212,6 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
                 Log.e("Retrofit", "Error getting myLambency model");
             }
         });
-    }
-
-    private Response<ArrayList<UserModel>> getNotifications(int org_id){
-        try {
-            Response<ArrayList<UserModel>> resp = LambencyAPIHelper.getInstance().
-                    getRequestsToJoin(UserModel.myUserModel.getOauthToken(), org_id).execute();
-            return resp;
-        }catch(Exception e){
-            return null;
-        }
     }
 
     public void setActionBarTitle(String title) {

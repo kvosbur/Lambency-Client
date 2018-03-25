@@ -67,6 +67,9 @@
                 android:text="Request to join"
                 android:textSize="15sp"/>
 
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content">
             <Button
                 android:id="@+id/seeMembersButton"
                 android:layout_width="wrap_content"
@@ -75,6 +78,19 @@
                 android:background="@android:color/transparent"
                 android:textColor="@android:color/black"
                 />
+
+                <TextView
+                    android:id="@+id/notificationNumTextDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/rounded_textview"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:layout_alignParentRight="true"/>
+            </LinearLayout>
 
         </LinearLayout>
 
