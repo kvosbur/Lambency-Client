@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/seekBarText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please select your distance below..."
+        android:textColor="#000000"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="10dp"/>
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/distanceText"
+        android:paddingTop="25dp"
+        android:paddingBottom="75dp"
+        />
+
+    <TextView
+        android:id="@+id/distanceText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 miles"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:layout_below="@id/seekBarText"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="25dp"
+        />
+
+    <Button
+        android:id="@+id/tenMiles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10 miles"
+        android:paddingTop="10dp"
+        android:layout_below="@id/seekBar"/>
+
+    <Button
+        android:id="@+id/twentyFiveMiles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="25 miles"
+        android:paddingTop="10dp"
+        android:layout_below="@id/seekBar"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/fiftyMiles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/seekBar"
+        android:paddingTop="10dp"
+        android:text="50 miles" />
+
+    <TextView
+        android:id="@+id/diffLocationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Want to search by a different location? Enter the address below!"
+        android:textColor="#000000"
+        android:paddingTop="75dp"
+        android:layout_below="@id/tenMiles"
+        android:layout_centerHorizontal="true"
+        />
+
+    <EditText
+        android:id="@+id/newTextAddr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diffLocationText"/>
+
+    <Button
+        android:id="@+id/doneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/newTextAddr"/>
+
+
+
+
+</RelativeLayout>

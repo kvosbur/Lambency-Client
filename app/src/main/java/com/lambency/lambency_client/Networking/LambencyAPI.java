@@ -1,6 +1,10 @@
 package com.lambency.lambency_client.Networking;
 
+
+import com.lambency.lambency_client.Models.EventFilterModel;
+
 import com.lambency.lambency_client.Models.EventAttendanceModel;
+
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.MyLambencyModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
@@ -104,6 +108,9 @@ public interface LambencyAPI {
     @GET("User/MyLambency")
     Call<MyLambencyModel> getMyLambencyModel(@Query("oAuthCode") String oAuthCode);
 
+    @POST("Event/searchWithFilter")
+    Call<List<EventModel>> getEventsFromFilter(@Body EventFilterModel efm);
+
     @GET("Organization/getMembersAndOrganizers")
     Call<ArrayList<UserModel>[]> getMembersAndOrganizers(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
 
@@ -125,6 +132,7 @@ public interface LambencyAPI {
 
     @POST("/User/ClockInOut")
     Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
+
 
 }
 
