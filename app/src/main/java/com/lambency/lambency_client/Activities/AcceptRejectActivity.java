@@ -95,14 +95,80 @@ public class AcceptRejectActivity extends AppCompatActivity {
         //SwipeController swipeController = new SwipeController();
         swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
-            public void onRightClicked(int position) {
-                Toast.makeText(getApplicationContext(), "Accepted user!", Toast.LENGTH_LONG).show();
+            public void onRightClicked(final int position) {
+
+                //TODO Kevin I set org id to 0 since I dont have access to it yet!
+                LambencyAPIHelper.getInstance().respondToJoinRequest("" + UserModel.myUserModel.getOauthToken(),0,userList.get(position).getUserId(),true).enqueue(new Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        if (response.body() == null || response.code() != 200) {
+                            System.out.println("Shit. It messed up.");
+                            return;
+                        }
+
+                        Integer returned = response.body();
+                        if(returned == 0){
+                            System.out.println("Yay it worked!!! We have a new member!");
+
+                            userList.remove(position);
+                            mAdapter.notifyDataSetChanged(); // how we update
+                            mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+
+                        }
+                        else if(returned == 1){
+                            System.out.println("Yay!! We protected our organization from some crazy person!");
+                        }
+                        else{
+                            System.out.println("Hmmm... something went wrong... oops");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Integer> call, Throwable throwable) {
+                        System.out.println("We are sorry, we can't handle your response to a join request. Please try turning it off then back on again.");
+                    }
+                });
+
             }
 
-            public void onLeftClicked(int position) {
-                userList.remove(position);
-                mAdapter.notifyDataSetChanged(); // how we update
-                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+            public void onLeftClicked(final int position) {
+
+                //TODO Hey Kevin also here
+                LambencyAPIHelper.getInstance().respondToJoinRequest("" + UserModel.myUserModel.getOauthToken(),0,userList.get(position).getUserId(),false).enqueue(new Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        if (response.body() == null || response.code() != 200) {
+                            System.out.println("Shit. It messed up.");
+                            return;
+                        }
+
+                        Integer returned = response.body();
+                        if(returned == 0){
+                            System.out.println("Yay it worked!!! We have a new member!");
+
+                            userList.remove(position);
+                            mAdapter.notifyDataSetChanged(); // how we update
+                            mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+
+                        }
+                        else if(returned == 1){
+                            System.out.println("Yay!! We protected our organization from some crazy person!");
+                        }
+                        else{
+                            System.out.println("Hmmm... something went wrong... oops");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Integer> call, Throwable throwable) {
+                        System.out.println("We are sorry, we can't handle your response to a join request. Please try turning it off then back on again.");
+                    }
+                });
+
+
+                //userList.remove(position);
+                //mAdapter.notifyDataSetChanged(); // how we update
+                //mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
             }
         });
 
