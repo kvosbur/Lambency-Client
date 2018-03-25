@@ -91,9 +91,8 @@ public interface LambencyAPI {
     @GET("Organization/joinRequests")
     Call<ArrayList<UserModel>> getRequestsToJoin(@Query("oAuthCode") String oAuthCode, @Query("orgID") int org_id);
 
-    @GET("Organization/respondToJoinRequest")
-    Call<Integer> respondToJoinRequest(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID, @Query("userID") int userID, @Query("approved") boolean
-            approved);
+    //@GET("User/unregisterForEvent")
+    //Call<Integer> unRegisterForEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID);
 
     @GET("Organization/endorse")
     Call<Integer> getEndorse(@Query("oAuthCode") String oAuthCode, @Query("orgID") String org_id, @Query("eventID") String event_id);
@@ -117,6 +116,8 @@ public interface LambencyAPI {
     @GET("/Organization/changeUserPermissions")
     Call<Integer> getChangeUserPermissions(@Query("oAuthCode") String oAuthCode, @Query("orgID") String org_id, @Query("userChanged") String changedID, @Query("type") String type);
 
-
+    @GET("Organization/respondToJoinRequest")
+    Call<Integer> respondToJoinRequest(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID, @Query("userID") int userID, @Query("approved") boolean
+            approved);
 }
 

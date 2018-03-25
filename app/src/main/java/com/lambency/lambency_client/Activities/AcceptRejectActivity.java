@@ -159,7 +159,6 @@ public class AcceptRejectActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Integer> call, Throwable throwable) {
                 //when failure
-                Toast.makeText(getApplicationContext(), "Error with Server", Toast.LENGTH_LONG).show();
                 System.out.println("FAILED CALL");
             }
         });
