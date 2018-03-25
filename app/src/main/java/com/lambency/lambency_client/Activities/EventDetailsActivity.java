@@ -231,6 +231,12 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                     text.setText("Joined");
                                     checkMark.setVisibility(View.VISIBLE);
 
+                                    //update num attending
+                                    int num = Integer.parseInt((String)numberOfPeopleAttending.getText());
+                                    num+=1;
+                                    numberOfPeopleAttending.setText("" + num);
+
+
                                 } else if (ret == 1) {
                                     System.out.println("failed to find user or organization");
                                     Toast.makeText(getApplicationContext(), "No Event to follow", Toast.LENGTH_LONG).show();
@@ -272,6 +278,11 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                     Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
                                     text.setText("Join Event");
                                     checkMark.setVisibility(View.INVISIBLE);
+
+                                    //update num attending
+                                    int num = Integer.parseInt((String)numberOfPeopleAttending.getText());
+                                    num-=1;
+                                    numberOfPeopleAttending.setText("" + num);
 
                                 } else if (ret == 1) {
                                     System.out.println("failed to find user or organization");
