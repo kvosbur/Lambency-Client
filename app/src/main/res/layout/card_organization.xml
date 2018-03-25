@@ -83,7 +83,8 @@
                     android:textColor="@color/white"
                     android:background="@drawable/rounded_textview"
                     android:gravity="center"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
     </RelativeLayout>
