@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -580,7 +579,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
     @OnClick(R.id.inviteUsersToJoin)
     public void onInviteJoin(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("Enter email to send invite");
 
         // Set up the input
@@ -663,7 +662,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     public void onClickRequest(){
         if(requestJoin.getText().equals("Leave Organization") || requestJoin.getText().equals("Cancel Request"))
         {
-            AlertDialog alertDialog = new AlertDialog.Builder(OrganizationDetailsActivity.this).create();
+            android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(OrganizationDetailsActivity.this).create();
             LayoutInflater factory = LayoutInflater.from(OrganizationDetailsActivity.this);
             final View view = factory.inflate(R.layout.dialog_view, null);
 
@@ -685,7 +684,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     ImageHelper.saveImage(context, img, "orgImage" + currentOrgId),
                     leaveOrgImg);
 
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Leave",
+            alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Leave",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             final String JoinText = "Request To Join";
@@ -739,7 +738,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                             dialog.dismiss();
                         }
                     });
-            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+            alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "Cancel",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
