@@ -114,13 +114,54 @@
         android:inputType="textPersonName"
         android:hint="Event address" />
 
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/cityEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addressOfEvent"
+        android:focusable="true"
+        android:hint="Enter city"
+        android:inputType="textPostalAddress"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/stateAndZipLayout"
+        android:layout_below="@+id/cityEdit"
+        android:orientation="horizontal"
+        >
+
+        <AutoCompleteTextView
+            android:id="@+id/stateAutocomplete"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:hint="State"
+            android:completionThreshold="1"
+            android:focusable="true"
+            android:inputType="text"
+            android:nextFocusDown="@id/zipEdit"
+            android:maxLength="2"
+            />
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/zipEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Zip code"
+            android:inputType="number"
+            android:focusable="true"
+            android:maxLength="5"
+            />
+
+    </LinearLayout>
+
     <EditText
         android:id="@+id/descriptionOfEvent"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/addressOfEvent"
+        android:layout_below="@+id/stateAndZipLayout"
         android:layout_weight="1"
         android:ems="18"
         android:inputType="textPersonName"
@@ -128,6 +169,35 @@
         android:maxLength="2000"
         android:maxLines="4"
         />
+
+
+    <TextView
+        android:id="@+id/orgSelectLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/descriptionOfEvent"
+        android:textColor="@android:color/black"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:textSize="16sp"
+        android:text="Host Organization:"
+    />
+
+    <ProgressBar
+        android:id="@+id/spinnerProgress"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/descriptionOfEvent"
+        android:layout_toRightOf="@id/orgSelectLabel"
+        android:layout_marginLeft="5dp"
+        />
+
+    <Spinner
+        android:id="@+id/orgSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/orgSelectLabel"/>
 
     <Button
         android:id="@+id/saveDetailsButton"
@@ -139,7 +209,7 @@
         tools:layout_editor_absoluteX="173dp"
         tools:layout_editor_absoluteY="0dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/descriptionOfEvent"/>
+        android:layout_below="@id/orgSpinner"/>
 
 
 

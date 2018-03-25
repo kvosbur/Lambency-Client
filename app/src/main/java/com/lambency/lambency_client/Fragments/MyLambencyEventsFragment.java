@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.lambency.lambency_client.Adapters.EventsAdapter;
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
@@ -78,7 +79,11 @@ public class MyLambencyEventsFragment extends Fragment {
     @BindView(R.id.myEventsArrow)
     ImageView myEventsArrow;
 
+    @BindView(R.id.noRegisteredEventsText)
+    TextView noRegisteredEventsText;
 
+    @BindView(R.id.noMyEventsText)
+    TextView noMyEventsText;
 
     public MyLambencyEventsFragment() {
         // Required empty public constructor
@@ -165,6 +170,7 @@ public class MyLambencyEventsFragment extends Fragment {
             public void onResponse(Call<MyLambencyModel> call, Response<MyLambencyModel> response) {
                 MyLambencyModel myLambencyModel = response.body();
                 System.out.println("Got myLambency Model");
+                System.out.println("trying4");
                 if(myLambencyModel != null) {
                     setEvents(myLambencyModel);
                 }
@@ -248,6 +254,16 @@ public class MyLambencyEventsFragment extends Fragment {
     public void setEvents(MyLambencyModel myLambencyModel){
         if(myLambencyModel == null){
             return;
+        }
+
+        if(myLambencyModel.getEventsAttending().size() == 0){
+            registeredEventsRecyclerView.setVisibility(View.GONE);
+            noRegisteredEventsText.setVisibility(View.VISIBLE);
+        }
+
+        if(myLambencyModel.getEventsOrganizing().size() == 0){
+            myEventsRecyclerView.setVisibility(View.GONE);
+            noMyEventsText.setVisibility(View.VISIBLE);
         }
 
         myEventsAdapter.updateEvents(myLambencyModel.getEventsOrganizing());

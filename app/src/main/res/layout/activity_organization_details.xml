@@ -64,8 +64,40 @@
                 android:id="@+id/orgRequestJoin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Send Join Request"
+                android:text="Request to join"
                 android:textSize="15sp"/>
+            <Button
+                android:id="@+id/inviteUsersToJoin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Invite Users"
+                android:textSize="15sp"/>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content">
+            <Button
+                android:id="@+id/seeMembersButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See Members"
+                android:background="@android:color/transparent"
+                android:textColor="@android:color/black"
+                />
+
+                <TextView
+                    android:id="@+id/notificationNumTextDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/rounded_textview"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:layout_alignParentRight="true"/>
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -74,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/titleLayout"
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="0dp"
             >
 
             <LinearLayout
@@ -117,6 +149,7 @@
 
                 <TextView
                     android:id="@+id/addressOrg"
+                    android:clickable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1275 Third Street, West Lafayette IN 47906"

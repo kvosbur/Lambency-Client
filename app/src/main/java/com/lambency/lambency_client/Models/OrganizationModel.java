@@ -134,6 +134,20 @@ public class OrganizationModel {
     }
 
     public int checkPermissions(UserModel u){
+
+        for(UserModel user: organizers){
+            if(user.getUserId() == u.getUserId()){
+                return UserModel.ORGANIZER;
+            }
+        }
+
+        for(UserModel user: members){
+            if(user.getUserId() == u.getUserId()){
+                return UserModel.MEMBER;
+            }
+        }
+
         return 0;
+
     }
 }

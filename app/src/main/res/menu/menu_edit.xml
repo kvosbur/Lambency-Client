@@ -7,4 +7,11 @@
         android:title="Edit"
         app:showAsAction="always"
         />
+
+    <item
+        android:id="@+id/action_logout"
+        android:icon="@drawable/ic_power_settings_new_white_24dp"
+        android:title="Log Out"
+        app:showAsAction="ifRoom"
+        />
 </menu>

@@ -10,18 +10,27 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -33,6 +42,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -46,7 +56,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EventCreationActivity extends AppCompatActivity {
+public class EventCreationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.eventImage)
     ImageView eventImage;
@@ -69,7 +79,25 @@ public class EventCreationActivity extends AppCompatActivity {
     @BindView(R.id.descriptionOfEvent)
     EditText descriptionEdit;
 
+    @BindView(R.id.orgSpinner)
+    Spinner orgSpinner;
 
+    @BindView(R.id.spinnerProgress)
+    ProgressBar spinnerProgress;
+
+    @BindView(R.id.cityEdit)
+    EditText cityEdit;
+
+    @BindView(R.id.stateAutocomplete)
+    AutoCompleteTextView stateAutocomplete;
+
+    @BindView(R.id.zipEdit)
+    TextInputEditText zipEdit;
+
+
+
+    OrgSpinnerAdapter orgSpinnerAdapter;
+    OrganizationModel eventOrgModel;
     private boolean editing = false;
     String eventName, dateOfEvent, addressOfEvent, description;
     private Context context;
@@ -164,6 +192,13 @@ public class EventCreationActivity extends AppCompatActivity {
 
         editing = false;
 
+        //Set up the state selector
+        final AutoCompleteTextView stateAutocomplete = (AutoCompleteTextView) findViewById(R.id.stateAutocomplete);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.states, android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stateAutocomplete.setAdapter(adapter);
+
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             //TODO error check
@@ -174,6 +209,8 @@ public class EventCreationActivity extends AppCompatActivity {
             }
         }
 
+        orgSpinner.setOnItemSelectedListener(this);
+        getOrgs();
 
         //Saving details when button pressed
         final Button saveDetails = findViewById(R.id.saveDetailsButton);
@@ -210,7 +247,7 @@ public class EventCreationActivity extends AppCompatActivity {
         });
 
         //checking address
-        addressEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        /*addressEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
@@ -233,8 +270,7 @@ public class EventCreationActivity extends AppCompatActivity {
                     }
                 }
             }
-        });
-
+        });*/
 
 
         saveDetails.setOnClickListener(new View.OnClickListener() {
@@ -249,6 +285,14 @@ public class EventCreationActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                eventName = eName.getText().toString();
+                //dateOfEvent = eDate.getText().toString();
+                addressOfEvent = eAddr.getText().toString();
+                description = eDescrip.getText().toString();
+                String city = cityEdit.getText().toString();
+                String state = stateAutocomplete.getText().toString();
+                String zip = zipEdit.getText().toString();
+                String location = addressOfEvent + " " + city + " " + state + " " + zip;
 
                 if (editing) {
                     Bitmap bm;
@@ -269,7 +313,8 @@ public class EventCreationActivity extends AppCompatActivity {
                         eventModel.setStart(startingTime);
                         eventModel.setEnd(endingTime);
                         eventModel.setDescription(descriptionEdit.getText().toString());
-                        eventModel.setLocation(addressEdit.getText().toString());
+                        eventModel.setLocation(location);
+                        eventModel.setOrg_id(eventOrgModel.getOrgID());
 
                         updateEvent(eventModel);
 
@@ -298,17 +343,16 @@ public class EventCreationActivity extends AppCompatActivity {
                     //encoded profile is the image string
 
 
-                    if (eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null) {
-                        Toast.makeText(getApplicationContext(), "You did not enter everything", Toast.LENGTH_LONG).show();
-                        //saveDetails.setVisibility(View.GONE);
+                    if (eventName.matches("") ||  description.matches("") || addressOfEvent.matches("") || city.matches("") || state.matches("") || zip.matches("") || zip.matches("")) {
+                        Toast.makeText(getApplicationContext(), "You did not enter all of the information", Toast.LENGTH_SHORT).show();
                     }
 
                 //Go back to main page now
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
-                    eventModel = new EventModel(encodedProfile,eventName, UserModel.myUserModel.getMyOrgs().get(0),startingTime,endingTime,description,addressOfEvent);
+                    eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,location, eventOrgModel.getName());
 
-                        LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
+                    LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override
                             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
                                 if (response.body() == null || response.code() != 200) {
@@ -318,6 +362,7 @@ public class EventCreationActivity extends AppCompatActivity {
                                 //when response is back
                                 EventModel createdEvent = response.body();
                                 System.out.println("Created Event: " + createdEvent);
+                                System.out.println("location send was   !!! "+ eventModel.getLocation());
 
                                 if (createdEvent == null) {
                                     Toast.makeText(getApplicationContext(), "Event error!", Toast.LENGTH_SHORT).show();
@@ -376,7 +421,6 @@ public class EventCreationActivity extends AppCompatActivity {
 
     private void getEventInfo(final int event_id){
 
-
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
             @Override
             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
@@ -423,6 +467,8 @@ public class EventCreationActivity extends AppCompatActivity {
         EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -457,23 +503,72 @@ public class EventCreationActivity extends AppCompatActivity {
                         eventImage
                         );
 
-                /*
-                builder.build()
-                        .load(new File(imagesFiles.get(0).getPath()))
-                        .error(R.drawable.ic_books)
-                        .into(eventImage);
-                        */
-
-                /*
-                Bitmap bitmap = BitmapFactory.decodeFile(imagesFiles.get(0).getPath(), null);
-                profileImage.setImageBitmap(bitmap);
-                */
             }
         });
     }
 
 
+    //Get the orgs for the spinner
+    private void getOrgs(){
 
+        orgSpinner.setVisibility(View.GONE);
+        spinnerProgress.setVisibility(View.VISIBLE);
+
+        LambencyAPIHelper.getInstance().getMyOrganizedOrgs(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<OrganizationModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<OrganizationModel>> call,
+                                   Response<ArrayList<OrganizationModel>> response) {
+
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("ERROR!!!!!");
+                    return;
+                }
+                //when response is back
+                ArrayList<OrganizationModel> ret = response.body();
+                if(ret == null){
+                    System.out.println("Error");
+                }else{
+                    //ret is the list of orgs
+                    OrgSpinnerAdapter orgSpinnerAdapter = new OrgSpinnerAdapter(context, ret);
+                    orgSpinner.setAdapter(orgSpinnerAdapter);
+                    setOrgSpinnerAdapter(orgSpinnerAdapter);
+
+                    eventOrgModel = ret.get(0);
+
+                    orgSpinner.setVisibility(View.VISIBLE);
+                    spinnerProgress.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
+
+    }
+
+
+    /***** Methods for handling the org select spinner *****/
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if(orgSpinnerAdapter != null){
+            OrganizationModel orgModel = orgSpinnerAdapter.getOrgs().get(i);
+            eventOrgModel = orgModel;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    private void setOrgSpinnerAdapter(OrgSpinnerAdapter orgSpinnerAdapter){
+        this.orgSpinnerAdapter = orgSpinnerAdapter;
+    }
 }
 
 

@@ -1,12 +1,22 @@
 package com.lambency.lambency_client.Fragments;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +26,12 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
+import com.lambency.lambency_client.Activities.EventDetailsActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.Adapters.EventsAdapter;
 import com.lambency.lambency_client.Models.EventModel;
@@ -44,7 +59,8 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Use the {@link EventsMainFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EventsMainFragment extends Fragment {
+public class EventsMainFragment extends Fragment implements
+        GoogleApiClient.ConnectionCallbacks, OnConnectionFailedListener,LocationListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -63,6 +79,11 @@ public class EventsMainFragment extends Fragment {
 
     @BindView(R.id.eventMainProgress_bar)
     ProgressBar eventMainProgress_bar;
+
+    private GoogleApiClient mGoogleApiClient;
+    private double currentLatitude;
+    private double currentLongitude;
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
 
     public EventsMainFragment() {
@@ -89,15 +110,20 @@ public class EventsMainFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        } else {
+            super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            if (getArguments() != null) {
+                mParam1 = getArguments().getString(ARG_PARAM1);
+                mParam2 = getArguments().getString(ARG_PARAM2);
+            }
+            ((BottomBarActivity) getActivity())
+                    .setActionBarTitle("Feed");
+            setHasOptionsMenu(true);
         }
-        ((BottomBarActivity) getActivity())
-                .setActionBarTitle("Feed");
-        setHasOptionsMenu(true);
 
     }
 
@@ -130,23 +156,56 @@ public class EventsMainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_events_main, container, false);
-        ButterKnife.bind(this, view);
+            // Inflate the layout for this fragment
+            View view = inflater.inflate(R.layout.fragment_events_main, container, false);
+            ButterKnife.bind(this, view);
 
-        loadingEvents();
-        callRetrofit();
+            //for getting current address
+            mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                    // The next two lines tell the new client that “this” current class will handle connection stuff
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    //fourth line adds the LocationServices API endpoint from GooglePlayServices
+                    .addApi(LocationServices.API)
+                    .build();
 
-        ((BottomBarActivity) getActivity()).getSupportActionBar().setElevation(15);
+            loadingEvents();
+            callRetrofit();
 
-        return view;
+            ((BottomBarActivity) getActivity()).getSupportActionBar().setElevation(15);
+
+            return view;
     }
 
     public void callRetrofit(){
-        LambencyAPIHelper.getInstance().getUserEvents(UserAuthenticatorModel.myAuth, UserModel.myUserModel.getUserId()).enqueue(new Callback<List<EventModel>>() {
+        LambencyAPIHelper.getInstance().getEventsFeed(UserModel.myUserModel.getOauthToken(),currentLatitude+"",currentLongitude+"").enqueue(new Callback<List<EventModel>>() {
             @Override
             public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
                 if (response.body() == null || response.code() != 200) {
+                    System.out.println("ERROR!!!!!");
+                    return;
+                }
+                //when response is back
+                List<EventModel> myEvents = response.body();
+                if(response.body() == null) {
+                    System.out.println("ERROR NULLED!!!!");
+                    Toast.makeText(getApplicationContext(), "Events NULL", Toast.LENGTH_LONG).show();
+                    myEvents = new ArrayList<>();
+
+                }
+                else if(myEvents.size() == 0){
+                    System.out.println("No events founud");
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "got events", Toast.LENGTH_LONG).show();
+                    System.out.println("got events");
+
+                    //System.out.println("SUCCESS");
+                    startAdapter(myEvents);
+                    eventsLoaded();
+                    System.out.println("success");
+                }
+                /*if (response.body() == null || response.code() != 200) {
                     System.out.println("ERROR!!!!!");
                     return;
                 }
@@ -163,15 +222,15 @@ public class EventsMainFragment extends Fragment {
 
                 //System.out.println("SUCCESS");
                 startAdapter(myEvents);
-                eventsLoaded();
+                eventsLoaded();*/
             }
 
             @Override
             public void onFailure(Call<List<EventModel>> call, Throwable throwable) {
                 //when failure
-                System.out.println("FAILED CALL");
+                /*System.out.println("FAILED CALL");*/
                 Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
-
+                System.out.println("FAILED CALL");
             }
         });
     }
@@ -211,6 +270,82 @@ public class EventsMainFragment extends Fragment {
 
         eventsMainRecyclerView.setVisibility(View.VISIBLE);
         eventMainProgress_bar.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        @SuppressLint("MissingPermission") Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        currentLatitude = location.getLatitude();
+        currentLongitude = location.getLongitude();
+
+        Toast.makeText(getActivity(), currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+    }
+
+    //start methods for getting current location
+    @Override
+    public void onResume() {
+        super.onResume();
+        //Now lets connect to the API
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        /*
+             * Google Play services can resolve some errors it detects.
+             * If the error has a resolution, try sending an Intent to
+             * start a Google Play services activity that can resolve
+             * error.
+             */
+        if (connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(getActivity(), CONNECTION_FAILURE_RESOLUTION_REQUEST);
+                    /*
+                     * Thrown if Google Play services canceled the original
+                     * PendingIntent
+                     */
+            } catch (IntentSender.SendIntentException e) {
+                // Log the error
+                e.printStackTrace();
+            }
+        } else {
+                /*
+                 * If no resolution is available, display a dialog to the
+                 * user with the error.
+                 */
+            Log.e("Error", "Location services connection failed with code " + connectionResult.getErrorCode());
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLatitude = location.getLatitude();
+        currentLongitude = location.getLongitude();
+
+        Toast.makeText(getActivity(), currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
     /**

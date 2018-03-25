@@ -89,6 +89,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
                     holder.eventImageView);
         }
 
+        holder.orgTitleView.setText(eventModel.getOrgName());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,6 +136,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
 
         @BindView(R.id.pictureOfEvent)
         ImageView eventImageView;
+
+        @BindView(R.id.orgTitle)
+        TextView orgTitleView;
 
         public AreaViewHolder(View itemView) {
             super(itemView);
