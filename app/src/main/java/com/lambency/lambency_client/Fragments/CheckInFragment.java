@@ -180,8 +180,6 @@ public class CheckInFragment extends Fragment {
                     else{
                         timeSwap += timeInMillies;
                         myHandler.removeCallbacks(updateTimerMethod);
-                        Toast.makeText(getApplicationContext(), "time sent was" + tsTemp.getHours()+":"
-                                +tsTemp.getMinutes(), Toast.LENGTH_LONG).show();
                     }
                 }
                 else if (ret ==1){
