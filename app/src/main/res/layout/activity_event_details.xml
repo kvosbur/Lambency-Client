@@ -282,6 +282,7 @@
 
                     </RelativeLayout>
 
+
                     <Button
                         android:id="@+id/editEventButton"
                         android:layout_width="wrap_content"
@@ -289,12 +290,56 @@
                         android:layout_below="@id/organizationLayout"
                         android:text="Edit Event" />
 
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkinCodeDisp"
+                        android:text="Check in Code is: "
+                        android:textStyle="bold"
+                        android:layout_below="@id/editEventButton"
+                        android:textSize="15dp"/>
+
+                    <TextView
+                        android:id="@+id/checkinCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/checkinCodeDisp"
+                        android:layout_alignBottom="@+id/checkinCodeDisp"
+                        android:layout_toEndOf="@+id/checkinCodeDisp"
+                        android:layout_toRightOf="@+id/checkinCodeDisp"
+                        android:textStyle="bold"
+                        android:text="Check in Code"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkoutCodeDisp"
+                        android:text="Check in Code is: "
+                        android:textStyle="bold"
+                        android:layout_below="@id/checkinCodeDisp"
+                        android:textSize="15dp"/>
+
+
                     <TextView
                         android:id="@+id/eventInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/editEventButton"
+                        android:layout_below="@+id/checkoutCodeDisp"
                         android:textColor="#000000" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkoutCode"
+                        android:text="Check out code"
+                        android:textStyle="bold"
+                        android:textSize="15dp"
+                        android:layout_alignBaseline="@+id/checkoutCodeDisp"
+                        android:layout_alignBottom="@+id/checkoutCodeDisp"
+                        android:layout_toEndOf="@+id/checkoutCodeDisp"
+                        android:layout_toRightOf="@+id/checkoutCodeDisp" />
 
                     <TextView
                         android:id="@+id/description"
