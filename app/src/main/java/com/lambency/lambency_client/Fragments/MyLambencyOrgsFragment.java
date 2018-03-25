@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.MyLambencyModel;
@@ -26,6 +27,7 @@ import com.lambency.lambency_client.Utils.CustomLinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,6 +84,8 @@ public class MyLambencyOrgsFragment extends Fragment {
 
     @BindView(R.id.noJoinedOrgsText)
     TextView noJoinedOrgsText;
+
+    int notifyAmount = 0;
 
 
     public MyLambencyOrgsFragment() {
@@ -166,10 +170,23 @@ public class MyLambencyOrgsFragment extends Fragment {
             @Override
             public void onResponse(Call<MyLambencyModel> call, Response<MyLambencyModel> response) {
                 MyLambencyModel myLambencyModel = response.body();
-                System.out.println("Got myLambency Model");
                 if(myLambencyModel != null) {
+                    System.out.println("Got myLambency Model");
+                    ArrayList<OrganizationModel> organizerOrgs = new ArrayList<>(myLambencyModel.getMyOrgs());
+                    for(OrganizationModel org: organizerOrgs){
+                        Response<ArrayList<UserModel>> resp = getNotifications(org.getOrgID());
+                        if(resp.body() != null) {
+                            notifyAmount += (resp.body()).size();
+                        }
+                    }
+                    System.out.println("UPDATING BADGE TO VALUE " + notifyAmount);
+                    TextView badge = getActivity().findViewById(R.id.notifications_badge);
+                    badge.setText(notifyAmount);
+
                     setOrgs(myLambencyModel);
                 }
+
+
 
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -183,6 +200,17 @@ public class MyLambencyOrgsFragment extends Fragment {
         });
 
 
+    }
+
+
+    private Response<ArrayList<UserModel>> getNotifications(int org_id){
+        try {
+            Response<ArrayList<UserModel>> resp = LambencyAPIHelper.getInstance().
+                    getRequestsToJoin(UserModel.myUserModel.getOauthToken(), org_id).execute();
+            return resp;
+        }catch(Exception e){
+            return null;
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
