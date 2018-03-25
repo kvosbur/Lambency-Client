@@ -409,36 +409,76 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                     } else {
                         //TODO Unendorse retrofit here
-                        LambencyAPIHelper.getInstance().getUnendorse(UserModel.myUserModel.getOauthToken(), "" + UserModel.myUserModel.getMyOrgs().get(0), "" + event_id).enqueue(new Callback<Integer>() {
+
+                        LambencyAPIHelper.getInstance().getMyOrganizedOrgs(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<OrganizationModel>>() {
                             @Override
-                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            public void onResponse(Call<ArrayList<OrganizationModel>> call,
+                                                   Response<ArrayList<OrganizationModel>> response) {
+
                                 if (response.body() == null || response.code() != 200) {
                                     System.out.println("ERROR!!!!!");
                                     return;
                                 }
                                 //when response is back
-                                Integer ret = response.body();
-                                if (ret == 0) {
-                                    endorseText.setText("\nEndorse this event as organization! ");
-                                    endorseButton.setText("Endorse");
-                                    Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
+                                final ArrayList<OrganizationModel> ret = response.body();
+                                if(ret == null){
+                                    System.out.println("Error");
+                                }else{
+                                    //ret is the list of orgs
+                                    AlertDialog.Builder builderUn = new AlertDialog.Builder(context);
+                                    builderUn.setTitle("Pick an organization");
+                                    String[] items = new String[UserModel.myUserModel.getMyOrgs().size()];
+                                    for(int i = 0; i < UserModel.myUserModel.getMyOrgs().size(); i++)
+                                    {
+                                        items[i] = ret.get(i).getName();
+                                    }
+                                    builderUn.setItems(items, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int which) {
+                                            LambencyAPIHelper.getInstance().getUnendorse(UserModel.myUserModel.getOauthToken(), "" + ret.get(which).getOrgID(), "" + event_id).enqueue(new Callback<Integer>() {
+                                                @Override
+                                                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                                    if (response.body() == null || response.code() != 200) {
+                                                        System.out.println("ERROR!!!!!");
+                                                        return;
+                                                    }
+                                                    //when response is back
+                                                    Integer ret = response.body();
+                                                    if (ret == 0) {
+                                                        endorseText.setText("\nEndorse this event as organization! ");
+                                                        endorseButton.setText("Endorse");
+                                                        Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
 
-                                    getAllOrgs();
-                                } else if (ret == -1) {
-                                    Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
-                                } else if (ret == -2) {
-                                    Toast.makeText(getApplicationContext(), "not endorsed", Toast.LENGTH_LONG).show();
-                                } else if (ret == -3) {
-                                    Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                                                        getAllOrgs();
+                                                    } else if (ret == -1) {
+                                                        Toast.makeText(getApplicationContext(), "an error has occurred", Toast.LENGTH_LONG).show();
+                                                    } else if (ret == -2) {
+                                                        Toast.makeText(getApplicationContext(), "not endorsed", Toast.LENGTH_LONG).show();
+                                                    } else if (ret == -3) {
+                                                        Toast.makeText(getApplicationContext(), "invalid arguments", Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<Integer> call, Throwable throwable) {
+                                                    //when failure
+                                                    Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                        }
+                                    });
+                                    builderUn.show();
                                 }
+
                             }
 
                             @Override
-                            public void onFailure(Call<Integer> call, Throwable throwable) {
+                            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
                                 //when failure
-                                Toast.makeText(getApplicationContext(), "FAILED CALL", Toast.LENGTH_LONG).show();
+                                System.out.println("FAILED CALL");
                             }
                         });
+
                     }
 
                 }
