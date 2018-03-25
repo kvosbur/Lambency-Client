@@ -218,6 +218,10 @@ public class EventDetailsActivity extends AppCompatActivity implements
             linearLayout = findViewById(R.id.joinButton);
             text = findViewById(R.id.joinButtonText);
 
+            if (UserModel.myUserModel == null){
+                editEventButton.setVisibility(View.GONE);
+            }
+
 
             linearLayout.setOnClickListener(new View.OnClickListener() {
 
@@ -438,7 +442,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
             });
 
             Bundle bundle = getIntent().getExtras();
-            if(UserModel.myUserModel != null) {
                 if (bundle != null || data != null) {
                     //TODO error check
                     if (data == null) {
@@ -449,7 +452,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     }
                     callRetrofit(event_id);
                 }
-            }
 
             if (UserModel.myUserModel != null) {
                 System.out.println("This event id is: " + event_id);
@@ -494,33 +496,34 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
         isLoading(true);
 
-        //To Dislplay number attending
-        LambencyAPIHelper.getInstance().getEventNumAttending(UserModel.myUserModel.getOauthToken(),""+event_id).enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                if (response.body() == null || response.code() != 200) {
-                    //System.out.println("ERROR!!!!!");
-                    numberOfPeopleAttending.setText(0);
-                    return;
+        if (UserModel.myUserModel!=null) {
+            //To Dislplay number attending
+            LambencyAPIHelper.getInstance().getEventNumAttending(UserModel.myUserModel.getOauthToken(), "" + event_id).enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        //System.out.println("ERROR!!!!!");
+                        numberOfPeopleAttending.setText(0);
+                        return;
+                    }
+                    //when response is back
+                    Integer ret = response.body();
+                    if (ret == -1) {
+                        System.out.println("Error has occurred");
+                    } else {
+                        System.out.println("the number of users attending this event is" + ret);
+                        Toast.makeText(getApplicationContext(), "number people attending is" + ret, Toast.LENGTH_LONG).show();
+                        numberOfPeopleAttending.setText(ret + "");
+                    }
                 }
-                //when response is back
-                Integer ret = response.body();
-                if(ret == -1){
-                    System.out.println("Error has occurred");
-                }
-                else{
-                    System.out.println("the number of users attending this event is" + ret);
-                    Toast.makeText(getApplicationContext(), "number people attending is" + ret, Toast.LENGTH_LONG).show();
-                    numberOfPeopleAttending.setText(ret+"");
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
-                //when failure
-                System.out.println("FAILED CALL");
-            }
-        });
+                @Override
+                public void onFailure(Call<Integer> call, Throwable t) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                }
+            });
+        }
 
 
         LambencyAPIHelper.getInstance().getEventSearchByID(Integer.toString(event_id)).enqueue(new Callback<EventModel>() {
@@ -530,6 +533,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     System.out.println("ERROR!!!!!");
                 }
                 //when response is back
+                Toast.makeText(getApplicationContext(), "the event id was   " + event_id, Toast.LENGTH_LONG).show();
                 eventModel = response.body();
                 if (eventModel == null) {
                     System.out.println("failed to event");
@@ -545,6 +549,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     currDate = currDate.substring(0, currDate.length() - 4);
                     currDate += "18";
 
+                    Toast.makeText(getApplicationContext(), eventModel.getName(), Toast.LENGTH_LONG).show();
+
+
                     dateView.setText(currDate); //TimeHelper.dateFromTimestamp(eventModel.getStart()));
                     descriptionView.setText(eventModel.getDescription());
                     timeView.setText(TimeHelper.hourFromTimestamp(eventModel.getStart()) + " - " + TimeHelper.hourFromTimestamp(eventModel.getEnd()));
@@ -555,22 +562,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                     RequestOptions requestOptions = new RequestOptions();
 
-                    /*Glide.with(context)
-                            .setDefaultRequestOptions(requestOptions)
-                            .asBitmap()
-                            .load(ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()))
-                            .into(new SimpleTarget() {
-                                @Override
-                                public void onResourceReady(@NonNull Object resource, @Nullable Transition transition) {
-                                    BitmapDrawable bd = new BitmapDrawable(getResources(), (Bitmap) resource);
-                                    eventImageView.setBackground(bd);
-                                }
-                            });*/
-
-
-                    /*BitmapDrawable bd = new BitmapDrawable(getResources(), ImageHelper.stringToBitmap(eventModel.getImageFile()));
-                    eventImageView.setBackground(bd);
-                    */
 
                     ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
 
@@ -606,6 +597,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
             }
         });
     }
+
 
 
     private void getAllOrgs()
