@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 /**
@@ -26,12 +28,20 @@ public class ImageHelper {
         return decodedByte;
     }
 
-    public static String saveImage(Context context, String image, String fileName){
+    public static String saveImage(Context context, String image, final String fileName){
         File outputDir = context.getCacheDir();
         try {
-
+            File[] matchedFiles = outputDir.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.startsWith(fileName);
+                }
+            });
+            if(matchedFiles.length != 0){
+                return matchedFiles[0].getPath();
+            }
             File outputFile = File.createTempFile(fileName, null, outputDir);
-            outputFile.deleteOnExit();
+
             FileOutputStream out = new FileOutputStream(outputFile);
             Bitmap bitmap = stringToBitmap(image);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);

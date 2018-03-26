@@ -83,7 +83,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
 
         if(eventModel.getImageFile() != null){
             //holder.eventImageView.setImageBitmap(ImageHelper.stringToBitmap(eventModel.getImageFile()));
-
             ImageHelper.loadWithGlide(context,
                     ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()),
                     holder.eventImageView);
