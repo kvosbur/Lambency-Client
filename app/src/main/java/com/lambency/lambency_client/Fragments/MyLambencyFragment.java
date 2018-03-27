@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,22 +16,34 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.lambency.lambency_client.Activities.AcceptRejectActivity;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
+import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.EventCreationActivity;
 import com.lambency.lambency_client.Activities.LoginActivity;
-import com.lambency.lambency_client.Activities.MainActivity;
 import com.lambency.lambency_client.Activities.OrgCreationActivity;
-import com.lambency.lambency_client.Activities.SearchActivity;
+
+import com.lambency.lambency_client.Adapters.AcceptRejectAdapter;
+
+import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
+import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
+import com.lambency.lambency_client.Models.MyLambencyModel;
+
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -52,13 +66,25 @@ public class MyLambencyFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    @BindView(R.id.createOrgButton)
-    Button createOrg;
+    @BindView(R.id.tabLayout)
+    TabLayout tabLayout;
 
-    @BindView(R.id.logoutButton)
-    Button logout;
+    @BindView(R.id.viewPager)
+    ViewPager viewPager;
+
+    @BindView(R.id.fabMenu)
+    FloatingActionsMenu floatingActionsMenu;
+
+    @BindView(R.id.eventFab)
+    FloatingActionButton eventFab;
+
+    @BindView(R.id.orgFab)
+    FloatingActionButton orgFab;
+
 
     private OnFragmentInteractionListener mListener;
+    private MyLambencyTabsAdapter myLambencyTabsAdapter;
+    private Context context;
 
     public MyLambencyFragment() {
         // Required empty public constructor
@@ -90,6 +116,7 @@ public class MyLambencyFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -99,23 +126,39 @@ public class MyLambencyFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_my_lambency, container, false);
         ButterKnife.bind(this, view);
 
-        Button createOrgButton = view.findViewById(R.id.createOrgButton);
-        createOrgButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), OrgCreationActivity.class);
-                startActivity(intent);
+        //Make sure they can't create an event if they don't have any orgs
+        if(UserModel.myUserModel.getMyOrgs().size() == 0){
+            eventFab.setVisibility(View.GONE);
+        }
+
+        tabLayout.addTab(tabLayout.newTab().setText("Events"));
+        tabLayout.addTab(tabLayout.newTab().setText("Organizations"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        myLambencyTabsAdapter = new MyLambencyTabsAdapter(getActivity().getSupportFragmentManager(), tabLayout.getTabCount(), context);
+        viewPager.setAdapter(myLambencyTabsAdapter);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                //Does not work... color still doesn't switch
+                tabLayout.setScrollPosition(tab.getPosition(), 0f, true);
+
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
 
-
-        Button createEventButton = view.findViewById(R.id.createEventButton);
-        createEventButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), EventCreationActivity.class);
-                startActivity(intent);
-            }
-        });
-
+        /*
         if(UserModel.myUserModel.getMyOrgs().size() == 0)
         {
             createEventButton.setVisibility(View.GONE);
@@ -132,10 +175,12 @@ public class MyLambencyFragment extends Fragment {
                 editor.apply();
             }
         });
+        */
 
-        ((MainActivity) getActivity())
+
+        ((BottomBarActivity) getActivity())
                 .setActionBarTitle("My Lambency");
-        ((MainActivity) getActivity()).getSupportActionBar().setElevation(0);
+        ((BottomBarActivity) getActivity()).getSupportActionBar().setElevation(0);
 
         return view;
     }
@@ -166,9 +211,21 @@ public class MyLambencyFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.menu_edit, menu);
+        menuInflater.inflate(R.menu.menu_my_lambency, menu);
     }
 
+
+    @OnClick(R.id.eventFab)
+    public void handleEventFabClick(){
+        Intent intent = new Intent(getActivity(), EventCreationActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.orgFab)
+    public void handleOrgFabClick(){
+        Intent intent = new Intent(getActivity(), OrgCreationActivity.class);
+        startActivity(intent);
+    }
 
 
     /**
@@ -184,5 +241,18 @@ public class MyLambencyFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onProfileFragmentInteraction(Uri uri);
+    }
+
+
+    public MyLambencyTabsAdapter getMyLambencyTabsAdapter(){
+        return myLambencyTabsAdapter;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+
+        return super.onOptionsItemSelected(item);
     }
 }

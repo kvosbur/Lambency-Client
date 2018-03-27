@@ -1,16 +1,18 @@
 package com.lambency.lambency_client.Activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,8 +22,6 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.login.LoginBehavior;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
 
@@ -35,13 +35,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
-import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -65,212 +63,212 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(LoginActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }else {
 
-        //skip login activity if there is already an oAuthToken saved to shared preferences
-        SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
-        String myauth = sharedPref.getString("myauth", "");
+            //skip login activity if there is already an oAuthToken saved to shared preferences
+            SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
+            String myauth = sharedPref.getString("myauth", "");
 
-        if(myauth.length() > 0){
-            UserAuthenticatorModel.myAuth = myauth;
-            System.out.println("My auth is : " + myauth);
-            LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
-                @Override
-                public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                    if (response.body() == null || response.code() != 200) {
-                        System.out.println("ERROR!!!!!");
-                        return;
-                    }
-                    //when response is back
-                    UserModel.myUserModel = response.body();
-                    if(response.body() == null){
-                        System.out.println("ERROR NULLED!!!!");
-                        Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
-                    System.out.println("got the user object");
-
-                    //System.out.println("SUCCESS");
-                    Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(myIntent);
-                    finish();
-                }
-
-                @Override
-                public void onFailure(Call<UserModel> call, Throwable throwable) {
-                    //when failure
-                    System.out.println("FAILED CALL");
-                    Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
-
-                }
-            });
-        }
-
-
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
-
-        callbackManager = CallbackManager.Factory.create();
-        //add permissions for Facebook to get email
-        LoginButton loginButton = findViewById(R.id.login_button);
-        loginButton.clearPermissions();
-        loginButton.setReadPermissions(Arrays.asList("email"));
-
-
-        //String googleWebID = "406595282653-87c0rdih5bqi4nrei8catgh3pq1usith.apps.googleusercontent.com";
-        String googleWebID = "801710608826-06vpf384rl9nfcbumav56niql251419n.apps.googleusercontent.com";
-
-
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(googleWebID)
-                .requestEmail()
-                .build();
-
-        // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.disconnect_button).setOnClickListener(this);
-
-        //LoginManager.getInstance()
-
-        loginButton.registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
+            if (myauth.length() > 0) {
+                UserAuthenticatorModel.myAuth = myauth;
+                System.out.println("My auth is : " + myauth);
+                LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
                     @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        // App code
+                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                        if (response.body() == null || response.code() != 200) {
+                            System.out.println("ERROR!!!!!");
+                            return;
+                        }
+                        //when response is back
+                        UserModel.myUserModel = response.body();
+                        if (response.body() == null) {
+                            System.out.println("ERROR NULLED!!!!");
+                            Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
+                        System.out.println("got the user object");
 
-                        AccessToken accessToken = loginResult.getAccessToken();
-
-                        GraphRequest request = GraphRequest.newMeRequest(
-                                accessToken,
-                                new GraphRequest.GraphJSONObjectCallback() {
-                                    @Override
-                                    public void onCompleted(
-                                            JSONObject object,
-                                            GraphResponse response) {
-                                        // Application code
-
-                                        try {
-                                            String id = (String) object.get("id");
-                                            String firstName = (String) object.get("first_name");
-                                            String lastName = (String) object.get("last_name");
-                                            String email = (String) object.get("email");
-
-                                            System.out.println("Hello " + firstName + " " + lastName + " with email " + email + " id: "+ id);
-
-                                            LambencyAPIHelper.getInstance().getFacebookLogin(id, firstName, lastName, email).enqueue(new Callback<UserAuthenticatorModel>() {
-                                                @Override
-                                                public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
-                                                    if (response.body() == null || response.code() != 200) {
-                                                        System.out.println("ERROR!!!!!");
-                                                        return;
-                                                    }
-                                                    //when response is back
-
-
-                                                    UserAuthenticatorModel ua = response.body();
-
-                                                    if(ua != null && ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
-                                                        //System.out.println("SUCCESS");
-                                                        UserAuthenticatorModel.myAuth = ua.getoAuthCode();
-
-                                                        //save myauth into shared preferences
-                                                        SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
-                                                        SharedPreferences.Editor editor = sharedPref.edit();
-                                                        editor.putString("myauth", ua.getoAuthCode());
-                                                        editor.apply();
-
-                                                        LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
-                                                            @Override
-                                                            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                                                                if (response.body() == null || response.code() != 200) {
-                                                                    System.out.println("ERROR!!!!!");
-                                                                    return;
-                                                                }
-                                                                //when response is back
-                                                                UserModel.myUserModel = response.body();
-                                                                if(response.body() == null){
-                                                                    System.out.println("ERROR NULLED!!!!");
-                                                                    Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
-                                                                    return;
-                                                                }
-                                                                Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
-                                                                System.out.println("got the user object");
-
-
-                                                                Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-                                                                startActivity(myIntent);
-                                                                finish();
-                                                                //System.out.println("SUCCESS");
-
-                                                                //Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-                                                                //startActivity(myIntent);
-                                                                //finish();
-                                                            }
-
-                                                            @Override
-                                                            public void onFailure(Call<UserModel> call, Throwable throwable) {
-                                                                //when failure
-                                                                System.out.println("FAILED CALL");
-                                                                Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
-
-                                                            }
-                                                        });
-                                                    }
-                                                    else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR){
-                                                        //System.out.println("NON_DETERMINANT_ERROR");
-                                                        Toast.makeText(getApplicationContext(), "NON_DETERMINANT_ERROR", Toast.LENGTH_LONG).show();
-                                                        Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
-
-                                                    }
-                                                    else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
-                                                        //System.out.println("NON_UNIQUE_EMAIL");
-                                                        Toast.makeText(getApplicationContext(), "NON_UNIQUE_EMAIL", Toast.LENGTH_LONG).show();
-                                                        Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
-
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
-                                                    //when failure
-                                                    System.out.println("FAILED CALL");
-                                                    System.out.println(throwable.getMessage());
-
-                                                    Toast.makeText(getApplicationContext(), "Failed to Communicate with Server please try again.", Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-
-                                        } catch (Exception e )
-                                        {
-                                            e.printStackTrace();
-                                            Toast.makeText(getApplicationContext(), "Exception Occured (probs email)", Toast.LENGTH_LONG).show();
-                                            System.out.println("Messed up");
-                                        }
-                                    }
-                                });
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "id,first_name,last_name, email");
-                        request.setParameters(parameters);
-                        request.executeAsync();
+                        //System.out.println("SUCCESS");
+                        Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
+                        startActivity(myIntent);
+                        finish();
                     }
 
                     @Override
-                    public void onCancel() {
-                        // App code
-                    }
+                    public void onFailure(Call<UserModel> call, Throwable throwable) {
+                        //when failure
+                        System.out.println("FAILED CALL");
+                        Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
 
-                    @Override
-                    public void onError(FacebookException exception) {
-                        // App code
                     }
                 });
+            }
 
+
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_login);
+
+
+            callbackManager = CallbackManager.Factory.create();
+            //add permissions for Facebook to get email
+            LoginButton loginButton = findViewById(R.id.login_button);
+            loginButton.clearPermissions();
+            loginButton.setReadPermissions(Arrays.asList("email"));
+
+
+            //String googleWebID = "406595282653-87c0rdih5bqi4nrei8catgh3pq1usith.apps.googleusercontent.com";
+            String googleWebID = "801710608826-06vpf384rl9nfcbumav56niql251419n.apps.googleusercontent.com";
+
+
+            // Configure sign-in to request the user's ID, email address, and basic
+            // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(googleWebID)
+                    .requestEmail()
+                    .build();
+
+            // Build a GoogleSignInClient with the options specified by gso.
+            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+            findViewById(R.id.sign_in_button).setOnClickListener(this);
+            findViewById(R.id.disconnect_button).setOnClickListener(this);
+
+            //LoginManager.getInstance()
+
+            loginButton.registerCallback(callbackManager,
+                    new FacebookCallback<LoginResult>() {
+                        @Override
+                        public void onSuccess(LoginResult loginResult) {
+                            // App code
+
+                            AccessToken accessToken = loginResult.getAccessToken();
+
+                            GraphRequest request = GraphRequest.newMeRequest(
+                                    accessToken,
+                                    new GraphRequest.GraphJSONObjectCallback() {
+                                        @Override
+                                        public void onCompleted(
+                                                JSONObject object,
+                                                GraphResponse response) {
+                                            // Application code
+
+                                            try {
+                                                String id = (String) object.get("id");
+                                                String firstName = (String) object.get("first_name");
+                                                String lastName = (String) object.get("last_name");
+                                                String email = (String) object.get("email");
+
+                                                System.out.println("Hello " + firstName + " " + lastName + " with email " + email + " id: " + id);
+
+                                                LambencyAPIHelper.getInstance().getFacebookLogin(id, firstName, lastName, email).enqueue(new Callback<UserAuthenticatorModel>() {
+                                                    @Override
+                                                    public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
+                                                        if (response.body() == null || response.code() != 200) {
+                                                            System.out.println("ERROR!!!!!");
+                                                            return;
+                                                        }
+                                                        //when response is back
+
+
+                                                        UserAuthenticatorModel ua = response.body();
+
+                                                        if (ua != null && ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS) {
+                                                            //System.out.println("SUCCESS");
+                                                            UserAuthenticatorModel.myAuth = ua.getoAuthCode();
+
+                                                            //save myauth into shared preferences
+                                                            SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
+                                                            SharedPreferences.Editor editor = sharedPref.edit();
+                                                            editor.putString("myauth", ua.getoAuthCode());
+                                                            editor.apply();
+
+                                                            LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
+                                                                @Override
+                                                                public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                                                                    if (response.body() == null || response.code() != 200) {
+                                                                        System.out.println("ERROR!!!!!");
+                                                                        return;
+                                                                    }
+                                                                    //when response is back
+                                                                    UserModel.myUserModel = response.body();
+                                                                    if (response.body() == null) {
+                                                                        System.out.println("ERROR NULLED!!!!");
+                                                                        Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
+                                                                        return;
+                                                                    }
+                                                                    Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
+                                                                    System.out.println("got the user object");
+
+
+                                                                    Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
+                                                                    startActivity(myIntent);
+                                                                    finish();
+                                                                    //System.out.println("SUCCESS");
+
+                                                                    //Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
+                                                                    //startActivity(myIntent);
+                                                                    //finish();
+                                                                }
+
+                                                                @Override
+                                                                public void onFailure(Call<UserModel> call, Throwable throwable) {
+                                                                    //when failure
+                                                                    System.out.println("FAILED CALL");
+                                                                    Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
+
+                                                                }
+                                                            });
+                                                        } else if (ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR) {
+                                                            //System.out.println("NON_DETERMINANT_ERROR");
+                                                            Toast.makeText(getApplicationContext(), "NON_DETERMINANT_ERROR", Toast.LENGTH_LONG).show();
+                                                            Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
+
+                                                        } else if (ua.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL) {
+                                                            //System.out.println("NON_UNIQUE_EMAIL");
+                                                            Toast.makeText(getApplicationContext(), "NON_UNIQUE_EMAIL", Toast.LENGTH_LONG).show();
+                                                            Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
+
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
+                                                        //when failure
+                                                        System.out.println("FAILED CALL");
+                                                        System.out.println(throwable.getMessage());
+
+                                                        Toast.makeText(getApplicationContext(), "Failed to Communicate with Server please try again.", Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                                Toast.makeText(getApplicationContext(), "Exception Occured (probs email)", Toast.LENGTH_LONG).show();
+                                                System.out.println("Messed up");
+                                            }
+                                        }
+                                    });
+                            Bundle parameters = new Bundle();
+                            parameters.putString("fields", "id,first_name,last_name, email");
+                            request.setParameters(parameters);
+                            request.executeAsync();
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            // App code
+                        }
+
+                        @Override
+                        public void onError(FacebookException exception) {
+                            // App code
+                        }
+                    });
+        }
     }
 
     @Override
@@ -389,7 +387,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 System.out.println("got the user object");
 
                                 //System.out.println("SUCCESS");
-                                Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
                                 startActivity(myIntent);
                                 finish();
                             }
@@ -429,7 +427,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             /*updateUI(account);
 
-            Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
             startActivity(myIntent);
             finish();*/
         } catch (ApiException e) {

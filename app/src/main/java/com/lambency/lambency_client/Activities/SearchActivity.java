@@ -1,18 +1,15 @@
 package com.lambency.lambency_client.Activities;
 
 import android.Manifest;
-import android.app.FragmentTransaction;
-import android.app.SearchManager;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
-import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -20,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.EventLog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,13 +25,13 @@ import android.widget.Toast;
 
 
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
-import com.lambency.lambency_client.Fragments.OrgSearchResultFragment;
+import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
+import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +69,8 @@ public class SearchActivity extends AppCompatActivity   {
         ButterKnife.bind(this);
 
         this.context = this;
+
+        //EventFilterModel.currentFilter = new EventFilterModel();
 
         setSupportActionBar(toolbar);
 
@@ -123,67 +123,87 @@ public class SearchActivity extends AppCompatActivity   {
         //searchView.setIconifiedByDefault(false);
         searchView.requestFocus();
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                System.out.println(query);
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    System.out.println(query);
 
-                searchTabsAdapter.setOrgVisiblity(View.VISIBLE, View.GONE);
+                    if(tabLayout.getSelectedTabPosition() == 1)
+                    {
+                        searchTabsAdapter.setOrgVisiblity(View.VISIBLE, View.GONE);
 
-                LambencyAPIHelper.getInstance().getOrganizationSearch(query).enqueue(new Callback<ArrayList<OrganizationModel>>() {
-                    @Override
-                    public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
-                        searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
+                        LambencyAPIHelper.getInstance().getOrganizationSearch(query).enqueue(new Callback<ArrayList<OrganizationModel>>() {
+                            @Override
+                            public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
+                                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
 
-                        if (response.body() == null || response.code() != 200) {
-                            System.out.println("ERROR!!!!!");
-                        }
-                        //when response is back
-                        ArrayList<OrganizationModel> orgList = response.body();
-                        if(orgList == null || orgList.size() == 0){
-                            //no results found
-                            if(orgList == null){
-                                orgList = new ArrayList<OrganizationModel>();
+                                if (response.body() == null || response.code() != 200) {
+                                    System.out.println("ERROR!!!!!");
+                                }
+                                //when response is back
+                                ArrayList<OrganizationModel> orgList = response.body();
+                                if (orgList == null || orgList.size() == 0) {
+                                    //no results found
+                                    if (orgList == null) {
+                                        orgList = new ArrayList<OrganizationModel>();
+                                    }
+
+                                    if (searchTabsAdapter == null) {
+                                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                                    }
+                                    searchTabsAdapter.updateOrgs(orgList);
+                                } else {
+                                    //results found
+                                    System.out.println("Orgs found!");
+
+
+                                    if (searchTabsAdapter == null) {
+                                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                                    }
+                                    //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
+                                    searchTabsAdapter.updateOrgs(orgList);
+                                }
                             }
 
-                            if(searchTabsAdapter == null){
-                                searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
-                            }
-                            searchTabsAdapter.updateOrgs(orgList);
-                        }
-                        else{
-                            //results found
-                            System.out.println("Orgs found!");
+                            @Override
+                            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
+                                //when failure
+                                System.out.println("FAILED CALL");
 
-
-                            if(searchTabsAdapter == null){
-                                searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
                             }
-                            //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
-                            searchTabsAdapter.updateOrgs(orgList);
-                        }
+                        });
+                    } else {
+                        EventFilterModel.currentFilter.setTitle(query);
+
+                        LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter).enqueue(new Callback<List<EventModel>>() {
+                            @Override
+                            public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
+                                List<EventModel> events = response.body();
+                                searchTabsAdapter.updateEvents(events);
+                                searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
+
+                                //EventFilterModel.currentFilter = new EventFilterModel();
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<EventModel>> call, Throwable t) {
+                                searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
+                            }
+                        });
+
+                        return true;
                     }
+                    return false;
+                }
 
-                    @Override
-                    public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
-                        //when failure
-                        System.out.println("FAILED CALL");
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
 
-                        searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
-                    }
-                });
-
-
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -202,7 +222,7 @@ public class SearchActivity extends AppCompatActivity   {
                 mFusedLocationClient.getLastLocation()
                         .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                             @Override
-                            public void onSuccess(Location location) {
+                            public void onSuccess(final Location location) {
                                 if (location == null) {
                                     System.out.println("Null location.");
                                 } else {
@@ -210,12 +230,32 @@ public class SearchActivity extends AppCompatActivity   {
 
                                     searchTabsAdapter.setEventVisiblity(View.VISIBLE, View.GONE);
 
-                                    LambencyAPIHelper.getInstance().getEventsWithParams(location.getLatitude(), location.getLongitude(), "", "").enqueue(new Callback<List<EventModel>>() {
+                                    EventFilterModel.currentFilter.setLongitude(location.getLongitude());
+                                    EventFilterModel.currentFilter.setLatitude(location.getLatitude());
+
+                                    LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter).enqueue(new Callback<List<EventModel>>() {
                                         @Override
                                         public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
                                             List<EventModel> events = response.body();
+
+                                            if(events == null || events.size() == 0)
+                                            {
+                                                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                                                alertDialog.setTitle("Alert");
+                                                alertDialog.setMessage("There are no events within your range. Please select a different range.");
+                                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                                        new DialogInterface.OnClickListener() {
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
+                                                alertDialog.show();
+                                            }
+
                                             searchTabsAdapter.updateEvents(events);
                                             searchTabsAdapter.setEventVisiblity(View.GONE, View.VISIBLE);
+
+                                            //EventFilterModel.currentFilter = new EventFilterModel();
                                         }
 
                                         @Override
@@ -262,13 +302,19 @@ public class SearchActivity extends AppCompatActivity   {
         switch(item.getItemId()){
 
             case android.R.id.home:
-                Intent intent = new Intent(context, MainActivity.class);
+                Intent intent = new Intent(context, BottomBarActivity.class);
                 startActivity(intent);
                 break;
 
             case R.id.location:
                 System.out.println("Location Pressed");
-                searchByLocation();
+                Intent i = new Intent(context,FilterActivity.class);
+                startActivity(i);
+
+                EventFilterModel.currentFilter = new EventFilterModel();
+
+                //FragmentManager manager = getSupportFragmentManager();
+                //manager.beginTransaction().replace(R.id.fragContainer, new FilterDistanceFragment()).commit();
                 return true;
         }
 

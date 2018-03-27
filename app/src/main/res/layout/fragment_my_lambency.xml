@@ -1,41 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/eventsMainLayout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:layout_weight="1"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="6dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    </android.support.design.widget.TabLayout>
 
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/tabLayout" />
 
-    <Button
-        android:id="@+id/createOrgButton"
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/fabMenu"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:text="Create an Organization"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="5dp"
+        app:fab_addButtonColorNormal="@color/colorAccent"
+        app:fab_addButtonColorPressed="@color/colorAccent"
+        app:fab_labelsPosition="left"
+        app:fab_labelStyle="@style/fabTitle"
+        >
 
-    <Button
-        android:layout_marginTop="100dp"
-        android:id="@+id/createEventButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create an Event"
-        android:layout_below="@id/createOrgButton"
-        android:layout_centerHorizontal="true"
-        />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/eventFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            fab:fab_title="Create Event"
+            app:fab_size="mini"
+            app:fab_colorPressed="@color/lightGray"
+            android:src="@drawable/ic_event_black_24dp"/>
 
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/createEventButton"
-        android:layout_marginTop="50dp"
-        android:text="Logout"
-        android:layout_centerHorizontal="true"/>
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/orgFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_size="mini"
+            fab:fab_title="Create Organization"
+            app:fab_colorPressed="@color/lightGray"
+            android:src="@drawable/ic_supervisor_account_black_24dp"
+            />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </RelativeLayout>
 

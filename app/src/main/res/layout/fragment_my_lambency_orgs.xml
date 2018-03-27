@@ -1,0 +1,122 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.lambency.lambency_client.Fragments.MyLambencyEventsFragment">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/orgsSwipeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ScrollView
+            android:id="@+id/orgsScroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="blocksDescendants">
+
+                <LinearLayout
+                    android:id="@+id/memberOrgsTitleLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_margin="10dp"
+                    android:clickable="true">
+
+                    <TextView
+                        android:id="@+id/memberOrgsTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Organizations I'm a Member Of"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp"/>
+
+                    <ImageView
+                        android:id="@+id/memberOrgsArrow"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/noJoinedOrgsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You Haven't Joined Any Organizations"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/memberOrgsTitleLayout"
+                    android:visibility="gone"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/memberOrgsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/memberOrgsTitleLayout"
+                    android:nestedScrollingEnabled="false"
+                    android:focusable="false"/>
+
+                <LinearLayout
+                    android:id="@+id/organizerOrgsTitleLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_margin="10dp"
+                    android:clickable="true"
+                    android:layout_below="@id/memberOrgsRecyclerView">
+
+                    <TextView
+                        android:id="@+id/organizerOrgsTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Organizations I'm an Organizer For"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp"/>
+
+                    <ImageView
+                        android:id="@+id/organizerOrgsArrow"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/noMyOrgsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You Haven't Created Any Organizations"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/organizerOrgsTitleLayout"
+                    android:visibility="gone"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/organizerOrgsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/organizerOrgsTitleLayout"
+                    android:nestedScrollingEnabled="false"
+                    android:focusable="false"/>
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <ProgressBar
+        android:id="@+id/orgsProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+</FrameLayout>

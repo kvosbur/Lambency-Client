@@ -71,24 +71,24 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
         }
 
         if(eventModel.getStart() != null){
-            String date = "Date: " + TimeHelper.dateFromTimestamp(eventModel.getStart());
+            String date = TimeHelper.dateFromTimestamp(eventModel.getStart());
             holder.dateView.setText(date);
         }
 
         if(eventModel.getStart() != null && eventModel.getEnd() != null){
-            String time = "Time: " + TimeHelper.hourFromTimestamp(eventModel.getStart()) +
+            String time = TimeHelper.hourFromTimestamp(eventModel.getStart()) +
                     "-" + TimeHelper.hourFromTimestamp(eventModel.getEnd());
             holder.timeView.setText(time);
         }
 
         if(eventModel.getImageFile() != null){
             //holder.eventImageView.setImageBitmap(ImageHelper.stringToBitmap(eventModel.getImageFile()));
-
             ImageHelper.loadWithGlide(context,
                     ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()),
                     holder.eventImageView);
         }
 
+        holder.orgTitleView.setText(eventModel.getOrgName());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,6 +135,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
 
         @BindView(R.id.pictureOfEvent)
         ImageView eventImageView;
+
+        @BindView(R.id.orgTitle)
+        TextView orgTitleView;
 
         public AreaViewHolder(View itemView) {
             super(itemView);
