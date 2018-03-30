@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,13 +62,11 @@ public class CheckInFragment extends Fragment {
     EditText code2Send;
     @BindView(R.id.textViewDateValue)
     TextView textViewdate;
-    @BindView(R.id.checkInDisp)
-    TextView checkInDisplay;
     @BindView(R.id.textTimer)
     TextView countUpTimer;
 
     @BindView(R.id.qrButton)
-    Button qrButton;
+    ImageView qrButton;
 
     private String codeString;
     private long startTimeCounter = 0L;
