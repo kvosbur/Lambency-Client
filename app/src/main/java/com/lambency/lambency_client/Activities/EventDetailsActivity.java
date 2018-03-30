@@ -26,6 +26,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +50,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.EventModel;
@@ -75,6 +80,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
 
 public class EventDetailsActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -853,6 +861,52 @@ public class EventDetailsActivity extends AppCompatActivity implements
     }
 
 
+    @OnClick(R.id.qrButton)
+    public void handleQRClick(){
+        final android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(context).create();;
+
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        final View dialogView = layoutInflater.inflate(R.layout.dialog_qr_code, null);
+
+        try{
+            Bitmap bitmap = encodeAsBitmap(event.getClockInCode(), 250, 250);
+            ImageView qrCode = dialogView.findViewById(R.id.qrCode);
+            qrCode.setImageBitmap(bitmap);
+        } catch (WriterException e){
+            e.printStackTrace();
+        }
+
+        alertDialog.setView(dialogView);
+        alertDialog.show();
+
+
+    }
+
+
+    private Bitmap encodeAsBitmap(String str, int width, int height) throws WriterException {
+        BitMatrix result;
+        try {
+            result = new MultiFormatWriter().encode(str,
+                    BarcodeFormat.QR_CODE, width, height, null);
+        } catch (IllegalArgumentException iae) {
+            // Unsupported format
+            return null;
+        }
+        int w = result.getWidth();
+        int h = result.getHeight();
+        int[] pixels = new int[w * h];
+        for (int y = 0; y < h; y++) {
+            int offset = y * w;
+            for (int x = 0; x < w; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, w, h);
+        return bitmap;
+    }
+
+
     private void isLoading(boolean loading){
         if(loading){
             contentLayout.setVisibility(View.GONE);
@@ -920,6 +974,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
     public void onConnectionSuspended(int i) {
 
     }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

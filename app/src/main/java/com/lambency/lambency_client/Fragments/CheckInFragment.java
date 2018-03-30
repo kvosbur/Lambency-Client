@@ -263,7 +263,9 @@ public class CheckInFragment extends Fragment {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             // handle scan result
-            System.out.println("HERE");
+            String code = scanResult.getContents();
+            System.out.println("From QR: " + code);
+            code2Send.setText(code);
         }
     }
 
