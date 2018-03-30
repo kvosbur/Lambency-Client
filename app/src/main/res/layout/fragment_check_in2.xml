@@ -81,20 +81,15 @@
     </LinearLayout>
 
 
-    <!--
-
-
-
-
-
-
-
-    <Button
-        android:id="@+id/qrButton"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scan QR"/>
+        android:textAlignment="center"
+        android:text="Contact your event organizer for check in codes."
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:textSize="16sp"/>
 
--->
 
 </RelativeLayout>

@@ -291,11 +291,19 @@
                         android:text="Edit Event" />
 
                     <Button
-                        android:id="@+id/qrButton"
+                        android:id="@+id/clockInButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Show QR"
+                        android:text="Clock In Codes"
                         android:layout_toRightOf="@id/editEventButton"
+                        android:layout_below="@id/organizationLayout"/>
+
+                    <Button
+                        android:id="@+id/clockOutButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Clock Out Codes"
+                        android:layout_toRightOf="@id/clockInButton"
                         android:layout_below="@id/organizationLayout"/>
 
 

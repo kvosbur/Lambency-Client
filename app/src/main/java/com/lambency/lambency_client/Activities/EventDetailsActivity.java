@@ -3,6 +3,7 @@ package com.lambency.lambency_client.Activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -181,6 +182,12 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
     @BindView(R.id.checkoutCodeDisp)
     TextView checkoutCodeDisp;
+
+    @BindView(R.id.clockInButton)
+    Button clockInButton;
+
+    @BindView(R.id.clockOutButton)
+    Button clockOutButton;
 
     private EventModel event,eventModel;
 
@@ -683,6 +690,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
                         checkOutCode.setVisibility(View.GONE);
                         checkinCodeDisp.setVisibility(View.GONE);
                         checkoutCodeDisp.setVisibility(View.GONE);
+                        clockOutButton.setVisibility(View.GONE);
+                        clockInButton.setVisibility(View.GONE);
+
                     }
 
                     RequestOptions requestOptions = new RequestOptions();
@@ -868,9 +878,18 @@ public class EventDetailsActivity extends AppCompatActivity implements
     }
 
 
-    @OnClick(R.id.qrButton)
-    public void handleQRClick(){
-        android.support.v7.app.AlertDialog.Builder alertDialog = new android.support.v7.app.AlertDialog.Builder(context);
+    @OnClick(R.id.clockInButton)
+    public void handleCheckInClick(){
+        handleCodes(event.getClockInCode());
+    }
+
+    @OnClick(R.id.clockOutButton)
+    public void handleCheckOut(){
+        handleCodes(event.getClockOutCode());
+    }
+
+    public void handleCodes(String textCode){
+        final android.support.v7.app.AlertDialog.Builder alertDialog = new android.support.v7.app.AlertDialog.Builder(context);
 
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         final View dialogView = layoutInflater.inflate(R.layout.dialog_qr_code, null);
@@ -883,11 +902,13 @@ public class EventDetailsActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
+        TextView textCodeView = dialogView.findViewById(R.id.textCode);
+        textCodeView.setText(textCode);
 
         alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
+                dialogInterface.cancel();
             }
         });
 
@@ -907,7 +928,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
         });
 
         alertDialog.setView(dialogView);
-        alertDialog.show();
+
+        Dialog dialog = alertDialog.create();
+        dialog.show();
 
     }
 
@@ -916,6 +939,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
             Bitmap bitmap = encodeAsBitmap(event.getClockInCode(), 250, 250);
             MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "QR-" + event.getClockInCode() , "A QR code for a Lambency event.");
+            Toast.makeText(context, "QR Saved to Device Photos", Toast.LENGTH_SHORT).show();
 
         } catch (WriterException e){
 
