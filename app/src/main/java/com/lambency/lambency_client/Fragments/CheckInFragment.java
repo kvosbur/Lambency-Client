@@ -1,11 +1,16 @@
 package com.lambency.lambency_client.Fragments;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +19,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Models.EventAttendanceModel;
 import com.lambency.lambency_client.Models.UserModel;
@@ -59,6 +66,9 @@ public class CheckInFragment extends Fragment {
     @BindView(R.id.textTimer)
     TextView countUpTimer;
 
+    @BindView(R.id.qrButton)
+    Button qrButton;
+
     private String codeString;
     private long startTimeCounter = 0L;
     private Handler myHandler = new Handler();
@@ -66,7 +76,7 @@ public class CheckInFragment extends Fragment {
     long timeSwap = 0L;
     long finalTime = 0L;
 
-
+    private final int CAMERA_REQUEST = 0;
 
 
 
@@ -230,6 +240,59 @@ public class CheckInFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+    @OnClick(R.id.qrButton)
+    public void handleQRClick(){
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            requestPermissions(new String[] {Manifest.permission.CAMERA}, CAMERA_REQUEST);
+        }else {
+            launchScanner();
+        }
+    }
+
+    private void launchScanner(){
+        IntentIntegrator.forSupportFragment(this)
+                .setOrientationLocked(false)
+                .setPrompt("Scan a Lambency QR Code")
+                .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
+                .initiateScan();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null) {
+            // handle scan result
+            System.out.println("HERE");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+                    launchScanner();
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+
 
     /**
      * This interface must be implemented by activities that contain this
