@@ -10,8 +10,8 @@
 
         <ImageView
             android:id="@+id/qrCode"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:src="@drawable/ic_books"
             android:layout_centerInParent="true"/>
 

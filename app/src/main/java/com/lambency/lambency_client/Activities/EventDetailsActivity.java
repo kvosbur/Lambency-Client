@@ -9,10 +9,13 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -70,8 +73,11 @@ import com.lambency.lambency_client.Utils.TimeHelper;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,6 +94,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     String eventName = "";
 
+    private final int WRITE_EXTERNAL_STORAGE = 0;
 
     private int event_id;
     private TextView text;
@@ -863,7 +870,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
     @OnClick(R.id.qrButton)
     public void handleQRClick(){
-        final android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(context).create();;
+        android.support.v7.app.AlertDialog.Builder alertDialog = new android.support.v7.app.AlertDialog.Builder(context);
 
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         final View dialogView = layoutInflater.inflate(R.layout.dialog_qr_code, null);
@@ -876,12 +883,46 @@ public class EventDetailsActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
+
+        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+
+
+        alertDialog.setPositiveButton("Save to Device", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_DENIED){
+                    ActivityCompat.requestPermissions(EventDetailsActivity.this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
+                }else{
+                    saveQR();
+                }
+
+            }
+        });
+
         alertDialog.setView(dialogView);
         alertDialog.show();
 
-
     }
 
+    private void saveQR(){
+        try{
+
+            Bitmap bitmap = encodeAsBitmap(event.getClockInCode(), 250, 250);
+            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "QR-" + event.getClockInCode() , "A QR code for a Lambency event.");
+
+        } catch (WriterException e){
+
+            e.printStackTrace();
+
+        }
+    }
 
     private Bitmap encodeAsBitmap(String str, int width, int height) throws WriterException {
         BitMatrix result;
@@ -1006,4 +1047,29 @@ public class EventDetailsActivity extends AppCompatActivity implements
     }
     //end methods for getting current location
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case WRITE_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+                    saveQR();
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
 }
