@@ -8,7 +8,7 @@ public class Message {
 
     public String messageText;
     public String sender;
-    public long createdAt;
+    public String createdAt = "";
 
     public Message(){
 
