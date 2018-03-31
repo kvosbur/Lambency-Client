@@ -31,8 +31,14 @@ public class MessageListActivity extends AppCompatActivity {
         Message m1 = new Message("Hello!", "Evan");
         Message m2 = new Message("How are you?", "Jim");
         Message m3 = new Message("I am good! Thanks!", "Evan");
+        Message m4 = new Message("This is such a cool messaging system!", "Jim");
+        Message m5 = new Message("Yeah, I know!", "Evan");
+        Message m6 = new Message("I hope this is enough", "Jim");
+        Message m7 = new Message("Should be!", "Evan");
 
         messageList.add(m1); messageList.add(m2); messageList.add(m3);
+        messageList.add(m4); messageList.add(m5); messageList.add(m6);
+        messageList.add(m7);
 
         mMessageRecycler = (RecyclerView) findViewById(R.id.reyclerview_message_list);
         myMessageAdapter = new MessageListAdapter(this, messageList);
