@@ -21,6 +21,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -132,6 +134,8 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     private EventsAdapter eventsAdapter;
     private String usersEmail = "";
 
+    private MenuItem editOrgButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,8 +193,13 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     //hiding or showing invite button
                     if (UserModel.myUserModel.getMyOrgs().contains(organizationModel.getOrgID())){
                         inviteUsers.setVisibility(View.VISIBLE);
+                        editOrgButton.setVisible(true);
                     }
-                    else inviteUsers.setVisibility(View.GONE);
+
+                    else {
+                        inviteUsers.setVisibility(View.GONE);
+                        editOrgButton.setVisible(false);
+                    }
 
                     getUpcomingEvents();
 
@@ -554,15 +563,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-            default:
-                return true;
-        }
-    }
 
     @OnClick(R.id.followUnFollow)
     public void onClickFollow(){
@@ -853,4 +853,34 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         intent.putExtra("org_id", organizationModel.getOrgID());
         startActivity(intent);
     }
+
+
+    private void handleEditClick(){
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = new MenuInflater(this);
+        menuInflater.inflate(R.menu.menu_org, menu);
+
+        editOrgButton = menu.findItem(R.id.action_edit);
+        
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_edit:
+                handleEditClick();
+            default:
+                return true;
+        }
+    }
+
 }

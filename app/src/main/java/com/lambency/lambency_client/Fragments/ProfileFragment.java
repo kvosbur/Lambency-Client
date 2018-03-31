@@ -154,7 +154,7 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.menu_edit, menu);
+        menuInflater.inflate(R.menu.menu_profile, menu);
     }
 
     @Override
