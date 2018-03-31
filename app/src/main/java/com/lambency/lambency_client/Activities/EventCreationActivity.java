@@ -94,6 +94,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     @BindView(R.id.zipEdit)
     TextInputEditText zipEdit;
 
+    @BindView(R.id.deleteButton)
+    Button deleteButton;
 
 
     OrgSpinnerAdapter orgSpinnerAdapter;
@@ -245,6 +247,11 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 new TimePickerDialog(EventCreationActivity.this,time_listener2,hour,minute,false).show();
             }
         });
+
+
+        if(editing){
+            deleteButton.setVisibility(View.VISIBLE);
+        }
 
         //checking address
         /*addressEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -548,6 +555,30 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
             }
         });
 
+    }
+
+
+    @OnClick(R.id.deleteButton)
+    public void handleDelete(){
+        final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(EventCreationActivity.this).create();
+        alertDialog.setTitle("Delete Event");
+        alertDialog.setMessage("Are you sure you want to delete " + eventModel.getName() + "?");
+        alertDialog.setCancelable(true);
+
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Delete Event", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //TODO Put delete event retrofit here
+            }
+        });
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                alertDialog.cancel();
+            }
+        });
+
+        alertDialog.show();
     }
 
 
