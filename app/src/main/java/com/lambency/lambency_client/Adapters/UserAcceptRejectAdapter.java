@@ -38,6 +38,12 @@ public class UserAcceptRejectAdapter extends RecyclerView.Adapter<UserAcceptReje
     public void onBindViewHolder(UserAcceptRejectAdapter.ViewHolder holder, int position) {
 
         OrganizationModel organizationModel = orgs.get(position);
+
+        String title = organizationModel.getName();
+        holder.titleOfOrg.setText(title);
+
+        String desc = organizationModel.getDescription();
+        holder.descriptionOfOrg.setText(desc);
         /*
         String name = organizationModel.getFirstName() + " " + organizationModel.getLastName();
         holder.nameView.setText(name);

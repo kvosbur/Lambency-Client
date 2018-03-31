@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.lambency.lambency_client.Activities.AcceptRejectActivity;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.LoginActivity;
+import com.lambency.lambency_client.Activities.UserAcceptRejectActivity;
+import com.lambency.lambency_client.Adapters.UserAcceptRejectAdapter;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
@@ -184,8 +186,7 @@ public class ProfileFragment extends Fragment {
                 break;
 
             case R.id.action_seeRequests:
-                Intent i = new Intent(getActivity(), AcceptRejectActivity.class);
-                i.putExtra("org_id", 7);
+                Intent i = new Intent(getActivity(), UserAcceptRejectActivity.class);
                 startActivity(i);
                 //((Activity) getActivity()).overridePendingTransition(0,0);
         }

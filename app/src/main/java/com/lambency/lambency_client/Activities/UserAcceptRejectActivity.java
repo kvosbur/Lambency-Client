@@ -50,10 +50,11 @@ public class UserAcceptRejectActivity  extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        getSupportActionBar().setTitle("Pending Requests");
+        getSupportActionBar().setTitle("Your Requests");
 
         //userList.add(new UserModel("Evan", "Honeysett", "ehoneyse@purdue.edu", null, null, null, null, 0, 0, ""));
         //userList.add(new UserModel("Barack", "Obama", "potus@wh.gov", null, null, null, null, 0, 0, ""));
+        organizationModelList.add(new OrganizationModel(UserModel.myUserModel, "Test Org", "123", 100, "Cool", "a@a.com", UserModel.myUserModel, ""));
 
         setupRecyclerView();
         //SwipeController swipeController = new SwipeController();
