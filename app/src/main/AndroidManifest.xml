@@ -99,6 +99,9 @@
             android:name=".Activities.AcceptRejectActivity"
             android:exported="true" />
         <activity
+            android:name=".Activities.MessageListActivity"
+            android:exported="true" />
+        <activity
             android:name=".Activities.UserAcceptRejectActivity"
             android:exported="true" />
         <activity
