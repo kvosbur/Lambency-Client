@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Activities.AcceptRejectActivity;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
@@ -180,6 +182,12 @@ public class ProfileFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 break;
+
+            case R.id.action_seeRequests:
+                Intent i = new Intent(getActivity(), AcceptRejectActivity.class);
+                i.putExtra("org_id", 7);
+                startActivity(i);
+                //((Activity) getActivity()).overridePendingTransition(0,0);
         }
 
         return super.onOptionsItemSelected(item);

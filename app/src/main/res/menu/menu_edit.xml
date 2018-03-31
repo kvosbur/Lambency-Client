@@ -14,4 +14,11 @@
         android:title="Log Out"
         app:showAsAction="ifRoom"
         />
+
+    <item
+        android:id="@+id/action_seeRequests"
+        android:icon="@drawable/ic_group_add_white_24dp"
+        android:title="Requests"
+        app:showAsAction="always"
+        />
 </menu>
