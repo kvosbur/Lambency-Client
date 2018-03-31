@@ -100,6 +100,7 @@
             android:exported="true" />
         <activity
             android:name=".Activities.MessageListActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:exported="true" />
         <activity
             android:name=".Activities.UserAcceptRejectActivity"
