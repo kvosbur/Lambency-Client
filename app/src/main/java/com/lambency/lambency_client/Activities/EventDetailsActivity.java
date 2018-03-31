@@ -649,7 +649,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                     Toast.makeText(getApplicationContext(), eventModel.getName(), Toast.LENGTH_LONG).show();
 
-
                     dateView.setText(currDate); //TimeHelper.dateFromTimestamp(eventModel.getStart()));
                     descriptionView.setText(eventModel.getDescription());
                     timeView.setText(TimeHelper.hourFromTimestamp(eventModel.getStart()) + " - " + TimeHelper.hourFromTimestamp(eventModel.getEnd()));

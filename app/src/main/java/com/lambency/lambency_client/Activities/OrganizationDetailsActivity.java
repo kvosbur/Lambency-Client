@@ -854,9 +854,12 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     private void handleEditClick(){
-
+        Bundle bundle = new Bundle();
+        bundle.putInt("org_id", organizationModel.getOrgID());
+        Intent intent = new Intent(this, OrgCreationActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -866,7 +869,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.menu_org, menu);
 
         editOrgButton = menu.findItem(R.id.action_edit);
-        
+
         return super.onCreateOptionsMenu(menu);
     }
 

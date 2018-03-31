@@ -9,6 +9,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
@@ -34,6 +36,7 @@ import butterknife.OnClick;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OrgCreationActivity extends AppCompatActivity {
@@ -41,6 +44,13 @@ public class OrgCreationActivity extends AppCompatActivity {
     private Context context;
     private String imagePath = "";
     private OrganizationModel orgModel;
+    private boolean editing;
+
+    @BindView(R.id.mainLayout)
+    RelativeLayout mainLayout;
+
+    @BindView(R.id.progressLayout)
+    RelativeLayout progressLayout;
 
     @BindView(R.id.profileImage)
     ImageView profileImage;
@@ -69,6 +79,7 @@ public class OrgCreationActivity extends AppCompatActivity {
     @BindView(R.id.loadingBar)
     ProgressBar progressBar;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,13 +88,56 @@ public class OrgCreationActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+
+        editing = false;
+        if(getIntent().getExtras() != null){
+            int org_id = getIntent().getExtras().getInt("org_id");
+            editing = true;
+            getOrgModel(org_id);
+        }
+
+
         //Set up the state selector
         AutoCompleteTextView stateAutocomplete = (AutoCompleteTextView) findViewById(R.id.stateAutocomplete);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.states, android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         stateAutocomplete.setAdapter(adapter);
+
     }
+
+
+    private void getOrgModel(final int orgId){
+
+        mainLayout.setVisibility(View.GONE);
+        progressLayout.setVisibility(View.VISIBLE);
+
+        LambencyAPIHelper.getInstance().getOrgSearchByID(orgId + "").enqueue(new Callback<OrganizationModel>() {
+            @Override
+            public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
+                if(response.body() != null){
+                    orgModel = response.body();
+
+                    nameEdit.setText(orgModel.getName());
+                    emailEdit.setText(orgModel.getEmail());
+                    descriptionEdit.setText(orgModel.getDescription());
+                    addressEdit.setText(orgModel.getLocation());
+
+
+                    mainLayout.setVisibility(View.VISIBLE);
+                    progressLayout.setVisibility(View.GONE);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OrganizationModel> call, Throwable t) {
+                Log.e("Retrofit", "Unable to get org to edit");
+            }
+        });
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
