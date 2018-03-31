@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Adapters.AcceptRejectAdapter;
@@ -21,6 +23,7 @@ import com.lambency.lambency_client.Utils.SwipeControllerActions;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,6 +43,9 @@ public class UserAcceptRejectActivity  extends AppCompatActivity {
     private int org_id;
     public int position;
 
+    @BindView(R.id.noCurrentRequests)
+    TextView currRequests;
+
     List<OrganizationModel> organizationModelList = new ArrayList<>();
 
     @Override
@@ -52,9 +58,14 @@ public class UserAcceptRejectActivity  extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Your Requests");
 
+        //TODO Initial Retrofit here for getting requests
+        if (true) {
+            currRequests.setVisibility(View.VISIBLE);
+        }
+
         //userList.add(new UserModel("Evan", "Honeysett", "ehoneyse@purdue.edu", null, null, null, null, 0, 0, ""));
         //userList.add(new UserModel("Barack", "Obama", "potus@wh.gov", null, null, null, null, 0, 0, ""));
-        organizationModelList.add(new OrganizationModel(UserModel.myUserModel, "Test Org", "123", 100, "Cool", "a@a.com", UserModel.myUserModel, ""));
+        //organizationModelList.add(new OrganizationModel(UserModel.myUserModel, "Test Org", "123", 100, "Cool", "a@a.com", UserModel.myUserModel, ""));
 
         setupRecyclerView();
         //SwipeController swipeController = new SwipeController();
@@ -62,12 +73,12 @@ public class UserAcceptRejectActivity  extends AppCompatActivity {
             @Override
             public void onRightClicked(int position) {
                 //callRetrofit(true,position);
-                //Toast.makeText(getApplicationContext(), "Accepted user!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Accepted invite!", Toast.LENGTH_LONG).show();
             }
 
             public void onLeftClicked(int position) {
                 //callRetrofit(false,position);
-                //Toast.makeText(getApplicationContext(), "Rejected user!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Rejected invite!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -91,6 +102,7 @@ public class UserAcceptRejectActivity  extends AppCompatActivity {
         return this.position;
     }
 
+    //TODO Update retrofit here for adding accept and reject
     private void callRetrofit(final boolean approved, int position){
         /*
         this.position = position;

@@ -15,6 +15,15 @@
         android:textSize="20dp"
         android:text="Swipe to accept or reject!"/>
 
+    <TextView
+        android:id="@+id/noCurrentRequests"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No current requests :("
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
