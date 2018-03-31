@@ -3,6 +3,7 @@ package com.lambency.lambency_client.Fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.lambency.lambency_client.Models.EventAttendanceModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -151,6 +153,18 @@ public class CheckInFragment extends Fragment {
         ((BottomBarActivity) getActivity())
                 .setActionBarTitle("Check In");
 
+
+        if(SharedPrefsHelper.isCheckedIn(getContext())){
+           sendButton.setText("Check Out");
+            startTimeCounter = SharedPrefsHelper.getStartTime(getContext());
+            myHandler.postDelayed(updateTimerMethod, 0);
+        }else{
+            sendButton.setText("Check In");
+            countUpTimer.setText("00:00:00");
+        }
+
+
+
         return v;
     }
 
@@ -159,16 +173,21 @@ public class CheckInFragment extends Fragment {
     public void handleSendClick() {
         codeString = code2Send.getText().toString();
 
+        if (codeString.matches("")) {
+            Toast.makeText(getContext(), "Please enter an event code", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        checkInRetrofit(codeString);
+    }
+
+
+    private void checkInRetrofit(String code){
+
         int time = (int) (System.currentTimeMillis());
         final Timestamp tsTemp = new Timestamp(time);
 
-
-        if (codeString.matches("")) {
-            Toast.makeText(getContext(), "Please enter the event start code", Toast.LENGTH_LONG).show();
-        }
-
-        EventAttendanceModel eventAttendanceModel = new EventAttendanceModel(UserModel.myUserModel.getUserId(),tsTemp,codeString);
-
+        EventAttendanceModel eventAttendanceModel = new EventAttendanceModel(UserModel.myUserModel.getUserId(),tsTemp,code);
 
         //Retrofits
         LambencyAPIHelper.getInstance().sendClockInCode(UserModel.myUserModel.getOauthToken(), eventAttendanceModel).enqueue(new retrofit2.Callback<Integer>() {
@@ -182,7 +201,18 @@ public class CheckInFragment extends Fragment {
                 Integer ret = response.body();
                 if (ret == 0) {
                     System.out.println("successfully checked in for the event");
-                    Toast.makeText(getApplicationContext(), "You have successfully checked in", Toast.LENGTH_LONG).show();
+
+                    if(SharedPrefsHelper.isCheckedIn(getContext())){
+                        SharedPrefsHelper.setCheckedIn(getContext(), false);
+                        sendButton.setText("Check In");
+                        Toast.makeText(getApplicationContext(), "Checked Out", Toast.LENGTH_SHORT).show();
+                    }else{
+                        SharedPrefsHelper.setCheckedIn(getContext(), true);
+                        sendButton.setText("Check Out");
+                        SharedPrefsHelper.setStartTime(getContext(), System.currentTimeMillis());
+                        Toast.makeText(getApplicationContext(), "Checked In", Toast.LENGTH_SHORT).show();
+                    }
+
                     if (startTimeCounter<1) {
                         Toast.makeText(getApplicationContext(), "time sent was" + tsTemp.getHours()+":"
                                 +tsTemp.getMinutes(), Toast.LENGTH_LONG).show();
@@ -212,9 +242,8 @@ public class CheckInFragment extends Fragment {
                 Toast.makeText(getApplicationContext(), "Failure code was not accepted", Toast.LENGTH_LONG).show();
             }
         });
-
-
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -237,6 +266,9 @@ public class CheckInFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+
+        SharedPrefsHelper.setStartTime(getContext(), startTimeCounter);
+
         mListener = null;
     }
 
@@ -264,7 +296,7 @@ public class CheckInFragment extends Fragment {
             // handle scan result
             String code = scanResult.getContents();
             System.out.println("From QR: " + code);
-            code2Send.setText(code);
+            checkInRetrofit(code);
         }
     }
 
