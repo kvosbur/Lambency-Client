@@ -587,13 +587,21 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     @OnClick(R.id.deleteButton)
     public void handleDelete(){
         final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(EventCreationActivity.this).create();
+
+        LayoutInflater factory = LayoutInflater.from(EventCreationActivity.this);
+        final View view = factory.inflate(R.layout.dialog_text_input, null);
+        alertDialog.setView(view);
+
         alertDialog.setTitle("Delete Event");
         alertDialog.setMessage("Are you sure you want to delete " + eventModel.getName() + "?");
         alertDialog.setCancelable(true);
 
         alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Delete Event", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                //TODO Put delete event retrofit here
+                EditText editText = alertDialog.findViewById(R.id.editText);
+                String message = editText.getText().toString();
+
+                //TODO Put delete event retrofit here and handle message
             }
         });
 
