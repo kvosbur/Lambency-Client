@@ -21,7 +21,6 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -85,12 +84,10 @@
             take the user to the EventDetailsActivity activity.
             -->
         </activity>
-
         <activity
             android:name=".Activities.FilterActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.OrgCreationActivity"
             android:exported="true"
@@ -104,7 +101,7 @@
         <activity
             android:name=".Activities.FilterDistanceActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.SearchActivity"
             android:exported="true"
@@ -113,7 +110,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.OrganizationDetailsActivity"
-            android:exported="true" 
+            android:exported="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.BottomBarActivity"
@@ -121,9 +118,10 @@
         <activity
             android:name=".Activities.ListEventsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activities.OrgUsersActivity"
-            android:exported="true"></activity>
-
+        <activity
+            android:name=".Activities.OrgUsersActivity"
+            android:exported="true" />
+        <activity android:name=".Activities.SignupActivity"></activity>
     </application>
 
 </manifest>

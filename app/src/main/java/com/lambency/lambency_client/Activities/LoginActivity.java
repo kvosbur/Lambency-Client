@@ -112,6 +112,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_login);
 
+            TextView forSignup = findViewById(R.id.link_signup);
+            forSignup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                    startActivity(intent);
+                }
+            });
+
 
             callbackManager = CallbackManager.Factory.create();
             //add permissions for Facebook to get email
