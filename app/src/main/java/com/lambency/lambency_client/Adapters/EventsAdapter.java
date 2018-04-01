@@ -88,6 +88,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
                     holder.eventImageView);
         }
 
+        //TODO Add check here if event is member only, if so set memberOnlyText visibility to visible
+
         holder.orgTitleView.setText(eventModel.getOrgName());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
