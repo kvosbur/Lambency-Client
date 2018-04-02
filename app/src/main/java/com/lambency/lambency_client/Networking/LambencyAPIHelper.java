@@ -24,7 +24,7 @@ public class LambencyAPIHelper {
             Gson gson = new GsonBuilder().setLenient().create();
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://kevinv.dlinkddns.com:20000")
+                    .baseUrl("https://kevinvosburgh.com:20000")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 

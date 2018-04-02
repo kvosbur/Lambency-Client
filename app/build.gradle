@@ -73,11 +73,9 @@ dependencies {
     //Circle image view
     compile 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.google.android.gms:play-services-location:11.8.0'
-
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
-
     //Floating Action Button
     compile 'com.getbase:floatingactionbutton:1.10.1'
 
