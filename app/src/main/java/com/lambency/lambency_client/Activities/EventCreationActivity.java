@@ -14,6 +14,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -601,7 +602,10 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 EditText editText = alertDialog.findViewById(R.id.editText);
                 String message = editText.getText().toString();
 
-                //TODO Put delete event retrofit here and handle message
+                deleteEventRetrofit(message);
+
+                Intent intent = new Intent(context, BottomBarActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -615,6 +619,37 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
         alertDialog.show();
     }
 
+
+    private void deleteEventRetrofit(String message){
+        LambencyAPIHelper.getInstance().getDeleteEvent(UserModel.myUserModel.getOauthToken(), eventModel.getEvent_id() + "", message).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred");
+                    return;
+                }
+                //when response is back
+                Integer ret = response.body();
+                if(ret == null || ret == -1){
+                    System.out.println("An error has occurred");
+                }
+                else if(ret == -2){
+                    System.out.println("User or event not found");
+                }
+                else if(ret == -3){
+                    System.out.println("User does not have permissions to delete the event");
+                }
+                else if(ret == 0){
+                    System.out.println("success");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e("Retrofit", "Failed to delete event");
+            }
+        });
+    }
 
     /***** Methods for handling the org select spinner *****/
 
