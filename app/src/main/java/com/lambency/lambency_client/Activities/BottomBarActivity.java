@@ -129,6 +129,10 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
                         switchToFragment4();
                         break;
 
+                    case R.id.messagingBot:
+                        switchToFragment5();
+                        break;
+
                 }
 
                 // One possibility of action is to replace the contents above the nav bar
@@ -221,6 +225,11 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.fragContainer, new CheckInFragment()).commit();
 
+    }
+
+    public void switchToFragment5(){
+        Intent i = new Intent(this, MessageListActivity.class);
+        startActivity(i);
     }
 
     public void setActionBarTitle(String title) {
