@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 import com.lambency.lambency_client.Adapters.MessageListAdapter;
@@ -43,6 +46,8 @@ public class MessageListActivity extends AppCompatActivity {
     EditText messageContent;
 
     public List<Message> messageList;
+
+    private FirebaseListAdapter<Message> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +83,9 @@ public class MessageListActivity extends AppCompatActivity {
         mMessageRecycler.setAdapter(myMessageAdapter);
         myMessageAdapter.notifyDataSetChanged();
 
+
+
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,13 +100,21 @@ public class MessageListActivity extends AppCompatActivity {
                     messageList.get(messageList.size()-1).createdAt = "";
                 }
 
+                /*
                 FirebaseMessaging fm = FirebaseMessaging.getInstance();
                 fm.send(new RemoteMessage.Builder("525242144476@gcm.googleapis.com")
                         .setMessageId(Integer.toString(1))
                         .addData("my_message", "Hello World")
                         .addData("my_action","SAY_HELLO")
                         .build());
+                        */
 
+                FirebaseDatabase.getInstance()
+                        .getReference()
+                        .push()
+                        .setValue(new Message("Hello World", "Evan"));
+
+                /*
                 Message m1 = new Message(message, UserModel.myUserModel.getFirstName());
                 SimpleDateFormat sdf = new SimpleDateFormat("h:mm");
                 Date now = new Date();
@@ -107,9 +123,23 @@ public class MessageListActivity extends AppCompatActivity {
                 messageList.add(m1);
                 myMessageAdapter.notifyDataSetChanged();
                 messageContent.setText("");
+                */
+                populateMessage();
                 mMessageRecycler.scrollToPosition(messageList.size() - 1);
             }
         });
+    }
+
+    public void populateMessage() {
+        adapter = new FirebaseListAdapter<Message>(this, Message.class,
+                R.layout.activity_message_list, FirebaseDatabase.getInstance().getReference()) {
+            @Override
+            protected void populateView(View v, Message model, int position) {
+                // Get references to the views of message.xml
+                messageList.add(model);
+                myMessageAdapter.notifyDataSetChanged();
+            }
+        };
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
