@@ -895,7 +895,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
         final View dialogView = layoutInflater.inflate(R.layout.dialog_qr_code, null);
 
         try{
-            Bitmap bitmap = encodeAsBitmap(event.getClockInCode(), 250, 250);
+            Bitmap bitmap = encodeAsBitmap(textCode, 250, 250);
             ImageView qrCode = dialogView.findViewById(R.id.qrCode);
             qrCode.setImageBitmap(bitmap);
         } catch (WriterException e){
