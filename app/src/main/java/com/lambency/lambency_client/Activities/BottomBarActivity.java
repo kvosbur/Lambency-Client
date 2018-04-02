@@ -227,8 +227,15 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         getSupportActionBar().setTitle(title);
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
+
 }

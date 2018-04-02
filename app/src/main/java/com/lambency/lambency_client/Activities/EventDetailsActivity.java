@@ -3,16 +3,20 @@ package com.lambency.lambency_client.Activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -26,6 +30,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +54,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.EventModel;
@@ -65,8 +74,11 @@ import com.lambency.lambency_client.Utils.TimeHelper;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,10 +88,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
+
 public class EventDetailsActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     String eventName = "";
 
+    private final int WRITE_EXTERNAL_STORAGE = 0;
 
     private int event_id;
     private TextView text;
@@ -166,6 +182,12 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
     @BindView(R.id.checkoutCodeDisp)
     TextView checkoutCodeDisp;
+
+    @BindView(R.id.clockInButton)
+    Button clockInButton;
+
+    @BindView(R.id.clockOutButton)
+    Button clockOutButton;
 
     private EventModel event,eventModel;
 
@@ -668,6 +690,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
                         checkOutCode.setVisibility(View.GONE);
                         checkinCodeDisp.setVisibility(View.GONE);
                         checkoutCodeDisp.setVisibility(View.GONE);
+                        clockOutButton.setVisibility(View.GONE);
+                        clockInButton.setVisibility(View.GONE);
+
                     }
 
                     RequestOptions requestOptions = new RequestOptions();
@@ -853,6 +878,100 @@ public class EventDetailsActivity extends AppCompatActivity implements
     }
 
 
+    @OnClick(R.id.clockInButton)
+    public void handleCheckInClick(){
+        handleCodes(event.getClockInCode());
+    }
+
+    @OnClick(R.id.clockOutButton)
+    public void handleCheckOut(){
+        handleCodes(event.getClockOutCode());
+    }
+
+    public void handleCodes(String textCode){
+        final android.support.v7.app.AlertDialog.Builder alertDialog = new android.support.v7.app.AlertDialog.Builder(context);
+
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        final View dialogView = layoutInflater.inflate(R.layout.dialog_qr_code, null);
+
+        try{
+            Bitmap bitmap = encodeAsBitmap(textCode, 250, 250);
+            ImageView qrCode = dialogView.findViewById(R.id.qrCode);
+            qrCode.setImageBitmap(bitmap);
+        } catch (WriterException e){
+            e.printStackTrace();
+        }
+
+        TextView textCodeView = dialogView.findViewById(R.id.textCode);
+        textCodeView.setText(textCode);
+
+        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+
+
+        alertDialog.setPositiveButton("Save to Device", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_DENIED){
+                    ActivityCompat.requestPermissions(EventDetailsActivity.this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
+                }else{
+                    saveQR();
+                }
+
+            }
+        });
+
+        alertDialog.setView(dialogView);
+
+        Dialog dialog = alertDialog.create();
+        dialog.show();
+
+    }
+
+    private void saveQR(){
+        try{
+
+            Bitmap bitmap = encodeAsBitmap(event.getClockInCode(), 250, 250);
+            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "QR-" + event.getClockInCode() , "A QR code for a Lambency event.");
+            Toast.makeText(context, "QR Saved to Device Photos", Toast.LENGTH_SHORT).show();
+
+        } catch (WriterException e){
+
+            e.printStackTrace();
+
+        }
+    }
+
+    private Bitmap encodeAsBitmap(String str, int width, int height) throws WriterException {
+        BitMatrix result;
+        try {
+            result = new MultiFormatWriter().encode(str,
+                    BarcodeFormat.QR_CODE, width, height, null);
+        } catch (IllegalArgumentException iae) {
+            // Unsupported format
+            return null;
+        }
+        int w = result.getWidth();
+        int h = result.getHeight();
+        int[] pixels = new int[w * h];
+        for (int y = 0; y < h; y++) {
+            int offset = y * w;
+            for (int x = 0; x < w; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, w, h);
+        return bitmap;
+    }
+
+
     private void isLoading(boolean loading){
         if(loading){
             contentLayout.setVisibility(View.GONE);
@@ -921,6 +1040,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
     }
 
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         /*
@@ -951,4 +1071,29 @@ public class EventDetailsActivity extends AppCompatActivity implements
     }
     //end methods for getting current location
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case WRITE_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+                    saveQR();
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
 }
