@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.lambency.lambency_client.Adapters.MessageListAdapter;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
@@ -89,6 +91,13 @@ public class MessageListActivity extends AppCompatActivity {
                 if(messageList.size() > 0) {
                     messageList.get(messageList.size()-1).createdAt = "";
                 }
+
+                FirebaseMessaging fm = FirebaseMessaging.getInstance();
+                fm.send(new RemoteMessage.Builder("525242144476@gcm.googleapis.com")
+                        .setMessageId(Integer.toString(1))
+                        .addData("my_message", "Hello World")
+                        .addData("my_action","SAY_HELLO")
+                        .build());
 
                 Message m1 = new Message(message, UserModel.myUserModel.getFirstName());
                 SimpleDateFormat sdf = new SimpleDateFormat("h:mm");
