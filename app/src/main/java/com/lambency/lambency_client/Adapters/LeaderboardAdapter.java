@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Adapters;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,9 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
+import com.lambency.lambency_client.Activities.LeaderboardActivity;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
@@ -58,9 +61,25 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         @BindView(R.id.hoursOnLeaderboard)
         TextView leaderboardHours;
 
+        @BindView(R.id.leaderboard_card)
+        CardView leaderboardCard;
+
+        @BindView(R.id.seeMoreLeaderboard)
+        TextView seeMore;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        @OnClick(R.id.leaderboard_card)
+        public void onClickCard() {
+            if(seeMore.getVisibility() == View.GONE) {
+                //TODO Transition to user page
+            }
+            else {
+                //TODO Retrofit call here for adding more users
+            }
         }
     }
 

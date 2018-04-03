@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -33,8 +34,8 @@ public class LeaderboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_user);
-        mRecyclerView = (RecyclerView) findViewById(R.id.userRecycle);
+        setContentView(R.layout.activity_leaderboard);
+        mRecyclerView = (RecyclerView) findViewById(R.id.leaderboardRecycle);
 
         ButterKnife.bind(this);
 
