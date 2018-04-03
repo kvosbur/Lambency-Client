@@ -22,6 +22,7 @@ import android.app.Fragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
@@ -97,12 +98,13 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         ButterKnife.bind(this);
 
         final Handler handler = new Handler();
-        final int delay = 600000; //milliseconds
+        final int delay = 10000; //milliseconds
 
         handler.postDelayed(new Runnable(){
             public void run(){
-                if(!MyLifecycleHandler.isApplicationVisible()) {
+                if(MyLifecycleHandler.isApplicationVisible()) {
                     //TODO Retrofit for application being closed
+                    Toast.makeText(BottomBarActivity.this, "Hello World!", Toast.LENGTH_SHORT).show();
                 }
                 handler.postDelayed(this, delay);
             }
