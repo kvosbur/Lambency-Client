@@ -14,6 +14,8 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -94,6 +96,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     @BindView(R.id.zipEdit)
     TextInputEditText zipEdit;
 
+    @BindView(R.id.deleteButton)
+    Button deleteButton;
 
 
     OrgSpinnerAdapter orgSpinnerAdapter;
@@ -101,17 +105,11 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     private boolean editing = false;
     String eventName, dateOfEvent, addressOfEvent, description;
     private Context context;
-
     private EventModel eventModel;
-
     Button date,startTime,endTime;
-
     private String imagePath = "";
-
     Timestamp startingTime,endingTime;
-
     Calendar myCalendar = Calendar.getInstance();
-
 
     //For address validate
     private void validateInput(String address){
@@ -246,6 +244,11 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
             }
         });
 
+
+        if(editing){
+            deleteButton.setVisibility(View.VISIBLE);
+        }
+
         //checking address
         /*addressEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -292,7 +295,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 String city = cityEdit.getText().toString();
                 String state = stateAutocomplete.getText().toString();
                 String zip = zipEdit.getText().toString();
-                String location = addressOfEvent + " " + city + " " + state + " " + zip;
+                final String location = addressOfEvent + " " + city + " " + state + " " + zip;
 
                 if (editing) {
                     Bitmap bm;
@@ -302,24 +305,55 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     } else {
                         bm = BitmapFactory.decodeFile(imagePath);
                     }
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                        byte[] b = baos.toByteArray();
-                        String encodedProfile = Base64.encodeToString(b, Base64.DEFAULT);
 
-                        eventModel.setName(nameEdit.getText().toString());
-                        eventModel.setImageFile(encodedProfile);
-                        eventModel.setOrg_id(2);
-                        eventModel.setStart(startingTime);
-                        eventModel.setEnd(endingTime);
-                        eventModel.setDescription(descriptionEdit.getText().toString());
-                        eventModel.setLocation(location);
-                        eventModel.setOrg_id(eventOrgModel.getOrgID());
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                    byte[] b = baos.toByteArray();
+                    final String encodedProfile = Base64.encodeToString(b, Base64.DEFAULT);
 
-                        updateEvent(eventModel);
 
-                        Intent intent = new Intent(context, BottomBarActivity.class);
-                        context.startActivity(intent);
+                    //Check if the user wants to include a reason for editing
+                    final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(EventCreationActivity.this).create();
+                    LayoutInflater factory = LayoutInflater.from(EventCreationActivity.this);
+                    final View view = factory.inflate(R.layout.dialog_text_input, null);
+
+                    alertDialog.setView(view);
+                    alertDialog.setTitle("Give a reason for editing?");
+                    alertDialog.setMessage("If you want, you can tell those attending why you changed it.");
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm Edit", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    EditText editText = alertDialog.findViewById(R.id.editText);
+                                    String message = editText.getText().toString();
+                                    //TODO add the message to the email or something here
+
+
+                                    eventModel.setName(nameEdit.getText().toString());
+                                    eventModel.setImageFile(encodedProfile);
+                                    eventModel.setOrg_id(2);
+                                    eventModel.setStart(startingTime);
+                                    eventModel.setEnd(endingTime);
+                                    eventModel.setDescription(descriptionEdit.getText().toString());
+                                    eventModel.setLocation(location);
+                                    eventModel.setOrg_id(eventOrgModel.getOrgID());
+
+                                    updateEvent(eventModel);
+
+                                    Intent intent = new Intent(context, BottomBarActivity.class);
+                                    context.startActivity(intent);
+                                }
+                    });
+
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            alertDialog.cancel();
+                        }
+                    });
+
+                    alertDialog.show();
+
+
 
                 } else {
 
@@ -550,6 +584,72 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
     }
 
+
+    @OnClick(R.id.deleteButton)
+    public void handleDelete(){
+        final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(EventCreationActivity.this).create();
+
+        LayoutInflater factory = LayoutInflater.from(EventCreationActivity.this);
+        final View view = factory.inflate(R.layout.dialog_text_input, null);
+        alertDialog.setView(view);
+
+        alertDialog.setTitle("Delete Event");
+        alertDialog.setMessage("Are you sure you want to delete " + eventModel.getName() + "?");
+        alertDialog.setCancelable(true);
+
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Delete Event", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                EditText editText = alertDialog.findViewById(R.id.editText);
+                String message = editText.getText().toString();
+
+                deleteEventRetrofit(message);
+
+                Intent intent = new Intent(context, BottomBarActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                alertDialog.cancel();
+            }
+        });
+
+        alertDialog.show();
+    }
+
+
+    private void deleteEventRetrofit(String message){
+        LambencyAPIHelper.getInstance().getDeleteEvent(UserModel.myUserModel.getOauthToken(), eventModel.getEvent_id() + "", message).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred");
+                    return;
+                }
+                //when response is back
+                Integer ret = response.body();
+                if(ret == null || ret == -1){
+                    System.out.println("An error has occurred");
+                }
+                else if(ret == -2){
+                    System.out.println("User or event not found");
+                }
+                else if(ret == -3){
+                    System.out.println("User does not have permissions to delete the event");
+                }
+                else if(ret == 0){
+                    System.out.println("success");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e("Retrofit", "Failed to delete event");
+            }
+        });
+    }
 
     /***** Methods for handling the org select spinner *****/
 
