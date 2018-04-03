@@ -103,6 +103,9 @@
             android:name=".Activities.UserAcceptRejectActivity"
             android:exported="true" />
         <activity
+            android:name=".Activities.LeaderboardActivity"
+            android:exported="true" />
+        <activity
             android:name=".Activities.FilterDistanceActivity"
             android:exported="true"
             android:screenOrientation="portrait"/>

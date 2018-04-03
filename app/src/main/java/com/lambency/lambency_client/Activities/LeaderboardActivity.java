@@ -41,12 +41,15 @@ public class LeaderboardActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Leaderboard");
 
+        userList.add(UserModel.myUserModel);
+        userList.add(new UserModel("...", null, null, null, null, null,null, 0, 0, null));
+
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new LeaderboardAdapter(userList);
+        mAdapter = new LeaderboardAdapter(userList, this);
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.notifyDataSetChanged(); // how we update
