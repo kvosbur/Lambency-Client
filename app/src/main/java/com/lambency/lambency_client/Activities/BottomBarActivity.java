@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Activities;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
@@ -54,6 +55,7 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.MyLifecycleHandler;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -93,6 +95,18 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+
+        final Handler handler = new Handler();
+        final int delay = 600000; //milliseconds
+
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                if(!MyLifecycleHandler.isApplicationVisible()) {
+                    //TODO Retrofit for application being closed
+                }
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
 
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
         bar.setSelectedItemId(R.id.lamBot);
