@@ -89,7 +89,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
                             return;
                         }
-                        Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                         System.out.println("got the user object");
 
                         //System.out.println("SUCCESS");
@@ -102,7 +101,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onFailure(Call<UserModel> call, Throwable throwable) {
                         //when failure
                         System.out.println("FAILED CALL");
-                        Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Login error... Please try again", Toast.LENGTH_LONG).show();
 
                     }
                 });
@@ -364,7 +363,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     //System.out.println(ua.getoAuthCode());
                     //System.out.println(ua.getStatus());
                     if(ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
-                        Toast.makeText(getApplicationContext(), "Success communication with server.", Toast.LENGTH_LONG).show();
                         //updateUI(account);
 
                         UserAuthenticatorModel.myAuth = ua.getoAuthCode();
@@ -383,7 +381,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 }
                                 //when response is back
                                 UserModel.myUserModel = response.body();
-                                Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                                 System.out.println("got the user object");
 
                                 //System.out.println("SUCCESS");
