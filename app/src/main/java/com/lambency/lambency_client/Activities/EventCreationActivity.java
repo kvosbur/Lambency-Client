@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -7,10 +8,13 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -110,6 +114,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     private String imagePath = "";
     Timestamp startingTime,endingTime;
     Calendar myCalendar = Calendar.getInstance();
+
+    private static final int CAMERA = 0;
 
     //For address validate
     private void validateInput(String address){
@@ -498,7 +504,13 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     //Setting event image
     @OnClick(R.id.eventImage)
     public void setEventImage(){
-        EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(EventCreationActivity.this, new String[] {Manifest.permission.CAMERA}, CAMERA);
+        }else{
+            EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
+        }
+
     }
 
 
@@ -668,6 +680,32 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
     private void setOrgSpinnerAdapter(OrgSpinnerAdapter orgSpinnerAdapter){
         this.orgSpinnerAdapter = orgSpinnerAdapter;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+                    EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
     }
 }
 
