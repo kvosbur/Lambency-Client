@@ -58,6 +58,7 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.NotificationHelper;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;

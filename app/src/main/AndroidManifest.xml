@@ -144,6 +144,8 @@
             </intent-filter>
         </service>
 
+        <service android:name=".Services.MyNotificationServices" />
+
         <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
         See README(https://goo.gl/l4GJaQ) for more. -->
         <!--

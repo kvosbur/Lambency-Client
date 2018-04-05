@@ -44,6 +44,8 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import java.util.Map;
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
@@ -108,13 +110,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      */
     private void handleNow(RemoteMessage remoteMessage) {
 
-        String messageType = remoteMessage.getData().get("type");
+        Map<String, String> data = remoteMessage.getData();
+        String messageType = data.get("type");
 
         if(messageType != null){
             switch(messageType){
                 case "joinRequest":
                     NotificationHelper.sendJoinRequestNotification(this,
-                            remoteMessage.getData().get("user"), remoteMessage.getData().get("org"));
+                            data.get("user"),
+                            data.get("uid"),
+                            data.get("org"),
+                            data.get("org_id"));
                     break;
                 default:
                     Log.e("FirebaseMessaging", "No data type specified");
