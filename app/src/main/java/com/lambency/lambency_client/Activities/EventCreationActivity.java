@@ -333,7 +333,6 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                                     String message = editText.getText().toString();
                                     //TODO add the message to the email or something here
 
-
                                     eventModel.setName(nameEdit.getText().toString());
                                     eventModel.setImageFile(encodedProfile);
                                     eventModel.setOrg_id(2);
@@ -343,7 +342,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                                     eventModel.setLocation(location);
                                     eventModel.setOrg_id(eventOrgModel.getOrgID());
 
-                                    updateEvent(eventModel);
+                                    updateEvent(eventModel, message);
 
                                     Intent intent = new Intent(context, BottomBarActivity.class);
                                     context.startActivity(intent);
@@ -433,8 +432,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     }
 
 
-    private void updateEvent(EventModel event){
-        LambencyAPIHelper.getInstance().postUpdateEvent(event).enqueue(new Callback<Integer>() {
+    private void updateEvent(EventModel event, String message){
+        LambencyAPIHelper.getInstance().getUpdateEvent(event, message).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response.body() == null || response.code() != 200) {
