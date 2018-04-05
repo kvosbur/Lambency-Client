@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.SharedPreferences;
@@ -11,8 +12,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +47,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -147,6 +151,38 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             findViewById(R.id.disconnect_button).setOnClickListener(this);
 
             //LoginManager.getInstance()
+
+            //Forogot password on click
+            TextView forgotPassword = findViewById(R.id.link_forgotPassword);
+            forgotPassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(LoginActivity.this);
+                    builder.setTitle("Enter email to send");
+
+                    // Set up the input
+                    final EditText input = new EditText(LoginActivity.this);
+                    // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                    builder.setView(input);
+                    // Set up the buttons
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(LoginActivity.this, "email sent was " + input.getText().toString(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.show();
+                }
+            });
+
 
             loginButton.registerCallback(callbackManager,
                     new FacebookCallback<LoginResult>() {
