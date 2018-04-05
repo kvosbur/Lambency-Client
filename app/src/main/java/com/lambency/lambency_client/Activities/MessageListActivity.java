@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.firebase.ui.database.FirebaseListAdapter;
+//import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -47,7 +47,7 @@ public class MessageListActivity extends AppCompatActivity {
 
     public List<Message> messageList;
 
-    // private FirebaseListAdapter<Message> adapter;
+    //private FirebaseListAdapter<Message> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +112,7 @@ public class MessageListActivity extends AppCompatActivity {
                 FirebaseDatabase.getInstance()
                         .getReference()
                         .push()
-                        .setValue(new Message("Hello World", "Evan"));
+                        .setValue(new Message("Hello World With Firebase", "Evan"));
 
                 /*
                 Message m1 = new Message(message, UserModel.myUserModel.getFirstName());
@@ -141,8 +141,8 @@ public class MessageListActivity extends AppCompatActivity {
                 myMessageAdapter.notifyDataSetChanged();
             }
         };
-    }
-    */
+    } */
+
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
