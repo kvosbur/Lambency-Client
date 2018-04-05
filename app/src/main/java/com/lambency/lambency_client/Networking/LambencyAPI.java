@@ -136,6 +136,7 @@ public interface LambencyAPI {
     @GET("Event/deleteEvent")
     Call<Integer> getDeleteEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID, @Query("message") String message);
 
-
+    @POST("User/setFirebase")
+    Call<Integer> setFirebaseCode(@Query("oAuthCode") String oAuthCode, @Query("firebase") String fireBaseCode);
 }
 
