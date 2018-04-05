@@ -354,6 +354,9 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     //the EventModel object to send to server(use this evan)
                     eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,location, eventOrgModel.getName());
                     //TODO Add memberOnlyCheck.isChecked() to the EventModel when the backend is updated for it
+                    if(memberOnlyCheck.isChecked()) {
+                        eventModel.setPrivateEvent(true);
+                    }
                     LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override
                             public void onResponse(Call<EventModel> call, Response<EventModel> response) {

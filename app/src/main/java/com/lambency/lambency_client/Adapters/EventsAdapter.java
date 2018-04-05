@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -89,6 +90,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
         }
 
         //TODO Add check here if event is member only, if so set memberOnlyText visibility to visible & color
+        if(eventModel.isPrivateEvent()) {
+            holder.memberOnlyText.setVisibility(View.VISIBLE);
+        }
 
         holder.orgTitleView.setText(eventModel.getOrgName());
 
@@ -140,6 +144,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
 
         @BindView(R.id.orgTitle)
         TextView orgTitleView;
+
+        @BindView(R.id.memberOnlyText)
+        TextView memberOnlyText;
+
 
         public AreaViewHolder(View itemView) {
             super(itemView);
