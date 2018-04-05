@@ -122,7 +122,8 @@
             android:name=".Activities.OrgUsersActivity"
             android:exported="true" />
         <activity android:name=".Activities.SignupActivity" />
-        <activity android:name=".Activities.CardViewActivity"></activity>
+        <activity android:name=".Activities.CardViewActivity" />
+        <activity android:name=".Activities.ProfileSettingsActivity"></activity>
     </application>
 
 </manifest>

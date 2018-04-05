@@ -23,6 +23,7 @@ import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.CardViewActivity;
 import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.MyRecyclerViewAdapter;
+import com.lambency.lambency_client.Activities.ProfileSettingsActivity;
 import com.lambency.lambency_client.Activities.UserAcceptRejectActivity;
 import com.lambency.lambency_client.Adapters.UserAcceptRejectAdapter;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
@@ -205,6 +206,10 @@ public class ProfileFragment extends Fragment {
                 Intent i = new Intent(getActivity(), UserAcceptRejectActivity.class);
                 startActivity(i);
                 //((Activity) getActivity()).overridePendingTransition(0,0);
+
+            case R.id.action_settings:
+                Intent settingPage = new Intent(getActivity(), ProfileSettingsActivity.class);
+                startActivity(settingPage);
         }
 
         return super.onOptionsItemSelected(item);
