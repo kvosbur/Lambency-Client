@@ -47,7 +47,7 @@ public class MessageListActivity extends AppCompatActivity {
 
     public List<Message> messageList;
 
-    private FirebaseListAdapter<Message> adapter;
+    // private FirebaseListAdapter<Message> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,12 +124,13 @@ public class MessageListActivity extends AppCompatActivity {
                 myMessageAdapter.notifyDataSetChanged();
                 messageContent.setText("");
                 */
-                populateMessage();
+                //populateMessage();
                 mMessageRecycler.scrollToPosition(messageList.size() - 1);
             }
         });
     }
 
+    /*
     public void populateMessage() {
         adapter = new FirebaseListAdapter<Message>(this, Message.class,
                 R.layout.activity_message_list, FirebaseDatabase.getInstance().getReference()) {
@@ -141,6 +142,7 @@ public class MessageListActivity extends AppCompatActivity {
             }
         };
     }
+    */
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
