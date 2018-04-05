@@ -1,76 +1,96 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/androidGreen">
+    android:paddingTop="50dp"
+    >
 
 
-    <LinearLayout
-        android:id="@+id/checkedInTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/checkInDisp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Time in event: "
-            android:textSize="25dp"/>
-        <TextView
-            android:id="@+id/textTimer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:textSize="25dp"
-            android:textColor="@color/com_facebook_blue"
-            android:text="00:00:00" />
-    </LinearLayout>
-
-    <LinearLayout
-    android:id="@+id/dateAndtime"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_centerVertical="true">
     <TextView
         android:id="@+id/textViewDateValue"
         android:layout_width="200dp"
         android:layout_height="40dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:text="Current date"
-        android:textSize="30dp" />
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:layout_centerHorizontal="true"/>
 
-    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/colorAccent"
+        android:text="00:00:00"
+        android:layout_below="@id/textViewDateValue"
+        android:layout_centerHorizontal="true"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dateAndtime"
-        android:layout_centerHorizontal="true">
-    <EditText
-        android:id="@+id/enterCode"
-        android:layout_width="300dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/textTimer">
+
+    <ImageView
+        android:id="@+id/qrButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:hint="Enter the code to check in/out here..." />
+        android:layout_alignEnd="@+id/textTimer"
+        android:layout_alignRight="@+id/textTimer"
+        android:layout_below="@+id/textTimer"
+        android:layout_marginTop="25dp"
+        android:clickable="true"
+        app:srcCompat="@drawable/ic_scan_qr" />
+
+        <TextView
+            android:id="@+id/orText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/qrButton"
+            android:text="OR"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:textAlignment="center"/>
+
+
+        <EditText
+            android:id="@+id/enterCode"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/orText"
+            android:layout_centerHorizontal="true"
+            android:hint="Enter event code..."
+            android:layout_marginTop="25dp"
+            android:maxLines="1"
+            android:maxLength="8"
+            android:textAlignment="center"/>
 
         <Button
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="Send" />
+            android:text="Check In"
+            android:layout_below="@id/enterCode"
+            android:layout_marginTop="10dp"
+            />
+
     </LinearLayout>
 
 
-
-
-
-
-
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Contact your event organizer for check in codes."
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:textSize="16sp"/>
 
 
 </RelativeLayout>

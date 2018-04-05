@@ -21,4 +21,9 @@
         android:title="Requests"
         app:showAsAction="always"
         />
+    <item
+        android:id="@+id/action_leaderboard"
+        android:icon="@drawable/ic_public_black_24dp"
+        android:title="Leaderboard"
+        app:showAsAction="always" />
 </menu>

@@ -39,8 +39,6 @@ public class FilterTabsAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Toast.makeText(context, "Position: " + position,
-                Toast.LENGTH_LONG).show();
         switch (position) {
             case 0:
                 FilterDateFragment tab2 = new FilterDateFragment();

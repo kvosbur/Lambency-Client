@@ -211,7 +211,18 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/orgSpinner"/>
 
-
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/saveDetailsButton"
+        android:text="Delete Event"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:layout_marginBottom="10dp"
+        />
 
 
 </RelativeLayout>
