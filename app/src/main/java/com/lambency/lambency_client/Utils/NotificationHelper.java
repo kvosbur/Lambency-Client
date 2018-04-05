@@ -27,11 +27,13 @@ public class NotificationHelper {
     private static ChannelInfo joinRequestChannel = new ChannelInfo("lambency-join", "Join Requests", "Notifications for users requesting to join organizations will appear here.");
 
     public static void sendJoinRequestNotification(Context context, String user, String uid, String org, String org_id){
+        int contentRequestCode = 0, acceptRequestCode = 1, denyRequestCode = 2;
+
         createNotificationChannel(context, joinRequestChannel);
 
         Intent intent = new Intent(context, AcceptRejectActivity.class);
         intent.putExtra("org_id", org_id);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Accepting the user who wants to join
         Intent acceptIntent = new Intent(context, MyNotificationServices.class);
@@ -40,7 +42,7 @@ public class NotificationHelper {
         acceptIntent.putExtra("org_id", org_id);
         acceptIntent.putExtra("notif_id", id);
         acceptIntent.setAction(MyNotificationServices.JOIN_REQUEST);
-        PendingIntent acceptPendingIntent = PendingIntent.getService(context, 0, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent acceptPendingIntent = PendingIntent.getService(context, acceptRequestCode, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Denying the user who wants to join
         Intent denyIntent = new Intent(context, MyNotificationServices.class);
@@ -49,7 +51,7 @@ public class NotificationHelper {
         denyIntent.putExtra("org_id", org_id);
         denyIntent.putExtra("notif_id", id);
         denyIntent.setAction(MyNotificationServices.JOIN_REQUEST);
-        PendingIntent denyPendingIntent = PendingIntent.getService(context, 0, denyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent denyPendingIntent = PendingIntent.getService(context, denyRequestCode, denyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, joinRequestChannel.id)

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
+import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,7 +41,8 @@ public class MyNotificationServices extends IntentService{
                 notificationManager.cancel(id);
 
                 //Send the join request
-                boolean approved = intent.getBooleanExtra("approve", false);
+                boolean approved = intent.getBooleanExtra("approved", false);
+                System.out.println("Approved: " + approved);
                 int user_id = Integer.parseInt(intent.getStringExtra("user_id"));
                 int org_id = Integer.parseInt(intent.getStringExtra("org_id"));
                 sendJoinRequestRetrofit(approved, user_id, org_id);
@@ -51,9 +53,10 @@ public class MyNotificationServices extends IntentService{
         }
     }
 
-    private void sendJoinRequestRetrofit(final boolean approved, int org_id, int user_id){
-        LambencyAPIHelper.getInstance().respondToJoinRequest(UserModel.myUserModel.getOauthToken(),org_id,
-                user_id,approved).enqueue(new Callback<Integer>() {
+    private void sendJoinRequestRetrofit(final boolean approved, int user_id, int org_id){
+        String authToken = SharedPrefsHelper.getSharedPrefs(getApplicationContext()).getString("myauth", "no auth token found!");
+        LambencyAPIHelper.getInstance().respondToJoinRequest(authToken, org_id,
+                user_id, approved).enqueue(new Callback<Integer>() {
 
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
