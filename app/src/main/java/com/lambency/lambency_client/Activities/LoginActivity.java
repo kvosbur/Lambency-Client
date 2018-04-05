@@ -33,6 +33,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
@@ -63,6 +65,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseApp.initializeApp(context);
+
         if (ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(LoginActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
@@ -201,7 +205,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                                     }
                                                                     Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                                                                     System.out.println("got the user object");
-
 
                                                                     Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
                                                                     startActivity(myIntent);
@@ -379,6 +382,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 if (response.body() == null || response.code() != 200) {
                                     System.out.println("ERROR!!!!!");
                                 }
+
                                 //when response is back
                                 UserModel.myUserModel = response.body();
                                 System.out.println("got the user object");
@@ -435,6 +439,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     // [END handleSignInResult]
+
+
 
 
 }
