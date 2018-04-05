@@ -385,7 +385,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
         showAllButton.setVisibility(View.GONE);
         upcomingEventsContainer.setVisibility(View.GONE);
-        upcomingEventsContainer.setVisibility(View.VISIBLE);
+        //upcomingEventsContainer.setVisibility(View.VISIBLE);
 
         LambencyAPIHelper.getInstance().getEventsByOrg(UserModel.myUserModel.getOauthToken(), organizationModel.getOrgID() + "").enqueue(new Callback<List<EventModel>>() {
             @Override
@@ -396,7 +396,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 }
                 //when response is back
                 List<EventModel> list = response.body();
-                if(list == null){
+                if(list == null || list.size() == 0){
                     System.out.println("Org has no events or error has occurred");
                     noEventsTextView.setVisibility(View.VISIBLE);
                     upcomingEventsProgress.setVisibility(View.GONE);

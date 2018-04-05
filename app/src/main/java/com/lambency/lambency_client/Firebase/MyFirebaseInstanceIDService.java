@@ -25,6 +25,12 @@ import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
+import com.lambency.lambency_client.Utils.SharedPrefsHelper;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
@@ -59,7 +65,18 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
+        String authToken = SharedPrefsHelper.getSharedPrefs(getApplicationContext()).getString("myauth", "no auth token found!");
+        LambencyAPIHelper.getInstance().setFirebaseCode(authToken, token).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e("Firebase", "Error sending new firebase token to the server.");
+            }
+        });
     }
 }
 
