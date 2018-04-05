@@ -28,6 +28,7 @@ import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
 import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
 import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.OrganizationFilterModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
@@ -307,12 +308,19 @@ public class SearchActivity extends AppCompatActivity   {
                 break;
 
             case R.id.location:
-                System.out.println("Location Pressed");
-                Intent i = new Intent(context,FilterActivity.class);
-                startActivity(i);
-
+                if(tabLayout.getSelectedTabPosition() == 1) {
+                    Toast.makeText(context, "Org Filter", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(context, FilterActivity.class);
+                    Bundle mBundle = new Bundle();
+                    mBundle.putString("OrgFilter", "true");
+                    i.putExtras(mBundle);
+                    startActivity(i);
+                } else {
+                    Intent i = new Intent(context, FilterActivity.class);
+                    startActivity(i);
+                }
                 EventFilterModel.currentFilter = new EventFilterModel();
-
+                OrganizationFilterModel.currentFilter = new OrganizationFilterModel();
                 //FragmentManager manager = getSupportFragmentManager();
                 //manager.beginTransaction().replace(R.id.fragContainer, new FilterDistanceFragment()).commit();
                 return true;
