@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Utils;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -66,8 +67,11 @@ public class NotificationHelper {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(id++, mBuilder.build());
+
+        Notification notification = mBuilder.build();
+        // Cancel the notification after its selected
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(id++, notification);
     }
 
     private static void createNotificationChannel(Context context, ChannelInfo info){
