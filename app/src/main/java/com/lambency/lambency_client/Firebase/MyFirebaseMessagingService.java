@@ -25,10 +25,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.NotificationHelper;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -71,12 +74,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            if (/* Check if data needs to be processed by long running job */ true) {
+            if (/* Check if data needs to be processed by long running job */ false) {
                 // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
                 scheduleJob();
             } else {
                 // Handle message within 10 seconds
-                handleNow();
+                handleNow(remoteMessage);
             }
 
         }
@@ -103,7 +106,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     /**
      * Handle time allotted to BroadcastReceivers.
      */
-    private void handleNow() {
+    private void handleNow(RemoteMessage remoteMessage) {
+
+        String messageType = remoteMessage.getData().get("type");
+
+        if(messageType != null){
+            switch(messageType){
+                case "joinRequest":
+                    NotificationHelper.sendJoinRequestNotification(this,
+                            remoteMessage.getData().get("user"), remoteMessage.getData().get("org"));
+                    break;
+                default:
+                    Log.e("FirebaseMessaging", "No data type specified");
+                    break;
+            }
+        }
+
         Log.d(TAG, "Short lived task is done.");
     }
 
