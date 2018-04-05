@@ -19,8 +19,13 @@ import android.widget.Toast;
 
 import com.lambency.lambency_client.Activities.AcceptRejectActivity;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
+
 import com.lambency.lambency_client.Activities.LeaderboardActivity;
+
+import com.lambency.lambency_client.Activities.ListUserActivity;
+
 import com.lambency.lambency_client.Activities.LoginActivity;
+import com.lambency.lambency_client.Activities.MessageListActivity;
 import com.lambency.lambency_client.Activities.UserAcceptRejectActivity;
 import com.lambency.lambency_client.Adapters.LeaderboardAdapter;
 import com.lambency.lambency_client.Adapters.UserAcceptRejectAdapter;
