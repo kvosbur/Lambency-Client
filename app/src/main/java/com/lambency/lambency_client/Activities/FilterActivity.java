@@ -123,9 +123,9 @@ public class FilterActivity extends AppCompatActivity {
                     OrganizationFilterModel.currentFilter.setLongitude(EventFilterModel.currentFilter.getLongitude());
                 }
 
-                finish();
-                //Intent intent = new Intent(context, SearchActivity.class);
-                //startActivity(intent);
+                //finish();
+                Intent intent = new Intent(context, SearchActivity.class);
+                startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

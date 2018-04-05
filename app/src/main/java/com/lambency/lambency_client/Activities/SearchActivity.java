@@ -134,6 +134,45 @@ public class SearchActivity extends AppCompatActivity   {
                     {
                         searchTabsAdapter.setOrgVisiblity(View.VISIBLE, View.GONE);
 
+                        OrganizationFilterModel.currentFilter.setTitle(query);
+                        LambencyAPIHelper.getInstance().getOrganizationsWithFilter(OrganizationFilterModel.currentFilter).enqueue(new Callback<ArrayList<OrganizationModel>>() {
+                            @Override
+                            public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
+                                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
+
+                                if (response.body() == null || response.code() != 200) {
+                                    System.out.println("ERROR!!!!!");
+                                }
+                                //when response is back
+                                ArrayList<OrganizationModel> orgList = response.body();
+                                if (orgList == null || orgList.size() == 0) {
+                                    //no results found
+                                    if (orgList == null) {
+                                        orgList = new ArrayList<OrganizationModel>();
+                                    }
+
+                                    if (searchTabsAdapter == null) {
+                                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                                    }
+                                    searchTabsAdapter.updateOrgs(orgList);
+                                } else {
+                                    //results found
+
+                                    if (searchTabsAdapter == null) {
+                                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                                    }
+                                    //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
+                                    searchTabsAdapter.updateOrgs(orgList);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
+                                //when failure
+                                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
+                            }
+                        });
+                        /*
                         LambencyAPIHelper.getInstance().getOrganizationSearch(query).enqueue(new Callback<ArrayList<OrganizationModel>>() {
                             @Override
                             public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
@@ -175,6 +214,7 @@ public class SearchActivity extends AppCompatActivity   {
                                 searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
                             }
                         });
+                        */
                     } else {
                         EventFilterModel.currentFilter.setTitle(query);
 
