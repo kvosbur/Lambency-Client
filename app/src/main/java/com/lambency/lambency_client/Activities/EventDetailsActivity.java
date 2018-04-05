@@ -167,6 +167,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.checkoutCodeDisp)
     TextView checkoutCodeDisp;
 
+    @BindView(R.id.memberOnlyTextDetails)
+    TextView memberOnlyText;
+
     private EventModel event,eventModel;
 
     private Context context;
@@ -657,6 +660,10 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     latitude = eventModel.getLattitude();
                     longitude = eventModel.getLongitude();
                     addressView.setText(eventModel.getLocation());
+
+                    if(eventModel.isPrivateEvent()) {
+                        memberOnlyText.setVisibility(View.VISIBLE);
+                    }
 
                     //setting the codes
                     if(eventModel.getClockInCode() != null && eventModel.getClockOutCode() != null
