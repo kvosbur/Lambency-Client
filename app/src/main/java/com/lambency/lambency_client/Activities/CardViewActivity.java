@@ -1,12 +1,19 @@
 package com.lambency.lambency_client.Activities;
 
+import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
+import com.lambency.lambency_client.Fragments.ProfileFragment;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
@@ -27,6 +34,8 @@ public class CardViewActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        //TODO: call retrofit and give correct things to getdataset
         mAdapter = new MyRecyclerViewAdapter(getDataSet());
         mRecyclerView.setAdapter(mAdapter);
 
@@ -48,8 +57,8 @@ public class CardViewActivity extends AppCompatActivity {
     private ArrayList<DataObject> getDataSet() {
         ArrayList results = new ArrayList<DataObject>();
         for (int index = 0; index < 20; index++) {
-            DataObject obj = new DataObject("Some Primary Text " + index,
-                    "Secondary " + index);
+            DataObject obj = new DataObject("Name of event will go here " + index,
+                    "hours attended go here " + index);
             results.add(index, obj);
         }
         return results;
