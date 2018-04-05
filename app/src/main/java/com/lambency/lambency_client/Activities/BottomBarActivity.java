@@ -100,9 +100,9 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         ButterKnife.bind(this);
 
         // Get token
-        FirebaseApp.initializeApp(this);
         String token = FirebaseInstanceId.getInstance().getToken();
-        Log.d("Firebase Token", token);
+        sendFirebaseToken(token);
+        Log.d("Bottom Bar", "Sent firebase token to server: " + token);
 
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
         bar.setSelectedItemId(R.id.lamBot);
@@ -247,5 +247,21 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+    private void sendFirebaseToken(String token){
+        String authToken = UserModel.myUserModel.getOauthToken();
+        LambencyAPIHelper.getInstance().setFirebaseCode(authToken, token).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e("Firebase", "Error sending new firebase token to the server.");
+            }
+        });
+    }
+
 
 }
