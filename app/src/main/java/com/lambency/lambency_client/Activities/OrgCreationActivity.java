@@ -1,14 +1,19 @@
 package com.lambency.lambency_client.Activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +46,8 @@ public class OrgCreationActivity extends AppCompatActivity {
     private Context context;
     private String imagePath = "";
     private OrganizationModel orgModel;
+
+    private static final int CAMERA = 0;
 
     @BindView(R.id.profileImage)
     ImageView profileImage;
@@ -176,7 +183,14 @@ public class OrgCreationActivity extends AppCompatActivity {
 
     @OnClick(R.id.profileImage)
     public void setProfileImage(){
-        EasyImage.openChooserWithGallery(this, "Select Profile Image", 0);
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(OrgCreationActivity.this, new String[] {Manifest.permission.CAMERA}, CAMERA);
+        }else{
+            EasyImage.openChooserWithGallery(this, "Select Profile Image", 0);
+        }
+
     }
 
     @Override
@@ -187,6 +201,7 @@ public class OrgCreationActivity extends AppCompatActivity {
         EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+                Log.e("Easy Image", e.getMessage());
                 //Some error handling
             }
 
@@ -218,4 +233,33 @@ public class OrgCreationActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+                    EasyImage.openChooserWithGallery(this, "Select Profile Image", 0);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+
 }
