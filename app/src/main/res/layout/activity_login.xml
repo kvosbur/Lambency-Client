@@ -67,6 +67,15 @@
             android:gravity="center"
             android:textSize="16dip"/>
 
+        <TextView android:id="@+id/link_forgotPassword"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:clickable="true"
+            android:text="Forgot your password?"
+            android:gravity="center"
+            android:textSize="16dip"/>
+
         <TextView android:id="@+id/orOption"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
