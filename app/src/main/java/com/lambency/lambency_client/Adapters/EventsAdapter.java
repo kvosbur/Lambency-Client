@@ -88,7 +88,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
                     holder.eventImageView);
         }
 
-        //TODO Add check here if event is member only, if so set memberOnlyText visibility to visible
+        //TODO Add check here if event is member only, if so set memberOnlyText visibility to visible & color
 
         holder.orgTitleView.setText(eventModel.getOrgName());
 
