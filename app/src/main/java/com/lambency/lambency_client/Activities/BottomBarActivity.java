@@ -21,8 +21,12 @@ import android.app.Fragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.google.firebase.FirebaseApiNotAvailableException;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
 import com.lambency.lambency_client.Fragments.CheckInFragment;
 import com.lambency.lambency_client.Fragments.EventsMainFragment;
@@ -93,6 +97,11 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+
+        // Get token
+        FirebaseApp.initializeApp(this);
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d("Firebase Token", token);
 
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
         bar.setSelectedItemId(R.id.lamBot);
