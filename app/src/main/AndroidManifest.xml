@@ -47,6 +47,29 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <!-- Sets the intent action to view the activity -->
+                <action android:name="android.intent.action.VIEW" />
+                <!-- Allows the link to be opened from a web browser -->
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Allows the deep link to be used without specifying the app name -->
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- URI Lambency://deeplink -->
+                <data
+                    android:host="deeplink"
+                    android:scheme="lambency"
+                    android:pathPrefix="/login"/>
+                <!-- URI http://www.mylambencyclient.com -->
+                <data
+                    android:host="www.mylambencyclient.com"
+                    android:scheme="http"
+                    android:pathPrefix="/login"/>
+            </intent-filter>
+            <!--
+            navigating to either
+            http://www.mylambencyclient.com/login or mylambencyclient://login will
+            take the user to the EventDetailsActivity activity.
+            -->
         </activity>
         <activity
             android:name=".Activities.ListUserActivity"
