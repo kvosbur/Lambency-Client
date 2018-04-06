@@ -100,7 +100,7 @@ public class MessageListActivity extends AppCompatActivity {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 String value = dataSnapshot.getValue(String.class);
-                messageList.add(new Message(value, "Jim"));
+                messageList.add(new Message(value, "Evan"));
                 myMessageAdapter.notifyDataSetChanged();
                 mMessageRecycler.scrollToPosition(messageList.size() - 1);
             }
