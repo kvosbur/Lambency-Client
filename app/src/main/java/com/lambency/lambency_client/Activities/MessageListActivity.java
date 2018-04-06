@@ -93,14 +93,15 @@ public class MessageListActivity extends AppCompatActivity {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("message");
+        myRef.setValue(m1);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                messageList.add(new Message(value, "Evan"));
+                Message value = dataSnapshot.getValue(Message.class);
+                messageList.add(value);
                 myMessageAdapter.notifyDataSetChanged();
                 mMessageRecycler.scrollToPosition(messageList.size() - 1);
             }
@@ -139,18 +140,18 @@ public class MessageListActivity extends AppCompatActivity {
                         .getReference()
                         .push()
                         .setValue(new Message("Hello World With Firebase", "Evan"));
+                */
 
-                /*
                 Message m1 = new Message(message, UserModel.myUserModel.getFirstName());
                 SimpleDateFormat sdf = new SimpleDateFormat("h:mm");
                 Date now = new Date();
                 String strDate = sdf.format(now);
                 m1.createdAt = strDate;
-                messageList.add(m1);
-                myMessageAdapter.notifyDataSetChanged();
+                //messageList.add(m1);
+                //myMessageAdapter.notifyDataSetChanged();
                 messageContent.setText("");
-                */
-                myRef.setValue(message);
+
+                myRef.setValue(m1);
 
             }
         });
