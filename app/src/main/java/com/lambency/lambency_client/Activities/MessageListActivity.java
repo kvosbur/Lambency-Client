@@ -11,8 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 //import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseListOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 import com.lambency.lambency_client.Adapters.MessageListAdapter;
@@ -47,7 +50,7 @@ public class MessageListActivity extends AppCompatActivity {
 
     public List<Message> messageList;
 
-    //private FirebaseListAdapter<Message> adapter;
+    private FirebaseListAdapter<Message> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +85,6 @@ public class MessageListActivity extends AppCompatActivity {
         mMessageRecycler.setLayoutManager(llm);
         mMessageRecycler.setAdapter(myMessageAdapter);
         myMessageAdapter.notifyDataSetChanged();
-
-
 
 
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -124,14 +125,26 @@ public class MessageListActivity extends AppCompatActivity {
                 myMessageAdapter.notifyDataSetChanged();
                 messageContent.setText("");
                 */
-                //populateMessage();
+                populateMessage();
                 mMessageRecycler.scrollToPosition(messageList.size() - 1);
             }
         });
     }
 
-    /*
+
     public void populateMessage() {
+
+        Query query = FirebaseDatabase.getInstance()
+                .getReference("/-L9NHA9TE9gKpG26w1d_")
+                .orderByKey();
+
+
+        FirebaseListOptions<Message> options = new FirebaseListOptions.Builder<Message>()
+                .setLayout(R.layout.activity_message_list)//Note: The guide doesn't mention this method, without it an exception is thrown that the layout has to be set.
+                .setQuery(query, Message.class)
+                .build();
+
+        /*
         adapter = new FirebaseListAdapter<Message>(this, Message.class,
                 R.layout.activity_message_list, FirebaseDatabase.getInstance().getReference()) {
             @Override
@@ -141,7 +154,17 @@ public class MessageListActivity extends AppCompatActivity {
                 myMessageAdapter.notifyDataSetChanged();
             }
         };
-    } */
+        */
+        adapter = new FirebaseListAdapter<Message>(options) {
+            @Override
+            protected void populateView(View v, Message model, int position) {
+                // Get references to the views of message.xml
+                messageList.add(model);
+                myMessageAdapter.notifyDataSetChanged();
+            }
+        };
+
+    }
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
