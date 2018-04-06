@@ -15,7 +15,7 @@
             android:id="@+id/topTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="These are the events you attended and their hours"
+            android:text="These are the events attended and their hours"
             android:textSize="25dp"
             android:textStyle="bold"
             android:textAlignment="center"/>
