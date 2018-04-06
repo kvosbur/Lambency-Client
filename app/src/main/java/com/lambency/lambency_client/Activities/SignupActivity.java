@@ -1,6 +1,7 @@
 package com.lambency.lambency_client.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,10 +10,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignupActivity extends AppCompatActivity {
     @BindView(R.id.input_name)
@@ -68,8 +74,37 @@ public class SignupActivity extends AppCompatActivity {
         _signupButton.setEnabled(false);
 
         String name = _nameText.getText().toString();
+        String[] firstAndLast = name .split(" ");
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
+
+        LambencyAPIHelper.getInstance().registerUser(email,firstAndLast[0],firstAndLast[1],password).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //when response is back
+                Integer ret = response.body();
+                if (ret == -1) {
+                    System.out.println("Error has occurred");
+                } else {
+                    System.out.println("Successfully registered the user");
+                    Toast.makeText(getApplicationContext(), "User registration successfull", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
+                    startActivity(intent);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
 
     }
 
