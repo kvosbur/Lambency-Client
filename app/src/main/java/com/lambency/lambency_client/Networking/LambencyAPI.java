@@ -138,5 +138,11 @@ public interface LambencyAPI {
 
     @POST("User/setFirebase")
     Call<Integer> setFirebaseCode(@Query("oAuthCode") String oAuthCode, @Query("firebase") String fireBaseCode);
+
+    @GET("User/leaderboardRange")
+    Call<List<UserModel>> getLeaderboardRange(@Query("start") String start, @Query("end") String end);
+
+    @GET("User/leaderboardAroundUser")
+    Call<List<UserModel>> getLeaderboardAroundUser(@Query("oAuthCode") String oAuthCode);
 }
 
