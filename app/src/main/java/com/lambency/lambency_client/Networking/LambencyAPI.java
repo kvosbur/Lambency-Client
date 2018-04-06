@@ -133,6 +133,13 @@ public interface LambencyAPI {
     @POST("/User/ClockInOut")
     Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
 
+    @GET("/User/register")
+    Call<Integer> registerUser(@Query("email") String email, @Query("first") String firstName, @Query("last") String LastName,
+                               @Query("passwd") String password);
+
+    @POST("/User/verifyEmail")
+    Call<Integer> verifyEmail(@Query("userID") int userid, @Query("code") String verificationCode);
+
 
 }
 
