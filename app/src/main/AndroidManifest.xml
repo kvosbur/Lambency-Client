@@ -48,6 +48,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
+
                 <!-- Sets the intent action to view the activity -->
                 <action android:name="android.intent.action.VIEW" />
                 <!-- Allows the link to be opened from a web browser -->
@@ -57,13 +58,13 @@
                 <!-- URI Lambency://deeplink -->
                 <data
                     android:host="deeplink"
-                    android:scheme="lambency"
-                    android:pathPrefix="/login"/>
+                    android:pathPrefix="/login"
+                    android:scheme="lambency" />
                 <!-- URI http://www.mylambencyclient.com -->
                 <data
                     android:host="www.mylambencyclient.com"
-                    android:scheme="http"
-                    android:pathPrefix="/login"/>
+                    android:pathPrefix="/login"
+                    android:scheme="http" />
             </intent-filter>
             <!--
             navigating to either
@@ -146,7 +147,8 @@
             android:exported="true" />
         <activity android:name=".Activities.SignupActivity" />
         <activity android:name=".Activities.CardViewActivity" />
-        <activity android:name=".Activities.ProfileSettingsActivity"></activity>
+        <activity android:name=".Activities.ProfileSettingsActivity" />
+        <activity android:name=".Activities.ChangePasswordActivity"></activity>
     </application>
 
 </manifest>
