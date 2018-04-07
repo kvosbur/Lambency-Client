@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             //when response is back
                             Integer ret = response.body();
                             if (ret != 0 ) {
-                                System.out.println("Error has occurred");
+                                System.out.println("Error has occurred here inside verification");
                             } else {
                                 System.out.println("Successfully verified the user");
                                 Toast.makeText(getApplicationContext(), "User verification successfull", Toast.LENGTH_LONG).show();

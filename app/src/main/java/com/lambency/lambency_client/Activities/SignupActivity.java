@@ -105,7 +105,6 @@ public class SignupActivity extends AppCompatActivity {
                     System.out.println("wrong verification code for user");
                     Toast.makeText(getApplicationContext(), "wrong verification code for user", Toast.LENGTH_LONG).show();
                 }
-
             }
 
             @Override
