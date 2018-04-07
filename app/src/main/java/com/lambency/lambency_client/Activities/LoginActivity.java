@@ -7,6 +7,7 @@ import android.content.Intent;
 
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -124,6 +125,42 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     startActivity(intent);
                 }
             });
+
+            Intent intent = getIntent();
+            Uri data = intent.getData();
+
+            //Bundle for deeplink
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null || data != null) {
+                //TODO error check
+                if (data != null) {
+                    String userId = data.getQueryParameter("uid");
+                    String verificationCode = data.getQueryParameter("code");
+                    LambencyAPIHelper.getInstance().verifyEmail(Integer.parseInt(userId),verificationCode).enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            //when response is back
+                            Integer ret = response.body();
+                            if (ret != 0 ) {
+                                System.out.println("Error has occurred");
+                            } else {
+                                System.out.println("Successfully verified the user");
+                                Toast.makeText(getApplicationContext(), "User verification successfull", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable t) {
+                            System.out.println("Server error");
+                        }
+                    });
+                }
+            }
 
 
             callbackManager = CallbackManager.Factory.create();

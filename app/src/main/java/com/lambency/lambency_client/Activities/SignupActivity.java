@@ -88,7 +88,7 @@ public class SignupActivity extends AppCompatActivity {
 
                 //when response is back
                 Integer ret = response.body();
-                if (ret == -1) {
+                if (ret != -1) {
                     System.out.println("Error has occurred");
                 } else {
                     System.out.println("Successfully registered the user");
