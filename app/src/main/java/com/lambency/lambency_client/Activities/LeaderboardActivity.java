@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.lambency.lambency_client.Adapters.LeaderboardAdapter;
 import com.lambency.lambency_client.Adapters.UserListAdapter;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
@@ -31,6 +32,8 @@ public class LeaderboardActivity extends AppCompatActivity {
 
     List<UserModel> userList = new ArrayList<>();
 
+    static int startVal = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +43,62 @@ public class LeaderboardActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         getSupportActionBar().setTitle("Leaderboard");
+
+            LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + startVal+10).enqueue(new Callback<List<UserModel>>() {
+                @Override
+                public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("An error has occurred");
+                        return;
+                    }
+                    //when response is back
+                    List<UserModel> ret = response.body();
+                    if(ret == null ) {
+                        System.out.println("An error has occurred");
+                    }
+                    else{
+                        UserModel userModel = ret.get(0);
+                        int rank = Integer.parseInt(userModel.getOauthToken());
+                        // I will set the oAuthToken to the users rank
+
+                        //TODO Populate recycler view here!
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<UserModel>> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                }
+            });
+
+        //TODO If user is not in current userList then...
+        LambencyAPIHelper.getInstance().getLeaderboardAroundUser(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<UserModel>>() {
+            @Override
+            public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred");
+                    return;
+                }
+                //when response is back
+                List<UserModel> ret = response.body();
+                if(ret == null ) {
+                    System.out.println("An error has occurred");
+                }
+                else{
+                    UserModel userModel = ret.get(0);
+                    int rank = Integer.parseInt(userModel.getOauthToken());
+                    // I will set the oAuthToken to the users rank
+                    //TODO Populate recycler view here!
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UserModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
 
         userList.add(UserModel.myUserModel);
         userList.add(new UserModel("...", null, null, null, null, null,null, 0, 0, null));
