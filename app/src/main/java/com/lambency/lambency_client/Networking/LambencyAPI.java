@@ -140,6 +140,9 @@ public interface LambencyAPI {
     @POST("/User/verifyEmail")
     Call<Integer> verifyEmail(@Query("userID") int userid, @Query("code") String verificationCode);
 
+    @GET("/User/login/lambency")
+    Call<UserAuthenticatorModel> loginUser(@Query("email") String email, @Query("password") String password);
+
 
 }
 
