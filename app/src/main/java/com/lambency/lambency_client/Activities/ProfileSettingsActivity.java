@@ -35,6 +35,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final Dialog dialog = new Dialog(ProfileSettingsActivity.this);
                 dialog.setTitle("Password change");
+                dialog.setCanceledOnTouchOutside(false);
+
                 final EditText oldPass = new EditText(ProfileSettingsActivity.this);
                 final EditText newPass = new EditText(ProfileSettingsActivity.this);
                 final EditText confirmPass = new EditText(ProfileSettingsActivity.this);
@@ -46,9 +48,9 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                 newPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 confirmPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
-                oldPass.setHint("Old Password");
-                newPass.setHint("New Password");
-                confirmPass.setHint("Confirm Password");
+                oldPass.setHint("Old Password                   ");
+                newPass.setHint("New Password                   ");
+                confirmPass.setHint("Confirm Password               ");
                 confirmBtn.setText("Confrim");
                 cancelBtn.setText("Cancel");
 
@@ -68,14 +70,63 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                 confirmBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.cancel();
+                        boolean check = true;
+
+
+                        if (!newPass.getText().toString().equals(confirmPass.getText().toString())){
+                            check = false;
+                            Toast.makeText(ProfileSettingsActivity.this, "The two passwords don't match",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        if (newPass.getText().toString().matches("")){
+                            check = false;
+                            newPass.setError("Please enter a password");
+                            Toast.makeText(ProfileSettingsActivity.this, "Password entry field one empty",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        if (confirmPass.getText().toString().matches("")){
+                            check = false;
+                            confirmPass.setError("Please enter same password");
+                            Toast.makeText(ProfileSettingsActivity.this, "Password entry field two empty",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        if (check == true) {
+                            LambencyAPIHelper.getInstance().changePassword(newPass.getText().toString(),
+                                    confirmPass.getText().toString(), UserModel.myUserModel.getOauthToken(),oldPass.getText().toString())
+                                    .enqueue(new Callback<Integer>() {
+                                        @Override
+                                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                            if (response.body() == null || response.code() != 200) {
+                                                Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
+                                            int ret = response.body();
+
+                                            if (ret == 0){
+                                                Toast.makeText(getApplicationContext(), "Password change success", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else if (ret == 7){
+                                                Toast.makeText(getApplicationContext(), "You entered the old password wrong Pls try again", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else {
+                                                Toast.makeText(getApplicationContext(), "General Server error!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Integer> call, Throwable t) {
+                                            System.out.println("Failed in change password");
+                                        }
+                                    });
+                            dialog.cancel();
+                        }
                     }
                 });
 
                 cancelBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        dialog.cancel();
                     }
                 });
 
@@ -88,8 +139,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
                 dialog.show();
 
-                /*
-                alertDialog.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+
+                /*alertDialog.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 boolean check = true;
 
@@ -154,8 +205,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                         });
 
                 AlertDialog alert11 = alertDialog.create();
-                alert11.show();
-                */
+                alert11.show();*/
+
             }
 
         });
