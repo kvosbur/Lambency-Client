@@ -97,6 +97,7 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
         ButterKnife.bind(this);
 
+        /*
         final Handler handler = new Handler();
         final int delay = 10000; //milliseconds
 
@@ -109,6 +110,7 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
                 handler.postDelayed(this, delay);
             }
         }, delay);
+        */
 
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
         bar.setSelectedItemId(R.id.lamBot);
