@@ -109,7 +109,7 @@ public interface LambencyAPI {
     Call<MyLambencyModel> getMyLambencyModel(@Query("oAuthCode") String oAuthCode);
 
     @POST("Event/searchWithFilter")
-    Call<List<EventModel>> getEventsFromFilter(@Body EventFilterModel efm);
+    Call<List<EventModel>> getEventsFromFilter(@Body EventFilterModel efm, @Query("oAuthCode") String oAuthCode);
 
     @GET("Organization/getMembersAndOrganizers")
     Call<ArrayList<UserModel>[]> getMembersAndOrganizers(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);

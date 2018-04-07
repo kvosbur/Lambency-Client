@@ -121,7 +121,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.OrganizationDetailsActivity"
-            android:exported="true" 
+            android:exported="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.BottomBarActivity"

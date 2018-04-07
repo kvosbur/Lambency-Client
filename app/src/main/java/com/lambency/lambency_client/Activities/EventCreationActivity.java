@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -100,8 +101,12 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     @BindView(R.id.zipEdit)
     TextInputEditText zipEdit;
 
+
+    @BindView(R.id.memberOnlyCheck)
+    CheckBox memberOnlyCheck;
     @BindView(R.id.deleteButton)
     Button deleteButton;
+
 
 
     OrgSpinnerAdapter orgSpinnerAdapter;
@@ -281,7 +286,6 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
             }
         });*/
 
-
         saveDetails.setOnClickListener(new View.OnClickListener() {
             EditText eName = (EditText) findViewById(R.id.nameOfEvent);
             //EditText eDate = (EditText) findViewById(R.id.dateOfEvent);
@@ -391,7 +395,10 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
                     eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,location, eventOrgModel.getName());
-
+                    //TODO Add memberOnlyCheck.isChecked() to the EventModel when the backend is updated for it
+                    if(memberOnlyCheck.isChecked()) {
+                        eventModel.setPrivateEvent(true);
+                    }
                     LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override
                             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
