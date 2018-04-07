@@ -28,7 +28,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_settings);
 
         //the change password button
-        Button changePassword = findViewById(R.id.changePasswordBtn);
+        final Button changePassword = findViewById(R.id.changePasswordBtn);
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,6 +57,15 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                 ll.addView(oldPass);
                 ll.addView(newPass);
                 ll.addView(confirmPass);
+
+
+                LinearLayout lll =new LinearLayout(ProfileSettingsActivity.this);
+                lll.setOrientation(LinearLayout.HORIZONTAL);
+                lll.addView(cancelBtn);
+                lll.addView(changePassword);
+
+                ll.addView(lll);
+
 
                 alertDialog.setView(ll);
 
