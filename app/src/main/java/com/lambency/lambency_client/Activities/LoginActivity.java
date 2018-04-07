@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             //skip login activity if there is already an oAuthToken saved to shared preferences
             SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
-            String myauth = sharedPref.getString("myauth", "");
+            final String myauth = sharedPref.getString("myauth", "");
 
             if (myauth.length() > 0) {
                 UserAuthenticatorModel.myAuth = myauth;
@@ -198,6 +198,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                                     System.out.println("got the user object");
                                     UserAuthenticatorModel.myAuth = userAuthenticatorModel.getoAuthCode();
+
+                                    SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
+                                    SharedPreferences.Editor editor = sharedPref.edit();
+                                    editor.putString("myauth", UserAuthenticatorModel.myAuth);
+                                    editor.apply();
 
                                     LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
                                         @Override
