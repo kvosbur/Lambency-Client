@@ -298,8 +298,37 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(LoginActivity.this, "email sent was " + input.getText().toString(),
-                                    Toast.LENGTH_LONG).show();
+                            LambencyAPIHelper.getInstance().beginPasswordRecovery(input.getText().toString()).enqueue(new Callback<Integer>() {
+                                @Override
+                                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                    if (response.body() == null || response.code() != 200) {
+                                        System.out.println("ERROR!!!!!");
+                                        return;
+                                    }
+
+                                    int ret = response.body();
+                                    if (ret == 0){
+                                        System.out.println("success in forgot password");
+                                        Toast.makeText(LoginActivity.this, "email sent was " + input.getText().toString(),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                    else if (ret < 0){
+                                        System.out.println("email was not assoicated with an account");
+                                        Toast.makeText(LoginActivity.this, "email not associated with an account ",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                    else if (ret > 0){
+                                        System.out.println("general server error");
+                                        Toast.makeText(LoginActivity.this, "general server error occurred",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Integer> call, Throwable t) {
+                                    System.out.println("Error occured in forgot my password");
+                                }
+                            });
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

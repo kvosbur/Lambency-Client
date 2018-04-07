@@ -148,7 +148,31 @@
         <activity android:name=".Activities.SignupActivity" />
         <activity android:name=".Activities.CardViewActivity" />
         <activity android:name=".Activities.ProfileSettingsActivity" />
-        <activity android:name=".Activities.ChangePasswordActivity"></activity>
+        <activity android:name=".Activities.ChangePasswordActivity">
+            <intent-filter>
+                <!-- Sets the intent action to view the activity -->
+                <action android:name="android.intent.action.VIEW" />
+                <!-- Allows the link to be opened from a web browser -->
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Allows the deep link to be used without specifying the app name -->
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- URI Lambency://deeplink -->
+                <data
+                    android:host="deeplink"
+                    android:pathPrefix="/changePassword"
+                    android:scheme="lambency" />
+                <!-- URI http://www.mylambencyclient.com -->
+                <data
+                    android:host="www.mylambencyclient.com"
+                    android:pathPrefix="/changePassword"
+                    android:scheme="http" />
+            </intent-filter>
+            <!--
+            navigating to either
+            http://www.mylambencyclient.com/changePassword or mylambencyclient://changePassword will
+            take the user to the EventDetailsActivity activity.
+            -->
+        </activity>
     </application>
 
 </manifest>
