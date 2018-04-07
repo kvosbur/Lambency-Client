@@ -290,6 +290,22 @@
                         android:layout_below="@id/organizationLayout"
                         android:text="Edit Event" />
 
+                    <Button
+                        android:id="@+id/clockInButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Clock In Codes"
+                        android:layout_toRightOf="@id/editEventButton"
+                        android:layout_below="@id/organizationLayout"/>
+
+                    <Button
+                        android:id="@+id/clockOutButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Clock Out Codes"
+                        android:layout_toRightOf="@id/clockInButton"
+                        android:layout_below="@id/organizationLayout"/>
+
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -342,10 +358,24 @@
                         android:layout_toRightOf="@+id/checkoutCodeDisp" />
 
                     <TextView
+                        android:id="@+id/memberOnlyTextDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorPrimary"
+                        android:text="This event is for members only!"
+                        android:textStyle="italic"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:layout_below="@id/checkoutCodeDisp"
+                        android:layout_centerHorizontal="true"
+                        android:visibility="invisible"
+                        />
+
+                    <TextView
                         android:id="@+id/description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/eventInfo"
+                        android:layout_below="@+id/memberOnlyTextDetails"
                         android:layout_marginBottom="10dp"
 
                         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis id enim ac enim consequat ultrices ut vitae lacus. Vestibulum varius erat urna, non pellentesque dui tempor eu. Nulla faucibus mattis elementum. Aliquam ullamcorper lobortis sapien nec molestie. Cras consequat ex nisi. Donec et nulla a felis interdum porta vulputate sit amet sem. Cras quis ex vitae mi vulputate viverra eget et tortor. Vestibulum dignissim in ex vel venenatis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus consectetur urna nec pellentesque posuere.

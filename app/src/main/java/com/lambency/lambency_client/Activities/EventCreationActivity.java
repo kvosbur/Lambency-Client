@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -7,18 +8,24 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -95,23 +102,25 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     TextInputEditText zipEdit;
 
 
+    @BindView(R.id.memberOnlyCheck)
+    CheckBox memberOnlyCheck;
+    @BindView(R.id.deleteButton)
+    Button deleteButton;
+
+
 
     OrgSpinnerAdapter orgSpinnerAdapter;
     OrganizationModel eventOrgModel;
     private boolean editing = false;
     String eventName, dateOfEvent, addressOfEvent, description;
     private Context context;
-
     private EventModel eventModel;
-
     Button date,startTime,endTime;
-
     private String imagePath = "";
-
     Timestamp startingTime,endingTime;
-
     Calendar myCalendar = Calendar.getInstance();
 
+    private static final int CAMERA = 0;
 
     //For address validate
     private void validateInput(String address){
@@ -246,6 +255,11 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
             }
         });
 
+
+        if(editing){
+            deleteButton.setVisibility(View.VISIBLE);
+        }
+
         //checking address
         /*addressEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -272,7 +286,6 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
             }
         });*/
 
-
         saveDetails.setOnClickListener(new View.OnClickListener() {
             EditText eName = (EditText) findViewById(R.id.nameOfEvent);
             //EditText eDate = (EditText) findViewById(R.id.dateOfEvent);
@@ -292,7 +305,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 String city = cityEdit.getText().toString();
                 String state = stateAutocomplete.getText().toString();
                 String zip = zipEdit.getText().toString();
-                String location = addressOfEvent + " " + city + " " + state + " " + zip;
+                final String location = addressOfEvent + " " + city + " " + state + " " + zip;
 
                 if (editing) {
                     Bitmap bm;
@@ -302,24 +315,55 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     } else {
                         bm = BitmapFactory.decodeFile(imagePath);
                     }
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                        byte[] b = baos.toByteArray();
-                        String encodedProfile = Base64.encodeToString(b, Base64.DEFAULT);
 
-                        eventModel.setName(nameEdit.getText().toString());
-                        eventModel.setImageFile(encodedProfile);
-                        eventModel.setOrg_id(2);
-                        eventModel.setStart(startingTime);
-                        eventModel.setEnd(endingTime);
-                        eventModel.setDescription(descriptionEdit.getText().toString());
-                        eventModel.setLocation(location);
-                        eventModel.setOrg_id(eventOrgModel.getOrgID());
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                    byte[] b = baos.toByteArray();
+                    final String encodedProfile = Base64.encodeToString(b, Base64.DEFAULT);
 
-                        updateEvent(eventModel);
 
-                        Intent intent = new Intent(context, BottomBarActivity.class);
-                        context.startActivity(intent);
+                    //Check if the user wants to include a reason for editing
+                    final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(EventCreationActivity.this).create();
+                    LayoutInflater factory = LayoutInflater.from(EventCreationActivity.this);
+                    final View view = factory.inflate(R.layout.dialog_text_input, null);
+
+                    alertDialog.setView(view);
+                    alertDialog.setTitle("Give a reason for editing?");
+                    alertDialog.setMessage("If you want, you can tell those attending why you changed it.");
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm Edit", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    EditText editText = alertDialog.findViewById(R.id.editText);
+                                    String message = editText.getText().toString();
+                                    //TODO add the message to the email or something here
+
+
+                                    eventModel.setName(nameEdit.getText().toString());
+                                    eventModel.setImageFile(encodedProfile);
+                                    eventModel.setOrg_id(2);
+                                    eventModel.setStart(startingTime);
+                                    eventModel.setEnd(endingTime);
+                                    eventModel.setDescription(descriptionEdit.getText().toString());
+                                    eventModel.setLocation(location);
+                                    eventModel.setOrg_id(eventOrgModel.getOrgID());
+
+                                    updateEvent(eventModel);
+
+                                    Intent intent = new Intent(context, BottomBarActivity.class);
+                                    context.startActivity(intent);
+                                }
+                    });
+
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            alertDialog.cancel();
+                        }
+                    });
+
+                    alertDialog.show();
+
+
 
                 } else {
 
@@ -351,7 +395,10 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
                     eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,location, eventOrgModel.getName());
-
+                    //TODO Add memberOnlyCheck.isChecked() to the EventModel when the backend is updated for it
+                    if(memberOnlyCheck.isChecked()) {
+                        eventModel.setPrivateEvent(true);
+                    }
                     LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override
                             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
@@ -464,7 +511,13 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     //Setting event image
     @OnClick(R.id.eventImage)
     public void setEventImage(){
-        EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(EventCreationActivity.this, new String[] {Manifest.permission.CAMERA}, CAMERA);
+        }else{
+            EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
+        }
+
     }
 
 
@@ -551,6 +604,72 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     }
 
 
+    @OnClick(R.id.deleteButton)
+    public void handleDelete(){
+        final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(EventCreationActivity.this).create();
+
+        LayoutInflater factory = LayoutInflater.from(EventCreationActivity.this);
+        final View view = factory.inflate(R.layout.dialog_text_input, null);
+        alertDialog.setView(view);
+
+        alertDialog.setTitle("Delete Event");
+        alertDialog.setMessage("Are you sure you want to delete " + eventModel.getName() + "?");
+        alertDialog.setCancelable(true);
+
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Delete Event", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                EditText editText = alertDialog.findViewById(R.id.editText);
+                String message = editText.getText().toString();
+
+                deleteEventRetrofit(message);
+
+                Intent intent = new Intent(context, BottomBarActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                alertDialog.cancel();
+            }
+        });
+
+        alertDialog.show();
+    }
+
+
+    private void deleteEventRetrofit(String message){
+        LambencyAPIHelper.getInstance().getDeleteEvent(UserModel.myUserModel.getOauthToken(), eventModel.getEvent_id() + "", message).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred");
+                    return;
+                }
+                //when response is back
+                Integer ret = response.body();
+                if(ret == null || ret == -1){
+                    System.out.println("An error has occurred");
+                }
+                else if(ret == -2){
+                    System.out.println("User or event not found");
+                }
+                else if(ret == -3){
+                    System.out.println("User does not have permissions to delete the event");
+                }
+                else if(ret == 0){
+                    System.out.println("success");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e("Retrofit", "Failed to delete event");
+            }
+        });
+    }
+
     /***** Methods for handling the org select spinner *****/
 
     @Override
@@ -568,6 +687,32 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
     private void setOrgSpinnerAdapter(OrgSpinnerAdapter orgSpinnerAdapter){
         this.orgSpinnerAdapter = orgSpinnerAdapter;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+                    EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
     }
 }
 

@@ -19,6 +19,7 @@ public class EventModel {
     private String clockInCode;
     private String clockOutCode;
     private String orgName;
+    private boolean privateEvent = false;
 
     static int x = 54545;
     static Timestamp testTime = new Timestamp((long)x);
@@ -206,4 +207,12 @@ public class EventModel {
         this.orgName = orgName;
     }
 
+    public boolean isPrivateEvent() {
+        return privateEvent;
+    }
+
+    public void setPrivateEvent(boolean privateEvent) {
+        this.privateEvent = privateEvent;
+    }
 }
+

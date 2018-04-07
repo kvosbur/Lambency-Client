@@ -25,6 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.firebase.FirebaseApiNotAvailableException;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
 import com.lambency.lambency_client.Fragments.CheckInFragment;
 import com.lambency.lambency_client.Fragments.EventsMainFragment;
@@ -56,7 +59,10 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.lambency.lambency_client.R;
+
 import com.lambency.lambency_client.Utils.MyLifecycleHandler;
+
+import com.lambency.lambency_client.Utils.NotificationHelper;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -97,6 +103,7 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
         ButterKnife.bind(this);
 
+
         /*
         final Handler handler = new Handler();
         final int delay = 10000; //milliseconds
@@ -111,6 +118,12 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
             }
         }, delay);
         */
+
+        // Get token
+        String token = FirebaseInstanceId.getInstance().getToken();
+        sendFirebaseToken(token);
+        Log.d("Bottom Bar", "Sent firebase token to server: " + token);
+
 
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
         bar.setSelectedItemId(R.id.lamBot);
@@ -145,6 +158,10 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
                     case R.id.checkinBot:
                         switchToFragment4();
+                        break;
+
+                    case R.id.messagingBot:
+                        switchToFragment5();
                         break;
 
                 }
@@ -241,12 +258,40 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
     }
 
+    public void switchToFragment5(){
+        Intent i = new Intent(this, MessageListActivity.class);
+        startActivity(i);
+    }
+
     public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+    private void sendFirebaseToken(String token){
+        String authToken = UserModel.myUserModel.getOauthToken();
+        LambencyAPIHelper.getInstance().setFirebaseCode(authToken, token).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e("Firebase", "Error sending new firebase token to the server.");
+            }
+        });
+    }
+
+
 }
