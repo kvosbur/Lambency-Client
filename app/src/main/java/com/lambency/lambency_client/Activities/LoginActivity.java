@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SharedPrefsHelper;
@@ -161,6 +163,64 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     });
                 }
             }
+
+            //Login with email and password
+            final EditText emailAddr = findViewById(R.id.input_email);
+            final EditText passWord = findViewById(R.id.input_password);
+            Button logInButton = findViewById(R.id.btn_login);
+
+            logInButton.setOnClickListener(new View.OnClickListener() {
+                boolean check = true;
+                @Override
+                public void onClick(View v) {
+                    if (emailAddr.getText().toString().matches("")){
+                        Toast.makeText(getApplicationContext(), "Email address empty", Toast.LENGTH_LONG).show();
+                        check = false;
+                    }
+                    if (passWord.getText().toString().matches("")){
+                        Toast.makeText(getApplicationContext(), "Password is empty", Toast.LENGTH_LONG).show();
+                        check = false;
+                    }
+                    if (check){
+                        LambencyAPIHelper.getInstance().loginUser(emailAddr.getText().toString(),passWord.getText().toString()).enqueue(new Callback<UserAuthenticatorModel>() {
+                            @Override
+                            public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
+                                if (response.body() == null || response.code() != 200) {
+                                    Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                UserAuthenticatorModel userAuthenticatorModel = response.body();
+                                if (userAuthenticatorModel.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
+                                    Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
+                                    System.out.println("got the user object");
+
+                                    Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
+                                    startActivity(myIntent);
+                                    finish();
+                                }
+                                else if (userAuthenticatorModel.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
+                                    Toast.makeText(getApplicationContext(), "Email has yet to be verified", Toast.LENGTH_LONG).show();
+                                }
+                                else if (userAuthenticatorModel.getStatus() == UserAuthenticatorModel.Status.INVALID_LOGIN){
+                                    Toast.makeText(getApplicationContext(), "Email or password is incorrect", Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    System.out.println("non deterministic error occurred in login");
+                                    Toast.makeText(getApplicationContext(), "An error occured", Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<UserAuthenticatorModel> call, Throwable t) {
+                                System.out.println("Server Error occurred in login");
+                            }
+                        });
+                    }
+
+                }
+            });
 
 
             callbackManager = CallbackManager.Factory.create();
