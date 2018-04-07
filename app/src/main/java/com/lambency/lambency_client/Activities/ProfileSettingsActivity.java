@@ -1,6 +1,7 @@
 package com.lambency.lambency_client.Activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,8 +33,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ProfileSettingsActivity.this);
-                alertDialog.setTitle("Password change");
+                final Dialog dialog = new Dialog(ProfileSettingsActivity.this);
+                dialog.setTitle("Password change");
                 final EditText oldPass = new EditText(ProfileSettingsActivity.this);
                 final EditText newPass = new EditText(ProfileSettingsActivity.this);
                 final EditText confirmPass = new EditText(ProfileSettingsActivity.this);
@@ -62,13 +63,32 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                 LinearLayout lll =new LinearLayout(ProfileSettingsActivity.this);
                 lll.setOrientation(LinearLayout.HORIZONTAL);
                 lll.addView(cancelBtn);
-                lll.addView(changePassword);
+                lll.addView(confirmBtn);
+
+                confirmBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.cancel();
+                    }
+                });
+
+                cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+
 
                 ll.addView(lll);
 
 
-                alertDialog.setView(ll);
+                dialog.setContentView(ll);
 
+                dialog.show();
+
+                /*
                 alertDialog.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 boolean check = true;
@@ -90,6 +110,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                                     confirmPass.setError("Please enter same password");
                                     Toast.makeText(ProfileSettingsActivity.this, "Password entry field two empty",
                                             Toast.LENGTH_LONG).show();
+
                                 }
                                 if (check == true) {
                                     LambencyAPIHelper.getInstance().changePassword(newPass.getText().toString(),
@@ -134,7 +155,10 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
                 AlertDialog alert11 = alertDialog.create();
                 alert11.show();
+                */
             }
+
         });
+
     }
 }
