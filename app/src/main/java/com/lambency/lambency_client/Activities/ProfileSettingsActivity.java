@@ -75,6 +75,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
                         if (!newPass.getText().toString().equals(confirmPass.getText().toString())){
                             check = false;
+                            confirmPass.setError("Passwords didn't match");
+                            newPass.setError("Passwords didn't match");
                             Toast.makeText(ProfileSettingsActivity.this, "The two passwords don't match",
                                     Toast.LENGTH_LONG).show();
                         }
