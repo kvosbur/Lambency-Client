@@ -143,6 +143,19 @@ public interface LambencyAPI {
     @GET("/User/login/lambency")
     Call<UserAuthenticatorModel> loginUser(@Query("email") String email, @Query("password") String password);
 
+    @POST("/User/changePassword")
+    Call<Integer> changePassword(@Query("newPassword") String password, @Query("confirmPassword") String confirmPass,
+                                 @Query("oAuthToken") String oAuthToken);
+
+    @POST("/User/beginRecovery")
+    Call<Integer> changePassword(@Query("email") String email);
+
+    @POST("/User/endRecovery")
+    Call<Integer> changePassword(@Query("newPassword") String password, @Query("confirmPassword") String confirmPass,
+                                 @Query("verification") String oAuthToken, @Query("userID") int userID);
+
+
+
 
 }
 
