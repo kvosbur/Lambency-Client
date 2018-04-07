@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -116,6 +117,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_login);
+
+            this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
             TextView forSignup = findViewById(R.id.link_signup);
             forSignup.setOnClickListener(new View.OnClickListener() {
