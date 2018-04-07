@@ -133,6 +133,16 @@ public interface LambencyAPI {
     @POST("/User/ClockInOut")
     Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
 
+    @GET("Event/deleteEvent")
+    Call<Integer> getDeleteEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID, @Query("message") String message);
 
+    @POST("User/setFirebase")
+    Call<Integer> setFirebaseCode(@Query("oAuthCode") String oAuthCode, @Query("firebase") String fireBaseCode);
+
+    @GET("User/leaderboardRange")
+    Call<List<UserModel>> getLeaderboardRange(@Query("start") String start, @Query("end") String end);
+
+    @GET("User/leaderboardAroundUser")
+    Call<List<UserModel>> getLeaderboardAroundUser(@Query("oAuthCode") String oAuthCode);
 }
 
