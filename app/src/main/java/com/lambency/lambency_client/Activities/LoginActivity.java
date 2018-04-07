@@ -39,6 +39,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
@@ -71,6 +73,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseApp.initializeApp(context);
+
         if (ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(LoginActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
@@ -97,7 +101,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
                             return;
                         }
-                        Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                         System.out.println("got the user object");
 
                         //System.out.println("SUCCESS");
@@ -110,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onFailure(Call<UserModel> call, Throwable throwable) {
                         //when failure
                         System.out.println("FAILED CALL");
-                        Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Login error... Please try again", Toast.LENGTH_LONG).show();
 
                     }
                 });
@@ -411,7 +414,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                                     Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                                                                     System.out.println("got the user object");
 
-
                                                                     Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
                                                                     startActivity(myIntent);
                                                                     finish();
@@ -572,7 +574,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     //System.out.println(ua.getoAuthCode());
                     //System.out.println(ua.getStatus());
                     if(ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
-                        Toast.makeText(getApplicationContext(), "Success communication with server.", Toast.LENGTH_LONG).show();
                         //updateUI(account);
 
                         UserAuthenticatorModel.myAuth = ua.getoAuthCode();
@@ -589,9 +590,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 if (response.body() == null || response.code() != 200) {
                                     System.out.println("ERROR!!!!!");
                                 }
+
                                 //when response is back
                                 UserModel.myUserModel = response.body();
-                                Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                                 System.out.println("got the user object");
 
                                 //System.out.println("SUCCESS");
@@ -646,6 +647,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     // [END handleSignInResult]
+
+
 
 
 }

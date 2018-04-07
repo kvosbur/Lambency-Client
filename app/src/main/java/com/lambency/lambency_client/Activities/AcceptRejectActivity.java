@@ -66,7 +66,7 @@ public class AcceptRejectActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "The number of member join requests is " + users.size(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "The number of member join requests is " + users.size(), Toast.LENGTH_LONG).show();
 
                     for(int i = 0; i < users.size(); i++)
                     {
@@ -153,7 +153,7 @@ public class AcceptRejectActivity extends AppCompatActivity {
                 userList.remove(getCardPosition());
                 mAdapter.notifyDataSetChanged(); // how we update
                 mAdapter.notifyItemRangeChanged(getCardPosition(), mAdapter.getItemCount());
-                Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
             }
 
             @Override

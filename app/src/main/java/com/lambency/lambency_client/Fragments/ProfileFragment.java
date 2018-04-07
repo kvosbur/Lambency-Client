@@ -24,7 +24,15 @@ import com.lambency.lambency_client.Activities.CardViewActivity;
 import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.MyRecyclerViewAdapter;
 import com.lambency.lambency_client.Activities.ProfileSettingsActivity;
+
+import com.lambency.lambency_client.Activities.LeaderboardActivity;
+
+import com.lambency.lambency_client.Activities.ListUserActivity;
+
+import com.lambency.lambency_client.Activities.LoginActivity;
+import com.lambency.lambency_client.Activities.MessageListActivity;
 import com.lambency.lambency_client.Activities.UserAcceptRejectActivity;
+import com.lambency.lambency_client.Adapters.LeaderboardAdapter;
 import com.lambency.lambency_client.Adapters.UserAcceptRejectAdapter;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
@@ -210,6 +218,12 @@ public class ProfileFragment extends Fragment {
             case R.id.action_settings:
                 Intent settingPage = new Intent(getActivity(), ProfileSettingsActivity.class);
                 startActivity(settingPage);
+                break;
+
+            case R.id.action_leaderboard:
+                Intent j = new Intent(getActivity(), LeaderboardActivity.class);
+                startActivity(j);
+                break;
         }
 
         return super.onOptionsItemSelected(item);
