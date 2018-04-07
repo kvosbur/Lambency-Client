@@ -133,6 +133,29 @@ public interface LambencyAPI {
     @POST("/User/ClockInOut")
     Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
 
+    @GET("/User/register")
+    Call<Integer> registerUser(@Query("email") String email, @Query("first") String firstName, @Query("last") String LastName,
+                               @Query("passwd") String password);
+
+    @POST("/User/verifyEmail")
+    Call<Integer> verifyEmail(@Query("userID") int userid, @Query("code") String verificationCode);
+
+    @GET("/User/login/lambency")
+    Call<UserAuthenticatorModel> loginUser(@Query("email") String email, @Query("password") String password);
+
+    @POST("/User/changePassword")
+    Call<Integer> changePassword(@Query("newPassword") String password, @Query("confirmPassword") String confirmPass,
+                                 @Query("oAuthToken") String oAuthToken, @Query("oldPassword") String oldPassword);
+
+    @POST("/User/beginRecovery")
+    Call<Integer> beginPasswordRecovery(@Query("email") String email);
+
+    @POST("/User/endRecovery")
+    Call<Integer> endPasswordRecovery(@Query("newPassword") String password, @Query("confirmPassword") String confirmPass,
+                                 @Query("verification") String oAuthToken, @Query("userID") int userID);
+
+
+
     @GET("Event/deleteEvent")
     Call<Integer> getDeleteEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID, @Query("message") String message);
 

@@ -14,11 +14,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Activities.AcceptRejectActivity;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
+import com.lambency.lambency_client.Activities.CardViewActivity;
+import com.lambency.lambency_client.Activities.LoginActivity;
+import com.lambency.lambency_client.Activities.MyRecyclerViewAdapter;
+import com.lambency.lambency_client.Activities.ProfileSettingsActivity;
 
 import com.lambency.lambency_client.Activities.LeaderboardActivity;
 
@@ -37,6 +42,7 @@ import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,6 +75,9 @@ public class ProfileFragment extends Fragment {
 
     @BindView(R.id.editEmail)
     EditText editEmail;
+
+    @BindView(R.id.clicktoseehours)
+    LinearLayout clicktoseeHours;
 
     boolean edit = false;
 
@@ -136,6 +145,14 @@ public class ProfileFragment extends Fragment {
         lastNameText.setText(myModel.getLastName());
         emailOfUser.setText(myModel.getEmail());
 
+        clicktoseeHours.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileFragment.this.getActivity(), CardViewActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -145,6 +162,7 @@ public class ProfileFragment extends Fragment {
             mListener.onProfileFragmentInteraction(uri);
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -196,6 +214,10 @@ public class ProfileFragment extends Fragment {
                 Intent i = new Intent(getActivity(), UserAcceptRejectActivity.class);
                 startActivity(i);
                 //((Activity) getActivity()).overridePendingTransition(0,0);
+
+            case R.id.action_settings:
+                Intent settingPage = new Intent(getActivity(), ProfileSettingsActivity.class);
+                startActivity(settingPage);
                 break;
 
             case R.id.action_leaderboard:

@@ -21,6 +21,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
             android:value="@string/facebook_app_id"
             tools:replace="android:value"/>
 
@@ -50,6 +51,30 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+
+                <!-- Sets the intent action to view the activity -->
+                <action android:name="android.intent.action.VIEW" />
+                <!-- Allows the link to be opened from a web browser -->
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Allows the deep link to be used without specifying the app name -->
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- URI Lambency://deeplink -->
+                <data
+                    android:host="deeplink"
+                    android:pathPrefix="/login"
+                    android:scheme="lambency" />
+                <!-- URI http://www.mylambencyclient.com -->
+                <data
+                    android:host="www.mylambencyclient.com"
+                    android:pathPrefix="/login"
+                    android:scheme="http" />
+            </intent-filter>
+            <!--
+            navigating to either
+            http://www.mylambencyclient.com/login or mylambencyclient://login will
+            take the user to the EventDetailsActivity activity.
+            -->
         </activity>
         <activity
             android:name=".Activities.ListUserActivity"
@@ -87,12 +112,10 @@
             take the user to the EventDetailsActivity activity.
             -->
         </activity>
-
         <activity
             android:name=".Activities.FilterActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.OrgCreationActivity"
             android:exported="true"
@@ -113,7 +136,7 @@
         <activity
             android:name=".Activities.FilterDistanceActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.SearchActivity"
             android:exported="true"
@@ -130,6 +153,38 @@
         <activity
             android:name=".Activities.ListEventsActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.OrgUsersActivity"
+            android:exported="true" />
+        <activity android:name=".Activities.SignupActivity" />
+        <activity android:name=".Activities.CardViewActivity" />
+        <activity android:name=".Activities.ProfileSettingsActivity" />
+        <activity android:name=".Activities.ChangePasswordActivity">
+            <intent-filter>
+                <!-- Sets the intent action to view the activity -->
+                <action android:name="android.intent.action.VIEW" />
+                <!-- Allows the link to be opened from a web browser -->
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Allows the deep link to be used without specifying the app name -->
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- URI Lambency://deeplink -->
+                <data
+                    android:host="deeplink"
+                    android:pathPrefix="/changePassword"
+                    android:scheme="lambency" />
+                <!-- URI http://www.mylambencyclient.com -->
+                <data
+                    android:host="www.mylambencyclient.com"
+                    android:pathPrefix="/changePassword"
+                    android:scheme="http" />
+            </intent-filter>
+            <!--
+            navigating to either
+            http://www.mylambencyclient.com/changePassword or mylambencyclient://changePassword will
+            take the user to the EventDetailsActivity activity.
+            -->
+        </activity>
+
         <activity android:name=".Activities.OrgUsersActivity"
             android:exported="true"></activity>
 

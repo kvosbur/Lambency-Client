@@ -16,6 +16,13 @@
         />
 
     <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="Settings"
+        app:showAsAction="always"
+        />
+
+    <item
         android:id="@+id/action_seeRequests"
         android:icon="@drawable/ic_group_add_white_24dp"
         android:title="Requests"
