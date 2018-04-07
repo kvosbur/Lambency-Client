@@ -106,6 +106,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
                                             if (ret == 0){
                                                 Toast.makeText(getApplicationContext(), "Password change success", Toast.LENGTH_SHORT).show();
+                                                dialog.cancel();
                                             }
                                             else if (ret == 7){
                                                 Toast.makeText(getApplicationContext(), "You entered the old password wrong Pls try again", Toast.LENGTH_SHORT).show();
@@ -120,7 +121,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                                             System.out.println("Failed in change password");
                                         }
                                     });
-                            dialog.cancel();
+
                         }
                     }
                 });
