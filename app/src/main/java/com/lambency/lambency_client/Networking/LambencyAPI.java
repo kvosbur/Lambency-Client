@@ -145,7 +145,7 @@ public interface LambencyAPI {
 
     @POST("/User/changePassword")
     Call<Integer> changePassword(@Query("newPassword") String password, @Query("confirmPassword") String confirmPass,
-                                 @Query("oAuthToken") String oAuthToken);
+                                 @Query("oAuthToken") String oAuthToken, @Query("oldPassword") String oldPassword);
 
     @POST("/User/beginRecovery")
     Call<Integer> beginPasswordRecovery(@Query("email") String email);
