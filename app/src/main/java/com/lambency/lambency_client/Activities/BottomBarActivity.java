@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Activities;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
@@ -58,6 +59,9 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.lambency.lambency_client.R;
+
+import com.lambency.lambency_client.Utils.MyLifecycleHandler;
+
 import com.lambency.lambency_client.Utils.NotificationHelper;
 
 import java.util.ArrayList;
@@ -99,10 +103,27 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
         ButterKnife.bind(this);
 
+
+        /*
+        final Handler handler = new Handler();
+        final int delay = 10000; //milliseconds
+
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                if(MyLifecycleHandler.isApplicationVisible()) {
+                    //TODO Retrofit for application being closed
+                    Toast.makeText(BottomBarActivity.this, "Hello World!", Toast.LENGTH_SHORT).show();
+                }
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
+        */
+
         // Get token
         String token = FirebaseInstanceId.getInstance().getToken();
         sendFirebaseToken(token);
         Log.d("Bottom Bar", "Sent firebase token to server: " + token);
+
 
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
         bar.setSelectedItemId(R.id.lamBot);
