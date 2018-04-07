@@ -197,10 +197,39 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 if (userAuthenticatorModel.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
                                     Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                                     System.out.println("got the user object");
+                                    UserAuthenticatorModel.myAuth = userAuthenticatorModel.getoAuthCode();
 
-                                    Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
-                                    startActivity(myIntent);
-                                    finish();
+                                    LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
+                                        @Override
+                                        public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                                            if (response.body() == null || response.code() != 200) {
+                                                System.out.println("ERROR!!!!!");
+                                                return;
+                                            }
+                                            //when response is back
+                                            UserModel.myUserModel = response.body();
+                                            if (response.body() == null) {
+                                                System.out.println("ERROR NULLED!!!!");
+                                                Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
+                                                return;
+                                            }
+                                            Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
+                                            System.out.println("got the user object");
+
+                                            //System.out.println("SUCCESS");
+                                            Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
+                                            startActivity(myIntent);
+                                            finish();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<UserModel> call, Throwable throwable) {
+                                            //when failure
+                                            System.out.println("FAILED CALL");
+                                            Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
+
+                                        }
+                                    });
                                 }
                                 else if (userAuthenticatorModel.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
                                     Toast.makeText(getApplicationContext(), "Email has yet to be verified", Toast.LENGTH_LONG).show();
