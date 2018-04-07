@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -47,7 +48,18 @@ public class ListEventsActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         if(b != null){
             int orgId = b.getInt("org_id");
-            getUpcomingEvents(orgId +  "");
+
+            switch(b.getString("eventType", "notFound")){
+                case "pastEvents":
+                    getPastEvents(orgId + "");
+                    break;
+                case "upcomingEvents":
+                    getUpcomingEvents(orgId + "");
+                    break;
+                default:
+                    Log.e("EventListActivity", "Invalid event type for list.");
+                    break;
+            }
         }
 
         getSupportActionBar().setTitle("Upcoming Events");
@@ -85,6 +97,10 @@ public class ListEventsActivity extends AppCompatActivity {
                 System.out.println("FAILED CALL");
             }
         });
+    }
+
+    public void getPastEvents(String orgId){
+        //TODO put past events retrofit here
     }
 
     private void startAdapter(List<EventModel> events){

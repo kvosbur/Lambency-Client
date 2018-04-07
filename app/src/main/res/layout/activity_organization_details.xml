@@ -222,7 +222,17 @@
 
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/pastEventsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/upcomingEventsContainer"
+            android:text="Show Past Events"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="15dp"/>
+
     </RelativeLayout>
+
 
 </ScrollView>
 
