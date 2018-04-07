@@ -90,20 +90,20 @@ public class SignupActivity extends AppCompatActivity {
                 Integer ret = response.body();
                 if (ret == 0) {
                     System.out.println("Successfully registered the user");
-                    Toast.makeText(getApplicationContext(), "User registration successfull", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "User registration successful", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
                     startActivity(intent);
                 } else if (ret == 1){
                     System.out.println("Bad email address");
-                    Toast.makeText(getApplicationContext(), "Bad email address", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_LONG).show();
                 }
                 else if (ret ==2){
                     System.out.println("Not unique email");
-                    Toast.makeText(getApplicationContext(), "Not unique email", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "There is already an account with that email address", Toast.LENGTH_LONG).show();
                 }
                 else{
                     System.out.println("wrong verification code for user");
-                    Toast.makeText(getApplicationContext(), "wrong verification code for user", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "There was an error on Server", Toast.LENGTH_LONG).show();
                 }
             }
 
