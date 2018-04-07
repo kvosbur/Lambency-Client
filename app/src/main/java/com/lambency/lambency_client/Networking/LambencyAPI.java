@@ -148,10 +148,10 @@ public interface LambencyAPI {
                                  @Query("oAuthToken") String oAuthToken);
 
     @POST("/User/beginRecovery")
-    Call<Integer> changePassword(@Query("email") String email);
+    Call<Integer> beginPasswordRecovery(@Query("email") String email);
 
     @POST("/User/endRecovery")
-    Call<Integer> changePassword(@Query("newPassword") String password, @Query("confirmPassword") String confirmPass,
+    Call<Integer> endPasswordRecovery(@Query("newPassword") String password, @Query("confirmPassword") String confirmPass,
                                  @Query("verification") String oAuthToken, @Query("userID") int userID);
 
 
