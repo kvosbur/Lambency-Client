@@ -79,7 +79,7 @@ public interface LambencyAPI {
     Call<ArrayList<UserModel>> getListOfUsers(@Query("oauthcode") String oAuthCode, @Query("event_id") int eventId);
 
     @GET("Event/update")
-    Call<Integer> getUpdateEvent(@Query("event") EventModel event, @Query("message") String message);
+    Call<Integer> getUpdateEvent(@Body EventModel event, @Query("message") String message);
 
     @GET("/User/registerForEvent")
     Call<Integer> getRegisterEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID);
