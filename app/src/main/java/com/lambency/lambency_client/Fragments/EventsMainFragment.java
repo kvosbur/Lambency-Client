@@ -195,6 +195,7 @@ public class EventsMainFragment extends Fragment implements
                 }
                 else if(myEvents.size() == 0){
                     System.out.println("No events founud");
+                    eventsLoaded();
                 }
                 else{
                     System.out.println("got events");
