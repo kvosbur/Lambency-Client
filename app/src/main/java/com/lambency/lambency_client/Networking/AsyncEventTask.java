@@ -21,9 +21,10 @@ public class AsyncEventTask extends AsyncTask <Void, Void, Void>{
 
     private EventModel eventModel;
     private Context context;
+    private String message;
     private int mode;
 
-    public AsyncEventTask(Context context, EventModel eventModel, int mode){
+    public AsyncEventTask(Context context, EventModel eventModel, String message, int mode){
         this.eventModel = eventModel;
         this.context = context;
         this.mode = mode;
@@ -37,7 +38,7 @@ public class AsyncEventTask extends AsyncTask <Void, Void, Void>{
         }
 
         if(mode == EDIT_MODE){
-            updateEvent(eventModel);
+            updateEvent(eventModel, message);
         }
 
         return null;
@@ -76,8 +77,9 @@ public class AsyncEventTask extends AsyncTask <Void, Void, Void>{
         });
     }
 
-    private void updateEvent(EventModel event){
-        LambencyAPIHelper.getInstance().postUpdateEvent(event).enqueue(new Callback<Integer>() {
+    private void updateEvent(EventModel event, String message){
+        System.out.println("IT IS A WORKING");
+        LambencyAPIHelper.getInstance().postUpdateEvent(event, message).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response.body() == null || response.code() != 200) {
@@ -97,7 +99,7 @@ public class AsyncEventTask extends AsyncTask <Void, Void, Void>{
             @Override
             public void onFailure(Call<Integer> call, Throwable throwable) {
                 //when failure
-                System.out.println("FAILED CALL");
+                System.out.println("FAILED CALL2");
             }
         });
     }

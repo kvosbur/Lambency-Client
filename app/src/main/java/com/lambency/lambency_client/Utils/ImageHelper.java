@@ -94,7 +94,7 @@ public class ImageHelper {
         } else {
             bm = BitmapFactory.decodeFile(imagePath);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+            bm.compress(Bitmap.CompressFormat.JPEG, 20, baos);
             imageFile = baos.toByteArray();
         }
 

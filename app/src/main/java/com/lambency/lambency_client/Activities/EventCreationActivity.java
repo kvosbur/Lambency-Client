@@ -332,7 +332,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                             eventModel.setLocation(location);
                             eventModel.setOrg_id(eventOrgModel.getOrgID());
 
-                            new AsyncEventTask(context, eventModel, AsyncEventTask.EDIT_MODE).execute();
+                            new AsyncEventTask(context, eventModel, message, AsyncEventTask.EDIT_MODE).execute();
 
                             Intent intent = new Intent(context, BottomBarActivity.class);
                             context.startActivity(intent);
@@ -374,7 +374,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                             eventModel.setPrivateEvent(true);
                         }
 
-                        new AsyncEventTask(context, eventModel, AsyncEventTask.CREATE_MODE).execute();
+                        new AsyncEventTask(context, eventModel, "",  AsyncEventTask.CREATE_MODE).execute();
 
                         Intent myIntent = new Intent(EventCreationActivity.this,
                                 BottomBarActivity.class);
