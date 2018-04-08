@@ -9,15 +9,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +28,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -40,14 +36,13 @@ import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
-import com.lambency.lambency_client.Networking.LambencyAPI;
+import com.lambency.lambency_client.Networking.AsyncEventCreationTask;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
 import com.lambency.lambency_client.Utils.TimeHelper;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -310,22 +305,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 final String location = addressOfEvent + " " + city + " " + state + " " + zip;
 
                 if (editing) {
-                    Bitmap bm;
-                    final byte[] imageFile;
-                    if (imagePath.equals("")) {
-                        //Use default profile image
-                        bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
-                        imageFile = null;
-                    } else {
-                        bm = BitmapFactory.decodeFile(imagePath);
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                        imageFile = baos.toByteArray();
-                    }
-
-
-
-
+                    final byte[] imageFile = ImageHelper.getByteArrayFromPath(context, imagePath);
 
                     //Check if the user wants to include a reason for editing
                     final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(EventCreationActivity.this).create();
@@ -377,22 +357,9 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     addressOfEvent = eAddr.getText().toString();
                     description = eDescrip.getText().toString();
 
-                    //making image string....
-                    Bitmap bm;
-                    byte[] imageFile = null;
-                    if (imagePath.equals("")) {
-                        //Use default profile image
-                        bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
-                    } else {
-                        bm = BitmapFactory.decodeFile(imagePath);
-
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                        imageFile = baos.toByteArray();
-                    }
+                    final byte[] imageFile = ImageHelper.getByteArrayFromPath(context, imagePath);
 
                     //encoded profile is the image string
-
 
                     if (eventName.matches("") ||  description.matches("") || addressOfEvent.matches("") || city.matches("") || state.matches("") || zip.matches("") || zip.matches("")) {
                         Toast.makeText(getApplicationContext(), "You did not enter all of the information", Toast.LENGTH_SHORT).show();
@@ -406,39 +373,14 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                         if(memberOnlyCheck.isChecked()) {
                             eventModel.setPrivateEvent(true);
                         }
-                        LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
-                            @Override
-                            public void onResponse(Call<EventModel> call, Response<EventModel> response) {
-                                if (response.body() == null || response.code() != 200) {
-                                    Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                //when response is back
-                                EventModel createdEvent = response.body();
-                                System.out.println("Created Event: " + createdEvent);
-                                System.out.println("location send was   !!! "+ eventModel.getLocation());
 
-                                if (createdEvent == null) {
-                                    Toast.makeText(getApplicationContext(), "Event error!", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                // Status now contains event_id
-                                int event_id = createdEvent.getEvent_id();
-
-                                Toast.makeText(getApplicationContext(), "Success creating event!", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onFailure(Call<EventModel> call, Throwable throwable) {
-                                Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                        });
+                        new AsyncEventCreationTask(context, eventModel).execute();
 
                         Intent myIntent = new Intent(EventCreationActivity.this,
                                 BottomBarActivity.class);
                         startActivity(myIntent);
+
+
                     }
                 }
             }
@@ -541,6 +483,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
             @Override
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
                 //Some error handling
+                Log.e("EasyImage", "Error picking image for event.");
             }
 
             @Override
@@ -557,15 +500,9 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     }
                 });
 
-                imagePath = imagesFiles.get(0).getPath();
-
-                File file = imagesFiles.get(0);
-                String path = file.getPath();
-                ImageHelper.loadWithGlide(context,
-                        path,
-                        eventImage
-                );
-
+                File imageFile = imagesFiles.get(0);
+                imagePath = imageFile.getPath();
+                ImageHelper.displayEasyImageResult(context, imageFile, eventImage);
             }
         });
     }
