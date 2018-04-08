@@ -668,7 +668,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     currDate += "18";
 
 
-
                     dateView.setText(currDate); //TimeHelper.dateFromTimestamp(eventModel.getStart()));
                     descriptionView.setText(eventModel.getDescription());
                     timeView.setText(TimeHelper.hourFromTimestamp(eventModel.getStart()) + " - " + TimeHelper.hourFromTimestamp(eventModel.getEnd()));

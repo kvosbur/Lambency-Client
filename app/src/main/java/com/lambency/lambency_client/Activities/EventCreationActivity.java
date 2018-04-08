@@ -423,10 +423,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
                     dateButton.setText(TimeHelper.dateFromTimestamp(startingTime));
 
-                    Glide.with(context)
-                            .load(LambencyAPIHelper.domain + "/" + eventModel.getImage_path())
-                            .into(eventImage);
-                    //eventImage.setImageBitmap(ImageHelper.stringToBitmap(eventModel.getImageFile()));
+                    ImageHelper.loadWithGlide(context, eventModel.getImage_path(), eventImage);
+
                 }
             }
 
