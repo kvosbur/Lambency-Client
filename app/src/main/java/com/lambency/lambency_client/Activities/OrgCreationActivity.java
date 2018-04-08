@@ -99,16 +99,17 @@ public class OrgCreationActivity extends AppCompatActivity {
 
                 //Convert the image to a base64 string
                 Bitmap bm;
+                byte[] imageFile;
                 if(imagePath.equals("")){
                     //Use default profile image
                     bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
+                    imageFile = null;
                 }else {
                     bm = BitmapFactory.decodeFile(imagePath);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                    imageFile = baos.toByteArray();
                 }
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                byte[] b = baos.toByteArray();
-                String encodedProfile = Base64.encodeToString(b, Base64.DEFAULT);
 
                 String name = nameEdit.getText().toString();
                 String email = emailEdit.getText().toString();
@@ -125,7 +126,7 @@ public class OrgCreationActivity extends AppCompatActivity {
                     return false;
                 }
 
-                orgModel = new OrganizationModel(UserModel.myUserModel, name, location, 0, description, email, UserModel.myUserModel, encodedProfile);
+                orgModel = new OrganizationModel(UserModel.myUserModel, name, location, 0, description, email, UserModel.myUserModel, imageFile);
 
                 progressBar.setVisibility(View.VISIBLE);
 

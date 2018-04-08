@@ -806,7 +806,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                 orgTitleView.setText("Host Organization: " + organization.getName());
                 ImageHelper.loadWithGlide(context,
-                        ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                        organization.getImagePath(),
                         orgImageView);
 
                 isLoading(false);
