@@ -515,11 +515,13 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     orgSpinner.setVisibility(View.VISIBLE);
                     spinnerProgress.setVisibility(View.GONE);
 
+                    /*
                     if(editing) {
                         List<Integer> orgs = UserModel.myUserModel.getMyOrgs();
                         int orgIndex = orgs.indexOf(eventModel.getOrg_id());
                         orgSpinner.setSelection(orgIndex);
                     }
+                    */
 
                 }
 
