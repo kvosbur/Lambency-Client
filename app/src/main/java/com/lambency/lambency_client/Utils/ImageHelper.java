@@ -67,14 +67,14 @@ public class ImageHelper {
                 .load(imagePath)
                 .into(view);
                 */
-
+        imagePath = imagePath.replace("photos", "");
 
         imagePath = imagePath.replace(" ", "%20");
 
         System.out.println("Image Path is: " + imagePath);
 
         Glide.with(context)
-                .load(LambencyAPIHelper.domain + "/" + imagePath)
+                .load(LambencyAPIHelper.domain + imagePath)
                 .into(view);
     }
 
