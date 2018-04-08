@@ -211,7 +211,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     addressOrg.setText(organization.getLocation());
 
 
-                    img = organization.getImage();
+                    //img = organization.getImage();
 
 
 
@@ -242,7 +242,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     }
 
                     ImageHelper.loadWithGlide(context,
-                            ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                            organization.getImagePath(),
                             orgImage);
                     /*
                     ImageHelper.loadWithGlide(context,
@@ -250,9 +250,9 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                             leaveOrgImg);
                             */
 
-                    if(organization.getImage() != null) {
+                    if(organization.getImagePath() != null && organization.getImagePath().length() != 0) {
                         ImageHelper.loadWithGlide(context,
-                                ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                                organization.getImagePath(),
                                 orgImage);
                     }
 
