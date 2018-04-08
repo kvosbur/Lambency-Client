@@ -59,12 +59,12 @@ public class OrgSpinnerAdapter extends BaseAdapter{
         TextView orgTitle = view.findViewById(R.id.orgTitle);
         orgTitle.setText(orgModel.getName());
 
-        /*
+
         CircleImageView orgImage = view.findViewById(R.id.orgImage);
         ImageHelper.loadWithGlide(context,
                 orgs.get(i).getImagePath(),
                 orgImage);
-           */
+
 
         return view;
     }
