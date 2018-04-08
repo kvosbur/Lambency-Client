@@ -209,8 +209,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         return;
                     }
 
-                    Toast.makeText(getApplicationContext(), "Got Organization Object", Toast.LENGTH_LONG).show();
-
                     if(organization.checkPermissions(UserModel.myUserModel) == 0){
                         seeMembersButton.setVisibility(View.GONE);
                     }
@@ -325,7 +323,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                                 Integer ret = response.body();
                                 if(ret == 0){
                                     System.out.println("successfully followed organization");
-                                    Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
                                     checkBox.setText("Unfollow");
                                 }
                                 else if (ret == 1){
@@ -349,7 +346,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         });
                     }
                     else {
-                        Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
                         LambencyAPIHelper.getInstance().getUnfollowOrg(UserModel.myUserModel.getOauthToken(), Integer.toString(currentOrgId)).enqueue(new Callback<Integer>() {
                             @Override
                             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -398,7 +394,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
         showAllButton.setVisibility(View.GONE);
         upcomingEventsContainer.setVisibility(View.GONE);
-        upcomingEventsContainer.setVisibility(View.VISIBLE);
+        //upcomingEventsContainer.setVisibility(View.VISIBLE);
 
         LambencyAPIHelper.getInstance().getEventsByOrg(UserModel.myUserModel.getOauthToken(), organizationModel.getOrgID() + "").enqueue(new Callback<List<EventModel>>() {
             @Override
@@ -409,7 +405,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 }
                 //when response is back
                 List<EventModel> list = response.body();
-                if(list == null){
+                if(list == null || list.size() == 0){
                     System.out.println("Org has no events or error has occurred");
                     noEventsTextView.setVisibility(View.VISIBLE);
                     upcomingEventsProgress.setVisibility(View.GONE);
@@ -503,7 +499,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     Integer ret = response.body();
                     if(ret == 0){
                         System.out.println("successfully followed organization");
-                        Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
                         checkBox.setText("Unfollow");
                     }
                     else if (ret == 1){
@@ -527,7 +522,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             });
         }
         else {
-            Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
             LambencyAPIHelper.getInstance().getUnfollowOrg(UserModel.myUserModel.getOauthToken(), Integer.toString(currentOrgId)).enqueue(new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -579,7 +573,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     Integer ret = response.body();
                     if(ret == 0){
                         System.out.println("successfully followed organization");
-                        Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
                     }
                     else if (ret == 1){
                         System.out.println("failed to find user or organization");
@@ -633,7 +626,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     checkBox.setChecked(true);
                 }
             });
-            Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
+
         }
     }
 
@@ -666,7 +659,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         Integer ret = response.body();
                         if(ret == 0){
                             System.out.println("Success in sending email");
-                            Toast.makeText(getApplicationContext(), "Email was sent successfully ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Invite Sent", Toast.LENGTH_SHORT).show();
                         }
                         else if(ret == -1){
                             System.out.println("an error has occurred");
@@ -821,7 +814,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     Integer status = response.body();
                     System.out.println(status);
                     if(status == 0){
-                        Toast.makeText(getApplicationContext(), "Successfully requested to join", Toast.LENGTH_LONG).show();
                         UserModel.myUserModel.requestToJoinOrganization(currentOrgId);
                         requestJoin.setText("Cancel Request");
                     }

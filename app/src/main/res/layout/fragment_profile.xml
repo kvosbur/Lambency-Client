@@ -83,6 +83,8 @@
                 </LinearLayout>
                 <LinearLayout
                     android:gravity="center"
+                    android:id="@+id/clicktoseehours"
+                    android:clickable="true"
                     android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -96,7 +98,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="360"
+                        android:text="320"
                         android:textStyle="bold"
                         android:textSize="20sp"
                         android:paddingTop="10dp"

@@ -2,17 +2,23 @@ package com.lambency.lambency_client.Activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,8 +39,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SharedPrefsHelper;
@@ -44,6 +53,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,6 +73,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseApp.initializeApp(context);
+
         if (ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(LoginActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
@@ -70,7 +82,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             //skip login activity if there is already an oAuthToken saved to shared preferences
             SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
-            String myauth = sharedPref.getString("myauth", "");
+            final String myauth = sharedPref.getString("myauth", "");
 
             if (myauth.length() > 0) {
                 UserAuthenticatorModel.myAuth = myauth;
@@ -89,7 +101,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
                             return;
                         }
-                        Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                         System.out.println("got the user object");
 
                         //System.out.println("SUCCESS");
@@ -102,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onFailure(Call<UserModel> call, Throwable throwable) {
                         //when failure
                         System.out.println("FAILED CALL");
-                        Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Login error... Please try again", Toast.LENGTH_LONG).show();
 
                     }
                 });
@@ -111,6 +122,145 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_login);
+
+            this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+            TextView forSignup = findViewById(R.id.link_signup);
+            forSignup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+            Intent intent = getIntent();
+            Uri data = intent.getData();
+
+            //Bundle for deeplink
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null || data != null) {
+                //TODO error check
+                if (data != null) {
+                    String userId = data.getQueryParameter("uid");
+                    String verificationCode = data.getQueryParameter("code");
+                    LambencyAPIHelper.getInstance().verifyEmail(Integer.parseInt(userId),verificationCode).enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if (response.body() == null || response.code() != 200) {
+                                Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            //when response is back
+                            Integer ret = response.body();
+                            if (ret != 0 ) {
+                                System.out.println("Error has occurred here inside verification");
+                            } else {
+                                System.out.println("Successfully verified the user");
+                                Toast.makeText(getApplicationContext(), "User verification successfull", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable t) {
+                            System.out.println("Server error");
+                        }
+                    });
+                }
+            }
+
+            //Login with email and password
+            final EditText emailAddr = findViewById(R.id.input_email);
+            final EditText passWord = findViewById(R.id.input_password);
+            Button logInButton = findViewById(R.id.btn_login);
+
+            logInButton.setOnClickListener(new View.OnClickListener() {
+                boolean check = true;
+                @Override
+                public void onClick(View v) {
+                    if (emailAddr.getText().toString().matches("")){
+                        Toast.makeText(getApplicationContext(), "Email address empty", Toast.LENGTH_LONG).show();
+                        check = false;
+                    }
+                    if (passWord.getText().toString().matches("")){
+                        Toast.makeText(getApplicationContext(), "Password is empty", Toast.LENGTH_LONG).show();
+                        check = false;
+                    }
+                    if (check){
+                        LambencyAPIHelper.getInstance().loginUser(emailAddr.getText().toString(),passWord.getText().toString()).enqueue(new Callback<UserAuthenticatorModel>() {
+                            @Override
+                            public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
+                                if (response.body() == null || response.code() != 200) {
+                                    Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                UserAuthenticatorModel userAuthenticatorModel = response.body();
+                                if (userAuthenticatorModel.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
+                                    Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
+                                    System.out.println("got the user object");
+                                    UserAuthenticatorModel.myAuth = userAuthenticatorModel.getoAuthCode();
+
+                                    SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
+                                    SharedPreferences.Editor editor = sharedPref.edit();
+                                    editor.putString("myauth", UserAuthenticatorModel.myAuth);
+                                    editor.apply();
+
+                                    LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
+                                        @Override
+                                        public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                                            if (response.body() == null || response.code() != 200) {
+                                                System.out.println("ERROR!!!!!");
+                                                return;
+                                            }
+                                            //when response is back
+                                            UserModel.myUserModel = response.body();
+                                            if (response.body() == null) {
+                                                System.out.println("ERROR NULLED!!!!");
+                                                Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
+                                                return;
+                                            }
+                                            Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
+                                            System.out.println("got the user object");
+
+                                            //System.out.println("SUCCESS");
+                                            Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
+                                            startActivity(myIntent);
+                                            finish();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<UserModel> call, Throwable throwable) {
+                                            //when failure
+                                            System.out.println("FAILED CALL");
+                                            Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
+
+                                        }
+                                    });
+                                }
+                                else if (userAuthenticatorModel.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
+                                    Toast.makeText(getApplicationContext(), "Email has yet to be verified", Toast.LENGTH_LONG).show();
+                                }
+                                else if (userAuthenticatorModel.getStatus() == UserAuthenticatorModel.Status.INVALID_LOGIN){
+                                    Toast.makeText(getApplicationContext(), "Email or password is incorrect", Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    System.out.println("non deterministic error occurred in login");
+                                    Toast.makeText(getApplicationContext(), "An error occured", Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<UserAuthenticatorModel> call, Throwable t) {
+                                System.out.println("Server Error occurred in login");
+                            }
+                        });
+                    }
+
+                }
+            });
 
 
             callbackManager = CallbackManager.Factory.create();
@@ -138,6 +288,67 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             findViewById(R.id.disconnect_button).setOnClickListener(this);
 
             //LoginManager.getInstance()
+
+            //Forogot password on click
+            TextView forgotPassword = findViewById(R.id.link_forgotPassword);
+            forgotPassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(LoginActivity.this);
+                    builder.setTitle("Enter email to send");
+
+                    // Set up the input
+                    final EditText input = new EditText(LoginActivity.this);
+                    // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                    builder.setView(input);
+                    // Set up the buttons
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            LambencyAPIHelper.getInstance().beginPasswordRecovery(input.getText().toString()).enqueue(new Callback<Integer>() {
+                                @Override
+                                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                    if (response.body() == null || response.code() != 200) {
+                                        System.out.println("ERROR!!!!!");
+                                        return;
+                                    }
+
+                                    int ret = response.body();
+                                    if (ret == 0){
+                                        System.out.println("success in forgot password");
+                                        Toast.makeText(LoginActivity.this, "email sent was " + input.getText().toString(),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                    else if (ret < 0){
+                                        System.out.println("email was not assoicated with an account");
+                                        Toast.makeText(LoginActivity.this, "email not associated with an account ",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                    else if (ret > 0){
+                                        System.out.println("general server error");
+                                        Toast.makeText(LoginActivity.this, "general server error occurred",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Integer> call, Throwable t) {
+                                    System.out.println("Error occured in forgot my password");
+                                }
+                            });
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.show();
+                }
+            });
+
 
             loginButton.registerCallback(callbackManager,
                     new FacebookCallback<LoginResult>() {
@@ -202,7 +413,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                                     }
                                                                     Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                                                                     System.out.println("got the user object");
-
 
                                                                     Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
                                                                     startActivity(myIntent);
@@ -364,7 +574,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     //System.out.println(ua.getoAuthCode());
                     //System.out.println(ua.getStatus());
                     if(ua.getStatus() == UserAuthenticatorModel.Status.SUCCESS){
-                        Toast.makeText(getApplicationContext(), "Success communication with server.", Toast.LENGTH_LONG).show();
                         //updateUI(account);
 
                         UserAuthenticatorModel.myAuth = ua.getoAuthCode();
@@ -381,9 +590,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 if (response.body() == null || response.code() != 200) {
                                     System.out.println("ERROR!!!!!");
                                 }
+
                                 //when response is back
                                 UserModel.myUserModel = response.body();
-                                Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
                                 System.out.println("got the user object");
 
                                 //System.out.println("SUCCESS");
@@ -438,6 +647,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     // [END handleSignInResult]
+
+
 
 
 }

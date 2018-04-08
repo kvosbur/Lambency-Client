@@ -183,6 +183,8 @@
         android:text="Host Organization:"
     />
 
+
+
     <ProgressBar
         android:id="@+id/spinnerProgress"
         android:layout_width="30dp"
@@ -199,6 +201,21 @@
         android:layout_marginLeft="5dp"
         android:layout_below="@+id/orgSelectLabel"/>
 
+    <CheckBox
+        android:id="@+id/memberOnlyCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@android:color/black"
+        android:layout_alignParentLeft="true"
+        android:textSize="16sp"
+        android:layout_below="@id/orgSpinner"
+        android:text="Members Only"
+
+        />
+
     <Button
         android:id="@+id/saveDetailsButton"
         android:layout_width="wrap_content"
@@ -209,7 +226,7 @@
         tools:layout_editor_absoluteX="173dp"
         tools:layout_editor_absoluteY="0dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/orgSpinner"/>
+        android:layout_below="@id/memberOnlyCheck"/>
 
     <Button
         android:id="@+id/deleteButton"

@@ -197,7 +197,6 @@ public class EventsMainFragment extends Fragment implements
                     System.out.println("No events founud");
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "got events", Toast.LENGTH_LONG).show();
                     System.out.println("got events");
 
                     //System.out.println("SUCCESS");
@@ -279,8 +278,6 @@ public class EventsMainFragment extends Fragment implements
 
         currentLatitude = location.getLatitude();
         currentLongitude = location.getLongitude();
-
-        Toast.makeText(getActivity(), currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
     }
 
     //start methods for getting current location
@@ -329,8 +326,6 @@ public class EventsMainFragment extends Fragment implements
     public void onLocationChanged(Location location) {
         currentLatitude = location.getLatitude();
         currentLongitude = location.getLongitude();
-
-        Toast.makeText(getActivity(), currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
     }
 
     @Override

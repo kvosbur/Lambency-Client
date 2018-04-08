@@ -1,24 +1,34 @@
 package com.lambency.lambency_client.Fragments;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Models.EventAttendanceModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -54,10 +64,11 @@ public class CheckInFragment extends Fragment {
     EditText code2Send;
     @BindView(R.id.textViewDateValue)
     TextView textViewdate;
-    @BindView(R.id.checkInDisp)
-    TextView checkInDisplay;
     @BindView(R.id.textTimer)
     TextView countUpTimer;
+
+    @BindView(R.id.qrButton)
+    ImageView qrButton;
 
     private String codeString;
     private long startTimeCounter = 0L;
@@ -66,7 +77,7 @@ public class CheckInFragment extends Fragment {
     long timeSwap = 0L;
     long finalTime = 0L;
 
-
+    private final int CAMERA_REQUEST = 0;
 
 
 
@@ -142,6 +153,18 @@ public class CheckInFragment extends Fragment {
         ((BottomBarActivity) getActivity())
                 .setActionBarTitle("Check In");
 
+
+        if(SharedPrefsHelper.isCheckedIn(getContext())){
+           sendButton.setText("Check Out");
+            startTimeCounter = SharedPrefsHelper.getStartTime(getContext());
+            myHandler.postDelayed(updateTimerMethod, 0);
+        }else{
+            sendButton.setText("Check In");
+            countUpTimer.setText("00:00:00");
+        }
+
+
+
         return v;
     }
 
@@ -150,16 +173,21 @@ public class CheckInFragment extends Fragment {
     public void handleSendClick() {
         codeString = code2Send.getText().toString();
 
+        if (codeString.matches("")) {
+            Toast.makeText(getContext(), "Please enter an event code", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        checkInRetrofit(codeString);
+    }
+
+
+    private void checkInRetrofit(String code){
+
         int time = (int) (System.currentTimeMillis());
         final Timestamp tsTemp = new Timestamp(time);
 
-
-        if (codeString.matches("")) {
-            Toast.makeText(getContext(), "Please enter the event start code", Toast.LENGTH_LONG).show();
-        }
-
-        EventAttendanceModel eventAttendanceModel = new EventAttendanceModel(UserModel.myUserModel.getUserId(),tsTemp,codeString);
-
+        EventAttendanceModel eventAttendanceModel = new EventAttendanceModel(UserModel.myUserModel.getUserId(),tsTemp,code);
 
         //Retrofits
         LambencyAPIHelper.getInstance().sendClockInCode(UserModel.myUserModel.getOauthToken(), eventAttendanceModel).enqueue(new retrofit2.Callback<Integer>() {
@@ -173,7 +201,18 @@ public class CheckInFragment extends Fragment {
                 Integer ret = response.body();
                 if (ret == 0) {
                     System.out.println("successfully checked in for the event");
-                    Toast.makeText(getApplicationContext(), "You have successfully checked in", Toast.LENGTH_LONG).show();
+
+                    if(SharedPrefsHelper.isCheckedIn(getContext())){
+                        SharedPrefsHelper.setCheckedIn(getContext(), false);
+                        sendButton.setText("Check In");
+                        Toast.makeText(getApplicationContext(), "Checked Out", Toast.LENGTH_SHORT).show();
+                    }else{
+                        SharedPrefsHelper.setCheckedIn(getContext(), true);
+                        sendButton.setText("Check Out");
+                        SharedPrefsHelper.setStartTime(getContext(), System.currentTimeMillis());
+                        Toast.makeText(getApplicationContext(), "Checked In", Toast.LENGTH_SHORT).show();
+                    }
+
                     if (startTimeCounter<1) {
                         Toast.makeText(getApplicationContext(), "time sent was" + tsTemp.getHours()+":"
                                 +tsTemp.getMinutes(), Toast.LENGTH_LONG).show();
@@ -203,9 +242,8 @@ public class CheckInFragment extends Fragment {
                 Toast.makeText(getApplicationContext(), "Failure code was not accepted", Toast.LENGTH_LONG).show();
             }
         });
-
-
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -228,8 +266,66 @@ public class CheckInFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+
+        SharedPrefsHelper.setStartTime(getContext(), startTimeCounter);
+
         mListener = null;
     }
+
+    @OnClick(R.id.qrButton)
+    public void handleQRClick(){
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            requestPermissions(new String[] {Manifest.permission.CAMERA}, CAMERA_REQUEST);
+        }else {
+            launchScanner();
+        }
+    }
+
+    private void launchScanner(){
+        IntentIntegrator.forSupportFragment(this)
+                .setOrientationLocked(false)
+                .setPrompt("Scan a Lambency QR Code")
+                .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
+                .initiateScan();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null) {
+            // handle scan result
+            String code = scanResult.getContents();
+            System.out.println("From QR: " + code);
+            checkInRetrofit(code);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+                    launchScanner();
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+
 
     /**
      * This interface must be implemented by activities that contain this

@@ -127,6 +127,18 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             holder.permissionButton.setTextColor(context.getResources().getColor(R.color.colorAccent));
         }
 
+        //TODO Add retrofit here for getting online status of other users, own call
+        //TODO is done in BottomBarActivity (by default user is offline)
+        /*
+        if(userIsOnline) {
+            holder.onlineCircle.setVisibility(View.VISIBLE);
+            holder.offlineCircle.setVisibility(View.GONE);
+        } else {
+            holder.offlineCircle.setVisibility(View.VISIBLE);
+            holder.onlineCirlce.setVisibility(View.GONE);
+        }
+
+         */
 
         holder.emailLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,6 +273,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         @BindView(R.id.editButton)
         ImageButton editButton;
+
+        @BindView(R.id.onlineStatusOffline)
+        LinearLayout offlineCircle;
+
+        @BindView(R.id.onlineStatusOnline)
+        LinearLayout onlineCircle;
 
         public ViewHolder(View itemView) {
             super(itemView);

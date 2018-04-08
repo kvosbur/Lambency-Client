@@ -14,6 +14,8 @@ public class OrganizationModel {
     public UserModel contact;
     public String image;
     public ArrayList<UserModel> organizers;
+    public double lattitude;
+    public double longitude;
 
     public static OrganizationModel myOrgModel;
 
@@ -119,6 +121,22 @@ public class OrganizationModel {
 
     public void setOrganizers(ArrayList<UserModel> organizers) {
         this.organizers = organizers;
+    }
+
+    public double getLattitude() {
+        return lattitude;
+    }
+
+    public void setLattitude(double lattitude) {
+        this.lattitude = lattitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public int getNumFollowing(){

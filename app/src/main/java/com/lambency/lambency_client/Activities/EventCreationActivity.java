@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -7,19 +8,24 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -95,8 +101,12 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     @BindView(R.id.zipEdit)
     TextInputEditText zipEdit;
 
+
+    @BindView(R.id.memberOnlyCheck)
+    CheckBox memberOnlyCheck;
     @BindView(R.id.deleteButton)
     Button deleteButton;
+
 
 
     OrgSpinnerAdapter orgSpinnerAdapter;
@@ -109,6 +119,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     private String imagePath = "";
     Timestamp startingTime,endingTime;
     Calendar myCalendar = Calendar.getInstance();
+
+    private static final int CAMERA = 0;
 
     //For address validate
     private void validateInput(String address){
@@ -274,7 +286,6 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
             }
         });*/
 
-
         saveDetails.setOnClickListener(new View.OnClickListener() {
             EditText eName = (EditText) findViewById(R.id.nameOfEvent);
             //EditText eDate = (EditText) findViewById(R.id.dateOfEvent);
@@ -324,7 +335,6 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     EditText editText = alertDialog.findViewById(R.id.editText);
                                     String message = editText.getText().toString();
-                                    //TODO add the message to the email or something here
 
 
                                     eventModel.setName(nameEdit.getText().toString());
@@ -336,7 +346,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                                     eventModel.setLocation(location);
                                     eventModel.setOrg_id(eventOrgModel.getOrgID());
 
-                                    updateEvent(eventModel);
+                                    updateEvent(eventModel, message);
 
                                     Intent intent = new Intent(context, BottomBarActivity.class);
                                     context.startActivity(intent);
@@ -384,7 +394,10 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
                     eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,location, eventOrgModel.getName());
-
+                    //TODO Add memberOnlyCheck.isChecked() to the EventModel when the backend is updated for it
+                    if(memberOnlyCheck.isChecked()) {
+                        eventModel.setPrivateEvent(true);
+                    }
                     LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override
                             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
@@ -426,8 +439,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     }
 
 
-    private void updateEvent(EventModel event){
-        LambencyAPIHelper.getInstance().postUpdateEvent(event).enqueue(new Callback<Integer>() {
+    private void updateEvent(EventModel event, String message){
+        LambencyAPIHelper.getInstance().getUpdateEvent(event, message).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response.body() == null || response.code() != 200) {
@@ -497,7 +510,13 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     //Setting event image
     @OnClick(R.id.eventImage)
     public void setEventImage(){
-        EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(EventCreationActivity.this, new String[] {Manifest.permission.CAMERA}, CAMERA);
+        }else{
+            EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
+        }
+
     }
 
 
@@ -570,6 +589,13 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
                     orgSpinner.setVisibility(View.VISIBLE);
                     spinnerProgress.setVisibility(View.GONE);
+
+                    if(editing) {
+                        List<Integer> orgs = UserModel.myUserModel.getMyOrgs();
+                        int orgIndex = orgs.indexOf(eventModel.getOrg_id());
+                        orgSpinner.setSelection(orgIndex);
+                    }
+
                 }
 
             }
@@ -601,7 +627,10 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 EditText editText = alertDialog.findViewById(R.id.editText);
                 String message = editText.getText().toString();
 
-                //TODO Put delete event retrofit here and handle message
+                deleteEventRetrofit(message);
+
+                Intent intent = new Intent(context, BottomBarActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -615,6 +644,37 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
         alertDialog.show();
     }
 
+
+    private void deleteEventRetrofit(String message){
+        LambencyAPIHelper.getInstance().getDeleteEvent(UserModel.myUserModel.getOauthToken(), eventModel.getEvent_id() + "", message).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred");
+                    return;
+                }
+                //when response is back
+                Integer ret = response.body();
+                if(ret == null || ret == -1){
+                    System.out.println("An error has occurred");
+                }
+                else if(ret == -2){
+                    System.out.println("User or event not found");
+                }
+                else if(ret == -3){
+                    System.out.println("User does not have permissions to delete the event");
+                }
+                else if(ret == 0){
+                    System.out.println("success");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e("Retrofit", "Failed to delete event");
+            }
+        });
+    }
 
     /***** Methods for handling the org select spinner *****/
 
@@ -633,6 +693,32 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
     private void setOrgSpinnerAdapter(OrgSpinnerAdapter orgSpinnerAdapter){
         this.orgSpinnerAdapter = orgSpinnerAdapter;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+                    EasyImage.openChooserWithGallery(this, "Select Event Image", 0);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
     }
 }
 
