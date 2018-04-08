@@ -734,7 +734,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             CircleImageView leaveOrgImg = view.findViewById(R.id.LeaveOrgImg);
 
             ImageHelper.loadWithGlide(context,
-                    ImageHelper.saveImage(context, img, "orgImage" + currentOrgId),
+                    organizationModel.getImagePath(),
                     leaveOrgImg);
 
             alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Leave",
