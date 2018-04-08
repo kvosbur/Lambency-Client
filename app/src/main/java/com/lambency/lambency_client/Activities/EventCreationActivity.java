@@ -9,12 +9,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -513,6 +516,13 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
                     orgSpinner.setVisibility(View.VISIBLE);
                     spinnerProgress.setVisibility(View.GONE);
+
+                    if(editing) {
+                        List<Integer> orgs = UserModel.myUserModel.getMyOrgs();
+                        int orgIndex = orgs.indexOf(eventModel.getOrg_id());
+                        orgSpinner.setSelection(orgIndex);
+                    }
+
                 }
 
             }
