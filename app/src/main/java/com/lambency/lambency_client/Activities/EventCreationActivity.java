@@ -35,10 +35,12 @@ import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
@@ -166,11 +168,11 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
 
     private void updateLabel() {
-            String myFormat = "MM/dd/yy"; //In which you need put here
-            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
 
-            date.setText(sdf.format(myCalendar.getTime()));
-        }
+        date.setText(sdf.format(myCalendar.getTime()));
+    }
 
 
 
@@ -309,18 +311,20 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
                 if (editing) {
                     Bitmap bm;
+                    final byte[] imageFile;
                     if (imagePath.equals("")) {
                         //Use default profile image
                         bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
+                        imageFile = null;
                     } else {
                         bm = BitmapFactory.decodeFile(imagePath);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                        imageFile = baos.toByteArray();
                     }
 
 
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                    final byte[] bytes = baos.toByteArray();
-                    final String encodedProfile = Base64.encodeToString(bytes, Base64.DEFAULT);
+
 
 
                     //Check if the user wants to include a reason for editing
@@ -332,28 +336,27 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     alertDialog.setTitle("Give a reason for editing?");
                     alertDialog.setMessage("If you want, you can tell those attending why you changed it.");
                     alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm Edit", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    EditText editText = alertDialog.findViewById(R.id.editText);
-                                    String message = editText.getText().toString();
-                                    //TODO add the message to the email or something here
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            EditText editText = alertDialog.findViewById(R.id.editText);
+                            String message = editText.getText().toString();
+                            //TODO add the message to the email or something here
 
 
-                                    eventModel.setName(nameEdit.getText().toString());
-                                    eventModel.setImageFile(encodedProfile);
-                                    eventModel.setOrg_id(2);
-                                    eventModel.setStart(startingTime);
-                                    eventModel.setEnd(endingTime);
-                                    eventModel.setDescription(descriptionEdit.getText().toString());
-                                    eventModel.setLocation(location);
-                                    eventModel.setBytes(bytes);
-                                    eventModel.setOrg_id(eventOrgModel.getOrgID());
+                            eventModel.setName(nameEdit.getText().toString());
+                            eventModel.setImageFile(imageFile);
+                            eventModel.setOrg_id(2);
+                            eventModel.setStart(startingTime);
+                            eventModel.setEnd(endingTime);
+                            eventModel.setDescription(descriptionEdit.getText().toString());
+                            eventModel.setLocation(location);
+                            eventModel.setOrg_id(eventOrgModel.getOrgID());
 
-                                    updateEvent(eventModel);
+                            updateEvent(eventModel);
 
-                                    Intent intent = new Intent(context, BottomBarActivity.class);
-                                    context.startActivity(intent);
-                                }
+                            Intent intent = new Intent(context, BottomBarActivity.class);
+                            context.startActivity(intent);
+                        }
                     });
 
                     alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
@@ -376,16 +379,18 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
                     //making image string....
                     Bitmap bm;
+                    byte[] imageFile = null;
                     if (imagePath.equals("")) {
                         //Use default profile image
                         bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
                     } else {
                         bm = BitmapFactory.decodeFile(imagePath);
+
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                        imageFile = baos.toByteArray();
                     }
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                    byte[] bytes = baos.toByteArray();
-                    String encodedProfile = Base64.encodeToString(bytes, Base64.DEFAULT);
+
                     //encoded profile is the image string
 
 
@@ -393,16 +398,15 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                         Toast.makeText(getApplicationContext(), "You did not enter all of the information", Toast.LENGTH_SHORT).show();
                     }
 
-                //Go back to main page now
-                if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
-                    //the EventModel object to send to server(use this evan)
-                    eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,location, eventOrgModel.getName());
-                    eventModel.setBytes(bytes);
-                    //TODO Add memberOnlyCheck.isChecked() to the EventModel when the backend is updated for it
-                    if(memberOnlyCheck.isChecked()) {
-                        eventModel.setPrivateEvent(true);
-                    }
-                    LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
+                    //Go back to main page now
+                    if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
+                        //the EventModel object to send to server(use this evan)
+                        eventModel = new EventModel(imageFile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,location, eventOrgModel.getName());
+                        //TODO Add memberOnlyCheck.isChecked() to the EventModel when the backend is updated for it
+                        if(memberOnlyCheck.isChecked()) {
+                            eventModel.setPrivateEvent(true);
+                        }
+                        LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
                             @Override
                             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
                                 if (response.body() == null || response.code() != 200) {
@@ -498,7 +502,10 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
                     dateButton.setText(TimeHelper.dateFromTimestamp(startingTime));
 
-                    eventImage.setImageBitmap(ImageHelper.stringToBitmap(eventModel.getImageFile()));
+                    Glide.with(context)
+                            .load(LambencyAPIHelper.domain + "/" + eventModel.getImage_path())
+                            .into(eventImage);
+                    //eventImage.setImageBitmap(ImageHelper.stringToBitmap(eventModel.getImageFile()));
                 }
             }
 
@@ -557,7 +564,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 ImageHelper.loadWithGlide(context,
                         path,
                         eventImage
-                        );
+                );
 
             }
         });

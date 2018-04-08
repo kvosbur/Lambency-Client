@@ -12,8 +12,7 @@ public class EventModel {
     private String description;
     private String location;
     private String image_path; // file path for server only
-    private String imageFile; // base 64 encoded
-    private byte[] bytes;
+    private byte[] imageFile; // base 64 encoded
     private int event_id;
     private double latitude;
     private double longitude;
@@ -51,19 +50,15 @@ public class EventModel {
     }
 
     public EventModel(String name, int org_id, Timestamp start, Timestamp end, String description, String location,
-                      String imageFile, double latitude, double longitude, String orgName) {
+                      byte[] imageFile, double latitude, double longitude, String orgName) {
 
         this(name, org_id, start, end, description, location, latitude, longitude, orgName);
     }
 
-    public EventModel(String imageFile, String name, int org_id, Timestamp start,
+    public EventModel(byte[] imageFile, String name, int org_id, Timestamp start,
                       Timestamp end, String description, String location, String orgName) {
         this(name, org_id, start, end, description, location, orgName);
-        try {
-            updateImage(imageFile);
-        } catch (IOException e) {
-            System.out.println("Failed to save image to event: "+name);
-        }
+        this.imageFile = imageFile;
     }
 
 
@@ -77,26 +72,6 @@ public class EventModel {
         this.event_id = event_id;
         this.clockInCode = clockInCode;
         this.clockOutCode = clockOutCode;
-    }
-
-    /**
-     *
-     * @param encodedImage    base 64 encoded image string
-     * @throws IOException    Throws an exception if there is an issue with FileIO in ImageWR
-     */
-    private void updateImage(String encodedImage) throws IOException{
-
-        this.imageFile = encodedImage;
-        //this.image_path = ImageWR.writeImageToFile(encodedImage); This is for the database
-
-    }
-
-    public byte[] getBytes() {
-        return bytes;
-    }
-
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
     }
 
     public String getName() {
@@ -160,7 +135,7 @@ public class EventModel {
         this.image_path = image_path;
     }
 
-    public String getImageFile() {
+    public byte[] getImageFile() {
         return imageFile;
     }
 
@@ -170,7 +145,7 @@ public class EventModel {
      *
      * @param imageFile base 64 encoded image string
      */
-    public void setImageFile(String imageFile)  {
+    public void setImageFile(byte[] imageFile)  {
         this.imageFile = imageFile;
     }
 
