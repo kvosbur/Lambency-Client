@@ -82,10 +82,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
             holder.timeView.setText(time);
         }
 
-        if(eventModel.getImageFile() != null){
+        if(eventModel.getImage_path() != null){
             //holder.eventImageView.setImageBitmap(ImageHelper.stringToBitmap(eventModel.getImageFile()));
             ImageHelper.loadWithGlide(context,
-                    ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()),
+                    eventModel.getImage_path(),
                     holder.eventImageView);
         }
 

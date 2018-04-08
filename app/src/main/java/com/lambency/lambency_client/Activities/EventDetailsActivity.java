@@ -699,7 +699,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     RequestOptions requestOptions = new RequestOptions();
 
 
-                    ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
+                    //ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
+                    ImageHelper.loadWithGlide(context, eventModel.getImage_path(), eventImageView);
 
                     getOrgInfo(eventModel.getOrg_id());
 

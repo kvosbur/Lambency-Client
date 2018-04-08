@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,10 +60,21 @@ public class ImageHelper {
     public static void loadWithGlide(Context context, String imagePath, ImageView view){
         RequestOptions requestOptions = new RequestOptions();
 
+        /*
         Glide.with(context)
                 .setDefaultRequestOptions(requestOptions)
                 .asBitmap()
                 .load(imagePath)
+                .into(view);
+                */
+
+
+        imagePath = imagePath.replace(" ", "%20");
+
+        System.out.println("Image Path is: " + imagePath);
+
+        Glide.with(context)
+                .load(LambencyAPIHelper.domain + "/" + imagePath)
                 .into(view);
     }
 
