@@ -170,5 +170,8 @@ public interface LambencyAPI {
 
     @GET("User/leaderboardAroundUser")
     Call<List<UserModel>> getLeaderboardAroundUser(@Query("oAuthCode") String oAuthCode);
+
+    @GET("Organization/delete")
+    Call<Integer> getDeleteOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID);
 }
 

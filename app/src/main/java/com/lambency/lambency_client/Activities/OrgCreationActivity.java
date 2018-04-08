@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -85,6 +86,8 @@ public class OrgCreationActivity extends AppCompatActivity {
     @BindView(R.id.loadingBar)
     ProgressBar progressBar;
 
+    @BindView(R.id.deleteButton)
+    Button deleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +97,20 @@ public class OrgCreationActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         editing = false;
         if(getIntent().getExtras() != null){
             int org_id = getIntent().getExtras().getInt("org_id");
             editing = true;
             getOrgModel(org_id);
+        }
+
+        if(editing){
+            deleteButton.setVisibility(View.VISIBLE);
+            getSupportActionBar().setTitle("Edit Organization");
+        }else{
+            getSupportActionBar().setTitle("New Organization");
         }
 
 
@@ -180,6 +191,7 @@ public class OrgCreationActivity extends AppCompatActivity {
 
                 orgModel = new OrganizationModel(UserModel.myUserModel, name, location, 0, description, email, UserModel.myUserModel, encodedProfile);
 
+                mainLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
 
                 if(editing){
@@ -187,6 +199,8 @@ public class OrgCreationActivity extends AppCompatActivity {
                 }else{
                     createNewOrg(orgModel);
                 }
+
+                finish();
 
                 return true;
 
@@ -265,6 +279,35 @@ public class OrgCreationActivity extends AppCompatActivity {
         });
     }
 
+
+    @OnClick(R.id.deleteButton)
+    public void deleteOrg(){
+        LambencyAPIHelper.getInstance().getDeleteOrganization(UserModel.myUserModel.getOauthToken(), orgModel.getOrgID() + "").enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("failed to update org or invalid permissions");
+                }
+                //when response is back
+                Integer ret = response.body();
+                if(ret == 0){
+                    System.out.println("successfully deleted org");
+                }
+                else if(ret == -1){
+                    System.out.println("failed to delete org: bad params or error occurred");
+                }
+                else if(ret == -2){
+                    System.out.println("user is not an organizer");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
+    }
 
 
     @Override
