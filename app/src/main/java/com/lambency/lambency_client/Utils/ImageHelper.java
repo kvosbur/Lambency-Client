@@ -43,6 +43,7 @@ public class ImageHelper {
             File outputFile = File.createTempFile(fileName, null, outputDir);
 
             FileOutputStream out = new FileOutputStream(outputFile);
+
             Bitmap bitmap = stringToBitmap(image);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             return outputFile.getPath();

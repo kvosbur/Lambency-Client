@@ -316,10 +316,11 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                         bm = BitmapFactory.decodeFile(imagePath);
                     }
 
+
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                    byte[] b = baos.toByteArray();
-                    final String encodedProfile = Base64.encodeToString(b, Base64.DEFAULT);
+                    final byte[] bytes = baos.toByteArray();
+                    final String encodedProfile = Base64.encodeToString(bytes, Base64.DEFAULT);
 
 
                     //Check if the user wants to include a reason for editing
@@ -345,6 +346,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                                     eventModel.setEnd(endingTime);
                                     eventModel.setDescription(descriptionEdit.getText().toString());
                                     eventModel.setLocation(location);
+                                    eventModel.setBytes(bytes);
                                     eventModel.setOrg_id(eventOrgModel.getOrgID());
 
                                     updateEvent(eventModel);
@@ -382,8 +384,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     }
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                    byte[] b = baos.toByteArray();
-                    String encodedProfile = Base64.encodeToString(b, Base64.DEFAULT);
+                    byte[] bytes = baos.toByteArray();
+                    String encodedProfile = Base64.encodeToString(bytes, Base64.DEFAULT);
                     //encoded profile is the image string
 
 
@@ -395,6 +397,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
                     //the EventModel object to send to server(use this evan)
                     eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,location, eventOrgModel.getName());
+                    eventModel.setBytes(bytes);
                     //TODO Add memberOnlyCheck.isChecked() to the EventModel when the backend is updated for it
                     if(memberOnlyCheck.isChecked()) {
                         eventModel.setPrivateEvent(true);

@@ -13,6 +13,7 @@ public class EventModel {
     private String location;
     private String image_path; // file path for server only
     private String imageFile; // base 64 encoded
+    private byte[] bytes;
     private int event_id;
     private double latitude;
     private double longitude;
@@ -88,6 +89,14 @@ public class EventModel {
         this.imageFile = encodedImage;
         //this.image_path = ImageWR.writeImageToFile(encodedImage); This is for the database
 
+    }
+
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
     }
 
     public String getName() {
