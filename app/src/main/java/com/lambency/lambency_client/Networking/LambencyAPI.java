@@ -133,6 +133,8 @@ public interface LambencyAPI {
     @POST("/User/ClockInOut")
     Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
 
+    @GET("Organization/edit")
+    Call<OrganizationModel> getEditOrganization(@Query("oAuthCode") String oAuthCode, @Query("org") OrganizationModel organizationModel);
 
 }
 
