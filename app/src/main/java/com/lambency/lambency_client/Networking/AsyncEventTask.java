@@ -14,19 +14,37 @@ import retrofit2.Response;
  * Created by lshan on 4/8/2018.
  */
 
-public class AsyncEventCreationTask extends AsyncTask <Void, Void, Void>{
+public class AsyncEventTask extends AsyncTask <Void, Void, Void>{
+
+    public static final int CREATE_MODE = 0;
+    public static final int EDIT_MODE = 1;
 
     private EventModel eventModel;
     private Context context;
+    private int mode;
 
-    public AsyncEventCreationTask(Context context, EventModel eventModel){
+    public AsyncEventTask(Context context, EventModel eventModel, int mode){
         this.eventModel = eventModel;
         this.context = context;
+        this.mode = mode;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
 
+        if(mode == CREATE_MODE) {
+            createEvent(eventModel);
+        }
+
+        if(mode == EDIT_MODE){
+            updateEvent(eventModel);
+        }
+
+        return null;
+    }
+
+
+    private void createEvent(EventModel event){
         LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
             @Override
             public void onResponse(Call<EventModel> call, Response<EventModel> response) {
@@ -37,7 +55,7 @@ public class AsyncEventCreationTask extends AsyncTask <Void, Void, Void>{
                 //when response is back
                 EventModel createdEvent = response.body();
                 System.out.println("Created Event: " + createdEvent);
-                System.out.println("location send was   !!! "+ eventModel.getLocation());
+                System.out.println("location send was   !!! " + eventModel.getLocation());
 
                 if (createdEvent == null) {
                     Toast.makeText(context, "Event error!", Toast.LENGTH_SHORT).show();
@@ -56,8 +74,31 @@ public class AsyncEventCreationTask extends AsyncTask <Void, Void, Void>{
                 return;
             }
         });
+    }
 
+    private void updateEvent(EventModel event){
+        LambencyAPIHelper.getInstance().postUpdateEvent(event).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("ERROR!!!!!");
+                    return;
+                }
+                //when response is back
+                Integer ret = response.body();
+                if(ret == 0){
+                    System.out.println("successfully updated event");
+                }
+                else{
+                    System.out.println("failed to update event");
+                }
+            }
 
-        return null;
+            @Override
+            public void onFailure(Call<Integer> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
     }
 }

@@ -36,7 +36,7 @@ import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
-import com.lambency.lambency_client.Networking.AsyncEventCreationTask;
+import com.lambency.lambency_client.Networking.AsyncEventTask;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
@@ -332,7 +332,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                             eventModel.setLocation(location);
                             eventModel.setOrg_id(eventOrgModel.getOrgID());
 
-                            updateEvent(eventModel);
+                            new AsyncEventTask(context, eventModel, AsyncEventTask.EDIT_MODE).execute();
 
                             Intent intent = new Intent(context, BottomBarActivity.class);
                             context.startActivity(intent);
@@ -374,7 +374,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                             eventModel.setPrivateEvent(true);
                         }
 
-                        new AsyncEventCreationTask(context, eventModel).execute();
+                        new AsyncEventTask(context, eventModel, AsyncEventTask.CREATE_MODE).execute();
 
                         Intent myIntent = new Intent(EventCreationActivity.this,
                                 BottomBarActivity.class);
@@ -389,31 +389,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     }
 
 
-    private void updateEvent(EventModel event){
-        LambencyAPIHelper.getInstance().postUpdateEvent(event).enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                if (response.body() == null || response.code() != 200) {
-                    System.out.println("ERROR!!!!!");
-                    return;
-                }
-                //when response is back
-                Integer ret = response.body();
-                if(ret == 0){
-                    System.out.println("successfully updated event");
-                }
-                else{
-                    System.out.println("failed to update event");
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Integer> call, Throwable throwable) {
-                //when failure
-                System.out.println("FAILED CALL");
-            }
-        });
-    }
 
     private void getEventInfo(final int event_id){
 
