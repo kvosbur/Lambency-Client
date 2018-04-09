@@ -73,7 +73,7 @@ public class ChatListFragment extends Fragment {
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        mAdapter = new ChatRoomAdapter(mDataset);
+        mAdapter = new ChatRoomAdapter(this.getContext(),mDataset);
         // Set CustomAdapter as the adapter for RecyclerView.
 
 
@@ -82,7 +82,7 @@ public class ChatListFragment extends Fragment {
         mRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), mAdapter.getRooms().get((Integer)view.getTag()), Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), mAdapter.getRooms().get((Integer)view.getTag()), Toast.LENGTH_LONG).show();
             }
         });
 
