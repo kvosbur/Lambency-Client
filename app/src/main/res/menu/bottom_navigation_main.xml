@@ -35,10 +35,11 @@
         android:icon="@drawable/ic_checkin_24dp"
         android:title="Check In"
         app:showAsAction="ifRoom" />
+
     <item
-        android:id="@+id/messageBot"
+        android:id="@+id/messagingBot"
         android:enabled="true"
-        android:icon="@drawable/ic_checkin_24dp"
-        android:title="Check In"
+        android:icon="@drawable/ic_message_black_24dp"
+        android:title="Messaging"
         app:showAsAction="ifRoom" />
 </menu>

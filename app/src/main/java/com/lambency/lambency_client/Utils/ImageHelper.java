@@ -9,6 +9,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
+import com.lambency.lambency_client.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -43,6 +45,7 @@ public class ImageHelper {
             File outputFile = File.createTempFile(fileName, null, outputDir);
 
             FileOutputStream out = new FileOutputStream(outputFile);
+
             Bitmap bitmap = stringToBitmap(image);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             return outputFile.getPath();
@@ -58,11 +61,44 @@ public class ImageHelper {
     public static void loadWithGlide(Context context, String imagePath, ImageView view){
         RequestOptions requestOptions = new RequestOptions();
 
+        /*
         Glide.with(context)
                 .setDefaultRequestOptions(requestOptions)
                 .asBitmap()
                 .load(imagePath)
                 .into(view);
+                */
+        imagePath = imagePath.replace("photos", "");
+
+        imagePath = imagePath.replace(" ", "%20");
+
+        System.out.println("Image Path is: " + imagePath);
+
+        Glide.with(context)
+                .load(LambencyAPIHelper.domain + imagePath)
+                .into(view);
+    }
+
+    public static void displayEasyImageResult(Context context, File imageFile, ImageView imageView){
+        Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+        Glide.with(context).load(myBitmap).into(imageView);
+    }
+
+    public static byte[] getByteArrayFromPath(Context context, String imagePath){
+        Bitmap bm;
+        final byte[] imageFile;
+        if (imagePath.equals("")) {
+            //Use default profile image
+            bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_default_avatar);
+            imageFile = null;
+        } else {
+            bm = BitmapFactory.decodeFile(imagePath);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+            imageFile = baos.toByteArray();
+        }
+
+        return imageFile;
     }
 
 }

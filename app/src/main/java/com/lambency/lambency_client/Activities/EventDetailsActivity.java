@@ -183,11 +183,16 @@ public class EventDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.checkoutCodeDisp)
     TextView checkoutCodeDisp;
 
+
+    @BindView(R.id.memberOnlyTextDetails)
+    TextView memberOnlyText;
+
     @BindView(R.id.clockInButton)
     Button clockInButton;
 
     @BindView(R.id.clockOutButton)
     Button clockOutButton;
+
 
     private EventModel event,eventModel;
 
@@ -284,7 +289,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                     UserModel.myUserModel.registerForEvent(event_id);
                                     System.out.println("REgistering for an event: " + event_id);
                                     System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
-                                    Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG).show();
                                     text.setText("Joined");
                                     checkMark.setVisibility(View.VISIBLE);
 
@@ -332,7 +336,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                     UserModel.myUserModel.unregisterForEvent(event_id);
                                     System.out.println("Unregistering for an event: " + event_id);
                                     System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
-                                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
                                     text.setText("Join Event");
                                     checkMark.setVisibility(View.INVISIBLE);
 
@@ -349,10 +352,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                     Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
                                 } else if (ret == 3) {
                                     UserModel.myUserModel.unregisterForEvent(event_id);
-                                    System.out.println("UnREgistering for an event: " + event_id);
+                                    System.out.println("Unregistering for an event: " + event_id);
                                     System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
                                     System.out.println("Technically they were not registered for the event, but I guess the user object was not updated... so oops. Fail quietly.");
-                                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
                                 }
                             }
 
@@ -434,7 +436,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                                                         endorseButton.setText("Revoke");
                                                         endorseText.setText("\nClick to no longer endorse this event! ");
-                                                        Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
 
                                                         getAllOrgs();
 
@@ -508,7 +509,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                                     if (ret == 0) {
                                                         endorseText.setText("\nEndorse this event as organization! ");
                                                         endorseButton.setText("Endorse");
-                                                        Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
 
                                                         getAllOrgs();
                                                     } else if (ret == -1) {
@@ -631,7 +631,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                         System.out.println("Error has occurred");
                     } else {
                         System.out.println("the number of users attending this event is" + ret);
-                        Toast.makeText(getApplicationContext(), "number people attending is" + ret, Toast.LENGTH_LONG).show();
                         numberOfPeopleAttending.setText(ret + "");
                     }
                 }
@@ -653,7 +652,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     System.out.println("4");
                 }
                 //when response is back
-                Toast.makeText(getApplicationContext(), "the event id was   " + event_id, Toast.LENGTH_LONG).show();
                 eventModel = response.body();
                 if (eventModel == null) {
                     System.out.println("failed to event");
@@ -669,8 +667,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     currDate = currDate.substring(0, currDate.length() - 4);
                     currDate += "18";
 
-                    Toast.makeText(getApplicationContext(), eventModel.getName(), Toast.LENGTH_LONG).show();
-
 
                     dateView.setText(currDate); //TimeHelper.dateFromTimestamp(eventModel.getStart()));
                     descriptionView.setText(eventModel.getDescription());
@@ -679,6 +675,10 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     latitude = eventModel.getLattitude();
                     longitude = eventModel.getLongitude();
                     addressView.setText(eventModel.getLocation());
+
+                    if(eventModel.isPrivateEvent()) {
+                        memberOnlyText.setVisibility(View.VISIBLE);
+                    }
 
                     //setting the codes
                     if(eventModel.getClockInCode() != null && eventModel.getClockOutCode() != null
@@ -698,7 +698,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     RequestOptions requestOptions = new RequestOptions();
 
 
-                    ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
+                    //ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
+                    ImageHelper.loadWithGlide(context, eventModel.getImage_path(), eventImageView);
 
                     getOrgInfo(eventModel.getOrg_id());
 
@@ -804,7 +805,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                 orgTitleView.setText("Host Organization: " + organization.getName());
                 ImageHelper.loadWithGlide(context,
-                        ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                        organization.getImagePath(),
                         orgImageView);
 
                 isLoading(false);
@@ -1000,8 +1001,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
     public void onLocationChanged(Location location) {
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
-
-        Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -1032,7 +1031,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
         currentLatitude = location.getLatitude();
         currentLongitude = location.getLongitude();
 
-        Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
     }
 
     @Override

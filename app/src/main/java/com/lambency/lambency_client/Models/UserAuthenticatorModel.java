@@ -7,7 +7,7 @@ package com.lambency.lambency_client.Models;
 public class UserAuthenticatorModel {
 
     public enum Status{
-        SUCCESS,NON_UNIQUE_EMAIL,NON_DETERMINANT_ERROR
+        SUCCESS,NON_UNIQUE_EMAIL,NON_DETERMINANT_ERROR, INVALID_LOGIN
 
     }
 

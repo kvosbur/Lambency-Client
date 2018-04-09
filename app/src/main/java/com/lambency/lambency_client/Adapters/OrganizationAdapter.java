@@ -69,11 +69,11 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
             holder.emailView.setText(orgModel.email);
         }
 
-        if(orgModel.getImage() != null){
+        if(orgModel.getImagePath() != null){
             //holder.profileImage.setImageBitmap(ImageHelper.stringToBitmap(orgModel.getImage()));
 
             ImageHelper.loadWithGlide(context,
-                    ImageHelper.saveImage(context, orgModel.getImage(), "orgImage" + orgModel.getOrgID()),
+                    orgModel.getImagePath(),
                     holder.profileImage);
         }
 
