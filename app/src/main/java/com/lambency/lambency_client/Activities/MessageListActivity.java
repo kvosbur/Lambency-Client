@@ -15,6 +15,7 @@ import android.widget.Toast;
 //import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,6 +58,8 @@ public class MessageListActivity extends AppCompatActivity {
 
     private FirebaseListAdapter<Message> adapter;
 
+    static int msg = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,10 +94,42 @@ public class MessageListActivity extends AppCompatActivity {
         mMessageRecycler.setAdapter(myMessageAdapter);
         myMessageAdapter.notifyDataSetChanged();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("message");
-        myRef.setValue(m1);
+        //myRef.setValue(m1);
 
+        myRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Message value = dataSnapshot.getValue(Message.class);
+                messageList.add(value);
+                myMessageAdapter.notifyDataSetChanged();
+                mMessageRecycler.scrollToPosition(messageList.size() - 1);
+                msg++;
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        /*
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -110,7 +145,7 @@ public class MessageListActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
             }
-        });
+        }); */
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,8 +186,9 @@ public class MessageListActivity extends AppCompatActivity {
                 //myMessageAdapter.notifyDataSetChanged();
                 messageContent.setText("");
 
-                myRef.setValue(m1);
+                DatabaseReference currRef = database.getReference("message/m" + msg);
 
+                currRef.setValue(m1);
             }
         });
     }
@@ -178,6 +214,7 @@ public class MessageListActivity extends AppCompatActivity {
             }
         };
         */
+        /*
         adapter = new FirebaseListAdapter<Message>(options) {
             @Override
             protected void populateView(View v, Message model, int position) {
@@ -187,6 +224,7 @@ public class MessageListActivity extends AppCompatActivity {
                 myMessageAdapter.notifyDataSetChanged();
             }
         };
+        */
 
     }
 
