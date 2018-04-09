@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
+import com.lambency.lambency_client.Fragments.ChatListFragment;
 import com.lambency.lambency_client.Fragments.CheckInFragment;
 import com.lambency.lambency_client.Fragments.EventsMainFragment;
 import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
@@ -129,6 +130,10 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
                         switchToFragment4();
                         break;
 
+                    case R.id.messageBot:
+                        switchToFragment5();
+                        break;
+
                 }
 
                 // One possibility of action is to replace the contents above the nav bar
@@ -221,6 +226,13 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.fragContainer, new CheckInFragment()).commit();
 
+    }
+
+    public void switchToFragment5(){
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.fragContainer, new ChatListFragment()).commit();
+        //Intent i = new Intent(this, MessageListActivity.class);
+        //startActivity(i);
     }
 
     public void setActionBarTitle(String title) {
