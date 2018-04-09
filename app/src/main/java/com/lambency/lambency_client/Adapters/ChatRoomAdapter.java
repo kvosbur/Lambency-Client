@@ -16,6 +16,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.lambency.lambency_client.Activities.EventDetailsActivity;
+import com.lambency.lambency_client.Activities.FilterActivity;
+import com.lambency.lambency_client.Activities.smsActivity;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
@@ -89,6 +91,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.AreaVi
                 context.startActivity(intent);
                 */
                 Toast.makeText(view.getContext(), rooms.get((Integer)view.getTag()), Toast.LENGTH_LONG).show();
+                Intent i = new Intent(this, MessageListActivity.class);
+                //startActivity(i);
             }
         });
 

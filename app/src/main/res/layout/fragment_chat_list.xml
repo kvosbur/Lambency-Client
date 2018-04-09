@@ -1,9 +1,12 @@
-<RelativeLayout
-    android:id="@+id/chatListLayout"
+
+
+<RelativeLayout android:id="@+id/chatListLayout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:layout_weight="1"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chatListRecyclerView"
@@ -12,6 +15,34 @@
         android:layout_height="match_parent">
     </android.support.v7.widget.RecyclerView>
 
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/fabMenu"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="5dp"
+        app:fab_addButtonColorNormal="@color/colorAccent"
+        app:fab_addButtonColorPressed="@color/colorAccent"
+        app:fab_labelsPosition="left"
+        app:fab_labelStyle="@style/fabTitle"
+        >
+
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/orgFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_size="mini"
+            fab:fab_title="Create Organization"
+            app:fab_colorPressed="@color/lightGray"
+            app:srcCompat="@drawable/ic_supervisor_account_black_24dp"
+            />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 
 </RelativeLayout>
