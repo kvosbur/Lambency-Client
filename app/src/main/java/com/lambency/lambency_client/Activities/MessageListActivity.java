@@ -5,11 +5,24 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+//import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseListOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.lambency.lambency_client.Adapters.MessageListAdapter;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
@@ -41,6 +54,8 @@ public class MessageListActivity extends AppCompatActivity {
     EditText messageContent;
 
     public List<Message> messageList;
+
+    private FirebaseListAdapter<Message> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +91,27 @@ public class MessageListActivity extends AppCompatActivity {
         mMessageRecycler.setAdapter(myMessageAdapter);
         myMessageAdapter.notifyDataSetChanged();
 
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("message");
+        myRef.setValue(m1);
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                Message value = dataSnapshot.getValue(Message.class);
+                messageList.add(value);
+                myMessageAdapter.notifyDataSetChanged();
+                mMessageRecycler.scrollToPosition(messageList.size() - 1);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,18 +126,70 @@ public class MessageListActivity extends AppCompatActivity {
                     messageList.get(messageList.size()-1).createdAt = "";
                 }
 
+                /*
+                FirebaseMessaging fm = FirebaseMessaging.getInstance();
+                fm.send(new RemoteMessage.Builder("525242144476@gcm.googleapis.com")
+                        .setMessageId(Integer.toString(1))
+                        .addData("my_message", "Hello World")
+                        .addData("my_action","SAY_HELLO")
+                        .build());
+                        */
+
+                /*
+                FirebaseDatabase.getInstance()
+                        .getReference()
+                        .push()
+                        .setValue(new Message("Hello World With Firebase", "Evan"));
+                */
+
                 Message m1 = new Message(message, UserModel.myUserModel.getFirstName());
                 SimpleDateFormat sdf = new SimpleDateFormat("h:mm");
                 Date now = new Date();
                 String strDate = sdf.format(now);
                 m1.createdAt = strDate;
-                messageList.add(m1);
-                myMessageAdapter.notifyDataSetChanged();
+                //messageList.add(m1);
+                //myMessageAdapter.notifyDataSetChanged();
                 messageContent.setText("");
-                mMessageRecycler.scrollToPosition(messageList.size() - 1);
+
+                myRef.setValue(m1);
+
             }
         });
     }
+
+
+    public void populateMessage() {
+
+        Query query = FirebaseDatabase.getInstance().getReference("/TestSpace").orderByKey();
+
+        FirebaseListOptions<Message> options = new FirebaseListOptions.Builder<Message>()
+                .setLayout(R.layout.activity_message_list)//Note: The guide doesn't mention this method, without it an exception is thrown that the layout has to be set.
+                .setQuery(query, Message.class)
+                .build();
+
+        /*
+        adapter = new FirebaseListAdapter<Message>(this, Message.class,
+                R.layout.activity_message_list, FirebaseDatabase.getInstance().getReference()) {
+            @Override
+            protected void populateView(View v, Message model, int position) {
+                // Get references to the views of message.xml
+                messageList.add(model);
+                myMessageAdapter.notifyDataSetChanged();
+            }
+        };
+        */
+        adapter = new FirebaseListAdapter<Message>(options) {
+            @Override
+            protected void populateView(View v, Message model, int position) {
+                // Get references to the views of message.xml
+                Toast.makeText(MessageListActivity.this, "Hello!", Toast.LENGTH_SHORT).show();
+                messageList.add(model);
+                myMessageAdapter.notifyDataSetChanged();
+            }
+        };
+
+    }
+
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
