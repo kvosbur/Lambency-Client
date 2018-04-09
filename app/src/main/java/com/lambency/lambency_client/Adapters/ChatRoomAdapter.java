@@ -17,6 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.lambency.lambency_client.Activities.EventDetailsActivity;
 import com.lambency.lambency_client.Activities.FilterActivity;
+import com.lambency.lambency_client.Activities.MessageListActivity;
 import com.lambency.lambency_client.Activities.smsActivity;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
@@ -78,23 +79,23 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.AreaVi
 //        }
 
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /*
-                Intent intent = new Intent(context, EventDetailsActivity.class);
-                Bundle bundle = new Bundle();
-
-                Integer taggedPosition = (Integer) view.getTag();
-                bundle.putInt("event_id", events.get(taggedPosition).getEvent_id());
-                intent.putExtras(bundle);
-                context.startActivity(intent);
-                */
-                Toast.makeText(view.getContext(), rooms.get((Integer)view.getTag()), Toast.LENGTH_LONG).show();
-                Intent i = new Intent(this, MessageListActivity.class);
-                //startActivity(i);
-            }
-        });
+//        holder.cardView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                /*
+//                Intent intent = new Intent(context, EventDetailsActivity.class);
+//                Bundle bundle = new Bundle();
+//
+//                Integer taggedPosition = (Integer) view.getTag();
+//                bundle.putInt("event_id", events.get(taggedPosition).getEvent_id());
+//                intent.putExtras(bundle);
+//                context.startActivity(intent);
+//                */
+//                Toast.makeText(view.getContext(), rooms.get((Integer)view.getTag()), Toast.LENGTH_LONG).show();
+//                //Intent i = new Intent(this, MessageListActivity.class);
+//                //startActivity(i);
+//            }
+//        });
 
 
 
@@ -139,4 +140,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.AreaVi
         notifyDataSetChanged();
     }
 
+    public List<String> getRooms() {
+        return rooms;
+    }
 }

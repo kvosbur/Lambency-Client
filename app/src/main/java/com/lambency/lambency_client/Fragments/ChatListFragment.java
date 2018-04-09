@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Adapters.ChatRoomAdapter;
 import com.lambency.lambency_client.R;
@@ -74,7 +75,16 @@ public class ChatListFragment extends Fragment {
 
         mAdapter = new ChatRoomAdapter(mDataset);
         // Set CustomAdapter as the adapter for RecyclerView.
+
+
         mRecyclerView.setAdapter(mAdapter);
+
+        mRecyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), mAdapter.getRooms().get((Integer)view.getTag()), Toast.LENGTH_LONG).show();
+            }
+        });
 
 
         return rootView;
