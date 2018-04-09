@@ -250,14 +250,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         }
                     }
 
-                    ImageHelper.loadWithGlide(context,
-                            organization.getImagePath(),
-                            orgImage);
-                    /*
-                    ImageHelper.loadWithGlide(context,
-                            ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
-                            leaveOrgImg);
-                            */
 
                     if(organization.getImagePath() != null && organization.getImagePath().length() != 0) {
                         ImageHelper.loadWithGlide(context,

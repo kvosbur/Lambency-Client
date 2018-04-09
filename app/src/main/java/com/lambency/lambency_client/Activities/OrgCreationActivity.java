@@ -29,6 +29,7 @@ import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.ImageHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -100,8 +101,11 @@ public class OrgCreationActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         editing = false;
+        int org_id = -1;
         if(getIntent().getExtras() != null){
-            int org_id = getIntent().getExtras().getInt("org_id");
+            org_id = getIntent().getExtras().getInt("org_id", -1);
+        }
+        if(org_id != -1){
             editing = true;
             getOrgModel(org_id);
         }
@@ -110,6 +114,8 @@ public class OrgCreationActivity extends AppCompatActivity {
             deleteButton.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle("Edit Organization");
         }else{
+            progressBar.setVisibility(View.GONE);
+            progressLayout.setVisibility(View.GONE);
             getSupportActionBar().setTitle("New Organization");
         }
 
@@ -133,17 +139,17 @@ public class OrgCreationActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
                 if(response.body() != null){
+
                     orgModel = response.body();
+                    setOrgModel(orgModel);
 
                     nameEdit.setText(orgModel.getName());
                     emailEdit.setText(orgModel.getEmail());
                     descriptionEdit.setText(orgModel.getDescription());
                     addressEdit.setText(orgModel.getLocation());
-
-
                     mainLayout.setVisibility(View.VISIBLE);
                     progressLayout.setVisibility(View.GONE);
-
+                    ImageHelper.loadWithGlide(context, orgModel.getImagePath(), profileImage);
                 }
             }
 
@@ -161,20 +167,6 @@ public class OrgCreationActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case(R.id.action_done):
 
-                //Convert the image to a base64 string
-                Bitmap bm;
-                byte[] imageFile;
-                if(imagePath.equals("")){
-                    //Use default profile image
-                    bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
-                    imageFile = null;
-                }else {
-                    bm = BitmapFactory.decodeFile(imagePath);
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                    imageFile = baos.toByteArray();
-                }
-
                 String name = nameEdit.getText().toString();
                 String email = emailEdit.getText().toString();
                 String description = descriptionEdit.getText().toString();
@@ -190,14 +182,19 @@ public class OrgCreationActivity extends AppCompatActivity {
                     return false;
                 }
 
-                orgModel = new OrganizationModel(UserModel.myUserModel, name, location, 0, description, email, UserModel.myUserModel, imageFile);
-
                 mainLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
 
                 if(editing){
+                    //Edit org
+                    orgModel.setName(name);
+                    orgModel.setEmail(email);
+                    orgModel.setDescription(description);
+                    orgModel.setLocation(location);
                     editOrg(orgModel);
                 }else{
+                    //Create new org
+                    orgModel = new OrganizationModel(UserModel.myUserModel, name, location, 0, description, email, UserModel.myUserModel, ImageHelper.getByteArrayFromPath(context, imagePath));
                     createNewOrg(orgModel);
                 }
 
@@ -268,7 +265,7 @@ public class OrgCreationActivity extends AppCompatActivity {
                     System.out.println("failed to update organization");
                 }
                 else{
-                    System.out.println("updated org: " + organization.getDescription());
+                    System.out.println("updated org: " + organization.getName());
                 }
             }
 
@@ -357,17 +354,13 @@ public class OrgCreationActivity extends AppCompatActivity {
                     }
                 });
 
-                imagePath = imagesFiles.get(0).getPath();
+                File imageFile = imagesFiles.get(0);
+                imagePath = imageFile.getPath();
+                ImageHelper.displayEasyImageResult(context, imageFile, profileImage);
 
-                builder.build()
-                        .load(new File(imagesFiles.get(0).getPath()))
-                        .error(R.drawable.ic_books)
-                        .into(profileImage);
-
-                /*
-                Bitmap bitmap = BitmapFactory.decodeFile(imagesFiles.get(0).getPath(), null);
-                profileImage.setImageBitmap(bitmap);
-                */
+                if(editing){
+                    orgModel.setImageFile(ImageHelper.getByteArrayFromPath(context, imagePath));
+                }
             }
         });
     }
@@ -397,6 +390,10 @@ public class OrgCreationActivity extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request.
         }
+    }
+
+    public void setOrgModel(OrganizationModel orgModel){
+        this.orgModel = orgModel;
     }
 
 
