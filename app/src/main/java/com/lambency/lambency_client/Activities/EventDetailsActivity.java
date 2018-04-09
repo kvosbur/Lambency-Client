@@ -698,7 +698,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     RequestOptions requestOptions = new RequestOptions();
 
 
-                    ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
+                    //ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
+                    ImageHelper.loadWithGlide(context, eventModel.getImage_path(), eventImageView);
 
                     getOrgInfo(eventModel.getOrg_id());
 
@@ -804,7 +805,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                 orgTitleView.setText("Host Organization: " + organization.getName());
                 ImageHelper.loadWithGlide(context,
-                        ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                        organization.getImagePath(),
                         orgImageView);
 
                 isLoading(false);

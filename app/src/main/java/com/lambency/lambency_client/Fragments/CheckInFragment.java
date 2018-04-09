@@ -196,6 +196,7 @@ public class CheckInFragment extends Fragment {
                 if (response.body() == null || response.code() != 200) {
                     System.out.println("Error cause body returned null or bad response code in register response.");
                     Toast.makeText(getApplicationContext(), "Problem checkingInOut", Toast.LENGTH_LONG).show();
+                    return;
                 }
                 //when response is back
                 Integer ret = response.body();
