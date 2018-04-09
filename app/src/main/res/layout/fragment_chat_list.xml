@@ -37,9 +37,9 @@
             android:layout_height="wrap_content"
             app:fab_colorNormal="@color/white"
             app:fab_size="mini"
-            fab:fab_title="Create Organization"
+            fab:fab_title="Create New Chat"
             app:fab_colorPressed="@color/lightGray"
-            app:srcCompat="@drawable/ic_supervisor_account_black_24dp"
+            android:src="@drawable/ic_message_black_24dp"
             />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

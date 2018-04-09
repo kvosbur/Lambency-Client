@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.google.firebase.FirebaseApiNotAvailableException;
 //import com.google.firebase.FirebaseApp;
-import com.google.firebase.
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
 import com.lambency.lambency_client.Fragments.ChatListFragment;
 import com.lambency.lambency_client.Fragments.CheckInFragment;
@@ -161,7 +161,7 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
                         switchToFragment4();
                         break;
 
-                    case R.id.messageBot:
+                    case R.id.messagingBot:
                         switchToFragment5();
                         break;
 

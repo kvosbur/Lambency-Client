@@ -82,7 +82,7 @@ public class ChatListFragment extends Fragment {
         mRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), mAdapter.getRooms().get((Integer)view.getTag()), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), mAdapter.getRooms().get((Integer)view.getTag()), Toast.LENGTH_LONG).show();
             }
         });
 
