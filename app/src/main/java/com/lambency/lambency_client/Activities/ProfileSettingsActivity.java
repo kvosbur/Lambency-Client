@@ -176,9 +176,6 @@ public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_main);
 
-            // change password EditText change listener
-            bindPreferenceSummaryToValue(findPreference("change_Password_Preference"));
-
             // notification preference change listener
             bindPreferenceSummaryToValue(findPreference(getString(R.string.key_notifications_new_message_ringtone)));
 
@@ -187,6 +184,17 @@ public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
             myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     sendFeedback(getActivity());
+                    return true;
+                }
+            });
+
+            Preference button = findPreference(getString(R.string.change_password));
+            button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    //code for what you want it to do
+                    Intent intent = new Intent(getActivity(),ChangePasswordFromSettingsActivity.class);
+                    startActivity(intent);
                     return true;
                 }
             });
@@ -253,17 +261,12 @@ public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
                     }
                 }
 
-            } else if (preference instanceof EditTextPreference) {
-                if (preference.getKey().equals("change_Password_Preference")) {
-                    // update the changed gallery name to summary filed
-                    preference.setSummary(stringValue);
-                }
-            } else {
-                preference.setSummary(stringValue);
             }
             return true;
         }
     };
+
+
 
     /**
      * Email client intent to send support mail
@@ -281,7 +284,7 @@ public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
         }
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"contact@androidhive.info"});
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"lambencyinfo@gmail.com"});
         intent.putExtra(Intent.EXTRA_SUBJECT, "Query from android app");
         intent.putExtra(Intent.EXTRA_TEXT, body);
         context.startActivity(Intent.createChooser(intent, context.getString(R.string.choose_email_client)));

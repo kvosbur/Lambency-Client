@@ -2,11 +2,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="General">
 
-        <EditTextPreference
-            android:key="change_Password_Preference"
-            android:defaultValue="Change Password"
-            android:summary="Change your account Password"
-            android:title="Change Password" />
+        <Preference android:title="Change Password"
+            android:key="@string/change_password"
+            android:summary="Change your account password"/>
 
 
     </PreferenceCategory>
