@@ -170,15 +170,14 @@ public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
 
         });*/
     }
-
     public static class MainPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_main);
 
-            // gallery EditText change listener
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_gallery_name)));
+            // change password EditText change listener
+            bindPreferenceSummaryToValue(findPreference("change_Password_Preference"));
 
             // notification preference change listener
             bindPreferenceSummaryToValue(findPreference(getString(R.string.key_notifications_new_message_ringtone)));
@@ -256,8 +255,8 @@ public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
 
             } else if (preference instanceof EditTextPreference) {
                 if (preference.getKey().equals("change_Password_Preference")) {
-                    //set what to do here
-                    //preference.setSummary(stringValue);
+                    // update the changed gallery name to summary filed
+                    preference.setSummary(stringValue);
                 }
             } else {
                 preference.setSummary(stringValue);
