@@ -94,6 +94,9 @@ dependencies {
     //Firebase
     implementation 'com.google.firebase:firebase-messaging:12.0.1'
 
+    //Password strength check
+    implementation 'com.github.yesterselga:password-strength-checker-android:v1.0'
+
 }
 
 
