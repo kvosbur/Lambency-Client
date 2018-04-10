@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Activities;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
@@ -102,7 +103,6 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-
 
         /*
         final Handler handler = new Handler();

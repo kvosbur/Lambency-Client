@@ -116,12 +116,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(messageType != null){
             switch(messageType){
                 case "joinRequest":
+
                     NotificationHelper.sendJoinRequestNotification(this,
                             data.get("user"),
                             data.get("uid"),
                             data.get("org"),
                             data.get("org_id"));
                     break;
+
+                case "orgInvite":
+
+                    NotificationHelper.sendInviteNotification(this,
+                            data.get("org"),
+                            data.get("org_id"));
+
                 default:
                     Log.e("FirebaseMessaging", "No data type specified");
                     break;

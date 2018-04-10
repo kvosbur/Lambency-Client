@@ -22,6 +22,9 @@ import retrofit2.Response;
 public class MyNotificationServices extends IntentService{
 
     public static final String JOIN_REQUEST = "joinRequest";
+    public static final String ORG_INVITE = "orgInvite";
+
+    // This service is used to handle actions a notification may need to do when the app is closed
 
     public MyNotificationServices(){
         super("MyNotificationServices");
