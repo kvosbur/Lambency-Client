@@ -59,16 +59,16 @@ public class ChangePasswordActivity extends AppCompatActivity implements TextWat
                     Toast.makeText(ChangePasswordActivity.this, "The two passwords don't match",
                             Toast.LENGTH_LONG).show();
                 }
-                if (passwordInput1.getText().toString().matches("")){
+                if (passwordInput1.getText().toString().matches("") || passwordInput1.getText().toString().length() < 8){
                     check = false;
-                    passwordInput1.setError("Please enter a password");
-                    Toast.makeText(ChangePasswordActivity.this, "Password entry field one empty",
+                    passwordInput1.setError("Password must be atleast 8 characters");
+                    Toast.makeText(ChangePasswordActivity.this, "Password must be atleast 8 characters",
                             Toast.LENGTH_LONG).show();
                 }
-                if (passwordInput2.getText().toString().matches("")){
+                if (passwordInput2.getText().toString().matches("") || passwordInput2.getText().toString().length() < 8){
                     check = false;
-                    passwordInput2.setError("Please enter same password");
-                    Toast.makeText(ChangePasswordActivity.this, "Password entry field two empty",
+                    passwordInput2.setError("Password must be atleast 8 characters");
+                    Toast.makeText(ChangePasswordActivity.this, "Password must be atleast 8 characters",
                             Toast.LENGTH_LONG).show();
                 }
 

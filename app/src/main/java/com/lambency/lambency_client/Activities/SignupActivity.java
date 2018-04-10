@@ -148,8 +148,8 @@ public class SignupActivity extends AppCompatActivity implements TextWatcher {
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 15) {
-            _passwordText.setError("Your password must be at least 8 characters and less than 15. A good password has at least 1 number and 1 special character");
+        if (password.isEmpty() || password.length() < 8 || password.length() > 15) {
+            _passwordText.setError("Password must be atleast 8 characters");
             valid = false;
         } else {
             _passwordText.setError(null);

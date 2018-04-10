@@ -47,16 +47,16 @@ public class ChangePasswordFromSettingsActivity extends AppCompatActivity implem
                     Toast.makeText(ChangePasswordFromSettingsActivity.this, "The two passwords don't match",
                             Toast.LENGTH_LONG).show();
                 }
-                if (newPasswordEntry1.getText().toString().matches("")) {
+                if (newPasswordEntry1.getText().toString().matches("") || newPasswordEntry1.getText().toString().length() < 8) {
                     check = false;
-                    newPasswordEntry1.setError("Please enter a password");
-                    Toast.makeText(ChangePasswordFromSettingsActivity.this, "Password entry field one empty",
+                    newPasswordEntry1.setError("Password must be atleast 8 characters");
+                    Toast.makeText(ChangePasswordFromSettingsActivity.this, "Password must be atleast 8 characters",
                             Toast.LENGTH_LONG).show();
                 }
-                if (newPasswordEntry2.getText().toString().matches("")) {
+                if (newPasswordEntry2.getText().toString().matches("") || newPasswordEntry1.getText().toString().length() < 8) {
                     check = false;
-                    newPasswordEntry2.setError("Please enter same password");
-                    Toast.makeText(ChangePasswordFromSettingsActivity.this, "Password entry field two empty",
+                    newPasswordEntry2.setError("Password must be atleast 8 characters");
+                    Toast.makeText(ChangePasswordFromSettingsActivity.this, "Password must be atleast 8 characters",
                             Toast.LENGTH_LONG).show();
                 }
 
