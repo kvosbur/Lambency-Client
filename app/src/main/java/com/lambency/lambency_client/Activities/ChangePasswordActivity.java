@@ -4,20 +4,25 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.ybs.passwordstrengthmeter.PasswordStrength;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChangePasswordActivity extends AppCompatActivity {
+public class ChangePasswordActivity extends AppCompatActivity implements TextWatcher {
     String userId = "";
     String verificationCode = "";
 
@@ -41,6 +46,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         }
 
         final EditText passwordInput1 = findViewById(R.id.firstTime);
+        passwordInput1.addTextChangedListener(this);
         final EditText passwordInput2 = findViewById(R.id.secondTime);
         Button confirmChanges = findViewById(R.id.confirmChangeBtn);
 
@@ -103,4 +109,45 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        updatePasswordStrengthView(s.toString());
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+    }
+
+    private void updatePasswordStrengthView(String password) {
+
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        TextView strengthView = (TextView) findViewById(R.id.password_strength);
+        if (TextView.VISIBLE != strengthView.getVisibility())
+            return;
+
+        if (password.isEmpty()) {
+            strengthView.setText("");
+            progressBar.setProgress(0);
+            return;
+        }
+
+        PasswordStrength str = PasswordStrength.calculateStrength(password);
+        strengthView.setText(str.getText(this));
+        strengthView.setTextColor(str.getColor());
+
+        progressBar.getProgressDrawable().setColorFilter(str.getColor(), android.graphics.PorterDuff.Mode.SRC_IN);
+        if (str.getText(this).equals("Weak")) {
+            progressBar.setProgress(25);
+        } else if (str.getText(this).equals("Medium")) {
+            progressBar.setProgress(50);
+        } else if (str.getText(this).equals("Strong")) {
+            progressBar.setProgress(75);
+        } else {
+            progressBar.setProgress(100);
+        }
+    }
 }

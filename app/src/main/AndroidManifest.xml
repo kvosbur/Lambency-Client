@@ -225,7 +225,9 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="Lambency" />
 
-        <activity android:name=".Activities.ChangePasswordFromSettingsActivity"></activity>
+        <activity android:name=".Activities.ChangePasswordFromSettingsActivity"
+            android:exported="true">
+        </activity>
     </application>
 
 </manifest>
