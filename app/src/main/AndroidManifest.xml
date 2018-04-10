@@ -157,7 +157,8 @@
             android:exported="true" />
         <activity android:name=".Activities.SignupActivity" />
         <activity android:name=".Activities.CardViewActivity" />
-        <activity android:name=".Activities.ProfileSettingsActivity" />
+        <activity android:name=".Activities.ProfileSettingsActivity"
+            android:exported="true"/>
         <activity android:name=".Activities.ChangePasswordActivity">
             <intent-filter>
 

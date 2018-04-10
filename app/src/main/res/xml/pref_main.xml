@@ -4,7 +4,7 @@
 
         <Preference android:title="Change Password"
             android:key="@string/change_password"
-            android:summary="Change your account password"/>
+            android:summary="Change account password"/>
 
 
     </PreferenceCategory>
@@ -14,12 +14,14 @@
         <SwitchPreference
             android:defaultValue="true"
             android:key="@string/notifications_new_message"
-            android:title="Email Notifications" />
+            android:title="Push Notifications"
+            android:summary="@string/key_notifications_push"/>
 
         <SwitchPreference
             android:defaultValue="true"
-            android:key="@string/notifications_new_message"
-            android:title="Push Notifications" />
+            android:key="@string/notifications_new_email"
+            android:title="Email Notifications"
+            android:summary="@string/key_notifications_email"/>
 
         <RingtonePreference
             android:defaultValue="content://settings/system/notification_sound"
