@@ -382,8 +382,6 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                         Intent myIntent = new Intent(EventCreationActivity.this,
                                 BottomBarActivity.class);
                         startActivity(myIntent);
-
-
                     }
                 }
             }
