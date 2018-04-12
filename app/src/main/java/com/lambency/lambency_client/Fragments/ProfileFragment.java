@@ -214,6 +214,7 @@ public class ProfileFragment extends Fragment {
                 Intent i = new Intent(getActivity(), UserAcceptRejectActivity.class);
                 startActivity(i);
                 //((Activity) getActivity()).overridePendingTransition(0,0);
+                break;
 
             case R.id.action_settings:
                 Intent settingPage = new Intent(getActivity(), ProfileSettingsActivity.class);

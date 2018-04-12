@@ -103,7 +103,6 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
         ButterKnife.bind(this);
 
-
         /*
         final Handler handler = new Handler();
         final int delay = 10000; //milliseconds
@@ -118,6 +117,7 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
             }
         }, delay);
         */
+
 
         // Get token
         String token = FirebaseInstanceId.getInstance().getToken();
