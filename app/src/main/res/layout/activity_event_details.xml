@@ -282,6 +282,15 @@
 
                     </RelativeLayout>
 
+                    <Button
+                        android:id="@+id/whoCameButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="See Who Came"
+                        android:layout_below="@id/organizationLayout"
+                        android:layout_toLeftOf="@+id/clockInButton"
+                        android:visibility="gone"
+                        />
 
                     <Button
                         android:id="@+id/editEventButton"
