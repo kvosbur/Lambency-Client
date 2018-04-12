@@ -18,13 +18,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LambencyAPIHelper {
 
     private static LambencyAPI lambencyAPI;
+    public static String domain = "https://kevinvosburgh.com:20000";
 
     public static LambencyAPI getInstance() {
         if(lambencyAPI == null) {
             Gson gson = new GsonBuilder().setLenient().create();
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://kevinvosburgh.com:20000")
+                    .baseUrl(domain)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 

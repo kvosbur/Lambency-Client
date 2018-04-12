@@ -25,26 +25,27 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.AsyncEventTask;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
 import com.lambency.lambency_client.Utils.TimeHelper;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -100,8 +101,12 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     @BindView(R.id.zipEdit)
     TextInputEditText zipEdit;
 
+
+    @BindView(R.id.memberOnlyCheck)
+    CheckBox memberOnlyCheck;
     @BindView(R.id.deleteButton)
     Button deleteButton;
+
 
 
     OrgSpinnerAdapter orgSpinnerAdapter;
@@ -161,11 +166,11 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
 
     private void updateLabel() {
-            String myFormat = "MM/dd/yy"; //In which you need put here
-            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
 
-            date.setText(sdf.format(myCalendar.getTime()));
-        }
+        date.setText(sdf.format(myCalendar.getTime()));
+    }
 
 
 
@@ -281,7 +286,6 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
             }
         });*/
 
-
         saveDetails.setOnClickListener(new View.OnClickListener() {
             EditText eName = (EditText) findViewById(R.id.nameOfEvent);
             //EditText eDate = (EditText) findViewById(R.id.dateOfEvent);
@@ -304,19 +308,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                 final String location = addressOfEvent + " " + city + " " + state + " " + zip;
 
                 if (editing) {
-                    Bitmap bm;
-                    if (imagePath.equals("")) {
-                        //Use default profile image
-                        bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
-                    } else {
-                        bm = BitmapFactory.decodeFile(imagePath);
-                    }
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                    byte[] b = baos.toByteArray();
-                    final String encodedProfile = Base64.encodeToString(b, Base64.DEFAULT);
-
+                    final byte[] imageFile = ImageHelper.getByteArrayFromPath(context, imagePath);
 
                     //Check if the user wants to include a reason for editing
                     final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(EventCreationActivity.this).create();
@@ -327,26 +319,29 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     alertDialog.setTitle("Give a reason for editing?");
                     alertDialog.setMessage("If you want, you can tell those attending why you changed it.");
                     alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm Edit", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    EditText editText = alertDialog.findViewById(R.id.editText);
-                                    String message = editText.getText().toString();
-                                    //TODO add the message to the email or something here
+                      
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            EditText editText = alertDialog.findViewById(R.id.editText);
+                            String message = editText.getText().toString();
+                            //TODO add the message to the email or something here
 
-                                    eventModel.setName(nameEdit.getText().toString());
-                                    eventModel.setImageFile(encodedProfile);
-                                    eventModel.setOrg_id(2);
-                                    eventModel.setStart(startingTime);
-                                    eventModel.setEnd(endingTime);
-                                    eventModel.setDescription(descriptionEdit.getText().toString());
-                                    eventModel.setLocation(location);
-                                    eventModel.setOrg_id(eventOrgModel.getOrgID());
 
-                                    updateEvent(eventModel, message);
+                            eventModel.setName(nameEdit.getText().toString());
+                            eventModel.setImageFile(imageFile);
+                            eventModel.setOrg_id(2);
+                            eventModel.setStart(startingTime);
+                            eventModel.setEnd(endingTime);
+                            eventModel.setDescription(descriptionEdit.getText().toString());
+                            eventModel.setLocation(location);
+                            eventModel.setOrg_id(eventOrgModel.getOrgID());
 
-                                    Intent intent = new Intent(context, BottomBarActivity.class);
-                                    context.startActivity(intent);
-                                }
+                            new AsyncEventTask(context, eventModel, message, AsyncEventTask.EDIT_MODE).execute();
+
+                            Intent intent = new Intent(context, BottomBarActivity.class);
+                            context.startActivity(intent);
+                        }
+
                     });
 
                     alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
@@ -367,59 +362,24 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     addressOfEvent = eAddr.getText().toString();
                     description = eDescrip.getText().toString();
 
-                    //making image string....
-                    Bitmap bm;
-                    if (imagePath.equals("")) {
-                        //Use default profile image
-                        bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_default_avatar);
-                    } else {
-                        bm = BitmapFactory.decodeFile(imagePath);
-                    }
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                    byte[] b = baos.toByteArray();
-                    String encodedProfile = Base64.encodeToString(b, Base64.DEFAULT);
-                    //encoded profile is the image string
+                    final byte[] imageFile = ImageHelper.getByteArrayFromPath(context, imagePath);
 
+                    //encoded profile is the image string
 
                     if (eventName.matches("") ||  description.matches("") || addressOfEvent.matches("") || city.matches("") || state.matches("") || zip.matches("") || zip.matches("")) {
                         Toast.makeText(getApplicationContext(), "You did not enter all of the information", Toast.LENGTH_SHORT).show();
                     }
 
-                //Go back to main page now
-                if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
-                    //the EventModel object to send to server(use this evan)
-                    eventModel = new EventModel(encodedProfile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,location, eventOrgModel.getName());
+                    //Go back to main page now
+                    if (!(eventName.matches("") || addressOfEvent.matches("") || description.matches("") || startingTime == null || endingTime == null)) {
+                        //the EventModel object to send to server(use this evan)
+                        eventModel = new EventModel(imageFile,eventName, eventOrgModel.getOrgID(),startingTime,endingTime,description,location, eventOrgModel.getName());
+                        //TODO Add memberOnlyCheck.isChecked() to the EventModel when the backend is updated for it
+                        if(memberOnlyCheck.isChecked()) {
+                            eventModel.setPrivateEvent(true);
+                        }
 
-                    LambencyAPIHelper.getInstance().createEvent(eventModel).enqueue(new Callback<EventModel>() {
-                            @Override
-                            public void onResponse(Call<EventModel> call, Response<EventModel> response) {
-                                if (response.body() == null || response.code() != 200) {
-                                    Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                //when response is back
-                                EventModel createdEvent = response.body();
-                                System.out.println("Created Event: " + createdEvent);
-                                System.out.println("location send was   !!! "+ eventModel.getLocation());
-
-                                if (createdEvent == null) {
-                                    Toast.makeText(getApplicationContext(), "Event error!", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                // Status now contains event_id
-                                int event_id = createdEvent.getEvent_id();
-
-                                Toast.makeText(getApplicationContext(), "Success creating event!", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onFailure(Call<EventModel> call, Throwable throwable) {
-                                Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                        });
+                        new AsyncEventTask(context, eventModel, "",  AsyncEventTask.CREATE_MODE).execute();
 
                         Intent myIntent = new Intent(EventCreationActivity.this,
                                 BottomBarActivity.class);
@@ -432,31 +392,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
     }
 
 
-    private void updateEvent(EventModel event, String message){
-        LambencyAPIHelper.getInstance().getUpdateEvent(event, message).enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                if (response.body() == null || response.code() != 200) {
-                    System.out.println("ERROR!!!!!");
-                    return;
-                }
-                //when response is back
-                Integer ret = response.body();
-                if(ret == 0){
-                    System.out.println("successfully updated event");
-                }
-                else{
-                    System.out.println("failed to update event");
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Integer> call, Throwable throwable) {
-                //when failure
-                System.out.println("FAILED CALL");
-            }
-        });
-    }
 
     private void getEventInfo(final int event_id){
 
@@ -487,7 +423,8 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
                     dateButton.setText(TimeHelper.dateFromTimestamp(startingTime));
 
-                    eventImage.setImageBitmap(ImageHelper.stringToBitmap(eventModel.getImageFile()));
+                    ImageHelper.loadWithGlide(context, eventModel.getImage_path(), eventImage);
+
                 }
             }
 
@@ -523,6 +460,7 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
             @Override
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
                 //Some error handling
+                Log.e("EasyImage", "Error picking image for event.");
             }
 
             @Override
@@ -539,15 +477,9 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
                     }
                 });
 
-                imagePath = imagesFiles.get(0).getPath();
-
-                File file = imagesFiles.get(0);
-                String path = file.getPath();
-                ImageHelper.loadWithGlide(context,
-                        path,
-                        eventImage
-                        );
-
+                File imageFile = imagesFiles.get(0);
+                imagePath = imageFile.getPath();
+                ImageHelper.displayEasyImageResult(context, imageFile, eventImage);
             }
         });
     }
@@ -582,6 +514,15 @@ public class EventCreationActivity extends AppCompatActivity implements AdapterV
 
                     orgSpinner.setVisibility(View.VISIBLE);
                     spinnerProgress.setVisibility(View.GONE);
+
+                    /*
+                    if(editing) {
+                        List<Integer> orgs = UserModel.myUserModel.getMyOrgs();
+                        int orgIndex = orgs.indexOf(eventModel.getOrg_id());
+                        orgSpinner.setSelection(orgIndex);
+                    }
+                    */
+
                 }
 
             }

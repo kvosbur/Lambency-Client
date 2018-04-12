@@ -12,7 +12,8 @@ public class OrganizationModel {
     public String description;
     public String email;
     public UserModel contact;
-    public String image;
+    public String imagePath;
+    public byte[] imageFile;
     public ArrayList<UserModel> organizers;
     public double lattitude;
     public double longitude;
@@ -20,12 +21,11 @@ public class OrganizationModel {
     public static OrganizationModel myOrgModel;
 
 
-
     public OrganizationModel(){
         //Empty constructor for testing
     }
 
-    public OrganizationModel(UserModel owner, String name, String location, int orgID, String description, String email, UserModel contact, String image) {
+    public OrganizationModel(UserModel owner, String name, String location, int orgID, String description, String email, UserModel contact, byte[] imageFile) {
         this.owner = owner;
         this.name = name;
         this.location = location;
@@ -33,7 +33,7 @@ public class OrganizationModel {
         this.description = description;
         this.email = email;
         this.contact = contact;
-        this.image = image;
+        this.imageFile = imageFile;
         members = new ArrayList<UserModel>();
         members.add(owner);
         events = new ArrayList<>();
@@ -43,6 +43,21 @@ public class OrganizationModel {
 
     public int numFollowing;
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public byte[] getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(byte[] imageFile) {
+        this.imageFile = imageFile;
+    }
 
     public String getName() {
         return name;
@@ -106,14 +121,6 @@ public class OrganizationModel {
 
     public void setContact(UserModel contact) {
         this.contact = contact;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public ArrayList<UserModel> getOrganizers() {
