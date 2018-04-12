@@ -109,6 +109,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
             public void onClick(View view) {
                 Intent intent;
                 if(eventModel.isPastEvent()){
+                    if(!eventModel.isClickable()) {
+                        return;
+                    }
                     intent = new Intent(context, PastUsersActivity.class);
                 }else{
                     intent = new Intent(context, EventDetailsActivity.class);

@@ -126,6 +126,9 @@ public class ListEventsActivity extends AppCompatActivity {
                         for (EventModel event : events) {
                             System.out.println(event.getName());
                             event.setPastEvent(true);
+                            if(UserModel.myUserModel.getMyOrgs().contains(event.getOrg_id())){
+                                event.setClickable(true);
+                            }
                         }
 
                         startAdapter(events);

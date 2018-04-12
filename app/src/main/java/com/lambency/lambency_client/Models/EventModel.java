@@ -21,7 +21,7 @@ public class EventModel {
     private String orgName;
     private boolean privateEvent = false;
     private boolean pastEvent = false;
-
+    private boolean clickable = false;
 
     static int x = 54545;
     static Timestamp testTime = new Timestamp((long)x);
@@ -207,6 +207,14 @@ public class EventModel {
 
     public boolean isPastEvent() {
         return pastEvent;
+    }
+
+    public boolean isClickable() {
+        return clickable;
+    }
+
+    public void setClickable(boolean clickable) {
+        this.clickable = clickable;
     }
 }
 

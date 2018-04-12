@@ -141,8 +141,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
          */
 
         if(userModel.getPastEventHours() > -1){
-            String hoursStr = userModel.getPastEventHours() + "";
+            String hoursStr = userModel.getPastEventHours() + " hrs";
             holder.hoursTextView.setText(hoursStr);
+            holder.hoursTextView.setVisibility(View.VISIBLE);
         }
 
         holder.emailLayout.setOnClickListener(new View.OnClickListener() {

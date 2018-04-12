@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.lambency.lambency_client.Adapters.UserListAdapter;
 import com.lambency.lambency_client.Models.EventAttendanceModel;
@@ -32,6 +35,8 @@ public class PastUsersActivity extends AppCompatActivity {
     @BindView(R.id.usersRecyclerView)
     RecyclerView usersRecyclerView;
 
+    @BindView(R.id.noUsersText)
+    TextView noUsersText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,9 @@ public class PastUsersActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         context = this;
+
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         event_id = getIntent().getIntExtra("event_id", -1);
         if(event_id == -1){
@@ -62,6 +70,12 @@ public class PastUsersActivity extends AppCompatActivity {
                 }
 
                 ArrayList<EventAttendanceModel> attendanceModels = response.body();
+                if(attendanceModels.size() == 0){
+                    System.out.println("No users attended this event.");
+                    noUsersText.setVisibility(View.VISIBLE);
+                    usersRecyclerView.setVisibility(View.GONE);
+                }
+
                 ArrayList<UserModel> users = new ArrayList<>();
                 for(EventAttendanceModel model : attendanceModels){
                     users.add(model.getUserModel());
@@ -87,6 +101,17 @@ public class PastUsersActivity extends AppCompatActivity {
         userListAdapter = new UserListAdapter(context, users);
         usersRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         usersRecyclerView.setAdapter(userListAdapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return true;
+        }
     }
 
 

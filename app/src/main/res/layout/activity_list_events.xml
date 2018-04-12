@@ -24,8 +24,18 @@
             android:layout_centerInParent="true"
             android:visibility="gone"/>
 
+        <TextView
+            android:id="@+id/instructionsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="If this is your organization, tap an event to see who attended."
+            android:textAlignment="center"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/eventsRecyclerView"
+            android:layout_below="@+id/instructionsText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </RelativeLayout>
