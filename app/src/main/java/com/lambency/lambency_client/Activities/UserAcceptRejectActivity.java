@@ -59,11 +59,43 @@ public class UserAcceptRejectActivity  extends BaseActivity {
 
         getSupportActionBar().setTitle("Your Requests");
 
-
-
         //userList.add(new UserModel("Evan", "Honeysett", "ehoneyse@purdue.edu", null, null, null, null, 0, 0, ""));
         //userList.add(new UserModel("Barack", "Obama", "potus@wh.gov", null, null, null, null, 0, 0, ""));
         //organizationModelList.add(new OrganizationModel(UserModel.myUserModel, "Test Org", "123", 100, "Cool", "a@a.com", UserModel.myUserModel, ""));
+
+        //TODO Initial Retrofit here for getting requests
+        LambencyAPIHelper.getInstance().getUserJoinRequests("" + UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<OrganizationModel>>() {
+            @Override
+            public void onResponse(Call<List<OrganizationModel>> call, Response<List<OrganizationModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred");
+                    return;
+                }
+                //when response is back
+                List<OrganizationModel> ret = response.body();
+                if(ret == null ) {
+                    Toast.makeText(UserAcceptRejectActivity.this, "Null", Toast.LENGTH_SHORT).show();
+                    System.out.println("An error has occurred");
+                }
+                else {
+                    for(int i = 0; i < ret.size(); i++)
+                    {
+                        organizationModelList.add(ret.get(i));
+                    }
+
+                    mAdapter.notifyDataSetChanged(); // how we update
+                    Toast.makeText(UserAcceptRejectActivity.this, ""+organizationModelList.size(), Toast.LENGTH_SHORT).show();
+                    if(organizationModelList.size() == 0) {
+                        currRequests.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<List<OrganizationModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
 
         setupRecyclerView();
         //SwipeController swipeController = new SwipeController();
@@ -91,36 +123,6 @@ public class UserAcceptRejectActivity  extends BaseActivity {
         mAdapter = new UserAcceptRejectAdapter(organizationModelList);
         mRecyclerView.setAdapter(mAdapter);
 
-        //TODO Initial Retrofit here for getting requests
-        LambencyAPIHelper.getInstance().getUserJoinRequests("" + UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<OrganizationModel>>() {
-            @Override
-            public void onResponse(Call<List<OrganizationModel>> call, Response<List<OrganizationModel>> response) {
-                if (response.body() == null || response.code() != 200) {
-                    System.out.println("An error has occurred");
-                    return;
-                }
-                //when response is back
-                List<OrganizationModel> ret = response.body();
-                if(ret == null ) {
-                    Toast.makeText(UserAcceptRejectActivity.this, "Null", Toast.LENGTH_SHORT).show();
-                    System.out.println("An error has occurred");
-                }
-                else {
-                    organizationModelList = ret;
-                    mAdapter.notifyDataSetChanged(); // how we update
-                    Toast.makeText(UserAcceptRejectActivity.this, ""+organizationModelList.size(), Toast.LENGTH_SHORT).show();
-                    if(organizationModelList.size() == 0) {
-                        currRequests.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<List<OrganizationModel>> call, Throwable throwable) {
-                //when failure
-                System.out.println("FAILED CALL");
-            }
-        });
-
         mAdapter.notifyDataSetChanged(); // how we update
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -133,7 +135,7 @@ public class UserAcceptRejectActivity  extends BaseActivity {
     //TODO Update retrofit here for adding accept and reject
     private void callRetrofit(final boolean accepted, int position){
         int orgId = organizationModelList.get(position).getOrgID();
-        LambencyAPIHelper.getInstance().getUserRespondToJoinRequest("" + UserModel.myUserModel.getOauthToken(), "" + orgId, "" + accepted).enqueue(new Callback<Integer>() {
+        LambencyAPIHelper.getInstance().getUserRespondToJoinRequest("" + UserModel.myUserModel.getOauthToken(), "" + orgId, accepted).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response.body() == null || response.code() != 200) {

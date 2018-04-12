@@ -189,6 +189,6 @@ public interface LambencyAPI {
     Call<List<OrganizationModel>> getUserJoinRequests(@Query("oAuthCode") String oAuthCode);
 
     @GET("User/respondToJoinRequest")
-    Call<Integer> getUserRespondToJoinRequest(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID, @Query("accept") String accept);
+    Call<Integer> getUserRespondToJoinRequest(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID, @Query("accept") boolean accept);
 }
 
