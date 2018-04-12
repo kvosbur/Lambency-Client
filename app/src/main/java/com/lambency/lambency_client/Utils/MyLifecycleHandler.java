@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
+import com.lambency.lambency_client.Models.UserModel;
+
 /**
  * Created by Evan on 4/3/2018.
  */
@@ -30,6 +32,9 @@ public class MyLifecycleHandler implements Application.ActivityLifecycleCallback
 
     @Override
     public void onActivityDestroyed(Activity activity) {
+        if (!isApplicationVisible()) {
+            UserModel.myUserModel.setActiveForModelAndDatabase(false);
+        }
     }
 
     @Override

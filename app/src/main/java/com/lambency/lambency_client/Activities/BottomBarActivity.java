@@ -292,9 +292,4 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
         });
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        UserModel.myUserModel.setActiveForModelAndDatabase(false);
-    }
 }

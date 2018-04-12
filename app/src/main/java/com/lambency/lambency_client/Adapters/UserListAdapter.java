@@ -131,41 +131,44 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         //TODO Add retrofit here for getting online status of other users, own call
         //TODO is done in BottomBarActivity (by default user is offline)
 
-        UserModel.myUserModel.checkServerForIsActive(UserModel.myUserModel.getOauthToken(), new UserModel.UpdateActiveStatusCallback() {
-            @Override
-            public void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive) {
-                if(retrievedIsActive) {
-                    holder.onlineCircle.setVisibility(View.VISIBLE);
-                    holder.offlineCircle.setVisibility(View.GONE);
-                } else {
-                    holder.offlineCircle.setVisibility(View.VISIBLE);
-                    holder.onlineCircle.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        final Handler handler = new Handler();
-        final int delay = 10000; //milliseconds
-
-        handler.postDelayed(new Runnable(){
-            public void run(){
-                UserModel.myUserModel.checkServerForIsActive(UserModel.myUserModel.getOauthToken(), new UserModel.UpdateActiveStatusCallback() {
-                    @Override
-                    public void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive) {
-                        if(retrievedIsActive) {
-                            holder.onlineCircle.setVisibility(View.VISIBLE);
-                            holder.offlineCircle.setVisibility(View.GONE);
-                        } else {
-                            holder.offlineCircle.setVisibility(View.VISIBLE);
-                            holder.onlineCircle.setVisibility(View.GONE);
-                        }
+        if(!(UserModel.myUserModel.getUserId() == userModel.getUserId())) {
+            userModel.checkServerForIsActive(userModel.getOauthToken(), new UserModel.UpdateActiveStatusCallback() {
+                @Override
+                public void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive) {
+                    if(retrievedIsActive) {
+                        holder.onlineCircle.setVisibility(View.VISIBLE);
+                        holder.offlineCircle.setVisibility(View.GONE);
+                    } else {
+                        holder.offlineCircle.setVisibility(View.VISIBLE);
+                        holder.onlineCircle.setVisibility(View.GONE);
                     }
-                });
-                handler.postDelayed(this, delay);
-            }
-        }, delay);
+                }
+            });
 
+            final Handler handler = new Handler();
+            final int delay = 10000; //milliseconds
 
+            handler.postDelayed(new Runnable(){
+                public void run(){
+                    userModel.checkServerForIsActive(userModel.getOauthToken(), new UserModel.UpdateActiveStatusCallback() {
+                        @Override
+                        public void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive) {
+                            if(retrievedIsActive) {
+                                holder.onlineCircle.setVisibility(View.VISIBLE);
+                                holder.offlineCircle.setVisibility(View.GONE);
+                            } else {
+                                holder.offlineCircle.setVisibility(View.VISIBLE);
+                                holder.onlineCircle.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+                    handler.postDelayed(this, delay);
+                }
+            }, delay);
+        } else {
+            holder.offlineCircle.setVisibility(View.GONE);
+            holder.offlineCircle.setVisibility(View.GONE);
+        }
 
         holder.emailLayout.setOnClickListener(new View.OnClickListener() {
             @Override
