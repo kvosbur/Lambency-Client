@@ -3,6 +3,8 @@ package com.lambency.lambency_client.Utils;
 import android.app.Application;
 import android.support.multidex.MultiDexApplication;
 
+import com.lambency.lambency_client.Models.UserModel;
+
 /**
  * Created by Evan on 4/3/2018.
  */
@@ -18,4 +20,5 @@ public class MyApplication extends MultiDexApplication {
         // with just a few lines of code. Now *that's* nice.
         registerActivityLifecycleCallbacks(new MyLifecycleHandler());
     }
+
 }

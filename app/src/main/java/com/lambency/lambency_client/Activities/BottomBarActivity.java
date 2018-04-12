@@ -109,9 +109,8 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         handler.postDelayed(new Runnable(){
             public void run(){
                 if(MyLifecycleHandler.isApplicationVisible()) {
-                    //TODO Retrofit for application being closed
                     UserModel.myUserModel.setActiveForModelAndDatabase(true);
-                    Toast.makeText(BottomBarActivity.this, "Hello!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BottomBarActivity.this, "Online!", Toast.LENGTH_SHORT).show();
                 } else {
                     UserModel.myUserModel.setActiveForModelAndDatabase(false);
                 }
@@ -293,5 +292,9 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
         });
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        UserModel.myUserModel.setActiveForModelAndDatabase(false);
+    }
 }
