@@ -103,8 +103,6 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
         ButterKnife.bind(this);
 
-
-        /*
         final Handler handler = new Handler();
         final int delay = 10000; //milliseconds
 
@@ -112,12 +110,14 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
             public void run(){
                 if(MyLifecycleHandler.isApplicationVisible()) {
                     //TODO Retrofit for application being closed
-                    Toast.makeText(BottomBarActivity.this, "Hello World!", Toast.LENGTH_SHORT).show();
+                    UserModel.myUserModel.setActiveForModelAndDatabase(true);
+                    Toast.makeText(BottomBarActivity.this, "Hello!", Toast.LENGTH_SHORT).show();
+                } else {
+                    UserModel.myUserModel.setActiveForModelAndDatabase(false);
                 }
                 handler.postDelayed(this, delay);
             }
         }, delay);
-        */
 
         // Get token
         String token = FirebaseInstanceId.getInstance().getToken();
