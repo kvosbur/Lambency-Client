@@ -53,7 +53,7 @@ public class LeaderboardActivity extends AppCompatActivity {
                     }
                     //when response is back
                     List<UserModel> ret = response.body();
-                    if(ret == null ) {
+                    if(ret == null || ret.size() == 0) {
                         System.out.println("An error has occurred");
                     }
                     else{
