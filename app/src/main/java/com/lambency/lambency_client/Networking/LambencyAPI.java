@@ -185,5 +185,10 @@ public interface LambencyAPI {
     @POST("Organization/searchWithFilter")
     Call<ArrayList<OrganizationModel>> getOrganizationsWithFilter(@Body OrganizationFilterModel organizationFilterModel);
 
+    @GET("User/joinRequests")
+    Call<List<OrganizationModel>> getUserJoinRequests(@Query("oAuthCode") String oAuthCode);
+
+    @GET("User/respondToJoinRequest")
+    Call<Integer> getUserRespondToJoinRequest(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID, @Query("accept") String accept);
 }
 

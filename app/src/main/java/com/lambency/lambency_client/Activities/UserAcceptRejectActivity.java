@@ -15,6 +15,7 @@ import com.lambency.lambency_client.Adapters.AcceptRejectAdapter;
 import com.lambency.lambency_client.Adapters.UserAcceptRejectAdapter;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SwipeController;
@@ -58,10 +59,7 @@ public class UserAcceptRejectActivity  extends BaseActivity {
 
         getSupportActionBar().setTitle("Your Requests");
 
-        //TODO Initial Retrofit here for getting requests
-        if (true) {
-            currRequests.setVisibility(View.VISIBLE);
-        }
+
 
         //userList.add(new UserModel("Evan", "Honeysett", "ehoneyse@purdue.edu", null, null, null, null, 0, 0, ""));
         //userList.add(new UserModel("Barack", "Obama", "potus@wh.gov", null, null, null, null, 0, 0, ""));
@@ -72,12 +70,12 @@ public class UserAcceptRejectActivity  extends BaseActivity {
         swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
-                //callRetrofit(true,position);
+                callRetrofit(true,position);
                 Toast.makeText(getApplicationContext(), "Accepted invite!", Toast.LENGTH_LONG).show();
             }
 
             public void onLeftClicked(int position) {
-                //callRetrofit(false,position);
+                callRetrofit(false,position);
                 Toast.makeText(getApplicationContext(), "Rejected invite!", Toast.LENGTH_LONG).show();
             }
         });
@@ -93,6 +91,36 @@ public class UserAcceptRejectActivity  extends BaseActivity {
         mAdapter = new UserAcceptRejectAdapter(organizationModelList);
         mRecyclerView.setAdapter(mAdapter);
 
+        //TODO Initial Retrofit here for getting requests
+        LambencyAPIHelper.getInstance().getUserJoinRequests("" + UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<OrganizationModel>>() {
+            @Override
+            public void onResponse(Call<List<OrganizationModel>> call, Response<List<OrganizationModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred");
+                    return;
+                }
+                //when response is back
+                List<OrganizationModel> ret = response.body();
+                if(ret == null ) {
+                    Toast.makeText(UserAcceptRejectActivity.this, "Null", Toast.LENGTH_SHORT).show();
+                    System.out.println("An error has occurred");
+                }
+                else {
+                    organizationModelList = ret;
+                    mAdapter.notifyDataSetChanged(); // how we update
+                    Toast.makeText(UserAcceptRejectActivity.this, ""+organizationModelList.size(), Toast.LENGTH_SHORT).show();
+                    if(organizationModelList.size() == 0) {
+                        currRequests.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<List<OrganizationModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
+
         mAdapter.notifyDataSetChanged(); // how we update
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -103,40 +131,34 @@ public class UserAcceptRejectActivity  extends BaseActivity {
     }
 
     //TODO Update retrofit here for adding accept and reject
-    private void callRetrofit(final boolean approved, int position){
-        /*
-        this.position = position;
-        UserModel user = userList.get(position);
-        LambencyAPIHelper.getInstance().respondToJoinRequest(UserModel.myUserModel.getOauthToken(),org_id,
-                user.getUserId(),approved).enqueue(new Callback<Integer>() {
+    private void callRetrofit(final boolean accepted, int position){
+        int orgId = organizationModelList.get(position).getOrgID();
+        LambencyAPIHelper.getInstance().getUserRespondToJoinRequest("" + UserModel.myUserModel.getOauthToken(), "" + orgId, "" + accepted).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response.body() == null || response.code() != 200) {
-                    System.out.println("ERROR!!!!!");
-                }
-
-                Integer ret = response.body();
-
-                if(ret == -1)
-                {
-                    //there was an error
-                    Toast.makeText(getApplicationContext(), "There was an error with request", Toast.LENGTH_LONG).show();
+                    System.out.println("An error has occurred");
                     return;
                 }
+                //when response is back
+                Integer ret = response.body();
+                if(ret == -1 ) {
+                    Toast.makeText(UserAcceptRejectActivity.this, "An error has occured.", Toast.LENGTH_SHORT).show();
+                }
+                else if (ret == 0) {
+                    Toast.makeText(UserAcceptRejectActivity.this, "Successfully joined.", Toast.LENGTH_SHORT).show();
+                }
+                else if (ret == 1) {
+                    Toast.makeText(UserAcceptRejectActivity.this, "Successfully rejected.", Toast.LENGTH_SHORT).show();
+                }
 
-                userList.remove(getCardPosition());
-                mAdapter.notifyDataSetChanged(); // how we update
-                mAdapter.notifyItemRangeChanged(getCardPosition(), mAdapter.getItemCount());
-                Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
             }
-
             @Override
             public void onFailure(Call<Integer> call, Throwable throwable) {
                 //when failure
                 System.out.println("FAILED CALL");
             }
         });
-        */
     }
 
     @Override
