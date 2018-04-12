@@ -225,7 +225,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     //img = organization.getImage();
 
 
-
                     //This is the case where the user model is out of date and thinks that there is still a request, but in reality they are offically members
                     if(UserModel.myUserModel.getRequestedJoinOrgIds().contains(org_id) && organization.getMembers().contains(UserModel.myUserModel)){
                         UserModel.myUserModel.removeRequestToJoinOrganization(org_id);

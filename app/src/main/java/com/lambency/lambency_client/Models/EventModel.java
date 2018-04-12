@@ -20,6 +20,8 @@ public class EventModel {
     private String clockOutCode;
     private String orgName;
     private boolean privateEvent = false;
+    private boolean pastEvent = false;
+
 
     static int x = 54545;
     static Timestamp testTime = new Timestamp((long)x);
@@ -197,6 +199,14 @@ public class EventModel {
 
     public void setPrivateEvent(boolean privateEvent) {
         this.privateEvent = privateEvent;
+    }
+
+    public void setPastEvent(boolean pastEvent) {
+        this.pastEvent = pastEvent;
+    }
+
+    public boolean isPastEvent() {
+        return pastEvent;
     }
 }
 

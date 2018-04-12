@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Adapters.EventsAdapter;
 import com.lambency.lambency_client.Models.EventModel;
@@ -33,6 +35,9 @@ public class ListEventsActivity extends AppCompatActivity {
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
+    @BindView(R.id.noPastEvents)
+    TextView noPastEvents;
+
     private Context context;
     private EventsAdapter eventsAdapter;
     
@@ -52,9 +57,11 @@ public class ListEventsActivity extends AppCompatActivity {
             switch(b.getString("eventType", "notFound")){
                 case "pastEvents":
                     getPastEvents(orgId + "");
+                    getSupportActionBar().setTitle("Past Events");
                     break;
                 case "upcomingEvents":
                     getUpcomingEvents(orgId + "");
+                    getSupportActionBar().setTitle("Upcoming Events");
                     break;
                 default:
                     Log.e("EventListActivity", "Invalid event type for list.");
@@ -62,7 +69,7 @@ public class ListEventsActivity extends AppCompatActivity {
             }
         }
 
-        getSupportActionBar().setTitle("Upcoming Events");
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -100,7 +107,40 @@ public class ListEventsActivity extends AppCompatActivity {
     }
 
     public void getPastEvents(String orgId){
-        //TODO put past events retrofit here
+        isLoading(true);
+
+        LambencyAPIHelper.getInstance().getPastEvents(UserModel.myUserModel.getOauthToken(), Integer.parseInt(orgId)).enqueue(new Callback<ArrayList<EventModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<EventModel>> call, Response<ArrayList<EventModel>> response) {
+
+                isLoading(false);
+
+                if(response.body() != null){
+
+                    System.out.println("Got past events");
+                    ArrayList<EventModel> events = response.body();
+                    if(events == null || events.size() == 0){
+                        noPastEvents.setVisibility(View.VISIBLE);
+                        eventsRecyclerView.setVisibility(View.GONE);
+                    }else {
+                        for (EventModel event : events) {
+                            System.out.println(event.getName());
+                            event.setPastEvent(true);
+                        }
+
+                        startAdapter(events);
+                    }
+                }else{
+                    Log.e("Retrofit", "Get past events returned a null object");
+                    Toast.makeText(context, "Error fetching past events", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<EventModel>> call, Throwable t) {
+
+            }
+        });
     }
 
     private void startAdapter(List<EventModel> events){

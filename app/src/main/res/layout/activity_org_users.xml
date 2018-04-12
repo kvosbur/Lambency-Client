@@ -8,8 +8,6 @@
     tools:context="com.lambency.lambency_client.Activities.OrgUsersActivity">
 
 
-
-
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
