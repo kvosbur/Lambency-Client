@@ -154,6 +154,7 @@ public class CheckInFragment extends Fragment {
                 .setActionBarTitle("Check In");
 
 
+
         if(SharedPrefsHelper.isCheckedIn(getContext())){
            sendButton.setText("Check Out");
             startTimeCounter = SharedPrefsHelper.getStartTime(getContext());
@@ -162,7 +163,6 @@ public class CheckInFragment extends Fragment {
             sendButton.setText("Check In");
             countUpTimer.setText("00:00:00");
         }
-
 
 
         return v;
@@ -184,10 +184,12 @@ public class CheckInFragment extends Fragment {
 
     private void checkInRetrofit(String code){
 
-        int time = (int) (System.currentTimeMillis());
+        long time = System.currentTimeMillis();
         final Timestamp tsTemp = new Timestamp(time);
 
         EventAttendanceModel eventAttendanceModel = new EventAttendanceModel(UserModel.myUserModel.getUserId(),tsTemp,code);
+
+
 
         //Retrofits
         LambencyAPIHelper.getInstance().sendClockInCode(UserModel.myUserModel.getOauthToken(), eventAttendanceModel).enqueue(new retrofit2.Callback<Integer>() {
@@ -200,6 +202,8 @@ public class CheckInFragment extends Fragment {
                 }
                 //when response is back
                 Integer ret = response.body();
+                System.out.println("RESPONSE CODE WAS :::" + ret);
+
                 if (ret == 0) {
                     System.out.println("successfully checked in for the event");
 
@@ -243,6 +247,7 @@ public class CheckInFragment extends Fragment {
                 Toast.makeText(getApplicationContext(), "Failure code was not accepted", Toast.LENGTH_LONG).show();
             }
         });
+
     }
 
 

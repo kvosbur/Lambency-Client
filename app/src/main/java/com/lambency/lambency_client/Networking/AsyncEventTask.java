@@ -28,6 +28,7 @@ public class AsyncEventTask extends AsyncTask <Void, Void, Void>{
         this.eventModel = eventModel;
         this.context = context;
         this.mode = mode;
+        this.message = message;
     }
 
     @Override

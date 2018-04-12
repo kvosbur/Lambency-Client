@@ -7,6 +7,7 @@ import com.lambency.lambency_client.Models.EventAttendanceModel;
 
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.MyLambencyModel;
+import com.lambency.lambency_client.Models.OrganizationFilterModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
@@ -133,6 +134,9 @@ public interface LambencyAPI {
     @POST("/User/ClockInOut")
     Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
 
+    @POST("Organization/edit")
+    Call<OrganizationModel> getEditOrganization(@Query("oAuthCode") String oAuthCode, @Body OrganizationModel organizationModel);
+
     @GET("/User/register")
     Call<Integer> registerUser(@Query("email") String email, @Query("first") String firstName, @Query("last") String LastName,
                                @Query("passwd") String password);
@@ -162,6 +166,7 @@ public interface LambencyAPI {
     @POST("User/setFirebase")
     Call<Integer> setFirebaseCode(@Query("oAuthCode") String oAuthCode, @Query("firebase") String fireBaseCode);
 
+
     @GET("User/leaderboardRange")
     Call<List<UserModel>> getLeaderboardRange(@Query("start") String start, @Query("end") String end);
 
@@ -174,6 +179,11 @@ public interface LambencyAPI {
     @GET("User/getActiveStatus")
     Call<Integer> getActiveStatus(@Query("oAuthCode") String oAuthCode, @Query("userID") int userID);
 
+    @GET("Organization/delete")
+    Call<Integer> getDeleteOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID);
+
+    @POST("Organization/searchWithFilter")
+    Call<ArrayList<OrganizationModel>> getOrganizationsWithFilter(@Body OrganizationFilterModel organizationFilterModel);
 
 }
 

@@ -2,8 +2,8 @@ package com.lambency.lambency_client.Utils;
 
 import android.app.Application;
 import android.support.multidex.MultiDexApplication;
-
 import com.lambency.lambency_client.Models.UserModel;
+
 
 /**
  * Created by Evan on 4/3/2018.
@@ -11,6 +11,7 @@ import com.lambency.lambency_client.Models.UserModel;
 
 // Don't forget to add it to your manifest by doing
 // <application android:name="your.package.MyApplication" ...
+
 public class MyApplication extends MultiDexApplication {
     @Override
     public void onCreate() {

@@ -12,12 +12,12 @@
     <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
-        android:name=".Utils.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".Utils.MyApplication"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -184,8 +184,7 @@
             -->
         </activity>
 
-        <activity android:name=".Activities.OrgUsersActivity"
-            android:exported="true"></activity>
+
 
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"

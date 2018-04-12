@@ -18,6 +18,8 @@ import com.lambency.lambency_client.Adapters.FilterTabsAdapter;
 import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
 import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
 import com.lambency.lambency_client.Models.EventFilterModel;
+import com.lambency.lambency_client.Models.OrganizationFilterModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 
 import java.sql.Timestamp;
@@ -45,6 +47,8 @@ public class FilterActivity extends BaseActivity {
 
     FilterTabsAdapter searchTabsAdapter;
 
+    boolean isOrg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,14 +60,26 @@ public class FilterActivity extends BaseActivity {
 
         //setSupportActionBar(toolbar);
 
+        boolean filterOrg = false;
+        Bundle b = getIntent().getExtras();
+        if(b != null){
+            String val = b.getString("OrgFilter");
+            if(val != null && val.compareTo("true") == 0) {
+                filterOrg = true;
+            }
+        }
+
+        isOrg = filterOrg;
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Filter Options");
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setElevation(0);
 
-        tabLayout.addTab(tabLayout.newTab().setText("Date"));
         tabLayout.addTab(tabLayout.newTab().setText("Distance"));
+        if(!filterOrg) {
+            tabLayout.addTab(tabLayout.newTab().setText("Date"));
+        }
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         searchTabsAdapter = new FilterTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), this);
@@ -101,10 +117,16 @@ public class FilterActivity extends BaseActivity {
                 {
                     EventFilterModel.currentFilter.setLocation(null);
                 }
-
                 if(EventFilterModel.currentFilter.getStartStamp() == null)
                 {
                     EventFilterModel.currentFilter.setStartStamp(new Timestamp(new Date().getTime()));
+                }
+                if(isOrg)
+                {
+                    OrganizationFilterModel.currentFilter.setDistanceMiles(EventFilterModel.currentFilter.getDistanceMiles());
+                    OrganizationFilterModel.currentFilter.setLocation(EventFilterModel.currentFilter.getLocation());
+                    OrganizationFilterModel.currentFilter.setLatitude(EventFilterModel.currentFilter.getLatitude());
+                    OrganizationFilterModel.currentFilter.setLongitude(EventFilterModel.currentFilter.getLongitude());
                 }
 
                 //finish();

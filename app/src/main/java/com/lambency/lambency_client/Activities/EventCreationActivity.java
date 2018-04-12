@@ -319,6 +319,7 @@ public class EventCreationActivity extends BaseActivity implements AdapterView.O
                     alertDialog.setTitle("Give a reason for editing?");
                     alertDialog.setMessage("If you want, you can tell those attending why you changed it.");
                     alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm Edit", new DialogInterface.OnClickListener() {
+                      
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             EditText editText = alertDialog.findViewById(R.id.editText);
@@ -340,6 +341,7 @@ public class EventCreationActivity extends BaseActivity implements AdapterView.O
                             Intent intent = new Intent(context, BottomBarActivity.class);
                             context.startActivity(intent);
                         }
+
                     });
 
                     alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
@@ -382,8 +384,6 @@ public class EventCreationActivity extends BaseActivity implements AdapterView.O
                         Intent myIntent = new Intent(EventCreationActivity.this,
                                 BottomBarActivity.class);
                         startActivity(myIntent);
-
-
                     }
                 }
             }

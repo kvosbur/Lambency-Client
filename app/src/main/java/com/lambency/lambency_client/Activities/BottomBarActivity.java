@@ -110,13 +110,13 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
             public void run(){
                 if(MyLifecycleHandler.isApplicationVisible()) {
                     UserModel.myUserModel.setActiveForModelAndDatabase(true);
-                    Toast.makeText(BottomBarActivity.this, "Online!", Toast.LENGTH_SHORT).show();
                 } else {
                     UserModel.myUserModel.setActiveForModelAndDatabase(false);
                 }
                 handler.postDelayed(this, delay);
             }
         }, delay);
+
 
         // Get token
         String token = FirebaseInstanceId.getInstance().getToken();

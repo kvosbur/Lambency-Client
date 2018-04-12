@@ -21,7 +21,6 @@ public class OrganizationModel {
     public static OrganizationModel myOrgModel;
 
 
-
     public OrganizationModel(){
         //Empty constructor for testing
     }
