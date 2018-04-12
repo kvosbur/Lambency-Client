@@ -140,6 +140,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
          */
 
+        if(userModel.getPastEventHours() > -1){
+            String hoursStr = userModel.getPastEventHours() + "";
+            holder.hoursTextView.setText(hoursStr);
+        }
+
         holder.emailLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -279,6 +284,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         @BindView(R.id.onlineStatusOnline)
         LinearLayout onlineCircle;
+
+        @BindView(R.id.hoursText)
+        TextView hoursTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
