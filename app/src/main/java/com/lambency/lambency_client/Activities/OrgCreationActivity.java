@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.AsyncOrgTask;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
@@ -149,7 +150,9 @@ public class OrgCreationActivity extends AppCompatActivity {
                     addressEdit.setText(orgModel.getLocation());
                     mainLayout.setVisibility(View.VISIBLE);
                     progressLayout.setVisibility(View.GONE);
-                    ImageHelper.loadWithGlide(context, orgModel.getImagePath(), profileImage);
+                    if(orgModel.getImagePath() != null && !orgModel.getImagePath().equals("")){
+                        ImageHelper.loadWithGlide(context, orgModel.getImagePath(), profileImage);
+                    }
                 }
             }
 
@@ -191,11 +194,13 @@ public class OrgCreationActivity extends AppCompatActivity {
                     orgModel.setEmail(email);
                     orgModel.setDescription(description);
                     orgModel.setLocation(location);
-                    editOrg(orgModel);
+                    //editOrg(orgModel);
+                    new AsyncOrgTask(orgModel, context, AsyncOrgTask.EDIT_MODE).execute();
                 }else{
                     //Create new org
                     orgModel = new OrganizationModel(UserModel.myUserModel, name, location, 0, description, email, UserModel.myUserModel, ImageHelper.getByteArrayFromPath(context, imagePath));
-                    createNewOrg(orgModel);
+                    //createNewOrg(orgModel);
+                    new AsyncOrgTask(orgModel, context, AsyncOrgTask.CREATE_MODE).execute();
                 }
 
                 finish();
@@ -208,78 +213,9 @@ public class OrgCreationActivity extends AppCompatActivity {
     }
 
 
-
-    private void createNewOrg(OrganizationModel organizationModel){
-
-        LambencyAPIHelper.getInstance().postCreateOrganization(organizationModel).enqueue(new retrofit2.Callback<OrganizationModel>() {
-            @Override
-            public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
-                if (response.body() == null || response.code() != 200) {
-                    System.out.println("ERROR!!!!!");
-                    Toast.makeText(getApplicationContext(), "Error With Server", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                //when response is back
-                OrganizationModel org = response.body();
-                int org_id = org.getOrgID();
-                UserModel.myUserModel.organizeGroup(org_id);
-
-                progressBar.setVisibility(View.GONE);
-
-                if(org.name == null)
-                {
-                    Toast.makeText(getApplicationContext(), "That name is already taken", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                //What is this?? Do we need it?
-                OrganizationModel.myOrgModel = orgModel;
-
-
-                //Go back to main page now
-                Intent myIntent = new Intent(context, BottomBarActivity.class);
-                startActivity(myIntent);
-                Toast.makeText(getApplicationContext(), "Organization made", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Call<OrganizationModel> call, Throwable throwable) {
-                //when failure
-                System.out.println("FAILED CALL");
-            }
-        });
-    }
-
-
-    private void editOrg(OrganizationModel organizationModel){
-        LambencyAPIHelper.getInstance().getEditOrganization(UserModel.myUserModel.getOauthToken(), organizationModel).enqueue(new Callback<OrganizationModel>() {
-            @Override
-            public void onResponse(Call<OrganizationModel> call, Response<OrganizationModel> response) {
-                if (response.body() == null || response.code() != 200) {
-                    System.out.println("failed to update org or invalid permissions");
-                }
-                //when response is back
-                OrganizationModel organization= response.body();
-                if(organization == null){
-                    System.out.println("failed to update organization");
-                }
-                else{
-                    System.out.println("updated org: " + organization.getName());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<OrganizationModel> call, Throwable throwable) {
-                //when failure
-                System.out.println("FAILED CALL (update organization)");
-            }
-        });
-    }
-
-
     @OnClick(R.id.deleteButton)
     public void deleteOrg(){
+
         LambencyAPIHelper.getInstance().getDeleteOrganization(UserModel.myUserModel.getOauthToken(), orgModel.getOrgID() + "").enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -305,6 +241,11 @@ public class OrgCreationActivity extends AppCompatActivity {
                 System.out.println("FAILED CALL");
             }
         });
+
+        UserModel.myUserModel.getMyOrgs().remove(Integer.valueOf(orgModel.getOrgID()));
+
+        Intent intent = new Intent(context, BottomBarActivity.class);
+        startActivity(intent);
     }
 
 
