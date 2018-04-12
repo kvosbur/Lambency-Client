@@ -184,8 +184,8 @@ public interface LambencyAPI {
     @GET("Organization/pastEvents")
     Call<ArrayList<EventModel>> getPastEvents(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
 
-    @GET("Event/pastEventAttandence")
-    Call<Map<UserModel, EventAttendanceModel>> getPastEventAttendence(@Query("oAuthCode") String oAuthCode, @Query("eventID") int eventID);
+    @GET("Organization/pastEventAttandence")
+    Call<ArrayList<EventAttendanceModel>> getPastEventAttendence(@Query("oAuthCode") String oAuthCode, @Query("eventID") int eventID);
 
 }
 

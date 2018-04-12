@@ -53,19 +53,18 @@ public class PastUsersActivity extends AppCompatActivity {
 
 
     private void getUsers(){
-        LambencyAPIHelper.getInstance().getPastEventAttendence(UserModel.myUserModel.getOauthToken(), event_id).enqueue(new Callback<Map<UserModel, EventAttendanceModel>>() {
+        LambencyAPIHelper.getInstance().getPastEventAttendence(UserModel.myUserModel.getOauthToken(), event_id).enqueue(new Callback<ArrayList<EventAttendanceModel>>() {
             @Override
-            public void onResponse(Call<Map<UserModel, EventAttendanceModel>> call, Response<Map<UserModel, EventAttendanceModel>> response) {
+            public void onResponse(Call<ArrayList<EventAttendanceModel>> call, Response<ArrayList<EventAttendanceModel>> response) {
                 if(response.body() == null){
                     Log.e("Retrofit", "Get past event attendance returned null");
                     return;
                 }
 
-                Map<UserModel, EventAttendanceModel> userMap = response.body();
+                ArrayList<EventAttendanceModel> attendanceModels = response.body();
                 ArrayList<UserModel> users = new ArrayList<>();
-                for(UserModel userModel: userMap.keySet()){
-                    //TODO set user hours
-                    users.add(userModel);
+                for(EventAttendanceModel model : attendanceModels){
+                    users.add(model.getUserModel());
                 }
 
                 startAdapter(users);
@@ -73,8 +72,8 @@ public class PastUsersActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Map<UserModel, EventAttendanceModel>> call, Throwable t) {
-
+            public void onFailure(Call<ArrayList<EventAttendanceModel>> call, Throwable t) {
+                Log.e("Retrofit", "Get past event attendance error out");
             }
         });
     }
