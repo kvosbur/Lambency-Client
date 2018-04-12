@@ -15,6 +15,8 @@ public class OrganizationFilterModel {
     private String title;
     private String location;
 
+    public static OrganizationFilterModel currentFilter = new OrganizationFilterModel();
+
     public OrganizationFilterModel(String location, int distanceMiles) {
         this.distanceMiles = distanceMiles;
         this.location = location;
@@ -40,7 +42,9 @@ public class OrganizationFilterModel {
         this.title = title;
     }
 
+    public OrganizationFilterModel() {
 
+    }
 
     public double getLatitude() {
         return latitude;
