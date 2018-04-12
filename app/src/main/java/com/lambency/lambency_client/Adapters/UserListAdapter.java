@@ -90,8 +90,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         add(users);
     }
 
-
-
     @Override
     public UserListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.card_user, parent, false);
@@ -99,7 +97,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(UserListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final UserListAdapter.ViewHolder holder, int position) {
 
         final UserModel userModel = users.get(position);
 
@@ -129,16 +127,19 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         //TODO Add retrofit here for getting online status of other users, own call
         //TODO is done in BottomBarActivity (by default user is offline)
-        /*
-        if(userIsOnline) {
-            holder.onlineCircle.setVisibility(View.VISIBLE);
-            holder.offlineCircle.setVisibility(View.GONE);
-        } else {
-            holder.offlineCircle.setVisibility(View.VISIBLE);
-            holder.onlineCirlce.setVisibility(View.GONE);
-        }
 
-         */
+        UserModel.myUserModel.checkServerForIsActive(UserModel.myUserModel.getOauthToken(), new UserModel.UpdateActiveStatusCallback() {
+            @Override
+            public void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive) {
+                if(retrievedIsActive) {
+                    holder.onlineCircle.setVisibility(View.VISIBLE);
+                    holder.offlineCircle.setVisibility(View.GONE);
+                } else {
+                    holder.offlineCircle.setVisibility(View.VISIBLE);
+                    holder.onlineCircle.setVisibility(View.GONE);
+                }
+            }
+        });
 
         holder.emailLayout.setOnClickListener(new View.OnClickListener() {
             @Override

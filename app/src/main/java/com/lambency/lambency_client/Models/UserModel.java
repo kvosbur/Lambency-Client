@@ -429,7 +429,7 @@ public class UserModel {
     /**
      * A function interface for when the user has asked the database to get the active status of a user
      */
-    interface UpdateActiveStatusCallback {
+    public interface UpdateActiveStatusCallback {
         void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive);
     }
 
