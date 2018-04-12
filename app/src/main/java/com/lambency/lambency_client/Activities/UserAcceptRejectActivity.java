@@ -33,7 +33,7 @@ import retrofit2.Response;
  * Created by Evan on 3/31/2018.
  */
 
-public class UserAcceptRejectActivity  extends AppCompatActivity {
+public class UserAcceptRejectActivity  extends BaseActivity {
 
     private RecyclerView mRecyclerView;
     private UserAcceptRejectAdapter mAdapter;
