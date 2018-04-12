@@ -30,6 +30,7 @@ import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.Models.OrganizationFilterModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
@@ -218,7 +219,7 @@ public class SearchActivity extends AppCompatActivity   {
                     } else {
                         EventFilterModel.currentFilter.setTitle(query);
 
-                        LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter).enqueue(new Callback<List<EventModel>>() {
+                        LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter, UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<EventModel>>() {
                             @Override
                             public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
                                 List<EventModel> events = response.body();
@@ -274,7 +275,7 @@ public class SearchActivity extends AppCompatActivity   {
                                     EventFilterModel.currentFilter.setLongitude(location.getLongitude());
                                     EventFilterModel.currentFilter.setLatitude(location.getLatitude());
 
-                                    LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter).enqueue(new Callback<List<EventModel>>() {
+                                    LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter, UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<EventModel>>() {
                                         @Override
                                         public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
                                             List<EventModel> events = response.body();

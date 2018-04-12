@@ -80,7 +80,7 @@ public interface LambencyAPI {
     Call<ArrayList<UserModel>> getListOfUsers(@Query("oauthcode") String oAuthCode, @Query("event_id") int eventId);
 
     @POST("Event/update")
-    Call<Integer> postUpdateEvent(@Body EventModel event);
+    Call<Integer> postUpdateEvent(@Body EventModel event, @Query("message") String message);
 
     @GET("/User/registerForEvent")
     Call<Integer> getRegisterEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID);
@@ -110,7 +110,7 @@ public interface LambencyAPI {
     Call<MyLambencyModel> getMyLambencyModel(@Query("oAuthCode") String oAuthCode);
 
     @POST("Event/searchWithFilter")
-    Call<List<EventModel>> getEventsFromFilter(@Body EventFilterModel efm);
+    Call<List<EventModel>> getEventsFromFilter(@Body EventFilterModel efm, @Query("oAuthCode") String oAuthCode);
 
     @GET("Organization/getMembersAndOrganizers")
     Call<ArrayList<UserModel>[]> getMembersAndOrganizers(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
@@ -134,11 +134,41 @@ public interface LambencyAPI {
     @POST("/User/ClockInOut")
     Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
 
+    @GET("/User/register")
+    Call<Integer> registerUser(@Query("email") String email, @Query("first") String firstName, @Query("last") String LastName,
+                               @Query("passwd") String password);
+
+    @POST("/User/verifyEmail")
+    Call<Integer> verifyEmail(@Query("userID") int userid, @Query("code") String verificationCode);
+
+    @GET("/User/login/lambency")
+    Call<UserAuthenticatorModel> loginUser(@Query("email") String email, @Query("password") String password);
+
+    @POST("/User/changePassword")
+    Call<Integer> changePassword(@Query("newPassword") String password, @Query("confirmPassword") String confirmPass,
+                                 @Query("oAuthToken") String oAuthToken, @Query("oldPassword") String oldPassword);
+
+    @POST("/User/beginRecovery")
+    Call<Integer> beginPasswordRecovery(@Query("email") String email);
+
+    @POST("/User/endRecovery")
+    Call<Integer> endPasswordRecovery(@Query("newPassword") String password, @Query("confirmPassword") String confirmPass,
+                                 @Query("verification") String oAuthToken, @Query("userID") int userID);
+
+
+
     @GET("Event/deleteEvent")
     Call<Integer> getDeleteEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID, @Query("message") String message);
 
     @POST("User/setFirebase")
     Call<Integer> setFirebaseCode(@Query("oAuthCode") String oAuthCode, @Query("firebase") String fireBaseCode);
+
+
+    @GET("User/leaderboardRange")
+    Call<List<UserModel>> getLeaderboardRange(@Query("start") String start, @Query("end") String end);
+
+    @GET("User/leaderboardAroundUser")
+    Call<List<UserModel>> getLeaderboardAroundUser(@Query("oAuthCode") String oAuthCode);
 
     @POST("Organization/searchWithFilter")
     Call<ArrayList<OrganizationModel>> getOrganizationsWithFilter(@Body OrganizationFilterModel organizationFilterModel);

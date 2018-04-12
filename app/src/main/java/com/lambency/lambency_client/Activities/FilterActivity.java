@@ -22,6 +22,9 @@ import com.lambency.lambency_client.Models.OrganizationFilterModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -114,7 +117,10 @@ public class FilterActivity extends AppCompatActivity {
                 {
                     EventFilterModel.currentFilter.setLocation(null);
                 }
-
+                if(EventFilterModel.currentFilter.getStartStamp() == null)
+                {
+                    EventFilterModel.currentFilter.setStartStamp(new Timestamp(new Date().getTime()));
+                }
                 if(isOrg)
                 {
                     OrganizationFilterModel.currentFilter.setDistanceMiles(EventFilterModel.currentFilter.getDistanceMiles());
