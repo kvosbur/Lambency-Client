@@ -13,8 +13,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import com.lambency.lambency_client.Activities.LeaderboardActivity;
-import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 
@@ -56,7 +54,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         String title = organizationModel.getFirstName() + " "+ organizationModel.getLastName();
         holder.leaderboardName.setText(title);
 
-        int desc = organizationModel.getHoursWorked();
+        double desc = organizationModel.getHoursWorked();
         holder.leaderboardHours.setText(desc + " hours");
 
         holder.leaderboardRank.setText(position+1  + ".");
