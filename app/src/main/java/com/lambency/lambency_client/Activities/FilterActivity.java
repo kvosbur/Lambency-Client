@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
  * Created by Evan on 3/22/2018.
  */
 
-public class FilterActivity extends AppCompatActivity {
+public class FilterActivity extends BaseActivity {
 
     //@BindView(R.id.toolbarFilter)
     //Toolbar toolbar;

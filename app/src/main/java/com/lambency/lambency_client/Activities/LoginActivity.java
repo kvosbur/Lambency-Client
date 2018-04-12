@@ -63,7 +63,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "SignInActivity";

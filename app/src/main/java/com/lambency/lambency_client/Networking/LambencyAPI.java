@@ -173,6 +173,11 @@ public interface LambencyAPI {
     @GET("User/leaderboardAroundUser")
     Call<List<UserModel>> getLeaderboardAroundUser(@Query("oAuthCode") String oAuthCode);
 
+    @GET("User/setActiveStatus")
+    Call<Integer> setActiveStatus(@Query("oAuthCode") String oAuthCode, @Query("isActive") boolean isActive);
+
+    @GET("User/getActiveStatus")
+    Call<Integer> getActiveStatus(@Query("oAuthCode") String oAuthCode, @Query("userID") int userID);
 
     @GET("Organization/delete")
     Call<Integer> getDeleteOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID);

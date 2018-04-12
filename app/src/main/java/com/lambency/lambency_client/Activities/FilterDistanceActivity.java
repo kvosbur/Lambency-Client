@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
  * Created by Evan on 3/16/2018.
  */
 
-public class FilterDistanceActivity extends AppCompatActivity {
+public class FilterDistanceActivity extends BaseActivity {
 
 
     @BindView(R.id.toolbar)
