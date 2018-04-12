@@ -24,6 +24,7 @@ public class UserModel {
     private boolean editable = false;
     private int notification_preference;
     private boolean isActive;
+    private double pastEventHours = -1;
 
     public static UserModel myUserModel;
 
@@ -344,6 +345,13 @@ public class UserModel {
         return editable;
     }
 
+    public void setPastEventHours(double pastEventHours) {
+        this.pastEventHours = pastEventHours;
+    }
+
+    public double getPastEventHours() {
+        return pastEventHours;
+    }
 
     /**
      *

@@ -65,6 +65,13 @@ public class PastUsersActivity extends AppCompatActivity {
                 ArrayList<UserModel> users = new ArrayList<>();
                 for(EventAttendanceModel model : attendanceModels){
                     users.add(model.getUserModel());
+                for(UserModel userModel: userMap.keySet()){
+                    EventAttendanceModel attendanceModel = userMap.get(userModel);
+                    long milliseconds = attendanceModel.getEndTime().getTime() - attendanceModel.getStartTime().getTime();
+                    double hours = milliseconds/3600000d;
+                    hours = Math.round(hours * 10)/10d;
+                    userModel.setPastEventHours(hours);
+                    users.add(userModel);
                 }
 
                 startAdapter(users);
