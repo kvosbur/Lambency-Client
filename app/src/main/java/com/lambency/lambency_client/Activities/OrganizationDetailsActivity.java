@@ -114,12 +114,14 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.showAllButton)
     Button showAllButton;
 
+    @BindView(R.id.pastEventsButton)
+    Button pastEventsButton;
+
     @BindView(R.id.noEventsText)
     TextView noEventsTextView;
 
     @BindView(R.id.notificationNumTextDetails)
     TextView notificationNum;
-
 
     @BindView(R.id.inviteUsersToJoin)
     Button inviteUsers;
@@ -828,6 +830,15 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     public void handleShowAllClick(){
         Intent intent = new Intent(context, ListEventsActivity.class);
         intent.putExtra("org_id", organizationModel.getOrgID());
+        intent.putExtra("eventType", "upcomingEvents");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.pastEventsButton)
+    public void handlePastEventsClick(){
+        Intent intent = new Intent(context, ListEventsActivity.class);
+        intent.putExtra("org_id", organizationModel.getOrgID());
+        intent.putExtra("eventType", "pastEvents");
         startActivity(intent);
     }
 
