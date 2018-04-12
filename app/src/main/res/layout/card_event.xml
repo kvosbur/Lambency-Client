@@ -11,7 +11,7 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="140dp">
+        android:layout_height="150dp">
 
         <ImageView
             android:id="@+id/pictureOfEvent"
@@ -95,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_below="@id/descriptionOfEvent"
+                android:layout_below="@id/memberOnlyText"
                 android:layout_marginTop="4dp"
                 >
 
@@ -111,6 +111,17 @@
 
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/memberOnlyText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:text="This event is for members only!"
+                android:textStyle="italic"
+                android:layout_below="@id/descriptionOfEvent"
+                android:visibility="gone"
+                />
 
         </RelativeLayout>
 

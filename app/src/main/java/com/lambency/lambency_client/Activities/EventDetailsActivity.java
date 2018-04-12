@@ -183,11 +183,16 @@ public class EventDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.checkoutCodeDisp)
     TextView checkoutCodeDisp;
 
+
+    @BindView(R.id.memberOnlyTextDetails)
+    TextView memberOnlyText;
+
     @BindView(R.id.clockInButton)
     Button clockInButton;
 
     @BindView(R.id.clockOutButton)
     Button clockOutButton;
+
 
     private EventModel event,eventModel;
 
@@ -663,7 +668,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     currDate += "18";
 
 
-
                     dateView.setText(currDate); //TimeHelper.dateFromTimestamp(eventModel.getStart()));
                     descriptionView.setText(eventModel.getDescription());
                     timeView.setText(TimeHelper.hourFromTimestamp(eventModel.getStart()) + " - " + TimeHelper.hourFromTimestamp(eventModel.getEnd()));
@@ -671,6 +675,10 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     latitude = eventModel.getLattitude();
                     longitude = eventModel.getLongitude();
                     addressView.setText(eventModel.getLocation());
+
+                    if(eventModel.isPrivateEvent()) {
+                        memberOnlyText.setVisibility(View.VISIBLE);
+                    }
 
                     //setting the codes
                     if(eventModel.getClockInCode() != null && eventModel.getClockOutCode() != null
@@ -690,7 +698,8 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     RequestOptions requestOptions = new RequestOptions();
 
 
-                    ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
+                    //ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
+                    ImageHelper.loadWithGlide(context, eventModel.getImage_path(), eventImageView);
 
                     getOrgInfo(eventModel.getOrg_id());
 
@@ -796,7 +805,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                 orgTitleView.setText("Host Organization: " + organization.getName());
                 ImageHelper.loadWithGlide(context,
-                        ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                        organization.getImagePath(),
                         orgImageView);
 
                 isLoading(false);
