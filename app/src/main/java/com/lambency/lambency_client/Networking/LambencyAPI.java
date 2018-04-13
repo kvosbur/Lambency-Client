@@ -167,5 +167,8 @@ public interface LambencyAPI {
 
     @GET("User/leaderboardAroundUser")
     Call<List<UserModel>> getLeaderboardAroundUser(@Query("oAuthCode") String oAuthCode);
+
+    @GET("Chat/relatedUsers")
+    Call<ArrayList<UserModel>> getRelatedUsers(@Query("oAuthCode") String oAuthCode);
 }
 

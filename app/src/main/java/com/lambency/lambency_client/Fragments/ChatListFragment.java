@@ -1,6 +1,7 @@
 package com.lambency.lambency_client.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,10 +13,13 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Activities.OrgCreationActivity;
 import com.lambency.lambency_client.Adapters.ChatRoomAdapter;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
+
+import butterknife.OnClick;
 
 
 /**
@@ -138,5 +142,11 @@ public class ChatListFragment extends Fragment {
         for (int i = 0; i < DATASET_COUNT; i++) {
             mDataset.add( "This is element #" + i);
         }
+    }
+
+    @OnClick(R.id.chatFab)
+    public void handleOrgFabClick(){
+        //Intent intent = new Intent(getActivity(), OrgCreationActivity.class);
+        //startActivity(intent);
     }
 }
