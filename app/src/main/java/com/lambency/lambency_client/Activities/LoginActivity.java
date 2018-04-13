@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                         if (response.body() == null || response.code() != 200) {
-                            System.out.println("ERROR!!!!!");
+                            System.out.println("ERROR2!!!!!");
                             return;
                         }
                         //when response is back
@@ -211,7 +211,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         @Override
                                         public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                                             if (response.body() == null || response.code() != 200) {
-                                                System.out.println("ERROR!!!!!");
+                                                System.out.println("ERROR3!!!!!");
                                                 return;
                                             }
                                             //when response is back
@@ -310,7 +310,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 @Override
                                 public void onResponse(Call<Integer> call, Response<Integer> response) {
                                     if (response.body() == null || response.code() != 200) {
-                                        System.out.println("ERROR!!!!!");
+                                        System.out.println("ERROR4!!!!!");
                                         return;
                                     }
 
@@ -379,7 +379,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                     @Override
                                                     public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
                                                         if (response.body() == null || response.code() != 200) {
-                                                            System.out.println("ERROR!!!!!");
+                                                            System.out.println("ERROR5!!!!!");
                                                             return;
                                                         }
                                                         //when response is back
@@ -401,7 +401,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                                 @Override
                                                                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                                                                     if (response.body() == null || response.code() != 200) {
-                                                                        System.out.println("ERROR!!!!!");
+                                                                        System.out.println("ERROR6!!!!!");
                                                                         return;
                                                                     }
                                                                     //when response is back
@@ -565,7 +565,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
                     if (response.body() == null || response.code() != 200) {
-                        System.out.println("ERROR!!!!!");
+                        System.out.println("ERROR7!!!!!");
                         return;
                     }
                     //when response is back
@@ -588,7 +588,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             @Override
                             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                                 if (response.body() == null || response.code() != 200) {
-                                    System.out.println("ERROR!!!!!");
+                                    System.out.println("ERROR8!!!!!");
                                 }
 
                                 //when response is back

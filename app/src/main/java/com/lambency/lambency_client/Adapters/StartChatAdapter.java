@@ -15,6 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.lambency.lambency_client.Activities.OrgUsersActivity;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
@@ -158,6 +162,10 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
         @OnClick(R.id.user_card)
         public void CreateChat(){
             System.out.println("CLICKED " + nameView.getText());
+            //get current user token
+            String token = FirebaseInstanceId.getInstance().getToken();
+
+            //FirebaseDatabase.getInstance().getReference().child("messages").child("1").setValue("EMPTY");
         }
 
 

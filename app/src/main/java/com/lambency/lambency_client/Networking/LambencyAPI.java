@@ -38,7 +38,7 @@ public interface LambencyAPI {
     Call<OrganizationModel> postCreateOrganization(@Body OrganizationModel org);
 
     @GET("User/search")
-    Call<UserModel> userSearch(@Query("oAuthToken") String oAuthToken, @Query("id") String userID);
+    Call<UserModel> userSearch(@Query("oAuthCode") String oAuthToken, @Query("id") String userID);
 
 
     @GET("Organization/search")
