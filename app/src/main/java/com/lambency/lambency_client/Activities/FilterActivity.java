@@ -118,15 +118,28 @@ public class FilterActivity extends BaseActivity {
             case android.R.id.home:
 
                 EditText altAddr = findViewById(R.id.newTextAddr);
-                EventFilterModel.currentFilter.setLocation(altAddr.getText().toString());
-                if(EventFilterModel.currentFilter.getLocation().compareTo("") == 0)
+
+                if(isOrg)
                 {
-                    EventFilterModel.currentFilter.setLocation(null);
+                    OrganizationFilterModel.currentFilter.setLocation(altAddr.getText().toString());
+                    if(OrganizationFilterModel.currentFilter.getLocation().compareTo("") == 0)
+                    {
+                        OrganizationFilterModel.currentFilter.setLocation(null);
+                    }
                 }
-                if(EventFilterModel.currentFilter.getStartStamp() == null)
+                else
                 {
-                    EventFilterModel.currentFilter.setStartStamp(new Timestamp(new Date().getTime()));
+                    EventFilterModel.currentFilter.setLocation(altAddr.getText().toString());
+                    if(EventFilterModel.currentFilter.getLocation().compareTo("") == 0)
+                    {
+                        EventFilterModel.currentFilter.setLocation(null);
+                    }
+                    if(EventFilterModel.currentFilter.getStartStamp() == null)
+                    {
+                        EventFilterModel.currentFilter.setStartStamp(new Timestamp(new Date().getTime()));
+                    }
                 }
+                /*
                 if(isOrg)
                 {
                     OrganizationFilterModel.currentFilter.setDistanceMiles(EventFilterModel.currentFilter.getDistanceMiles());
@@ -134,7 +147,7 @@ public class FilterActivity extends BaseActivity {
                     OrganizationFilterModel.currentFilter.setLatitude(EventFilterModel.currentFilter.getLatitude());
                     OrganizationFilterModel.currentFilter.setLongitude(EventFilterModel.currentFilter.getLongitude());
                 }
-
+                */
                 //finish();
                 Intent intent = new Intent(context, SearchActivity.class);
                 if(isOrg) {
