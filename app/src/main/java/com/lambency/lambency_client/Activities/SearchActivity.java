@@ -110,6 +110,16 @@ public class SearchActivity extends BaseActivity   {
         });
 
         searchByLocation();
+
+        Intent intent = getIntent();
+        if (null != intent) { //Null Checking
+            String StrData= intent.getStringExtra("org");
+           if(StrData != null && StrData.compareTo("true") == 0) {
+               TabLayout.Tab tab = tabLayout.getTabAt(1);
+               tab.select();
+               applyOrgSearch();
+           }
+        }
     }
 
 
@@ -134,6 +144,10 @@ public class SearchActivity extends BaseActivity   {
                     if(tabLayout.getSelectedTabPosition() == 1)
                     {
                         searchTabsAdapter.setOrgVisiblity(View.VISIBLE, View.GONE);
+
+                        if(OrganizationFilterModel.currentFilter == null) {
+                            OrganizationFilterModel.currentFilter = new OrganizationFilterModel();
+                        }
 
                         OrganizationFilterModel.currentFilter.setTitle(query);
                         LambencyAPIHelper.getInstance().getOrganizationsWithFilter(OrganizationFilterModel.currentFilter).enqueue(new Callback<ArrayList<OrganizationModel>>() {
@@ -250,6 +264,45 @@ public class SearchActivity extends BaseActivity   {
         return super.onCreateOptionsMenu(menu);
     }
 
+    private void applyOrgSearch() {
+        LambencyAPIHelper.getInstance().getOrganizationsWithFilter(OrganizationFilterModel.currentFilter).enqueue(new Callback<ArrayList<OrganizationModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
+                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
+
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("ERROR!!!!!");
+                }
+                //when response is back
+                ArrayList<OrganizationModel> orgList = response.body();
+                if (orgList == null || orgList.size() == 0) {
+                    //no results found
+                    if (orgList == null) {
+                        orgList = new ArrayList<OrganizationModel>();
+                    }
+
+                    if (searchTabsAdapter == null) {
+                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                    }
+                    searchTabsAdapter.updateOrgs(orgList);
+                } else {
+                    //results found
+
+                    if (searchTabsAdapter == null) {
+                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                    }
+                    //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
+                    searchTabsAdapter.updateOrgs(orgList);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
+                //when failure
+                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
+            }
+        });
+    }
 
     private void searchByLocation(){
 
@@ -344,6 +397,8 @@ public class SearchActivity extends BaseActivity   {
         switch(item.getItemId()){
 
             case android.R.id.home:
+                EventFilterModel.currentFilter = new EventFilterModel();
+                OrganizationFilterModel.currentFilter = new OrganizationFilterModel();
                 Intent intent = new Intent(context, BottomBarActivity.class);
                 startActivity(intent);
                 break;

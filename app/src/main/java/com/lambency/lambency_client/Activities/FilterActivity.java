@@ -131,6 +131,9 @@ public class FilterActivity extends BaseActivity {
 
                 //finish();
                 Intent intent = new Intent(context, SearchActivity.class);
+                if(isOrg) {
+                    intent.putExtra("org", "true");
+                }
                 startActivity(intent);
         }
 
