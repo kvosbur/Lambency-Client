@@ -156,9 +156,9 @@ public class FilterDistanceActivity extends BaseActivity {
             case android.R.id.home:
                 // app icon in action bar clicked; goto parent activity.
                 EventFilterModel.currentFilter.setTitle("");
-                Intent intent = new Intent(this, SearchActivity.class);
-                startActivity(intent);
-                //finish();
+                //Intent intent = new Intent(this, SearchActivity.class);
+                //startActivity(intent);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
