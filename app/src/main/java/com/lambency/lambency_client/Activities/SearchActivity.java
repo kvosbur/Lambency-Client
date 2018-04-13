@@ -63,6 +63,9 @@ public class SearchActivity extends BaseActivity   {
     private FusedLocationProviderClient mFusedLocationClient;
     private int MY_PERMISSIONS_ACCESS_COARSE_LOCATION;
 
+    static double longStored = 0.0;
+    static double latStoted = 0.0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,49 +190,7 @@ public class SearchActivity extends BaseActivity   {
                                 searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
                             }
                         });
-                        /*
-                        LambencyAPIHelper.getInstance().getOrganizationSearch(query).enqueue(new Callback<ArrayList<OrganizationModel>>() {
-                            @Override
-                            public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
-                                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
 
-                                if (response.body() == null || response.code() != 200) {
-                                    System.out.println("ERROR!!!!!");
-                                }
-                                //when response is back
-                                ArrayList<OrganizationModel> orgList = response.body();
-                                if (orgList == null || orgList.size() == 0) {
-                                    //no results found
-                                    if (orgList == null) {
-                                        orgList = new ArrayList<OrganizationModel>();
-                                    }
-
-                                    if (searchTabsAdapter == null) {
-                                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
-                                    }
-                                    searchTabsAdapter.updateOrgs(orgList);
-                                } else {
-                                    //results found
-                                    System.out.println("Orgs found!");
-
-
-                                    if (searchTabsAdapter == null) {
-                                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
-                                    }
-                                    //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
-                                    searchTabsAdapter.updateOrgs(orgList);
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
-                                //when failure
-                                System.out.println("FAILED CALL");
-
-                                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
-                            }
-                        });
-                        */
                     } else {
                         EventFilterModel.currentFilter.setTitle(query);
 
@@ -265,6 +226,13 @@ public class SearchActivity extends BaseActivity   {
     }
 
     private void applyOrgSearch() {
+
+        if(OrganizationFilterModel.currentFilter.getLocation() == null || OrganizationFilterModel.currentFilter.getLocation().compareTo("") == 0)
+        {
+            OrganizationFilterModel.currentFilter.setLatitude(latStoted);
+            OrganizationFilterModel.currentFilter.setLongitude(longStored);
+        }
+
         LambencyAPIHelper.getInstance().getOrganizationsWithFilter(OrganizationFilterModel.currentFilter).enqueue(new Callback<ArrayList<OrganizationModel>>() {
             @Override
             public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
@@ -327,6 +295,9 @@ public class SearchActivity extends BaseActivity   {
 
                                     EventFilterModel.currentFilter.setLongitude(location.getLongitude());
                                     EventFilterModel.currentFilter.setLatitude(location.getLatitude());
+
+                                    longStored = EventFilterModel.currentFilter.getLongitude();
+                                    latStoted = EventFilterModel.currentFilter.getLatitude();
 
                                     LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter, UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<EventModel>>() {
                                         @Override
