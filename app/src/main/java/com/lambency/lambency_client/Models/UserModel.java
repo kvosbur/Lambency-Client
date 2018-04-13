@@ -27,7 +27,7 @@ public class UserModel {
     private List<Integer> joinedOrgs;
     private List<Integer> requestedJoinOrgIds; // orgIDs for all join requests that are still unconfirmed
     private int userId;
-    private int hoursWorked;
+    private double hoursWorked;
     private String oauthToken;
     private int orgStatus;
     private boolean editable = false;
@@ -37,7 +37,7 @@ public class UserModel {
 
 
     public UserModel(String firstName, String lastName, String email, List<Integer> myOrgs, List<Integer> eventsAttending,
-                List<Integer> followingOrgs, List<Integer> joinedOrgs, int userId, int hoursWorked, String oauthToken) {
+                List<Integer> followingOrgs, List<Integer> joinedOrgs, int userId, double hoursWorked, String oauthToken) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -108,7 +108,7 @@ public class UserModel {
         this.userId = userId;
     }
 
-    public void setHoursWorked(int hoursWorked) {
+    public void setHoursWorked(double hoursWorked) {
         this.hoursWorked = hoursWorked;
     }
 
@@ -163,7 +163,7 @@ public class UserModel {
         return userId;
     }
 
-    public int getHoursWorked() {
+    public double getHoursWorked() {
         return hoursWorked;
     }
 
@@ -250,7 +250,7 @@ public class UserModel {
         result = 31 * result + (getFollowingOrgs() != null ? getFollowingOrgs().hashCode() : 0);
         result = 31 * result + (getJoinedOrgs() != null ? getJoinedOrgs().hashCode() : 0);
         result = 31 * result + getUserId();
-        result = 31 * result + getHoursWorked();
+        result = 31 * result + (int)getHoursWorked();
         result = 31 * result + getOrgStatus();
         return result;
     }
