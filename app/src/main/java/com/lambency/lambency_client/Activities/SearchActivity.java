@@ -47,7 +47,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class SearchActivity extends AppCompatActivity   {
+public class SearchActivity extends BaseActivity   {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;

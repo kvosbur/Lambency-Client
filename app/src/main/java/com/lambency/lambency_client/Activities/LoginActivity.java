@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,13 +55,15 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "SignInActivity";
@@ -68,11 +72,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     final private Context context = this;
 
-
     CallbackManager callbackManager;
+
+    @BindView(R.id.progressBarLayout)
+    RelativeLayout progressLayout;
+
+    @BindView(R.id.mainLayout)
+    ScrollView mainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+
         FirebaseApp.initializeApp(context);
 
         if (ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -84,7 +97,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
             final String myauth = sharedPref.getString("myauth", "");
 
+            //This is automatic login
             if (myauth.length() > 0) {
+                progressLayout.setVisibility(View.VISIBLE);
+                mainLayout.setVisibility(View.GONE);
+
                 UserAuthenticatorModel.myAuth = myauth;
                 System.out.println("My auth is : " + myauth);
                 LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
@@ -120,8 +137,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
 
 
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_login);
+
 
             this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 

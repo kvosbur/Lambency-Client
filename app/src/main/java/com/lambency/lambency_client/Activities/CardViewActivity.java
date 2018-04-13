@@ -18,7 +18,7 @@ import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
 
-public class CardViewActivity extends AppCompatActivity {
+public class CardViewActivity extends BaseActivity {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;

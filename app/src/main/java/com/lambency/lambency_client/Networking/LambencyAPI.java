@@ -134,6 +134,9 @@ public interface LambencyAPI {
     @POST("/User/ClockInOut")
     Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
 
+    @POST("Organization/edit")
+    Call<OrganizationModel> getEditOrganization(@Query("oAuthCode") String oAuthCode, @Body OrganizationModel organizationModel);
+
     @GET("/User/register")
     Call<Integer> registerUser(@Query("email") String email, @Query("first") String firstName, @Query("last") String LastName,
                                @Query("passwd") String password);
@@ -170,7 +173,22 @@ public interface LambencyAPI {
     @GET("User/leaderboardAroundUser")
     Call<List<UserModel>> getLeaderboardAroundUser(@Query("oAuthCode") String oAuthCode);
 
+    @GET("User/setActiveStatus")
+    Call<Integer> setActiveStatus(@Query("oAuthCode") String oAuthCode, @Query("isActive") boolean isActive);
+
+    @GET("User/getActiveStatus")
+    Call<Integer> getActiveStatus(@Query("oAuthCode") String oAuthCode, @Query("userID") int userID);
+
+    @GET("Organization/delete")
+    Call<Integer> getDeleteOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID);
+
     @POST("Organization/searchWithFilter")
     Call<ArrayList<OrganizationModel>> getOrganizationsWithFilter(@Body OrganizationFilterModel organizationFilterModel);
+
+    @GET("User/joinRequests")
+    Call<List<OrganizationModel>> getUserJoinRequests(@Query("oAuthCode") String oAuthCode);
+
+    @GET("User/respondToJoinRequest")
+    Call<Integer> getUserRespondToJoinRequest(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID, @Query("accept") String accept);
 }
 
