@@ -19,6 +19,7 @@ import com.lambency.lambency_client.Activities.EventDetailsActivity;
 import com.lambency.lambency_client.Activities.FilterActivity;
 import com.lambency.lambency_client.Activities.MessageListActivity;
 import com.lambency.lambency_client.Activities.smsActivity;
+import com.lambency.lambency_client.Models.ChatModel;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
@@ -26,6 +27,7 @@ import com.lambency.lambency_client.Utils.TimeHelper;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,10 +41,10 @@ import butterknife.OnClick;
 
 public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.AreaViewHolder>{
 
-    List<String> rooms;
+    ArrayList<ChatModel> rooms;
     Context context;
 
-    public ChatRoomAdapter(Context context, List<String> rooms){
+    public ChatRoomAdapter(Context context, ArrayList<ChatModel> rooms){
         this.rooms = rooms;
         this.context = context;
     }
@@ -60,15 +62,15 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.AreaVi
 
         holder.cardView.setTag(position);
 
-        String s = rooms.get(position);
+        ChatModel s = rooms.get(position);
 
         if(s == null){
             return;
         }
 
         if(s != null){
-            holder.titleView.setText(s);
-            holder.lastSentMessage.setText(s);
+            holder.titleView.setText(s.getName());
+            holder.lastSentMessage.setText(s.getRecent_msg_text());
         }
 
 
@@ -93,7 +95,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.AreaVi
                 intent.putExtras(bundle);
                 context.startActivity(intent);
                 */
-                Toast.makeText(context, rooms.get((Integer)view.getTag()), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, rooms.get((Integer)view.getTag()).getName(), Toast.LENGTH_LONG).show();
                 Intent i = new Intent(context, MessageListActivity.class);
                 context.startActivity(i);
             }
@@ -137,12 +139,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.AreaVi
 
     }
 
-    public void updateEvents(List<String> roomsList){
+    public void updateEvents(ArrayList<ChatModel> roomsList){
         rooms = roomsList;
         notifyDataSetChanged();
     }
 
-    public List<String> getRooms() {
+    public ArrayList<ChatModel> getRooms() {
         return rooms;
     }
 }

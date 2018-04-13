@@ -20,7 +20,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.lambency.lambency_client.Activities.OrgUsersActivity;
+import com.lambency.lambency_client.Models.ChatModel;
 import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
@@ -165,6 +167,7 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
             //get current user token
             String token = FirebaseInstanceId.getInstance().getToken();
 
+
             //FirebaseDatabase.getInstance().getReference().child("messages").child("1").setValue("EMPTY");
         }
 
@@ -223,5 +226,8 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
         this.users.endBatchedUpdates();
     }
 
+    public SortedList<UserModel> getUsers() {
+        return users;
+    }
 }
 

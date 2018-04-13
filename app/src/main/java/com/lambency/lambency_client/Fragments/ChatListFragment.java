@@ -10,13 +10,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.lambency.lambency_client.Activities.OrgCreationActivity;
+import com.lambency.lambency_client.Activities.MessageListActivity;
 import com.lambency.lambency_client.Activities.StartChatActivity;
 import com.lambency.lambency_client.Adapters.ChatRoomAdapter;
+import com.lambency.lambency_client.Models.ChatModel;
+import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPI;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
@@ -24,6 +27,11 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -32,13 +40,13 @@ import butterknife.OnClick;
 
 public class ChatListFragment extends Fragment {
 
+    private final ArrayList<ChatModel> chatModels = new ArrayList<>();
+
     @BindView(R.id.chatFab)
     FloatingActionButton chatFab;
 
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
-    private static final int SPAN_COUNT = 2;
-    private static final int DATASET_COUNT = 20;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -51,7 +59,7 @@ public class ChatListFragment extends Fragment {
     protected RecyclerView mRecyclerView;
     protected ChatRoomAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected ArrayList<String> mDataset;
+    protected ArrayList<ChatModel> mDataset = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +67,17 @@ public class ChatListFragment extends Fragment {
 
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
-        initDataset();
+        LambencyAPIHelper.getInstance().getAllChats(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<ChatModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<ChatModel>> call, Response<ArrayList<ChatModel>> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<ChatModel>> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
@@ -94,10 +112,13 @@ public class ChatListFragment extends Fragment {
         mRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), mAdapter.getRooms().get((Integer)view.getTag()), Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), mAdapter.getRooms().get((Integer)view.getTag()).getName(), Toast.LENGTH_LONG).show();
             }
         });
 
+        if(mDataset == null){
+            mRecyclerView.setVisibility(View.GONE);
+        }
 
         return rootView;
     }
@@ -118,9 +139,6 @@ public class ChatListFragment extends Fragment {
 
         switch (layoutManagerType) {
             case GRID_LAYOUT_MANAGER:
-                mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
-                mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
-                break;
             case LINEAR_LAYOUT_MANAGER:
                 mLayoutManager = new LinearLayoutManager(getActivity());
                 mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
@@ -147,15 +165,33 @@ public class ChatListFragment extends Fragment {
      */
     private void initDataset() {
         mDataset = new ArrayList<>();
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset.add( "This is element #" + i);
+        for (int i = 0; i < chatModels.size(); i++) {
+            mDataset.add( chatModels.get(i));
         }
+        mAdapter.updateEvents(mDataset);
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mAdapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.chatFab)
     public void handleOrgFabClick(){
         System.out.println("CLICKED THE BUTTON");
         Intent intent = new Intent(getActivity(), StartChatActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,1);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                ChatModel chatModel = (ChatModel) data.getExtras().getSerializable("chatModel");
+                Intent intent = new Intent(getActivity(), MessageListActivity.class);
+                intent.putExtra("chatModel",chatModel);
+                startActivity(intent);
+            }
+            else{
+                Toast.makeText(getContext(),"Sorry it failed",Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

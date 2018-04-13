@@ -1,6 +1,7 @@
 package com.lambency.lambency_client.Networking;
 
 
+import com.lambency.lambency_client.Models.ChatModel;
 import com.lambency.lambency_client.Models.EventFilterModel;
 
 import com.lambency.lambency_client.Models.EventAttendanceModel;
@@ -170,5 +171,13 @@ public interface LambencyAPI {
 
     @GET("Chat/relatedUsers")
     Call<ArrayList<UserModel>> getRelatedUsers(@Query("oAuthCode") String oAuthCode);
+
+    @GET("Chat/create")
+    Call<ChatModel> createChat(@Query("oAuthCode") String oAuthCode, @Query("ID2") int id2, @Query("isGroup") boolean isGroup);
+
+    @GET("Chat/getAllChats")
+    Call<ArrayList<ChatModel>> getAllChats(@Query("oAuthCode") String oAuthCode);
+    
+
 }
 
