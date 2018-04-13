@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
+import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
 
@@ -154,8 +155,10 @@ public class FilterDistanceActivity extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; goto parent activity.
-                Intent intent = new Intent(this, SearchActivity.class);
-                startActivity(intent);
+                EventFilterModel.currentFilter.setTitle("");
+                //Intent intent = new Intent(this, SearchActivity.class);
+                //startActivity(intent);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
