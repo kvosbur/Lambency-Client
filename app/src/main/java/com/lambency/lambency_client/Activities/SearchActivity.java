@@ -112,6 +112,7 @@ public class SearchActivity extends BaseActivity   {
             }
         });
 
+        EventFilterModel.currentFilter.setTitle("");
         searchByLocation();
 
         Intent intent = getIntent();

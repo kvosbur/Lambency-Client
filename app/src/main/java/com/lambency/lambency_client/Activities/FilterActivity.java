@@ -47,7 +47,7 @@ public class FilterActivity extends BaseActivity {
 
     FilterTabsAdapter searchTabsAdapter;
 
-    boolean isOrg;
+    static boolean isOrg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,12 @@ public class FilterActivity extends BaseActivity {
         }
 
         isOrg = filterOrg;
+
+        if(isOrg) {
+            EventFilterModel.currentFilter.setTitle("org");
+        } else {
+            EventFilterModel.currentFilter.setTitle("event");
+        }
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Filter Options");
