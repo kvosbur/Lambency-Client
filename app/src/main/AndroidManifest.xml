@@ -155,6 +155,9 @@
         <activity
             android:name=".Activities.OrgUsersActivity"
             android:exported="true" />
+        <activity
+            android:name=".Activities.StartChatActivity"
+            android:exported="true" />
         <activity android:name=".Activities.SignupActivity" />
         <activity android:name=".Activities.CardViewActivity" />
         <activity android:name=".Activities.ProfileSettingsActivity" />

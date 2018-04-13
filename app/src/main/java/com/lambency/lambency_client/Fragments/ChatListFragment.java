@@ -13,12 +13,16 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.lambency.lambency_client.Activities.OrgCreationActivity;
+import com.lambency.lambency_client.Activities.StartChatActivity;
 import com.lambency.lambency_client.Adapters.ChatRoomAdapter;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
@@ -27,6 +31,9 @@ import butterknife.OnClick;
  */
 
 public class ChatListFragment extends Fragment {
+
+    @BindView(R.id.chatFab)
+    FloatingActionButton chatFab;
 
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
@@ -59,6 +66,7 @@ public class ChatListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_list, container, false);
+        ButterKnife.bind(this, rootView);
         rootView.setTag(TAG);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.chatListRecyclerView);
@@ -146,7 +154,8 @@ public class ChatListFragment extends Fragment {
 
     @OnClick(R.id.chatFab)
     public void handleOrgFabClick(){
-        //Intent intent = new Intent(getActivity(), OrgCreationActivity.class);
-        //startActivity(intent);
+        System.out.println("CLICKED THE BUTTON");
+        Intent intent = new Intent(getActivity(), StartChatActivity.class);
+        startActivity(intent);
     }
 }
