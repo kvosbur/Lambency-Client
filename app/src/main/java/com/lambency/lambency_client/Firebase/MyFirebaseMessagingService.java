@@ -122,6 +122,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             data.get("org"),
                             data.get("org_id"));
                     break;
+                case "chatMessage":
+
                 default:
                     Log.e("FirebaseMessaging", "No data type specified");
                     break;
