@@ -91,7 +91,7 @@ import retrofit2.Response;
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
 
-public class EventDetailsActivity extends AppCompatActivity implements
+public class EventDetailsActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     String eventName = "";
 

@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.lambency.lambency_client.R;
 
-public class smsActivity extends AppCompatActivity {
+public class smsActivity extends BaseActivity {
 
     Button buttonSend,buttonMain;
     EditText textPhoneNo;
