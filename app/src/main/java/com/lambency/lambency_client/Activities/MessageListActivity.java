@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 //import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -16,6 +17,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.lambency.lambency_client.Adapters.MessageListAdapter;
+import com.lambency.lambency_client.Models.ChatModel;
+import com.lambency.lambency_client.Models.UserModel;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Models.MessageModel;
 
@@ -25,6 +29,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  *  Base code taken from tutorial here: https://blog.sendbird.com/android-chat-tutorial-building-a-messaging-ui
@@ -44,6 +51,8 @@ public class MessageListActivity extends BaseActivity {
 
     public List<MessageModel> messageModelList;
 
+    private ChatModel chatModel;
+
     private FirebaseListAdapter<MessageModel> adapter;
 
     static int msg = 0;
@@ -51,6 +60,7 @@ public class MessageListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //getIntent().getSerializableExtra();
 
         setContentView(R.layout.activity_message_list);
         ButterKnife.bind(this);
@@ -142,17 +152,43 @@ public class MessageListActivity extends BaseActivity {
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 String message = messageContent.getText().toString();
 
                 if(message.compareTo("") == 0)
                 {
                     return;
                 }
+                else{
+                    MessageModel messageModel = new MessageModel(message, UserModel.myUserModel.getFirstName() + UserModel.myUserModel.getLastName(),(new Timestamp(System.currentTimeMillis())).toString());
+                    messageModelList.add(messageModel);
+                    myMessageAdapter.notifyDataSetChanged();
+                    LambencyAPIHelper.getInstance().sendMessage(UserModel.myUserModel.getOauthToken(),chatModel.getChatID(),messageModel).enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            if(response == null || !response.isSuccessful() || response.code() != 200 || response.body() == null){
+                                Toast.makeText(view.getContext(),"I am sorry, the message failed to post. It failed in response", Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                Integer ret = response.body();
+                                if (ret < 0) {
+                                    Toast.makeText(view.getContext(), "Response from server said you cant send that message.", Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    Toast.makeText(view.getContext(), "Message Sent", Toast.LENGTH_LONG).show();
+                                    //TODO
+                                    //Save the returned integer
+                                }
+                            }
+                        }
 
-                if(messageModelList.size() > 0) {
-                    messageModelList.get(messageModelList.size()-1).createdAt = (new Timestamp(System.currentTimeMillis())).toString();
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable t) {
+                            Toast.makeText(view.getContext(),"I am sorry, the message failed to post. :(", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
+
 
                 /*
                 FirebaseMessaging fm = FirebaseMessaging.getInstance();
