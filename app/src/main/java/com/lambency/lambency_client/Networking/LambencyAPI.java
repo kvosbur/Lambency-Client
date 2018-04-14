@@ -42,7 +42,6 @@ public interface LambencyAPI {
     @GET("User/search")
     Call<UserModel> userSearch(@Query("oAuthCode") String oAuthToken, @Query("id") String userID);
 
-
     @GET("Organization/search")
     Call<ArrayList<OrganizationModel>> getOrganizationSearch(@Query("name") String name);
 

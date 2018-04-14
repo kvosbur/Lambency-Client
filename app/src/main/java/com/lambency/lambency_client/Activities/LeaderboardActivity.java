@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lambency.lambency_client.Adapters.LeaderboardAdapter;
 import com.lambency.lambency_client.Adapters.UserListAdapter;
@@ -14,6 +15,8 @@ import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,9 @@ public class LeaderboardActivity extends BaseActivity {
 
     List<UserModel> userList = new ArrayList<>();
 
+    @BindView(R.id.leaderboardPos)
+    TextView leaderboardPos;
+
     static int startVal = 1;
 
     @Override
@@ -44,7 +50,7 @@ public class LeaderboardActivity extends BaseActivity {
 
         getSupportActionBar().setTitle("Leaderboard");
 
-            LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + startVal+10).enqueue(new Callback<List<UserModel>>() {
+        LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + startVal+10).enqueue(new Callback<List<UserModel>>() {
                 @Override
                 public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
                     if (response.body() == null || response.code() != 200) {
@@ -59,8 +65,17 @@ public class LeaderboardActivity extends BaseActivity {
                     else{
                         UserModel userModel = ret.get(0);
                         int rank = Integer.parseInt(userModel.getOauthToken());
+                        Toast.makeText(LeaderboardActivity.this, "" + ret.size(), Toast.LENGTH_SHORT).show();
                         // I will set the oAuthToken to the users rank
-                        startVal += 10;
+                        startVal += ret.size();
+
+                        for(int i = 0; i < ret.size(); i++)
+                        {
+                            userList.add(ret.get(i));
+                        }
+
+                        userList.add(new UserModel("...", null, null, null, null, null,null, 0, 0, null));
+                        mAdapter.notifyDataSetChanged();
 
                         //TODO Populate recycler view here!
                     }
@@ -73,36 +88,43 @@ public class LeaderboardActivity extends BaseActivity {
                 }
             });
 
-        //TODO If user is not in current userList then...
-        LambencyAPIHelper.getInstance().getLeaderboardAroundUser(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<UserModel>>() {
-            @Override
-            public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
-                if (response.body() == null || response.code() != 200) {
-                    System.out.println("An error has occurred");
-                    return;
+        if(!userList.contains(UserModel.myUserModel))
+        {
+            LambencyAPIHelper.getInstance().getLeaderboardAroundUser(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<UserModel>>() {
+                @Override
+                public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
+                    if (response.body() == null || response.code() != 200) {
+                        System.out.println("An error has occurred");
+                        return;
+                    }
+                    //when response is back
+                    List<UserModel> ret = response.body();
+                    if(ret == null ) {
+                        System.out.println("An error has occurred");
+                    }
+                    else{
+                        UserModel userModel = ret.get(0);
+                        int rank = Integer.parseInt(userModel.getOauthToken());
+                        // I will set the oAuthToken to the users rank
+                        //TODO Populate recycler view here!
+                    }
                 }
-                //when response is back
-                List<UserModel> ret = response.body();
-                if(ret == null ) {
-                    System.out.println("An error has occurred");
-                }
-                else{
-                    UserModel userModel = ret.get(0);
-                    int rank = Integer.parseInt(userModel.getOauthToken());
-                    // I will set the oAuthToken to the users rank
-                    //TODO Populate recycler view here!
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<UserModel>> call, Throwable throwable) {
-                //when failure
-                System.out.println("FAILED CALL");
-            }
-        });
+                @Override
+                public void onFailure(Call<List<UserModel>> call, Throwable throwable) {
+                    //when failure
+                    System.out.println("FAILED CALL");
+                }
+            });
+        }
 
-        userList.add(UserModel.myUserModel);
-        userList.add(new UserModel("...", null, null, null, null, null,null, 0, 0, null));
+        for(int i = 0; i < userList.size(); i++)
+        {
+            if(userList.get(i).getUserId() == UserModel.myUserModel.getUserId())
+            {
+                leaderboardPos.setText("You are rank " + userList.get(i).getOauthToken() + " in the world!");
+            }
+        }
 
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
