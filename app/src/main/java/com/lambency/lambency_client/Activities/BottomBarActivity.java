@@ -26,9 +26,10 @@ import android.widget.Toast;
 
 
 import com.google.firebase.FirebaseApiNotAvailableException;
-import com.google.firebase.FirebaseApp;
+//import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
+import com.lambency.lambency_client.Fragments.ChatListFragment;
 import com.lambency.lambency_client.Fragments.CheckInFragment;
 import com.lambency.lambency_client.Fragments.EventsMainFragment;
 import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
@@ -258,8 +259,10 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
     }
 
     public void switchToFragment5(){
-        Intent i = new Intent(this, MessageListActivity.class);
-        startActivity(i);
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.fragContainer, new ChatListFragment()).commit();
+        //Intent i = new Intent(this, MessageListActivity.class);
+        //startActivity(i);
     }
 
     public void setActionBarTitle(String title) {

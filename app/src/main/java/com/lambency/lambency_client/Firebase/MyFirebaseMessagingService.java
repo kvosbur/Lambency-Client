@@ -122,6 +122,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             data.get("org"),
                             data.get("org_id"));
                     break;
+                case "chatMessage":
+                    NotificationHelper.sendChatMessageNotification(this,
+                            data.get("name"),
+                            data.get("chatId"),
+                            data.get("msgId"));
                 default:
                     Log.e("FirebaseMessaging", "No data type specified");
                     break;

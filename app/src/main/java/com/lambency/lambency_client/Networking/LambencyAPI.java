@@ -1,6 +1,7 @@
 package com.lambency.lambency_client.Networking;
 
 
+import com.lambency.lambency_client.Models.ChatModel;
 import com.lambency.lambency_client.Models.EventFilterModel;
 
 import com.lambency.lambency_client.Models.EventAttendanceModel;
@@ -39,7 +40,7 @@ public interface LambencyAPI {
     Call<OrganizationModel> postCreateOrganization(@Body OrganizationModel org);
 
     @GET("User/search")
-    Call<UserModel> userSearch(@Query("oAuthToken") String oAuthToken, @Query("id") String userID);
+    Call<UserModel> userSearch(@Query("oAuthCode") String oAuthToken, @Query("id") String userID);
 
 
     @GET("Organization/search")
@@ -190,5 +191,15 @@ public interface LambencyAPI {
 
     @GET("User/respondToJoinRequest")
     Call<Integer> getUserRespondToJoinRequest(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID, @Query("accept") String accept);
+
+    @GET("Chat/relatedUsers")
+    Call<ArrayList<UserModel>> getRelatedUsers(@Query("oAuthCode") String oAuthCode);
+
+    @GET("Chat/create")
+    Call<ChatModel> createChat(@Query("oAuthCode") String oAuthCode, @Query("ID2") int id2, @Query("isGroup") boolean isGroup);
+
+    @GET("Chat/getAllChats")
+    Call<ArrayList<ChatModel>> getAllChats(@Query("oAuthCode") String oAuthCode);
+
 }
 
