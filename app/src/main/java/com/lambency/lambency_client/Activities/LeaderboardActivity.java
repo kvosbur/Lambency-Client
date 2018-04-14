@@ -50,6 +50,18 @@ public class LeaderboardActivity extends BaseActivity {
 
         getSupportActionBar().setTitle("Leaderboard");
 
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
+        mAdapter = new LeaderboardAdapter(userList, this);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.notifyDataSetChanged(); // how we update
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + startVal+10).enqueue(new Callback<List<UserModel>>() {
                 @Override
                 public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
@@ -75,9 +87,49 @@ public class LeaderboardActivity extends BaseActivity {
                         }
 
                         userList.add(new UserModel("...", null, null, null, null, null,null, 0, 0, null));
-                        mAdapter.notifyDataSetChanged();
+
+                        mAdapter.notifyDataSetChanged(); // how we update
 
                         //TODO Populate recycler view here!
+
+                        if(!userList.contains(UserModel.myUserModel))
+                        {
+                            LambencyAPIHelper.getInstance().getLeaderboardAroundUser(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<UserModel>>() {
+                                @Override
+                                public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
+                                    if (response.body() == null || response.code() != 200) {
+                                        System.out.println("An error has occurred");
+                                        return;
+                                    }
+                                    //when response is back
+                                    List<UserModel> ret = response.body();
+                                    if(ret == null ) {
+                                        System.out.println("An error has occurred");
+                                    }
+                                    else{
+                                        UserModel userModel = ret.get(0);
+                                        int rank = Integer.parseInt(userModel.getOauthToken());
+                                        // I will set the oAuthToken to the users rank
+                                        //TODO Populate recycler view here!
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<List<UserModel>> call, Throwable throwable) {
+                                    //when failure
+                                    System.out.println("FAILED CALL");
+                                }
+                            });
+                        }
+
+                        for(int i = 0; i < userList.size(); i++)
+                        {
+                            if(userList.get(i).getUserId() == UserModel.myUserModel.getUserId())
+                            {
+                                leaderboardPos.setText("You are rank " + userList.get(i).getOauthToken() + " in the world!");
+                            }
+                        }
+
                     }
                 }
 
@@ -88,55 +140,7 @@ public class LeaderboardActivity extends BaseActivity {
                 }
             });
 
-        if(!userList.contains(UserModel.myUserModel))
-        {
-            LambencyAPIHelper.getInstance().getLeaderboardAroundUser(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<UserModel>>() {
-                @Override
-                public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
-                    if (response.body() == null || response.code() != 200) {
-                        System.out.println("An error has occurred");
-                        return;
-                    }
-                    //when response is back
-                    List<UserModel> ret = response.body();
-                    if(ret == null ) {
-                        System.out.println("An error has occurred");
-                    }
-                    else{
-                        UserModel userModel = ret.get(0);
-                        int rank = Integer.parseInt(userModel.getOauthToken());
-                        // I will set the oAuthToken to the users rank
-                        //TODO Populate recycler view here!
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<List<UserModel>> call, Throwable throwable) {
-                    //when failure
-                    System.out.println("FAILED CALL");
-                }
-            });
-        }
-
-        for(int i = 0; i < userList.size(); i++)
-        {
-            if(userList.get(i).getUserId() == UserModel.myUserModel.getUserId())
-            {
-                leaderboardPos.setText("You are rank " + userList.get(i).getOauthToken() + " in the world!");
-            }
-        }
-
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        // specify an adapter (see also next example)
-        mAdapter = new LeaderboardAdapter(userList, this);
-        mRecyclerView.setAdapter(mAdapter);
-
-        mAdapter.notifyDataSetChanged(); // how we update
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     //TODO retrofit here
