@@ -38,11 +38,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by Evan on 2/12/2018.
  */
 
-public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.ViewHolder> {
+public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.AreaViewHolder> {
 
     private Context context;
 
@@ -92,13 +94,13 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
 
 
     @Override
-    public StartChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StartChatAdapter.AreaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.card_user, parent, false);
-        return new ViewHolder(v);
+        return new AreaViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(StartChatAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(StartChatAdapter.AreaViewHolder holder, int position) {
 
         final UserModel userModel = users.get(position);
 
@@ -132,7 +134,7 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
         return users.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class AreaViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.name)
         TextView nameView;
@@ -158,10 +160,11 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
         @BindView(R.id.user_card)
         CardView user_card;
 
-        public ViewHolder(View itemView) {
+        public AreaViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
 
         @OnClick(R.id.user_card)
         public void CreateChat(){
@@ -172,8 +175,36 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
             ((Activity)user_card.getContext()).finish();
 
 
+
+
             //FirebaseDatabase.getInstance().getReference().child("messages").child("1").setValue("EMPTY");
+            LambencyAPIHelper.getInstance().createChat(UserModel.myUserModel.getOauthToken(),5,false).enqueue(new Callback<ChatModel>() {
+                @Override
+                public void onResponse(Call<ChatModel> call, Response<ChatModel> response) {
+                    if (response == null || response.code() != 200 || response.body() == null) {
+                        Toast.makeText(user_card.getContext(), "Sorry we cant create it", Toast.LENGTH_LONG).show();
+                        System.out.println("It FAILED3");
+                    }else{
+                        ChatModel chatModel = response.body();
+                        Intent intent = new Intent();
+                        intent.putExtra("chatModel", chatModel);
+                        StartChatActivity c = (StartChatActivity)user_card.getContext();
+                        c.setResult(RESULT_OK, intent);
+                        c.finish();
+                        System.out.println("It FAILED4");
+                    }
+                    System.out.println("It FAILED5");
+
+                }
+
+                @Override
+                public void onFailure(Call<ChatModel> call, Throwable t) {
+                    System.out.println("It FAILED2");
+                    Toast.makeText(user_card.getContext(), "Sorry it failed ;/", Toast.LENGTH_LONG).show();
+                }
+            });
         }
+
 
 
     }

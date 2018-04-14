@@ -54,6 +54,7 @@ public class StartChatActivity extends AppCompatActivity{
         relatedUsersRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("IT GOT HERE!!!!!!");
                 final View v = view;
                 UserModel target = startChatAdapter.getUsers().get((Integer)view.getTag());
                 Toast.makeText(view.getContext(), target.getFirstName(), Toast.LENGTH_LONG).show();
@@ -61,7 +62,7 @@ public class StartChatActivity extends AppCompatActivity{
                     @Override
                     public void onResponse(Call<ChatModel> call, Response<ChatModel> response) {
                         if(response == null || response.code() != 200 || response.body() == null)
-                            Toast.makeText(v.getContext(), "Sorry we cant create it", Toast.LENGTH_LONG).show();
+                            Toast.makeText(v.getContext(), "Sorry we cant create it2", Toast.LENGTH_LONG).show();
                         else{
                             ChatModel chatModel = response.body();
                             Intent intent = new Intent();
@@ -77,6 +78,11 @@ public class StartChatActivity extends AppCompatActivity{
                         Toast.makeText(v.getContext(), "Sorry it failed ;/", Toast.LENGTH_LONG).show();
                     }
                 });
+
+
+
+
+
             }
         });
     }
@@ -111,4 +117,3 @@ public class StartChatActivity extends AppCompatActivity{
         relatedUsersRecyclerView.setAdapter(startChatAdapter);
     }
 }
-
