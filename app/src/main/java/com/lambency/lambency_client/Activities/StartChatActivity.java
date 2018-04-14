@@ -36,6 +36,7 @@ public class StartChatActivity extends AppCompatActivity{
     private Context context;
     private int event_id;
     private StartChatAdapter startChatAdapter;
+    private ArrayList<Integer> chats;
 
     @BindView(R.id.relatedUsersRecyclerView)
     RecyclerView relatedUsersRecyclerView;
@@ -49,6 +50,12 @@ public class StartChatActivity extends AppCompatActivity{
         ButterKnife.bind(this);
 
         context = this;
+
+        Bundle bund = getIntent().getExtras();
+        chats = (ArrayList<Integer>)bund.get("chats");
+        if(chats == null){
+            chats = new ArrayList<>();
+        }
 
         getUsers();
 
@@ -66,6 +73,15 @@ public class StartChatActivity extends AppCompatActivity{
                 }
 
                 ArrayList<UserModel> users = response.body();
+                for(int i = 0; i < chats.size(); i++){
+                    int id = chats.get(i);
+                    for(int j = 0; j < users.size(); j++){
+                        if(id == users.get(j).getUserId()){
+                            users.remove(j);
+                            break;
+                        }
+                    }
+                }
 
                 startAdapter(users);
 

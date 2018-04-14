@@ -179,6 +179,12 @@ public class ChatListFragment extends Fragment {
     public void handleOrgFabClick(){
         System.out.println("CLICKED THE BUTTON");
         Intent intent = new Intent(getActivity(), StartChatActivity.class);
+        ArrayList<ChatModel> chats = mAdapter.getRooms();
+        ArrayList<Integer> ids = new ArrayList<>();
+        for(ChatModel c: chats){
+            ids.add(c.getUserID());
+        }
+        intent.putExtra("chats", ids);
         startActivityForResult(intent,1);
     }
 
