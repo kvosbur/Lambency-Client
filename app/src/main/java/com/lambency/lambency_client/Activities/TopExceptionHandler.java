@@ -15,6 +15,7 @@ public class TopExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     public void uncaughtException(Thread t, Throwable e) {
         UserModel.myUserModel.setActiveForModelAndDatabase(false);
+        System.out.println(e.toString());
         System.exit(0);
     }
 }
