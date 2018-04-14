@@ -202,7 +202,7 @@ public interface LambencyAPI {
     @GET("Chat/getAllChats")
     Call<ArrayList<ChatModel>> getAllChats(@Query("oAuthCode") String oAuthCode);
 
-    @GET("Chat/sendMessage")
+    @POST("Chat/sendMessage")
     Call<Integer> sendMessage(@Query("oAuthCode") String oAuthCode, @Query("chatID") int chatID, @Body MessageModel messageModel);
 
 }

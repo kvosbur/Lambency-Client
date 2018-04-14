@@ -60,7 +60,7 @@ public class MessageListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getIntent().getSerializableExtra();
+        chatModel = (ChatModel) getIntent().getSerializableExtra("chatModel");
 
         setContentView(R.layout.activity_message_list);
         ButterKnife.bind(this);

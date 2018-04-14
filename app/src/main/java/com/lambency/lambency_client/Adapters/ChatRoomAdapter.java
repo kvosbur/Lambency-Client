@@ -63,7 +63,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.AreaVi
 
         holder.cardView.setTag(position);
 
-        ChatModel s = rooms.get(position);
+        final ChatModel s = rooms.get(position);
 
         if(s == null){
             return;
@@ -98,6 +98,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.AreaVi
                 */
                 //Toast.makeText(context, rooms.get((Integer)view.getTag()).getName(), Toast.LENGTH_LONG).show();
                 Intent i = new Intent(context, MessageListActivity.class);
+                i.putExtra("chatModel",s);
                 context.startActivity(i);
             }
         });
