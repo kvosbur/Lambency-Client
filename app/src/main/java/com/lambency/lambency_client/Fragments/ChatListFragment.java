@@ -185,15 +185,11 @@ public class ChatListFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            if(resultCode == RESULT_OK) {
-                ChatModel chatModel = (ChatModel) data.getExtras().getSerializable("chatModel");
-                Intent intent = new Intent(getActivity(), MessageListActivity.class);
-                intent.putExtra("chatModel",chatModel);
-                startActivity(intent);
-            }
-            else{
-                Toast.makeText(getContext(),"Sorry it failed",Toast.LENGTH_LONG).show();
-            }
+            ChatModel chatModel = (ChatModel) data.getExtras().getSerializable("chatModel");
+            Intent intent = new Intent(getActivity(), MessageListActivity.class);
+            intent.putExtra("chatModel",chatModel);
+            startActivity(intent);
+
         }
     }
 }

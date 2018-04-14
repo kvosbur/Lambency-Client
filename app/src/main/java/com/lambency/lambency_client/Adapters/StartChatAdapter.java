@@ -96,7 +96,7 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.Area
     @Override
     public StartChatAdapter.AreaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.card_user, parent, false);
-        return new AreaViewHolder(v);
+        return new AreaViewHolder(v, users);
     }
 
     @Override
@@ -160,9 +160,13 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.Area
         @BindView(R.id.user_card)
         CardView user_card;
 
-        public AreaViewHolder(View itemView) {
+        SortedList<UserModel> users;
+
+
+        public AreaViewHolder(View itemView, SortedList<UserModel> users) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.users = users;
         }
 
 
@@ -172,13 +176,13 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.Area
             //get current user token
             String token = FirebaseInstanceId.getInstance().getToken();
 
-            ((Activity)user_card.getContext()).finish();
+            //((Activity)user_card.getContext()).finish();
 
 
 
 
             //FirebaseDatabase.getInstance().getReference().child("messages").child("1").setValue("EMPTY");
-            LambencyAPIHelper.getInstance().createChat(UserModel.myUserModel.getOauthToken(),5,false).enqueue(new Callback<ChatModel>() {
+            LambencyAPIHelper.getInstance().createChat(UserModel.myUserModel.getOauthToken(),users.get( getAdapterPosition()).getUserId(),false).enqueue(new Callback<ChatModel>() {
                 @Override
                 public void onResponse(Call<ChatModel> call, Response<ChatModel> response) {
                     if (response == null || response.code() != 200 || response.body() == null) {
