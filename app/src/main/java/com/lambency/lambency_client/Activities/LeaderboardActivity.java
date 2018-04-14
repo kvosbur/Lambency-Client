@@ -111,6 +111,12 @@ public class LeaderboardActivity extends BaseActivity {
                                         int rank = Integer.parseInt(userModel.getOauthToken());
                                         // I will set the oAuthToken to the users rank
                                         //TODO Populate recycler view here!
+
+                                        for(int i = 0; i < ret.size(); i++)
+                                        {
+                                            userList.add(ret.get(i));
+                                        }
+
                                     }
                                 }
 
