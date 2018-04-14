@@ -2,42 +2,29 @@ package com.lambency.lambency_client.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 //import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import com.lambency.lambency_client.Adapters.MessageListAdapter;
-import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
-import com.lambency.lambency_client.Utils.Message;
+import com.lambency.lambency_client.Models.MessageModel;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  *  Base code taken from tutorial here: https://blog.sendbird.com/android-chat-tutorial-building-a-messaging-ui
@@ -55,9 +42,9 @@ public class MessageListActivity extends BaseActivity {
     @BindView(R.id.edittext_chatbox)
     EditText messageContent;
 
-    public List<Message> messageList;
+    public List<MessageModel> messageModelList;
 
-    private FirebaseListAdapter<Message> adapter;
+    private FirebaseListAdapter<MessageModel> adapter;
 
     static int msg = 0;
 
@@ -68,28 +55,28 @@ public class MessageListActivity extends BaseActivity {
         setContentView(R.layout.activity_message_list);
         ButterKnife.bind(this);
 
-        messageList = new ArrayList<Message>();
+        messageModelList = new ArrayList<MessageModel>();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Messaging");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         /*
-        Message m1 = new Message("Hello!", "Evan");
-        Message m2 = new Message("How are you?", "Jim");
-        Message m3 = new Message("I am good! Thanks!", "Evan");
-        Message m4 = new Message("This is such an amazing messaging system!", "Jim");
-        Message m5 = new Message("Yeah, I know!", "Evan");
-        Message m6 = new Message("I hope this is enough", "Jim");
-        Message m7 = new Message("Should be!", "Evan");
+        MessageModel m1 = new MessageModel("Hello!", "Evan");
+        MessageModel m2 = new MessageModel("How are you?", "Jim");
+        MessageModel m3 = new MessageModel("I am good! Thanks!", "Evan");
+        MessageModel m4 = new MessageModel("This is such an amazing messaging system!", "Jim");
+        MessageModel m5 = new MessageModel("Yeah, I know!", "Evan");
+        MessageModel m6 = new MessageModel("I hope this is enough", "Jim");
+        MessageModel m7 = new MessageModel("Should be!", "Evan");
 */
-        //messageList.add(m1); messageList.add(m2); messageList.add(m3);
-        //messageList.add(m4); messageList.add(m5); messageList.add(m6);
-        //messageList.add(m7);
-        Message m1 = new Message("Hello!", "Evan", (new Timestamp(System.currentTimeMillis())).toString());
+        //messageModelList.add(m1); messageModelList.add(m2); messageModelList.add(m3);
+        //messageModelList.add(m4); messageModelList.add(m5); messageModelList.add(m6);
+        //messageModelList.add(m7);
+        MessageModel m1 = new MessageModel("Hello!", "Evan", (new Timestamp(System.currentTimeMillis())).toString());
 
         mMessageRecycler = (RecyclerView) findViewById(R.id.reyclerview_message_list);
-        myMessageAdapter = new MessageListAdapter(this, messageList);
+        myMessageAdapter = new MessageListAdapter(this, messageModelList);
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setStackFromEnd(true);
@@ -106,10 +93,10 @@ public class MessageListActivity extends BaseActivity {
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Message value = dataSnapshot.getValue(Message.class);
-                messageList.add(value);
+                MessageModel value = dataSnapshot.getValue(MessageModel.class);
+                messageModelList.add(value);
                 myMessageAdapter.notifyDataSetChanged();
-                mMessageRecycler.scrollToPosition(messageList.size() - 1);
+                mMessageRecycler.scrollToPosition(messageModelList.size() - 1);
                 msg++;
             }
 
@@ -141,10 +128,10 @@ public class MessageListActivity extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                Message value = dataSnapshot.getValue(Message.class);
-                messageList.add(value);
+                MessageModel value = dataSnapshot.getValue(MessageModel.class);
+                messageModelList.add(value);
                 myMessageAdapter.notifyDataSetChanged();
-                mMessageRecycler.scrollToPosition(messageList.size() - 1);
+                mMessageRecycler.scrollToPosition(messageModelList.size() - 1);
             }
 
             @Override
@@ -163,8 +150,8 @@ public class MessageListActivity extends BaseActivity {
                     return;
                 }
 
-                if(messageList.size() > 0) {
-                    messageList.get(messageList.size()-1).createdAt = (new Timestamp(System.currentTimeMillis())).toString();
+                if(messageModelList.size() > 0) {
+                    messageModelList.get(messageModelList.size()-1).createdAt = (new Timestamp(System.currentTimeMillis())).toString();
                 }
 
                 /*
@@ -180,16 +167,16 @@ public class MessageListActivity extends BaseActivity {
                 FirebaseDatabase.getInstance()
                         .getReference()
                         .push()
-                        .setValue(new Message("Hello World With Firebase", "Evan"));
+                        .setValue(new MessageModel("Hello World With Firebase", "Evan"));
                 */
                 /*
 
-                Message m1 = new Message(message, UserModel.myUserModel.getFirstName());
+                MessageModel m1 = new MessageModel(message, UserModel.myUserModel.getFirstName());
                 SimpleDateFormat sdf = new SimpleDateFormat("h:mm");
                 Date now = new Date();
                 String strDate = sdf.format(now);
                 m1.createdAt = strDate;
-                //messageList.add(m1);
+                //messageModelList.add(m1);
                 //myMessageAdapter.notifyDataSetChanged();
                 messageContent.setText("");
                 */
@@ -206,29 +193,29 @@ public class MessageListActivity extends BaseActivity {
 
         Query query = FirebaseDatabase.getInstance().getReference("/TestSpace").orderByKey();
 
-        FirebaseListOptions<Message> options = new FirebaseListOptions.Builder<Message>()
+        FirebaseListOptions<MessageModel> options = new FirebaseListOptions.Builder<MessageModel>()
                 .setLayout(R.layout.activity_message_list)//Note: The guide doesn't mention this method, without it an exception is thrown that the layout has to be set.
-                .setQuery(query, Message.class)
+                .setQuery(query, MessageModel.class)
                 .build();
 
         /*
-        adapter = new FirebaseListAdapter<Message>(this, Message.class,
+        adapter = new FirebaseListAdapter<MessageModel>(this, MessageModel.class,
                 R.layout.activity_message_list, FirebaseDatabase.getInstance().getReference()) {
             @Override
-            protected void populateView(View v, Message model, int position) {
+            protected void populateView(View v, MessageModel model, int position) {
                 // Get references to the views of message.xml
-                messageList.add(model);
+                messageModelList.add(model);
                 myMessageAdapter.notifyDataSetChanged();
             }
         };
         */
         /*
-        adapter = new FirebaseListAdapter<Message>(options) {
+        adapter = new FirebaseListAdapter<MessageModel>(options) {
             @Override
-            protected void populateView(View v, Message model, int position) {
+            protected void populateView(View v, MessageModel model, int position) {
                 // Get references to the views of message.xml
                 Toast.makeText(MessageListActivity.this, "Hello!", Toast.LENGTH_SHORT).show();
-                messageList.add(model);
+                messageModelList.add(model);
                 myMessageAdapter.notifyDataSetChanged();
             }
         };

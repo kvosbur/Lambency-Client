@@ -1,4 +1,4 @@
-package com.lambency.lambency_client.Utils;
+package com.lambency.lambency_client.Models;
 
 import java.sql.Timestamp;
 
@@ -6,17 +6,17 @@ import java.sql.Timestamp;
  * Created by Evan on 3/31/2018.
  */
 
-public class Message {
+public class MessageModel {
 
     public String messageText;
     public String sender;
     public String createdAt;
 
-    public Message(){
+    public MessageModel(){
 
     }
 
-    public Message(String messageText, String sender, String createdAt)
+    public MessageModel(String messageText, String sender, String createdAt)
     {
         this.messageText = messageText;
         this.sender = sender;
