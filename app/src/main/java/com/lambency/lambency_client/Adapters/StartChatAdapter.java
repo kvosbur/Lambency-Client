@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.lambency.lambency_client.Activities.OrgUsersActivity;
+import com.lambency.lambency_client.Activities.StartChatActivity;
 import com.lambency.lambency_client.Models.ChatModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
@@ -166,6 +168,8 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
             System.out.println("CLICKED " + nameView.getText());
             //get current user token
             String token = FirebaseInstanceId.getInstance().getToken();
+
+            ((Activity)user_card.getContext()).finish();
 
 
             //FirebaseDatabase.getInstance().getReference().child("messages").child("1").setValue("EMPTY");

@@ -82,6 +82,8 @@ public class NotificationHelper {
         createNotificationChannel(context, chatMessageChannel);
 
         Intent intent = new Intent(context, MessageListActivity.class);
+        intent.putExtra("msgId", msgId);
+        intent.putExtra("chatId", chatId);
         PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, joinRequestChannel.id)
