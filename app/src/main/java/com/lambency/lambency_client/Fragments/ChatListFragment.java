@@ -70,12 +70,17 @@ public class ChatListFragment extends Fragment {
         LambencyAPIHelper.getInstance().getAllChats(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<ChatModel>>() {
             @Override
             public void onResponse(Call<ArrayList<ChatModel>> call, Response<ArrayList<ChatModel>> response) {
-
+                if(response == null || response.code() != 200 || !response.isSuccessful()){
+                    Toast.makeText(getContext(), "Sorry We cant load chat", Toast.LENGTH_LONG).show();
+                }
+                else{
+                   initDataset(response.body());
+                }
             }
 
             @Override
             public void onFailure(Call<ArrayList<ChatModel>> call, Throwable t) {
-
+                Toast.makeText(getContext(), "Sorry We cant load chat because shit hit the fan fam", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -117,7 +122,7 @@ public class ChatListFragment extends Fragment {
         });
 
         if(mDataset == null){
-            mRecyclerView.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
         }
 
         return rootView;
@@ -163,11 +168,8 @@ public class ChatListFragment extends Fragment {
      * Generates Strings for RecyclerView's adapter. This data would usually come
      * from a local content provider or remote server.
      */
-    private void initDataset() {
-        mDataset = new ArrayList<>();
-        for (int i = 0; i < chatModels.size(); i++) {
-            mDataset.add( chatModels.get(i));
-        }
+    private void initDataset( ArrayList<ChatModel> c) {
+        mDataset = c;
         mAdapter.updateEvents(mDataset);
         mRecyclerView.setVisibility(View.VISIBLE);
         mAdapter.notifyDataSetChanged();

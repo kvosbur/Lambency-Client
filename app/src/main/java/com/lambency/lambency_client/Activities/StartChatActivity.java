@@ -2,10 +2,13 @@ package com.lambency.lambency_client.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -74,11 +77,6 @@ public class StartChatActivity extends AppCompatActivity{
                         Toast.makeText(v.getContext(), "Sorry it failed ;/", Toast.LENGTH_LONG).show();
                     }
                 });
-
-
-
-
-
             }
         });
     }
@@ -113,3 +111,4 @@ public class StartChatActivity extends AppCompatActivity{
         relatedUsersRecyclerView.setAdapter(startChatAdapter);
     }
 }
+
