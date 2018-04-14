@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.AlertDialogLayout;
@@ -22,11 +23,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.OrgUsersActivity;
 import com.lambency.lambency_client.Fragments.UserListFragment;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.MyLifecycleHandler;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -90,8 +93,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         add(users);
     }
 
-
-
     @Override
     public UserListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.card_user, parent, false);
@@ -99,7 +100,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(UserListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final UserListAdapter.ViewHolder holder, int position) {
 
         final UserModel userModel = users.get(position);
 
@@ -129,16 +130,45 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         //TODO Add retrofit here for getting online status of other users, own call
         //TODO is done in BottomBarActivity (by default user is offline)
-        /*
-        if(userIsOnline) {
-            holder.onlineCircle.setVisibility(View.VISIBLE);
-            holder.offlineCircle.setVisibility(View.GONE);
-        } else {
-            holder.offlineCircle.setVisibility(View.VISIBLE);
-            holder.onlineCirlce.setVisibility(View.GONE);
-        }
 
-         */
+        if(!(UserModel.myUserModel.getUserId() == userModel.getUserId())) {
+            userModel.checkServerForIsActive(userModel.getOauthToken(), new UserModel.UpdateActiveStatusCallback() {
+                @Override
+                public void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive) {
+                    if(retrievedIsActive) {
+                        holder.onlineCircle.setVisibility(View.VISIBLE);
+                        holder.offlineCircle.setVisibility(View.GONE);
+                    } else {
+                        holder.offlineCircle.setVisibility(View.VISIBLE);
+                        holder.onlineCircle.setVisibility(View.GONE);
+                    }
+                }
+            });
+
+            final Handler handler = new Handler();
+            final int delay = 10000; //milliseconds
+
+            handler.postDelayed(new Runnable(){
+                public void run(){
+                    userModel.checkServerForIsActive(userModel.getOauthToken(), new UserModel.UpdateActiveStatusCallback() {
+                        @Override
+                        public void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive) {
+                            if(retrievedIsActive) {
+                                holder.onlineCircle.setVisibility(View.VISIBLE);
+                                holder.offlineCircle.setVisibility(View.GONE);
+                            } else {
+                                holder.offlineCircle.setVisibility(View.VISIBLE);
+                                holder.onlineCircle.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+                    handler.postDelayed(this, delay);
+                }
+            }, delay);
+        } else {
+            holder.offlineCircle.setVisibility(View.GONE);
+            holder.offlineCircle.setVisibility(View.GONE);
+        }
 
         holder.emailLayout.setOnClickListener(new View.OnClickListener() {
             @Override

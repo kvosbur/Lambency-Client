@@ -43,7 +43,7 @@ import butterknife.OnClick;
  *  Added onto and modified by Evan Honeysett
  */
 
-public class MessageListActivity extends AppCompatActivity {
+public class MessageListActivity extends BaseActivity {
 
     private RecyclerView mMessageRecycler;
     private MessageListAdapter myMessageAdapter;

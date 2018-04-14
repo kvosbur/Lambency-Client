@@ -75,7 +75,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class BottomBarActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener, MyLambencyEventsFragment.OnFragmentInteractionListener, MyLambencyOrgsFragment.OnFragmentInteractionListener, CheckInFragment.OnFragmentInteractionListener{
+public class BottomBarActivity extends BaseActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener, MyLambencyEventsFragment.OnFragmentInteractionListener, MyLambencyOrgsFragment.OnFragmentInteractionListener, CheckInFragment.OnFragmentInteractionListener{
 
     int notifyAmount = 0;
     View badge;
@@ -104,21 +104,20 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
         ButterKnife.bind(this);
 
-
-        /*
         final Handler handler = new Handler();
         final int delay = 10000; //milliseconds
 
         handler.postDelayed(new Runnable(){
             public void run(){
                 if(MyLifecycleHandler.isApplicationVisible()) {
-                    //TODO Retrofit for application being closed
-                    Toast.makeText(BottomBarActivity.this, "Hello World!", Toast.LENGTH_SHORT).show();
+                    UserModel.myUserModel.setActiveForModelAndDatabase(true);
+                } else {
+                    UserModel.myUserModel.setActiveForModelAndDatabase(false);
                 }
                 handler.postDelayed(this, delay);
             }
         }, delay);
-        */
+
 
         // Get token
         String token = FirebaseInstanceId.getInstance().getToken();
@@ -295,6 +294,5 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
             }
         });
     }
-
 
 }

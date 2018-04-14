@@ -17,6 +17,7 @@ import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.SearchActivity;
 import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.OrganizationFilterModel;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
@@ -53,6 +54,8 @@ public class FilterDistanceFragment extends Fragment {
     @BindView(R.id.doneButton)
     Button doneButton;
 
+    boolean isOrg = false;
+
     public FilterDistanceFragment() {
         // Required empty public constructor
     }
@@ -84,7 +87,12 @@ public class FilterDistanceFragment extends Fragment {
 
                 String updateText = progress + " miles";
                 seekBarText.setText(updateText);
-                EventFilterModel.currentFilter.setDistanceMiles(progress);
+
+                if (isOrg) {
+                    OrganizationFilterModel.currentFilter.setDistanceMiles(progress);
+                } else {
+                    EventFilterModel.currentFilter.setDistanceMiles(progress);
+                }
             }
         });
 
@@ -94,7 +102,11 @@ public class FilterDistanceFragment extends Fragment {
 
                 String updateText = "10 miles";
                 seekBarText.setText(updateText);
-                EventFilterModel.currentFilter.setDistanceMiles(10);
+                if (isOrg) {
+                    OrganizationFilterModel.currentFilter.setDistanceMiles(10);
+                } else {
+                    EventFilterModel.currentFilter.setDistanceMiles(10);
+                }
                 seekBar.setProgress(10);
             }
         });
@@ -105,7 +117,11 @@ public class FilterDistanceFragment extends Fragment {
 
                 String updateText = "25 miles";
                 seekBarText.setText(updateText);
-                EventFilterModel.currentFilter.setDistanceMiles(25);
+                if (isOrg) {
+                    OrganizationFilterModel.currentFilter.setDistanceMiles(25);
+                } else {
+                    EventFilterModel.currentFilter.setDistanceMiles(25);
+                }
                 seekBar.setProgress(25);
             }
         });
@@ -116,7 +132,11 @@ public class FilterDistanceFragment extends Fragment {
 
                 String updateText = "50 miles";
                 seekBarText.setText(updateText);
-                EventFilterModel.currentFilter.setDistanceMiles(50);
+                if (isOrg) {
+                    OrganizationFilterModel.currentFilter.setDistanceMiles(25);
+                } else {
+                    EventFilterModel.currentFilter.setDistanceMiles(25);
+                }
                 seekBar.setProgress(50);
             }
         });
@@ -132,6 +152,11 @@ public class FilterDistanceFragment extends Fragment {
         //((SearchActivity) getActivity())
          //       .setActionBarTitle("FilterDistance");
         setHasOptionsMenu(true);
+
+        if(EventFilterModel.currentFilter.getTitle().compareTo("org") == 0)
+        {
+            isOrg = true;
+        }
 
 
     }

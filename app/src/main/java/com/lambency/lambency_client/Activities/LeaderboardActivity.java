@@ -24,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LeaderboardActivity extends AppCompatActivity {
+public class LeaderboardActivity extends BaseActivity {
 
     private RecyclerView mRecyclerView;
     private LeaderboardAdapter mAdapter;
@@ -32,7 +32,7 @@ public class LeaderboardActivity extends AppCompatActivity {
 
     List<UserModel> userList = new ArrayList<>();
 
-    static int startVal = 0;
+    static int startVal = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +53,14 @@ public class LeaderboardActivity extends AppCompatActivity {
                     }
                     //when response is back
                     List<UserModel> ret = response.body();
-                    if(ret == null ) {
+                    if(ret == null || ret.size() == 0) {
                         System.out.println("An error has occurred");
                     }
                     else{
                         UserModel userModel = ret.get(0);
                         int rank = Integer.parseInt(userModel.getOauthToken());
                         // I will set the oAuthToken to the users rank
+                        startVal += 10;
 
                         //TODO Populate recycler view here!
                     }
