@@ -39,7 +39,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         void bind(Message message) {
-            messageText.setText(message.getMessage());
+            messageText.setText(message.getMessageText());
             timeText.setText(message.createdAt);
 
             // Format the stored timestamp into a readable String using method.
@@ -60,7 +60,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         void bind(Message message) {
-            messageText.setText(message.getMessage());
+            messageText.setText(message.getMessageText());
 
             // Format the stored timestamp into a readable String using method.
             //timeText.setText(Utils.formatDateTime(message.getCreatedAt()));

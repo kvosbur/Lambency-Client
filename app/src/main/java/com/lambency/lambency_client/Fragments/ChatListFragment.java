@@ -117,6 +117,7 @@ public class ChatListFragment extends Fragment {
         mRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("adapter onclick");
                 Toast.makeText(view.getContext(), mAdapter.getRooms().get((Integer)view.getTag()).getName(), Toast.LENGTH_LONG).show();
             }
         });
@@ -177,7 +178,6 @@ public class ChatListFragment extends Fragment {
 
     @OnClick(R.id.chatFab)
     public void handleOrgFabClick(){
-        System.out.println("CLICKED THE BUTTON");
         Intent intent = new Intent(getActivity(), StartChatActivity.class);
         ArrayList<ChatModel> chats = mAdapter.getRooms();
         ArrayList<Integer> ids = new ArrayList<>();
@@ -190,6 +190,7 @@ public class ChatListFragment extends Fragment {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("on activity result");
         if (requestCode == 1) {
             ChatModel chatModel = (ChatModel) data.getExtras().getSerializable("chatModel");
             Intent intent = new Intent(getActivity(), MessageListActivity.class);

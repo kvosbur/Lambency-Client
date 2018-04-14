@@ -29,6 +29,7 @@ import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.Message;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,6 +74,7 @@ public class MessageListActivity extends BaseActivity {
         actionBar.setTitle("Messaging");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        /*
         Message m1 = new Message("Hello!", "Evan");
         Message m2 = new Message("How are you?", "Jim");
         Message m3 = new Message("I am good! Thanks!", "Evan");
@@ -80,10 +82,11 @@ public class MessageListActivity extends BaseActivity {
         Message m5 = new Message("Yeah, I know!", "Evan");
         Message m6 = new Message("I hope this is enough", "Jim");
         Message m7 = new Message("Should be!", "Evan");
-
+*/
         //messageList.add(m1); messageList.add(m2); messageList.add(m3);
         //messageList.add(m4); messageList.add(m5); messageList.add(m6);
         //messageList.add(m7);
+        Message m1 = new Message("Hello!", "Evan", (new Timestamp(System.currentTimeMillis())).toString());
 
         mMessageRecycler = (RecyclerView) findViewById(R.id.reyclerview_message_list);
         myMessageAdapter = new MessageListAdapter(this, messageList);
@@ -94,10 +97,12 @@ public class MessageListActivity extends BaseActivity {
         mMessageRecycler.setAdapter(myMessageAdapter);
         myMessageAdapter.notifyDataSetChanged();
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("message");
-        //myRef.setValue(m1);
 
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("chats/7");
+        myRef.child("1").setValue(m1);
+        System.out.println("added to database");
+/*
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -128,6 +133,7 @@ public class MessageListActivity extends BaseActivity {
 
             }
         });
+        */
 
         /*
         myRef.addValueEventListener(new ValueEventListener() {
@@ -158,7 +164,7 @@ public class MessageListActivity extends BaseActivity {
                 }
 
                 if(messageList.size() > 0) {
-                    messageList.get(messageList.size()-1).createdAt = "";
+                    messageList.get(messageList.size()-1).createdAt = (new Timestamp(System.currentTimeMillis())).toString();
                 }
 
                 /*
@@ -176,6 +182,7 @@ public class MessageListActivity extends BaseActivity {
                         .push()
                         .setValue(new Message("Hello World With Firebase", "Evan"));
                 */
+                /*
 
                 Message m1 = new Message(message, UserModel.myUserModel.getFirstName());
                 SimpleDateFormat sdf = new SimpleDateFormat("h:mm");
@@ -185,10 +192,11 @@ public class MessageListActivity extends BaseActivity {
                 //messageList.add(m1);
                 //myMessageAdapter.notifyDataSetChanged();
                 messageContent.setText("");
+                */
 
-                DatabaseReference currRef = database.getReference("message/m" + msg);
+                //DatabaseReference currRef = database.getReference("message/m" + msg);
 
-                currRef.setValue(m1);
+                //currRef.setValue(m1);
             }
         });
     }
