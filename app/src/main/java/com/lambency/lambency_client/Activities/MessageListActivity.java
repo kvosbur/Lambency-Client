@@ -92,7 +92,7 @@ public class MessageListActivity extends BaseActivity {
         isInMessaging = true;
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Messaging");
+        actionBar.setTitle(chatModel.getName());
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         /*
