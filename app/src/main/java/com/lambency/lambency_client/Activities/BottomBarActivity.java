@@ -85,6 +85,7 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
 //Key is 406595282653-cc9eb7143bvpgfe5da941r3jq174b4dq
 //this goes in src/main/resources/client_secret.json
 
+    static boolean isInBottomBar;
 
     public void onProfileFragmentInteraction(Uri uri)
     {
@@ -293,6 +294,18 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
                 Log.e("Firebase", "Error sending new firebase token to the server.");
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        isInBottomBar = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isInBottomBar = false;
     }
 
 }

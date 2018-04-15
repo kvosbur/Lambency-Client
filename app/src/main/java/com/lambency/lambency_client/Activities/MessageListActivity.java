@@ -74,6 +74,8 @@ public class MessageListActivity extends BaseActivity {
 
     static int msg = 0;
 
+    static boolean isInMessaging;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +85,8 @@ public class MessageListActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         messageModelList = new ArrayList<MessageModel>();
+
+        isInMessaging = true;
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Messaging");
@@ -225,6 +229,7 @@ public class MessageListActivity extends BaseActivity {
                     MessageModel m = new MessageModel((String) data.get("messageText"), (String)data.get("sender"), (String)data.get("createdAt"));
                     messageModelList.add(m);
                     myMessageAdapter.notifyDataSetChanged();
+                    mMessageRecycler.scrollToPosition(messageModelList.size() - 1);
                 }
             }
         });
@@ -286,6 +291,8 @@ public class MessageListActivity extends BaseActivity {
                     final MessageModel messageModel = new MessageModel(message, UserModel.myUserModel.getFirstName() + " " + UserModel.myUserModel.getLastName(),(new Timestamp(System.currentTimeMillis())).toString());
                     messageModelList.add(messageModel);
                     myMessageAdapter.notifyDataSetChanged();
+                    mMessageRecycler.scrollToPosition(messageModelList.size() - 1);
+                    messageContent.setText("");
                     LambencyAPIHelper.getInstance().sendMessage(UserModel.myUserModel.getOauthToken(),chatModel.getChatID(),messageModel).enqueue(new Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -391,6 +398,7 @@ public class MessageListActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case android.R.id.home:
+                isInMessaging = false;
                 finish();
                 break;
         }
