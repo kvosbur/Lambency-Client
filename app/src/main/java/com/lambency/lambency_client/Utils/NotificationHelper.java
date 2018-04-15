@@ -118,19 +118,17 @@ public class NotificationHelper {
         intent.putExtra("org_id", org_id); //Not sure I need to pass this
         PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //Accepting the user who wants to join
+        //Accepting the invite notification
         Intent joinIntent = new Intent(context, MyNotificationServices.class);
         joinIntent.putExtra("joined", true);
-        joinIntent.putExtra("user_id", UserModel.myUserModel.getUserId());
         joinIntent.putExtra("org_id", org_id);
         joinIntent.putExtra("notif_id", id);
         joinIntent.setAction(MyNotificationServices.ORG_INVITE);
         PendingIntent joinPendingIntent = PendingIntent.getService(context, acceptRequestCode, joinIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //Denying the user who wants to join
+        //Ignoring the invite notification
         Intent ignoreIntent = new Intent(context, MyNotificationServices.class);
         ignoreIntent.putExtra("joined", false);
-        ignoreIntent.putExtra("user_id", UserModel.myUserModel.getUserId());
         ignoreIntent.putExtra("org_id", org_id);
         ignoreIntent.putExtra("notif_id", id);
         ignoreIntent.setAction(MyNotificationServices.ORG_INVITE);
