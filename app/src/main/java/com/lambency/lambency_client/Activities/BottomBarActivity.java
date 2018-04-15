@@ -223,7 +223,14 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
 
             itemView.addView(badge);
             TextView t =  itemView.findViewById(R.id.notifications_badge);
+            t.setVisibility(View.VISIBLE);
             t.setText("" + countOfNotification());
+        } else {
+            TextView t =  itemView.findViewById(R.id.notifications_badge);
+            if(t != null)
+            {
+                t.setVisibility(View.GONE);
+            }
         }
 
     }
