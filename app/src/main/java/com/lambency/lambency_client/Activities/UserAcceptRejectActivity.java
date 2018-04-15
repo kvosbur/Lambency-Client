@@ -132,7 +132,6 @@ public class UserAcceptRejectActivity  extends BaseActivity {
         return this.position;
     }
 
-    //TODO Update retrofit here for adding accept and reject
     private void callRetrofit(final boolean accepted, final int position){
         int orgId = organizationModelList.get(position).getOrgID();
         LambencyAPIHelper.getInstance().getUserRespondToJoinRequest("" + UserModel.myUserModel.getOauthToken(), "" + orgId, "" + accepted).enqueue(new Callback<Integer>() {

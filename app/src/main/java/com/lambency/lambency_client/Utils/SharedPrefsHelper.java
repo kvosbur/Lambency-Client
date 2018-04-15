@@ -12,6 +12,10 @@ public class SharedPrefsHelper {
         return context.getSharedPreferences("com.lambency.lambency_client", Context.MODE_PRIVATE);
     }
 
+    public static String getOauth(Context context){
+        return getSharedPrefs(context).getString("myauth", "auth token not found!");
+    }
+
 
     public static long getStartTime(Context context){
         return getSharedPrefs(context).getLong("startTime", 0L);
