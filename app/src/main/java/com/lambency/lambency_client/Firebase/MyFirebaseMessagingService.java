@@ -116,7 +116,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(messageType != null){
             switch(messageType){
                 case "joinRequest":
-
                     NotificationHelper.sendJoinRequestNotification(this,
                             data.get("user"),
                             data.get("uid"),
@@ -135,6 +134,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     NotificationHelper.sendInviteNotification(this,
                             data.get("org"),
                             data.get("org_id"));
+                    break;
+
+                case "eventUpdate":
+                    NotificationHelper.sendEventUpdateNotification(this,
+                            data.get("event_id"),
+                            data.get("name"));
                     break;
 
                 default:
