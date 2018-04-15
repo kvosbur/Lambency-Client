@@ -43,6 +43,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.lambency.lambency_client.Models.ChatModel;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPI;
@@ -104,36 +105,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
                 UserAuthenticatorModel.myAuth = myauth;
                 System.out.println("My auth is : " + myauth);
-                LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
-                    @Override
-                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                        if (response.body() == null || response.code() != 200) {
-                            System.out.println("ERROR2!!!!!");
-                            return;
-                        }
-                        //when response is back
-                        UserModel.myUserModel = response.body();
-                        if (response.body() == null) {
-                            System.out.println("ERROR NULLED!!!!");
-                            Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        System.out.println("got the user object");
-
-                        //System.out.println("SUCCESS");
-                        Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
-                        startActivity(myIntent);
-                        finish();
-                    }
-
-                    @Override
-                    public void onFailure(Call<UserModel> call, Throwable throwable) {
-                        //when failure
-                        System.out.println("FAILED CALL2");
-                        Toast.makeText(getApplicationContext(), "Login error... Please try again", Toast.LENGTH_LONG).show();
-
-                    }
-                });
+                retrofitUserSearch();
             }
 
 
@@ -223,37 +195,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                     editor.putString("myauth", UserAuthenticatorModel.myAuth);
                                     editor.apply();
 
-                                    LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
-                                        @Override
-                                        public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                                            if (response.body() == null || response.code() != 200) {
-                                                System.out.println("ERROR3!!!!!");
-                                                return;
-                                            }
-                                            //when response is back
-                                            UserModel.myUserModel = response.body();
-                                            if (response.body() == null) {
-                                                System.out.println("ERROR NULLED!!!!");
-                                                Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
-                                                return;
-                                            }
-                                            Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
-                                            System.out.println("got the user object");
-
-                                            //System.out.println("SUCCESS");
-                                            Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
-                                            startActivity(myIntent);
-                                            finish();
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call<UserModel> call, Throwable throwable) {
-                                            //when failure
-                                            System.out.println("FAILED CALL3");
-                                            Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
-
-                                        }
-                                    });
+                                    retrofitUserSearch();
                                 }
                                 else if (userAuthenticatorModel.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
                                     Toast.makeText(getApplicationContext(), "Email has yet to be verified", Toast.LENGTH_LONG).show();
@@ -413,41 +355,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                                             editor.putString("myauth", ua.getoAuthCode());
                                                             editor.apply();
 
-                                                            LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
-                                                                @Override
-                                                                public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                                                                    if (response.body() == null || response.code() != 200) {
-                                                                        System.out.println("ERROR6!!!!!");
-                                                                        return;
-                                                                    }
-                                                                    //when response is back
-                                                                    UserModel.myUserModel = response.body();
-                                                                    if (response.body() == null) {
-                                                                        System.out.println("ERROR NULLED!!!!");
-                                                                        Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
-                                                                        return;
-                                                                    }
-                                                                    Toast.makeText(getApplicationContext(), "Got User Object", Toast.LENGTH_LONG).show();
-                                                                    System.out.println("got the user object");
-
-                                                                    Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
-                                                                    startActivity(myIntent);
-                                                                    finish();
-                                                                    //System.out.println("SUCCESS");
-
-                                                                    //Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
-                                                                    //startActivity(myIntent);
-                                                                    //finish();
-                                                                }
-
-                                                                @Override
-                                                                public void onFailure(Call<UserModel> call, Throwable throwable) {
-                                                                    //when failure
-                                                                    System.out.println("FAILED CALL4");
-                                                                    Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
-
-                                                                }
-                                                            });
+                                                            retrofitUserSearch();
                                                         } else if (ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR) {
                                                             //System.out.println("NON_DETERMINANT_ERROR");
                                                             Toast.makeText(getApplicationContext(), "NON_DETERMINANT_ERROR", Toast.LENGTH_LONG).show();
@@ -600,32 +508,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         editor.putString("myauth", ua.getoAuthCode());
                         editor.apply();
 
-                        LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
-                            @Override
-                            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                                if (response.body() == null || response.code() != 200) {
-                                    System.out.println("ERROR8!!!!!");
-                                }
-
-                                //when response is back
-                                UserModel.myUserModel = response.body();
-                                System.out.println("got the user object");
-
-                                //System.out.println("SUCCESS");
-                                Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
-                                startActivity(myIntent);
-                                finish();
-                            }
-
-                            @Override
-                            public void onFailure(Call<UserModel> call, Throwable throwable) {
-                                //when failure
-                                System.out.println("FAILED CALL6");
-                                Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
-
-                            }
-                        });
-
+                        retrofitUserSearch();
                     }
                     else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR){
                         //System.out.println("NON_DETERMINANT_ERROR");
@@ -665,6 +548,55 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     // [END handleSignInResult]
 
 
+    private void retrofitUserSearch(){
+        LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
+            @Override
+            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("ERROR2!!!!!");
+                    return;
+                }
+                //when response is back
+                UserModel.myUserModel = response.body();
+                if (response.body() == null) {
+                    System.out.println("ERROR NULLED!!!!");
+                    Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                System.out.println("got the user object");
 
+                String s = getIntent().getStringExtra("NextActivity");
+
+                startNextActivity(s);
+            }
+
+            @Override
+            public void onFailure(Call<UserModel> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL2");
+                Toast.makeText(getApplicationContext(), "Login error... Please try again", Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+
+    public void startNextActivity(String activityName){
+        Intent myIntent = null;
+        //if their is no specified activity then set null string to empty so doesn't crash on switch
+        if(activityName == null){
+            activityName = "";
+        }
+        switch (activityName){
+            case "MessageListActivity":
+                myIntent = new Intent(LoginActivity.this, MessageListActivity.class);
+                ChatModel cm = (ChatModel) getIntent().getSerializableExtra("chatModel");
+                myIntent.putExtra("chatModel",cm);
+                break;
+            default:
+                myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
+        }
+        startActivity(myIntent);
+        finish();
+    }
 
 }

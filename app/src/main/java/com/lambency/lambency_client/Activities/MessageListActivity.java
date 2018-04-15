@@ -219,7 +219,6 @@ public class MessageListActivity extends BaseActivity {
             }
         }); */
 
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final DocumentReference docRef = db.collection("chats").document("" + chatModel.getChatID());
         final CollectionReference colRef = db.collection("chats").document("" + chatModel.getChatID()).collection("messages");
@@ -252,6 +251,7 @@ public class MessageListActivity extends BaseActivity {
                         for (DocumentChange dc : snapshots.getDocumentChanges()) {
                             switch (dc.getType()) {
                                 case ADDED:
+                                    System.out.println("ADDED ANOTHER ONE");
                                     MessageModel m = new MessageModel((String) dc.getDocument().get("messageText"), (String)dc.getDocument().get("sender"), (String)dc.getDocument().get("createdAt"));
                                     messageModelList.add(m);
                                     myMessageAdapter.notifyDataSetChanged();
@@ -268,7 +268,6 @@ public class MessageListActivity extends BaseActivity {
 
                     }
                 });
-
 
         /*
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
