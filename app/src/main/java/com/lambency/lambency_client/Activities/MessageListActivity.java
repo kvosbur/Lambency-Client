@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -211,9 +212,24 @@ public class MessageListActivity extends BaseActivity {
             }
         }); */
 
-        /*
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final DocumentReference docRef = db.collection("chats").document("" + chatModel.getChatID());
+        final CollectionReference colRef = db.collection("chats").document("" + chatModel.getChatID()).collection("messages");
+
+        colRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+                for(DocumentSnapshot d : queryDocumentSnapshots) {
+                    Map<String, Object> data = d.getData();
+                    MessageModel m = new MessageModel((String) data.get("messageText"), (String)data.get("sender"), (String)data.get("createdAt"));
+                    messageModelList.add(m);
+                    myMessageAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+        /*
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -234,8 +250,10 @@ public class MessageListActivity extends BaseActivity {
             }
         });
         */
+
+        /*
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").document("" + chatModel.getChatID()).collection("messages")
+        db.collection("chats").document("" + chatModel.getChatID()).collection("messages")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -253,7 +271,7 @@ public class MessageListActivity extends BaseActivity {
                         }
                     }
                 });
-
+        */
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
