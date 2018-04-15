@@ -30,6 +30,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.lambency.lambency_client.Activities.MessageListActivity;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.NotificationHelper;
 
@@ -123,10 +124,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             data.get("org_id"));
                     break;
                 case "chatMessage":
-                    NotificationHelper.sendChatMessageNotification(this,
-                            data.get("name"),
-                            data.get("chatId"),
-                            data.get("msgId"));
+                    if(!MessageListActivity.isInMessaging)
+                    {
+                        NotificationHelper.sendChatMessageNotification(this,
+                                data.get("name"),
+                                data.get("chatId"),
+                                data.get("msgId"));
+                    }
+
                 default:
                     Log.e("FirebaseMessaging", "No data type specified");
                     break;

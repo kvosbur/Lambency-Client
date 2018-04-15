@@ -74,7 +74,7 @@ public class MessageListActivity extends BaseActivity {
 
     static int msg = 0;
 
-    static boolean isInMessaging;
+    public static boolean isInMessaging;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
