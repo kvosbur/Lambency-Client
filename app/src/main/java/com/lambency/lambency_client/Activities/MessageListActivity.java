@@ -239,7 +239,7 @@ public class MessageListActivity extends BaseActivity {
             }
         });
         */
-               colRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+               colRef.orderBy("createdAt", com.google.firebase.firestore.Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshots,
                                         @Nullable FirebaseFirestoreException e) {
