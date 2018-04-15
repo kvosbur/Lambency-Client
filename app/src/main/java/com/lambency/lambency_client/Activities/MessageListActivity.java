@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -223,6 +224,8 @@ public class MessageListActivity extends BaseActivity {
         final DocumentReference docRef = db.collection("chats").document("" + chatModel.getChatID());
         final CollectionReference colRef = db.collection("chats").document("" + chatModel.getChatID()).collection("messages");
         //.orderBy("time", com.google.firebase.firestore.Query.Direction.DESCENDING)
+
+        /*
         colRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
@@ -235,6 +238,37 @@ public class MessageListActivity extends BaseActivity {
                 }
             }
         });
+        */
+               colRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            //Log.w(TAG, "listen:error", e);
+                            Toast.makeText(MessageListActivity.this, "listen error", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    MessageModel m = new MessageModel((String) dc.getDocument().get("messageText"), (String)dc.getDocument().get("sender"), (String)dc.getDocument().get("createdAt"));
+                                    messageModelList.add(m);
+                                    myMessageAdapter.notifyDataSetChanged();
+                                    mMessageRecycler.scrollToPosition(messageModelList.size() - 1);
+                                    break;
+                                case MODIFIED:
+                                    //Log.d(TAG, "Modified city: " + dc.getDocument().getData());
+                                    break;
+                                case REMOVED:
+                                    //Log.d(TAG, "Removed city: " + dc.getDocument().getData());
+                                    break;
+                            }
+                        }
+
+                    }
+                });
+
 
         /*
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {

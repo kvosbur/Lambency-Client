@@ -57,4 +57,17 @@ public class ChatModel implements Serializable{
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChatModel chat = (ChatModel) o;
+
+        if(chat.getChatID() == chatID && chat.getRecent_msg_id() == recent_msg_id){
+            return true;
+        }
+        return false;
+    }
 }
