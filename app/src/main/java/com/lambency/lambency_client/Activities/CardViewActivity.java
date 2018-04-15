@@ -79,6 +79,8 @@ public class CardViewActivity extends AppCompatActivity {
                         System.out.println("User worked " + hours + " hours at " + eventModel.getName());
                     }
 
+                    TextView topView = findViewById(R.id.topTextView);
+                    topView.setText("Events attended by member are");
                     mAdapter = new MyRecyclerViewAdapter(getDataSet());
                     mRecyclerView.setAdapter(mAdapter);
                     ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
