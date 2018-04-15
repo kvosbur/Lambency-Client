@@ -83,12 +83,14 @@ public class PastUsersActivity extends AppCompatActivity implements SearchView.O
 
                 ArrayList<UserModel> users = new ArrayList<>();
                 for(EventAttendanceModel model : attendanceModels){
-                    users.add(model.getUserModel());
-                    long milliseconds = model.getEndTime().getTime() - model.getStartTime().getTime();
-                    double hours = milliseconds/3600000d;
-                    hours = Math.round(hours * 10)/10d;
-                    model.getUserModel().setPastEventHours(hours);
-                    users.add(model.getUserModel());
+                    if(model.getStartTime() != null) {
+                        users.add(model.getUserModel());
+                        long milliseconds = model.getEndTime().getTime() - model.getStartTime().getTime();
+                        double hours = milliseconds / 3600000d;
+                        hours = Math.round(hours * 10) / 10d;
+                        model.getUserModel().setPastEventHours(hours);
+                        users.add(model.getUserModel());
+                    }
                 }
 
                 setUsers(users);
