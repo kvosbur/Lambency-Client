@@ -212,5 +212,12 @@ public interface LambencyAPI {
 
     @GET("User/setNotificationPreference")
     Call<Integer> updateNotificationPreference(@Query("oAuthCode") String oAuthCode, @Query("preference") int preference);
+
+    @GET("User/pastEvents")
+    Call<ArrayList<EventModel>> getPastEvents(@Query("oAuthCode") String oAuthCode);
+
+    @GET("User/pastEventsInOrg")
+    Call<ArrayList<EventModel>> getPastEventsInOrg(@Query("oAuthCode") String oAuthCode, @Query("userID") String userID, @Query("orgID") String orgID);
+
 }
 

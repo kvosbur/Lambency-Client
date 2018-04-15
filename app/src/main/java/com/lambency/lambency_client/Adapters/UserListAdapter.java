@@ -24,6 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import com.lambency.lambency_client.Activities.BottomBarActivity;
+import com.lambency.lambency_client.Activities.CardViewActivity;
 import com.lambency.lambency_client.Activities.OrgUsersActivity;
 import com.lambency.lambency_client.Fragments.UserListFragment;
 import com.lambency.lambency_client.Models.UserModel;
@@ -106,6 +107,17 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         String name = userModel.getFirstName() + " " + userModel.getLastName();
         holder.nameView.setText(name);
+
+        //on click of nameView
+        holder.nameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context,CardViewActivity.class);
+                intent.putExtra("userIdKey",userModel.getUserId());
+                intent.putExtra("orgIdKey",org_id);
+                context.startActivity(intent);
+            }
+        });
 
         holder.emailView.setText(userModel.getEmail());
 
