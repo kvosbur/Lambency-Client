@@ -150,7 +150,7 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
             t.setText(countOfNotification());
         }
         */
-        inflateBottom();
+        //inflateBottom();
 
         bar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -215,6 +215,7 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
         View v = bottomNavigationMenuView.getChildAt(4);
         BottomNavigationItemView itemView = (BottomNavigationItemView) v;
 
+
         if(countOfNotification() > 0)
         {
             badge = LayoutInflater.from(this)
@@ -222,8 +223,9 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
 
             itemView.addView(badge);
             TextView t =  itemView.findViewById(R.id.notifications_badge);
-            t.setText(countOfNotification());
+            t.setText("" + countOfNotification());
         }
+
     }
 
     @Override
@@ -331,11 +333,6 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        isInBottomBar = true;
-    }
 
     @Override
     protected void onStop() {
@@ -346,7 +343,14 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
     @Override
     protected void onResume() {
         super.onResume();
+        inflateBottom();
         isInBottomBar = true;
+    }
+
+    @Override
+    protected  void onPause(){
+        super.onPause();
+        isInBottomBar = false;
     }
 
 }
