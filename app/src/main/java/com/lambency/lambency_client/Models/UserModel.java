@@ -32,8 +32,6 @@ public class UserModel {
     private int orgStatus;
     private boolean editable = false;
 
-    private boolean isActive;
-
     private int notification_preference;
     private boolean isActive;
     private double pastEventHours = -1;
@@ -94,10 +92,6 @@ public class UserModel {
 
     public void setNotification_preference(int notification_preference) {
         this.notification_preference = notification_preference;
-    }
-
-    public boolean isActive() {
-        return isActive;
     }
 
     public void setActive(boolean active) {
