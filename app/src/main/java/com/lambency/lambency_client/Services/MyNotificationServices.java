@@ -40,6 +40,7 @@ public class MyNotificationServices extends IntentService{
 
         switch(action){
 
+
             case JOIN_REQUEST:
 
                 //Dismiss the notification

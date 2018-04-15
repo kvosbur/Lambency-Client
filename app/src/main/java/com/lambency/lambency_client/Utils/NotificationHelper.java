@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.lambency.lambency_client.Activities.AcceptRejectActivity;
 import com.lambency.lambency_client.Activities.EventDetailsActivity;
+import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.MessageListActivity;
 
 import com.lambency.lambency_client.Activities.UserAcceptRejectActivity;
@@ -42,8 +43,7 @@ public class NotificationHelper {
 
         createNotificationChannel(context, joinRequestChannel);
 
-        Intent intent = new Intent(context, AcceptRejectActivity.class);
-        intent.putExtra("org_id", org_id);
+        Intent intent = new Intent(context, LoginActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Accepting the user who wants to join
@@ -90,9 +90,7 @@ public class NotificationHelper {
         int contentRequestCode = 0, acceptRequestCode = 1, denyRequestCode = 2;
         createNotificationChannel(context, chatMessageChannel);
 
-        Intent intent = new Intent(context, MessageListActivity.class);
-        intent.putExtra("msgId", msgId);
-        intent.putExtra("chatId", chatId);
+        Intent intent = new Intent(context, LoginActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, joinRequestChannel.id)
@@ -116,8 +114,7 @@ public class NotificationHelper {
 
         createNotificationChannel(context, inviteChannel);
 
-        Intent intent = new Intent(context, UserAcceptRejectActivity.class);
-        intent.putExtra("org_id", org_id); //Not sure I need to pass this
+        Intent intent = new Intent(context, LoginActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Accepting the invite notification
@@ -160,8 +157,7 @@ public class NotificationHelper {
 
         createNotificationChannel(context, eventUpdateChannel);
 
-        Intent intent = new Intent(context, EventDetailsActivity.class);
-        intent.putExtra("event_id", Integer.parseInt(event_id));
+        Intent intent = new Intent(context, LoginActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, joinRequestChannel.id)
