@@ -81,6 +81,13 @@ public class CardViewActivity extends AppCompatActivity {
 
                     mAdapter = new MyRecyclerViewAdapter(getDataSet());
                     mRecyclerView.setAdapter(mAdapter);
+                    ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
+                            .MyClickListener() {
+                        @Override
+                        public void onItemClick(int position, View v) {
+                            Log.i(LOG_TAG, " Clicked on Item " + position);
+                        }
+                    });
                 }
 
                 @Override
@@ -112,6 +119,13 @@ public class CardViewActivity extends AppCompatActivity {
 
                     mAdapter = new MyRecyclerViewAdapter(getDataSet());
                     mRecyclerView.setAdapter(mAdapter);
+                    ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
+                            .MyClickListener() {
+                        @Override
+                        public void onItemClick(int position, View v) {
+                            Log.i(LOG_TAG, " Clicked on Item " + position);
+                        }
+                    });
                 }
 
                 @Override
@@ -125,17 +139,19 @@ public class CardViewActivity extends AppCompatActivity {
     }
 
 
-    /*@Override
+    @Override
     protected void onResume() {
         super.onResume();
-        ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
-                .MyClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                Log.i(LOG_TAG, " Clicked on Item " + position);
-            }
-        });
-    }*/
+        if(mAdapter != null) {
+            ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
+                    .MyClickListener() {
+                @Override
+                public void onItemClick(int position, View v) {
+                    Log.i(LOG_TAG, " Clicked on Item " + position);
+                }
+            });
+        }
+    }
 
     private ArrayList<DataObject> getDataSet() {
         if (eventCheck == true && eventModels != null) {
