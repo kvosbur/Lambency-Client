@@ -41,7 +41,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProfileSettingsActivity extends BaseActivity {
 public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
     private static final String TAG = ProfileSettingsActivity.class.getSimpleName();
 

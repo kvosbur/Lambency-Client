@@ -22,7 +22,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChangePasswordActivity extends BaseActivity {
 public class ChangePasswordActivity extends AppCompatActivity implements TextWatcher {
     String userId = "";
     String verificationCode = "";

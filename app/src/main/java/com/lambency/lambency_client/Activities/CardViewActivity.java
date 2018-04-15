@@ -18,7 +18,7 @@ import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
 
-public class CardViewActivity extends BaseActivity {
+public class CardViewActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -35,7 +35,7 @@ public class CardViewActivity extends BaseActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        //TODO: call retrofit and give correct things to getdataset some way to differentiate to retrofits   hhh
+        //TODO: call retrofit and give correct things to getdataset some way to differentiate to retrofits
         mAdapter = new MyRecyclerViewAdapter(getDataSet());
         mRecyclerView.setAdapter(mAdapter);
 

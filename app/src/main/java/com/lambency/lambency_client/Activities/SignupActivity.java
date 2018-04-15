@@ -24,7 +24,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SignupActivity extends BaseActivity {
 public class SignupActivity extends AppCompatActivity implements TextWatcher {
     @BindView(R.id.input_name)
     EditText _nameText;
