@@ -67,6 +67,8 @@ import com.lambency.lambency_client.Utils.NotificationHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
@@ -134,15 +136,14 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
         switchToFragment3();
 
         BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) bar.getChildAt(0);
-        View v = bottomNavigationMenuView.getChildAt(1);
+        View v = bottomNavigationMenuView.getChildAt(4);
         BottomNavigationItemView itemView = (BottomNavigationItemView) v;
 
-        /*
         badge = LayoutInflater.from(this)
                 .inflate(R.layout.bottom_badge, bottomNavigationMenuView, false);
 
         itemView.addView(badge);
-        */
+
 
         bar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -192,7 +193,13 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
         }
     }
 
-
+    public int countOfNotification(){
+        int i = 0;
+        for (Object value : notificationOfChat.values()) {
+            i += (Integer) value;
+        }
+        return i;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
