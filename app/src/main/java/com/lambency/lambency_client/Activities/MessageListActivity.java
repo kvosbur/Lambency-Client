@@ -39,7 +39,9 @@ import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Models.MessageModel;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -220,7 +222,7 @@ public class MessageListActivity extends BaseActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final DocumentReference docRef = db.collection("chats").document("" + chatModel.getChatID());
         final CollectionReference colRef = db.collection("chats").document("" + chatModel.getChatID()).collection("messages");
-
+        //.orderBy("time", com.google.firebase.firestore.Query.Direction.DESCENDING)
         colRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
@@ -288,10 +290,15 @@ public class MessageListActivity extends BaseActivity {
                     return;
                 }
                 else{
-                    final MessageModel messageModel = new MessageModel(message, UserModel.myUserModel.getFirstName() + " " + UserModel.myUserModel.getLastName(),(new Timestamp(System.currentTimeMillis())).toString());
-                    messageModelList.add(messageModel);
-                    myMessageAdapter.notifyDataSetChanged();
-                    mMessageRecycler.scrollToPosition(messageModelList.size() - 1);
+                    //Timestamp ts = new Timestamp(System.currentTimeMillis());
+                    //new Timestamp(System.currentTimeMillis()).toString()
+                    //Date date = new Date();
+                    //date.setTime(ts.getTime());
+                    //String formattedDate = new SimpleDateFormat("h:mm a").format(date);
+                    final MessageModel messageModel = new MessageModel(message, UserModel.myUserModel.getFirstName() + " " + UserModel.myUserModel.getLastName(), Long.toString(System.currentTimeMillis()));
+                    //messageModelList.add(messageModel);
+                    //myMessageAdapter.notifyDataSetChanged();
+                    //mMessageRecycler.scrollToPosition(messageModelList.size() - 1);
                     messageContent.setText("");
                     LambencyAPIHelper.getInstance().sendMessage(UserModel.myUserModel.getOauthToken(),chatModel.getChatID(),messageModel).enqueue(new Callback<Integer>() {
                         @Override
