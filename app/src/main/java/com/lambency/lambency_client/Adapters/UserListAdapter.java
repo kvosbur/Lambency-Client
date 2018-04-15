@@ -173,7 +173,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         holder.emailLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendEmail(userModel);
+                //sendEmail(userModel);
+                showChatOptions(userModel);
             }
         });
 
@@ -196,6 +197,43 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(context, "No email clients installed", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showChatOptions(final UserModel userModel)
+    {
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        final View dialogView = layoutInflater.inflate(R.layout.dialog_chat_options, null);
+
+        alertDialog.setTitle("Messaging");
+        alertDialog.setMessage("How would you like to chat?");
+        alertDialog.setView(dialogView);
+
+        dialogView.getRootView().findViewById(R.id.sendViaEmail).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                sendEmail(userModel);
+            }
+        });
+
+        dialogView.getRootView().findViewById(R.id.sendViaChat).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO add code for switching here!
+                Toast.makeText(context, "Send Text", Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+            }
+        });
+
+        dialogView.getRootView().findViewById(R.id.cancelChatButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
     }
 
     private void editPermissions(final UserModel userModel){
