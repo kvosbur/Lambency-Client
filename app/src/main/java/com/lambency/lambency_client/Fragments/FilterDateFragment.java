@@ -55,7 +55,6 @@ public class FilterDateFragment extends Fragment
     Calendar myStartCalendar = Calendar.getInstance();
     Calendar myEndCalander = Calendar.getInstance();
 
-
     private void updateLabel(Button date, Calendar myCalendar) {
         String myFormat = "MM/dd/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
@@ -87,7 +86,10 @@ public class FilterDateFragment extends Fragment
             updateLabel(startTime, myStartCalendar);
             startDate = startTime.toString();
 
+
             EventFilterModel.currentFilter.setStartStamp(new Timestamp(myStartCalendar.getTime().getTime()));
+
+
         }
     };
 

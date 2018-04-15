@@ -63,7 +63,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EventCreationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class EventCreationActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.eventImage)
     ImageView eventImage;

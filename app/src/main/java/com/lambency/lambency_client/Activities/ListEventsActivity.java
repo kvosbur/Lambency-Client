@@ -27,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ListEventsActivity extends AppCompatActivity {
+public class ListEventsActivity extends BaseActivity {
 
     @BindView(R.id.eventsRecyclerView)
     RecyclerView eventsRecyclerView;
