@@ -109,6 +109,16 @@
                 android:visibility="invisible"
                 app:srcCompat="@drawable/ic_edit_gray_24dp" />
 
+            <TextView
+                android:id="@+id/hoursText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3 hrs"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                />
+
         </RelativeLayout>
 
     </RelativeLayout>

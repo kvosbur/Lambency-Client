@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,13 +55,15 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "SignInActivity";
@@ -68,11 +72,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     final private Context context = this;
 
-
     CallbackManager callbackManager;
+
+    @BindView(R.id.progressBarLayout)
+    RelativeLayout progressLayout;
+
+    @BindView(R.id.mainLayout)
+    ScrollView mainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+
         FirebaseApp.initializeApp(context);
 
         if (ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -84,14 +97,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             SharedPreferences sharedPref = SharedPrefsHelper.getSharedPrefs(context);
             final String myauth = sharedPref.getString("myauth", "");
 
+            //This is automatic login
             if (myauth.length() > 0) {
+                progressLayout.setVisibility(View.VISIBLE);
+                mainLayout.setVisibility(View.GONE);
+
                 UserAuthenticatorModel.myAuth = myauth;
                 System.out.println("My auth is : " + myauth);
                 LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
                     @Override
                     public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                         if (response.body() == null || response.code() != 200) {
-                            System.out.println("ERROR!!!!!");
+                            System.out.println("ERROR2!!!!!");
                             return;
                         }
                         //when response is back
@@ -112,7 +129,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onFailure(Call<UserModel> call, Throwable throwable) {
                         //when failure
-                        System.out.println("FAILED CALL");
+                        System.out.println("FAILED CALL1");
                         Toast.makeText(getApplicationContext(), "Login error... Please try again", Toast.LENGTH_LONG).show();
 
                     }
@@ -120,8 +137,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
 
 
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_login);
+
 
             this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -211,7 +227,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         @Override
                                         public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                                             if (response.body() == null || response.code() != 200) {
-                                                System.out.println("ERROR!!!!!");
+                                                System.out.println("ERROR3!!!!!");
                                                 return;
                                             }
                                             //when response is back
@@ -233,7 +249,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         @Override
                                         public void onFailure(Call<UserModel> call, Throwable throwable) {
                                             //when failure
-                                            System.out.println("FAILED CALL");
+                                            System.out.println("FAILED CALL2");
                                             Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
 
                                         }
@@ -310,7 +326,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 @Override
                                 public void onResponse(Call<Integer> call, Response<Integer> response) {
                                     if (response.body() == null || response.code() != 200) {
-                                        System.out.println("ERROR!!!!!");
+                                        System.out.println("ERROR4!!!!!");
                                         return;
                                     }
 
@@ -379,7 +395,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                     @Override
                                                     public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
                                                         if (response.body() == null || response.code() != 200) {
-                                                            System.out.println("ERROR!!!!!");
+                                                            System.out.println("ERROR5!!!!!");
                                                             return;
                                                         }
                                                         //when response is back
@@ -401,7 +417,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                                 @Override
                                                                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                                                                     if (response.body() == null || response.code() != 200) {
-                                                                        System.out.println("ERROR!!!!!");
+                                                                        System.out.println("ERROR6!!!!!");
                                                                         return;
                                                                     }
                                                                     //when response is back
@@ -427,7 +443,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                                 @Override
                                                                 public void onFailure(Call<UserModel> call, Throwable throwable) {
                                                                     //when failure
-                                                                    System.out.println("FAILED CALL");
+                                                                    System.out.println("FAILED CALL3");
                                                                     Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
 
                                                                 }
@@ -448,7 +464,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                     @Override
                                                     public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
                                                         //when failure
-                                                        System.out.println("FAILED CALL");
+                                                        System.out.println("FAILED CALL4");
                                                         System.out.println(throwable.getMessage());
 
                                                         Toast.makeText(getApplicationContext(), "Failed to Communicate with Server please try again.", Toast.LENGTH_LONG).show();
@@ -565,7 +581,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
                     if (response.body() == null || response.code() != 200) {
-                        System.out.println("ERROR!!!!!");
+                        System.out.println("ERROR7!!!!!");
                         return;
                     }
                     //when response is back
@@ -588,7 +604,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             @Override
                             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                                 if (response.body() == null || response.code() != 200) {
-                                    System.out.println("ERROR!!!!!");
+                                    System.out.println("ERROR8!!!!!");
                                 }
 
                                 //when response is back
@@ -604,7 +620,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             @Override
                             public void onFailure(Call<UserModel> call, Throwable throwable) {
                                 //when failure
-                                System.out.println("FAILED CALL");
+                                System.out.println("FAILED CALL5");
                                 Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
 
                             }
@@ -628,7 +644,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
                     //when failure
-                    System.out.println("FAILED CALL");
+                    System.out.println("FAILED CALL6");
                     Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
 
                 }

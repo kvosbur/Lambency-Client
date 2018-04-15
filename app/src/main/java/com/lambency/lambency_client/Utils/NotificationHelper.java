@@ -11,7 +11,10 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.lambency.lambency_client.Activities.AcceptRejectActivity;
+import com.lambency.lambency_client.Activities.MessageListActivity;
+
 import com.lambency.lambency_client.Activities.UserAcceptRejectActivity;
+
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Services.MyNotificationServices;
 
@@ -27,6 +30,9 @@ public class NotificationHelper {
 
     private static int id = 0;
     private static ChannelInfo joinRequestChannel = new ChannelInfo("lambency-join", "Join Requests", "Notifications for users requesting to join organizations will appear here.");
+
+    private static ChannelInfo chatMessageChannel = new ChannelInfo("lambency-chat", "Chat messaging", "Notifications about chat messaging.");
+
     private static ChannelInfo inviteChannel = new ChannelInfo("lambency-invite", "Organization Invites", "Notifications from organizations requesting you join will appear here.");
 
     public static void sendJoinRequestNotification(Context context, String user, String uid, String org, String org_id){
@@ -76,6 +82,33 @@ public class NotificationHelper {
         notificationManager.notify(id++, notification);
     }
 
+
+    public static void sendChatMessageNotification(Context context, String name, String msgId, String chatId)
+    {
+        int contentRequestCode = 0, acceptRequestCode = 1, denyRequestCode = 2;
+        createNotificationChannel(context, chatMessageChannel);
+
+        Intent intent = new Intent(context, MessageListActivity.class);
+        intent.putExtra("msgId", msgId);
+        intent.putExtra("chatId", chatId);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, joinRequestChannel.id)
+                .setSmallIcon(R.drawable.ic_notification_lambency)
+                .setContentTitle("Chat message")
+                .setContentText(name + "sent you a message.")
+                .setColor(context.getResources().getColor(R.color.colorPrimary))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(contentIntent);
+  
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+        Notification notification = mBuilder.build();
+        // Cancel the notification after its selected
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(id++, notification);
+    }
+  
     public static void sendInviteNotification(Context context, String org, String org_id){
         int contentRequestCode = 0, acceptRequestCode = 1, denyRequestCode = 2;
 
@@ -113,6 +146,7 @@ public class NotificationHelper {
                 .setContentIntent(contentIntent)
                 .addAction(new NotificationCompat.Action(0, "Join", null))
                 .addAction(new NotificationCompat.Action(0, "Ignore", null));
+
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 

@@ -27,9 +27,10 @@ import android.widget.Toast;
 
 
 import com.google.firebase.FirebaseApiNotAvailableException;
-import com.google.firebase.FirebaseApp;
+//import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.lambency.lambency_client.Adapters.MyLambencyTabsAdapter;
+import com.lambency.lambency_client.Fragments.ChatListFragment;
 import com.lambency.lambency_client.Fragments.CheckInFragment;
 import com.lambency.lambency_client.Fragments.EventsMainFragment;
 import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
@@ -75,7 +76,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class BottomBarActivity extends AppCompatActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener, MyLambencyEventsFragment.OnFragmentInteractionListener, MyLambencyOrgsFragment.OnFragmentInteractionListener, CheckInFragment.OnFragmentInteractionListener{
+public class BottomBarActivity extends BaseActivity implements EventsMainFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener, MyLambencyFragment.OnFragmentInteractionListener, MyLambencyEventsFragment.OnFragmentInteractionListener, MyLambencyOrgsFragment.OnFragmentInteractionListener, CheckInFragment.OnFragmentInteractionListener{
 
     int notifyAmount = 0;
     View badge;
@@ -104,20 +105,21 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
 
         ButterKnife.bind(this);
 
-        /*
+
         final Handler handler = new Handler();
         final int delay = 10000; //milliseconds
 
         handler.postDelayed(new Runnable(){
             public void run(){
                 if(MyLifecycleHandler.isApplicationVisible()) {
-                    //TODO Retrofit for application being closed
-                    Toast.makeText(BottomBarActivity.this, "Hello World!", Toast.LENGTH_SHORT).show();
+                    UserModel.myUserModel.setActiveForModelAndDatabase(true);
+                } else {
+                    UserModel.myUserModel.setActiveForModelAndDatabase(false);
                 }
                 handler.postDelayed(this, delay);
             }
         }, delay);
-        */
+
 
         // Get token
         String token = FirebaseInstanceId.getInstance().getToken();
@@ -259,8 +261,10 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
     }
 
     public void switchToFragment5(){
-        Intent i = new Intent(this, MessageListActivity.class);
-        startActivity(i);
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.fragContainer, new ChatListFragment()).commit();
+        //Intent i = new Intent(this, MessageListActivity.class);
+        //startActivity(i);
     }
 
     public void setActionBarTitle(String title) {
@@ -292,6 +296,5 @@ public class BottomBarActivity extends AppCompatActivity implements EventsMainFr
             }
         });
     }
-
 
 }

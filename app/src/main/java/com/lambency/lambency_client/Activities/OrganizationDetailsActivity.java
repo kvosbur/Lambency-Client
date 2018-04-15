@@ -21,6 +21,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -63,7 +65,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class OrganizationDetailsActivity extends AppCompatActivity {
+public class OrganizationDetailsActivity extends BaseActivity {
 
     /*
     @BindView(R.id.LeaveOrgImg)
@@ -112,12 +114,14 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.showAllButton)
     Button showAllButton;
 
+    @BindView(R.id.pastEventsButton)
+    Button pastEventsButton;
+
     @BindView(R.id.noEventsText)
     TextView noEventsTextView;
 
     @BindView(R.id.notificationNumTextDetails)
     TextView notificationNum;
-
 
     @BindView(R.id.inviteUsersToJoin)
     Button inviteUsers;
@@ -131,6 +135,8 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     private OrganizationModel organizationModel;
     private EventsAdapter eventsAdapter;
     private String usersEmail = "";
+
+    private MenuItem editOrgButton;
 
 
     @Override
@@ -189,8 +195,13 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     //hiding or showing invite button
                     if (UserModel.myUserModel.getMyOrgs().contains(organizationModel.getOrgID())){
                         inviteUsers.setVisibility(View.VISIBLE);
+                        editOrgButton.setVisible(true);
                     }
-                    else inviteUsers.setVisibility(View.GONE);
+
+                    else {
+                        inviteUsers.setVisibility(View.GONE);
+                        editOrgButton.setVisible(false);
+                    }
 
                     getUpcomingEvents();
 
@@ -212,7 +223,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
 
                     //img = organization.getImage();
-
 
 
                     //This is the case where the user model is out of date and thinks that there is still a request, but in reality they are offically members
@@ -241,14 +251,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         }
                     }
 
-                    ImageHelper.loadWithGlide(context,
-                            organization.getImagePath(),
-                            orgImage);
-                    /*
-                    ImageHelper.loadWithGlide(context,
-                            ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
-                            leaveOrgImg);
-                            */
 
                     if(organization.getImagePath() != null && organization.getImagePath().length() != 0) {
                         ImageHelper.loadWithGlide(context,
@@ -548,15 +550,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-            default:
-                return true;
-        }
-    }
 
     @OnClick(R.id.followUnFollow)
     public void onClickFollow(){
@@ -836,6 +829,15 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     public void handleShowAllClick(){
         Intent intent = new Intent(context, ListEventsActivity.class);
         intent.putExtra("org_id", organizationModel.getOrgID());
+        intent.putExtra("eventType", "upcomingEvents");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.pastEventsButton)
+    public void handlePastEventsClick(){
+        Intent intent = new Intent(context, ListEventsActivity.class);
+        intent.putExtra("org_id", organizationModel.getOrgID());
+        intent.putExtra("eventType", "pastEvents");
         startActivity(intent);
     }
 
@@ -845,4 +847,37 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         intent.putExtra("org_id", organizationModel.getOrgID());
         startActivity(intent);
     }
+
+    private void handleEditClick(){
+        Bundle bundle = new Bundle();
+        bundle.putInt("org_id", organizationModel.getOrgID());
+        Intent intent = new Intent(this, OrgCreationActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = new MenuInflater(this);
+        menuInflater.inflate(R.menu.menu_org, menu);
+
+        editOrgButton = menu.findItem(R.id.action_edit);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_edit:
+                handleEditClick();
+            default:
+                return true;
+        }
+    }
+
 }
