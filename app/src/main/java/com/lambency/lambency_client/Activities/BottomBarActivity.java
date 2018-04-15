@@ -335,6 +335,7 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
     protected void onStart() {
         super.onStart();
         isInBottomBar = true;
+        //inflateBottom();
     }
 
     @Override
@@ -347,6 +348,7 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
     protected void onResume() {
         super.onResume();
         isInBottomBar = true;
+        //inflateBottom();
     }
 
 }
