@@ -84,8 +84,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         MessageModel messageModel = (MessageModel) mMessageModelList.get(position);
+        String name = UserModel.myUserModel.getFirstName() + " " + UserModel.myUserModel.getLastName();
 
-        if (messageModel.getSender().equals(UserModel.myUserModel.getFirstName())) {
+        if (messageModel.getSender().equals(name)) {
             // If the current user is the sender of the messageModel
             return VIEW_TYPE_MESSAGE_SENT;
         } else {

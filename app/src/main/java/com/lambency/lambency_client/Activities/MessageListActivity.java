@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +24,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.lambency.lambency_client.Adapters.MessageListAdapter;
@@ -83,6 +87,7 @@ public class MessageListActivity extends BaseActivity {
         actionBar.setTitle("Messaging");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        /*
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Map<String, Object> user = new HashMap<>();
@@ -91,12 +96,8 @@ public class MessageListActivity extends BaseActivity {
         user.put("born", 1815);
 
         /*
-        Firestore db = FirestoreClient.getFirestore();
-        db.collection("chats").document("" + chatModel.getChatID())
-                .collection("messages")
-                .document("" + msg_id)
-                .set(messageModel);
-                */
+
+
 
         // Add a new document with a generated ID
         db.collection("users")
@@ -129,7 +130,7 @@ public class MessageListActivity extends BaseActivity {
                     }
                 });
 
-
+        */
         /*
         MessageModel m1 = new MessageModel("Hello!", "Evan");
         MessageModel m2 = new MessageModel("How are you?", "Jim");
@@ -155,10 +156,10 @@ public class MessageListActivity extends BaseActivity {
 
 
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("chats/7");
-        myRef.child("1").setValue(m1);
-        System.out.println("added to database");
+        //final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //final DatabaseReference myRef = database.getReference("chats/7");
+        //myRef.child("1").setValue(m1);
+        //System.out.println("added to database");
 /*
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -210,6 +211,50 @@ public class MessageListActivity extends BaseActivity {
             }
         }); */
 
+        /*
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final DocumentReference docRef = db.collection("chats").document("" + chatModel.getChatID());
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Toast.makeText(MessageListActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Map<String, Object> data = snapshot.getData();
+                    MessageModel m = new MessageModel((String) data.get("messageText"), (String)data.get("sender"), (String)data.get("createdAt"));
+                    messageModelList.add(m);
+                    myMessageAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(MessageListActivity.this, "null", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        */
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document("" + chatModel.getChatID()).collection("messages")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                //Log.d(TAG, document.getId() + " => " + document.getData());
+                                Map<String, Object> data = document.getData();
+                                MessageModel m = new MessageModel((String) data.get("messageText"), (String)data.get("sender"), (String)data.get("createdAt"));
+                                messageModelList.add(m);
+                                myMessageAdapter.notifyDataSetChanged();
+                            }
+                        } else {
+                            Toast.makeText(MessageListActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -220,7 +265,7 @@ public class MessageListActivity extends BaseActivity {
                     return;
                 }
                 else{
-                    MessageModel messageModel = new MessageModel(message, UserModel.myUserModel.getFirstName() + UserModel.myUserModel.getLastName(),(new Timestamp(System.currentTimeMillis())).toString());
+                    final MessageModel messageModel = new MessageModel(message, UserModel.myUserModel.getFirstName() + " " + UserModel.myUserModel.getLastName(),(new Timestamp(System.currentTimeMillis())).toString());
                     messageModelList.add(messageModel);
                     myMessageAdapter.notifyDataSetChanged();
                     LambencyAPIHelper.getInstance().sendMessage(UserModel.myUserModel.getOauthToken(),chatModel.getChatID(),messageModel).enqueue(new Callback<Integer>() {
@@ -235,9 +280,13 @@ public class MessageListActivity extends BaseActivity {
                                     Toast.makeText(view.getContext(), "Response from server said you cant send that message.", Toast.LENGTH_LONG).show();
                                 }
                                 else {
-                                    Toast.makeText(view.getContext(), "Message Sent", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(view.getContext(), "Message Sent with chat id " + chatModel.getChatID() + " and ret " + ret, Toast.LENGTH_LONG).show();
                                     //TODO
-                                    //Save the returned integer
+                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                    db.collection("chats").document("" + chatModel.getChatID())
+                                            .collection("messages")
+                                            .document("" + ret)
+                                            .set(messageModel);
                                 }
                             }
                         }
@@ -284,7 +333,7 @@ public class MessageListActivity extends BaseActivity {
         });
     }
 
-
+    /*
     public void populateMessage() {
 
         Query query = FirebaseDatabase.getInstance().getReference("/TestSpace").orderByKey();
@@ -315,9 +364,10 @@ public class MessageListActivity extends BaseActivity {
                 myMessageAdapter.notifyDataSetChanged();
             }
         };
-        */
+
 
     }
+    */
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
