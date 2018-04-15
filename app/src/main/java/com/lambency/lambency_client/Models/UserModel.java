@@ -32,7 +32,6 @@ public class UserModel {
     private int orgStatus;
     private boolean editable = false;
 
-    private boolean isActive;
 
     private int notification_preference;
     private boolean isActive;
@@ -96,9 +95,6 @@ public class UserModel {
         this.notification_preference = notification_preference;
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
 
     public void setActive(boolean active) {
         isActive = active;
