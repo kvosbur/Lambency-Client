@@ -129,7 +129,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                     @Override
                     public void onFailure(Call<UserModel> call, Throwable throwable) {
                         //when failure
-                        System.out.println("FAILED CALL");
+                        System.out.println("FAILED CALL1");
                         Toast.makeText(getApplicationContext(), "Login error... Please try again", Toast.LENGTH_LONG).show();
 
                     }
@@ -249,7 +249,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                         @Override
                                         public void onFailure(Call<UserModel> call, Throwable throwable) {
                                             //when failure
-                                            System.out.println("FAILED CALL");
+                                            System.out.println("FAILED CALL2");
                                             Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
 
                                         }
@@ -443,7 +443,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                                                 @Override
                                                                 public void onFailure(Call<UserModel> call, Throwable throwable) {
                                                                     //when failure
-                                                                    System.out.println("FAILED CALL");
+                                                                    System.out.println("FAILED CALL3");
                                                                     Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
 
                                                                 }
@@ -464,7 +464,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                                     @Override
                                                     public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
                                                         //when failure
-                                                        System.out.println("FAILED CALL");
+                                                        System.out.println("FAILED CALL4");
                                                         System.out.println(throwable.getMessage());
 
                                                         Toast.makeText(getApplicationContext(), "Failed to Communicate with Server please try again.", Toast.LENGTH_LONG).show();
@@ -620,7 +620,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                             @Override
                             public void onFailure(Call<UserModel> call, Throwable throwable) {
                                 //when failure
-                                System.out.println("FAILED CALL");
+                                System.out.println("FAILED CALL5");
                                 Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
 
                             }
@@ -644,7 +644,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 @Override
                 public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
                     //when failure
-                    System.out.println("FAILED CALL");
+                    System.out.println("FAILED CALL6");
                     Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
 
                 }

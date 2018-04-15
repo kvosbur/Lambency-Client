@@ -170,8 +170,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             holder.offlineCircle.setVisibility(View.GONE);
         }
 
-
-        if(userModel.getPastEventHours() > -1){
+        if(userModel.getPastEventHours() > 0){
             String hoursStr = userModel.getPastEventHours() + " hrs";
             holder.hoursTextView.setText(hoursStr);
             holder.hoursTextView.setVisibility(View.VISIBLE);
