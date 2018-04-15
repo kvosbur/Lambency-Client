@@ -35,7 +35,7 @@ public class CardViewActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        //TODO: call retrofit and give correct things to getdataset
+        //TODO: call retrofit and give correct things to getdataset some way to differentiate to retrofits
         mAdapter = new MyRecyclerViewAdapter(getDataSet());
         mRecyclerView.setAdapter(mAdapter);
 
