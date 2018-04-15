@@ -24,6 +24,7 @@ import com.lambency.lambency_client.Networking.LambencyAPI;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -158,9 +159,10 @@ public class CardViewActivity extends AppCompatActivity {
     private ArrayList<DataObject> getDataSet() {
         if (eventCheck == true && eventModels != null) {
             ArrayList results = new ArrayList<DataObject>();
+            DecimalFormat df = new DecimalFormat("0.00");
             for (int index = 0; index < eventModels.size(); index++) {
                 DataObject obj = new DataObject(eventModels.get(index).getName(),
-                        "hours attended: " + hoursOfEvents.get(index));
+                        "hours attended: " + df.format(hoursOfEvents.get(index)));
                 results.add(index, obj);
             }
             return results;
