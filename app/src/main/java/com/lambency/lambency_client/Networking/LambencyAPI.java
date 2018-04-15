@@ -15,6 +15,7 @@ import com.lambency.lambency_client.Models.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -41,6 +42,8 @@ public interface LambencyAPI {
 
     @GET("User/search")
     Call<UserModel> userSearch(@Query("oAuthCode") String oAuthToken, @Query("id") String userID);
+
+
 
     @GET("Organization/search")
     Call<ArrayList<OrganizationModel>> getOrganizationSearch(@Query("name") String name);
@@ -185,6 +188,7 @@ public interface LambencyAPI {
     @POST("Organization/searchWithFilter")
     Call<ArrayList<OrganizationModel>> getOrganizationsWithFilter(@Body OrganizationFilterModel organizationFilterModel);
 
+
     @GET("User/joinRequests")
     Call<List<OrganizationModel>> getUserJoinRequests(@Query("oAuthCode") String oAuthCode);
 
@@ -199,6 +203,13 @@ public interface LambencyAPI {
 
     @GET("Chat/getAllChats")
     Call<ArrayList<ChatModel>> getAllChats(@Query("oAuthCode") String oAuthCode);
+
+    @GET("Organization/pastEvents")
+    Call<ArrayList<EventModel>> getPastEvents(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
+
+    @GET("Organization/pastEventAttandence")
+    Call<ArrayList<EventAttendanceModel>> getPastEventAttendence(@Query("oAuthCode") String oAuthCode, @Query("eventID") int eventID);
+
 
 }
 

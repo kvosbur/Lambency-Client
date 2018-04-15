@@ -114,12 +114,14 @@ public class OrganizationDetailsActivity extends BaseActivity {
     @BindView(R.id.showAllButton)
     Button showAllButton;
 
+    @BindView(R.id.pastEventsButton)
+    Button pastEventsButton;
+
     @BindView(R.id.noEventsText)
     TextView noEventsTextView;
 
     @BindView(R.id.notificationNumTextDetails)
     TextView notificationNum;
-
 
     @BindView(R.id.inviteUsersToJoin)
     Button inviteUsers;
@@ -221,7 +223,6 @@ public class OrganizationDetailsActivity extends BaseActivity {
 
 
                     //img = organization.getImage();
-
 
 
                     //This is the case where the user model is out of date and thinks that there is still a request, but in reality they are offically members
@@ -828,6 +829,15 @@ public class OrganizationDetailsActivity extends BaseActivity {
     public void handleShowAllClick(){
         Intent intent = new Intent(context, ListEventsActivity.class);
         intent.putExtra("org_id", organizationModel.getOrgID());
+        intent.putExtra("eventType", "upcomingEvents");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.pastEventsButton)
+    public void handlePastEventsClick(){
+        Intent intent = new Intent(context, ListEventsActivity.class);
+        intent.putExtra("org_id", organizationModel.getOrgID());
+        intent.putExtra("eventType", "pastEvents");
         startActivity(intent);
     }
 

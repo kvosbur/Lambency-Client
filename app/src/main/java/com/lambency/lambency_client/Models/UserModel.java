@@ -31,7 +31,13 @@ public class UserModel {
     private String oauthToken;
     private int orgStatus;
     private boolean editable = false;
+
     private boolean isActive;
+
+    private int notification_preference;
+    private boolean isActive;
+    private double pastEventHours = -1;
+
 
     public static UserModel myUserModel;
 
@@ -63,6 +69,39 @@ public class UserModel {
 
         orgStatus = 0;
 
+    }
+
+    public UserModel(String firstName, String lastName, String email, List<Integer> myOrgs, List<Integer> eventsAttending,
+                     List<Integer> followingOrgs, List<Integer> joinedOrgs, List<Integer> orgJoinRequests, int userId, int hoursWorked, String oauthToken, int notification_preference, boolean isActive) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.myOrgs = myOrgs;
+        this.eventsAttending = eventsAttending;
+        this.followingOrgs = followingOrgs;
+        this.joinedOrgs = joinedOrgs;
+        this.userId = userId;
+        this.hoursWorked = hoursWorked;
+        this.oauthToken = oauthToken;
+        this.requestedJoinOrgIds = orgJoinRequests;
+        this.notification_preference = notification_preference;
+        this.isActive = isActive;
+    }
+
+    public int getNotification_preference() {
+        return notification_preference;
+    }
+
+    public void setNotification_preference(int notification_preference) {
+        this.notification_preference = notification_preference;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public void setOauthToken(String oauthToken) {
@@ -319,6 +358,13 @@ public class UserModel {
         return editable;
     }
 
+    public void setPastEventHours(double pastEventHours) {
+        this.pastEventHours = pastEventHours;
+    }
+
+    public double getPastEventHours() {
+        return pastEventHours;
+    }
 
     /**
      *
