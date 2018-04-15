@@ -210,6 +210,7 @@ public interface LambencyAPI {
     @GET("Organization/pastEventAttandence")
     Call<ArrayList<EventAttendanceModel>> getPastEventAttendence(@Query("oAuthCode") String oAuthCode, @Query("eventID") int eventID);
 
-
+    @GET("User/setNotificationPreference")
+    Call<Integer> updateNotificationPreference(@Query("oAuthCode") String oAuthCode, @Query("preference") int preference);
 }
 
