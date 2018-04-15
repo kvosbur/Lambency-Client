@@ -66,6 +66,7 @@ import com.lambency.lambency_client.Utils.MyLifecycleHandler;
 import com.lambency.lambency_client.Utils.NotificationHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
@@ -86,6 +87,8 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
 //this goes in src/main/resources/client_secret.json
 
     static boolean isInBottomBar;
+
+    public static HashMap<String, Integer> notificationOfChat = new HashMap<>();
 
     public void onProfileFragmentInteraction(Uri uri)
     {
@@ -306,6 +309,12 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
     protected void onStop() {
         super.onStop();
         isInBottomBar = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isInBottomBar = true;
     }
 
 }

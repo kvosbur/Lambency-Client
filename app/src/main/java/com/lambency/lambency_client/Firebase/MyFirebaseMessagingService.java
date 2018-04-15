@@ -30,6 +30,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.MessageListActivity;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.NotificationHelper;
@@ -124,6 +125,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             data.get("org_id"));
                     break;
                 case "chatMessage":
+
+                    String chatId = data.get("chatId");
+                    if(BottomBarActivity.notificationOfChat.containsKey(chatId))
+                    {
+                        Integer i = BottomBarActivity.notificationOfChat.get(chatId);
+                        i++;
+                        BottomBarActivity.notificationOfChat.put(chatId, i);
+                    }
+                    else
+                    {
+                        BottomBarActivity.notificationOfChat.put(chatId, 1);
+                    }
+
                     if(!MessageListActivity.isInMessaging)
                     {
                         NotificationHelper.sendChatMessageNotification(this,
