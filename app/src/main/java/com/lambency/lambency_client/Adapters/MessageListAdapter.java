@@ -12,6 +12,9 @@ import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Models.MessageModel;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,7 +41,13 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         void bind(MessageModel messageModel) {
             messageText.setText(messageModel.getMessageText());
-            timeText.setText(messageModel.createdAt);
+
+            Timestamp ts = new Timestamp(Long.parseLong(messageModel.createdAt));
+            Date date = new Date();
+            date.setTime(ts.getTime());
+            String formattedDate = new SimpleDateFormat("h:mm a").format(date);
+
+            timeText.setText(formattedDate);
 
             // Format the stored timestamp into a readable String using method.
             //timeText.setText(Utils.formatDateTime(messageModel.getCreatedAt()));
@@ -63,7 +72,13 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             // Format the stored timestamp into a readable String using method.
             //timeText.setText(Utils.formatDateTime(messageModel.getCreatedAt()));
             nameText.setText(messageModel.getSender());
-            timeText.setText(messageModel.createdAt);
+
+            Timestamp ts = new Timestamp(Long.parseLong(messageModel.createdAt));
+            Date date = new Date();
+            date.setTime(ts.getTime());
+            String formattedDate = new SimpleDateFormat("h:mm a").format(date);
+
+            timeText.setText(formattedDate);
 
             // Insert the profile image from the URL into the ImageView.
             //Utils.displayRoundImageFromUrl(mContext, messageModel.getSender().getProfileUrl(), profileImage);
