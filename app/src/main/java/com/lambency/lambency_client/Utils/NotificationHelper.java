@@ -12,6 +12,9 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.lambency.lambency_client.Activities.AcceptRejectActivity;
 import com.lambency.lambency_client.Activities.MessageListActivity;
+
+import com.lambency.lambency_client.Activities.UserAcceptRejectActivity;
+
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Services.MyNotificationServices;
 
@@ -27,7 +30,10 @@ public class NotificationHelper {
 
     private static int id = 0;
     private static ChannelInfo joinRequestChannel = new ChannelInfo("lambency-join", "Join Requests", "Notifications for users requesting to join organizations will appear here.");
+
     private static ChannelInfo chatMessageChannel = new ChannelInfo("lambency-chat", "Chat messaging", "Notifications about chat messaging.");
+
+    private static ChannelInfo inviteChannel = new ChannelInfo("lambency-invite", "Organization Invites", "Notifications from organizations requesting you join will appear here.");
 
     public static void sendJoinRequestNotification(Context context, String user, String uid, String org, String org_id){
         int contentRequestCode = 0, acceptRequestCode = 1, denyRequestCode = 2;
@@ -76,6 +82,7 @@ public class NotificationHelper {
         notificationManager.notify(id++, notification);
     }
 
+
     public static void sendChatMessageNotification(Context context, String name, String msgId, String chatId)
     {
         int contentRequestCode = 0, acceptRequestCode = 1, denyRequestCode = 2;
@@ -93,6 +100,53 @@ public class NotificationHelper {
                 .setColor(context.getResources().getColor(R.color.colorPrimary))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(contentIntent);
+  
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+        Notification notification = mBuilder.build();
+        // Cancel the notification after its selected
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(id++, notification);
+    }
+  
+    public static void sendInviteNotification(Context context, String org, String org_id){
+        int contentRequestCode = 0, acceptRequestCode = 1, denyRequestCode = 2;
+
+        createNotificationChannel(context, inviteChannel);
+
+        Intent intent = new Intent(context, UserAcceptRejectActivity.class);
+        intent.putExtra("org_id", org_id); //Not sure I need to pass this
+        PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //Accepting the user who wants to join
+        /*Intent acceptIntent = new Intent(context, MyNotificationServices.class);
+        acceptIntent.putExtra("approved", true);
+        acceptIntent.putExtra("user_id", uid);
+        acceptIntent.putExtra("org_id", org_id);
+        acceptIntent.putExtra("notif_id", id);
+        acceptIntent.setAction(MyNotificationServices.JOIN_REQUEST);
+        PendingIntent acceptPendingIntent = PendingIntent.getService(context, acceptRequestCode, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //Denying the user who wants to join
+        Intent denyIntent = new Intent(context, MyNotificationServices.class);
+        denyIntent.putExtra("approved", false);
+        denyIntent.putExtra("user_id", uid);
+        denyIntent.putExtra("org_id", org_id);
+        denyIntent.putExtra("notif_id", id);
+        denyIntent.setAction(MyNotificationServices.JOIN_REQUEST);
+        PendingIntent denyPendingIntent = PendingIntent.getService(context, denyRequestCode, denyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        */
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, joinRequestChannel.id)
+                .setSmallIcon(R.drawable.ic_notification_lambency)
+                .setContentTitle("Organization Invite")
+                .setContentText("You're invited to join " + org + ".")
+                .setColor(context.getResources().getColor(R.color.colorPrimary))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(contentIntent)
+                .addAction(new NotificationCompat.Action(0, "Join", null))
+                .addAction(new NotificationCompat.Action(0, "Ignore", null));
+
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
