@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.MessageListActivity;
 import com.lambency.lambency_client.Activities.StartChatActivity;
 import com.lambency.lambency_client.Adapters.ChatRoomAdapter;
@@ -83,6 +84,10 @@ public class ChatListFragment extends Fragment {
                 Toast.makeText(getContext(), "Sorry We cant load chat because shit hit the fan fam", Toast.LENGTH_LONG).show();
             }
         });
+
+        ((BottomBarActivity) getActivity())
+                .setActionBarTitle("Messaging");
+        ((BottomBarActivity) getActivity()).getSupportActionBar().setElevation(0);
     }
 
     @Override
