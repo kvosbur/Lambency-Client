@@ -135,15 +135,22 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
         bar.setSelectedItemId(R.id.lamBot);
         switchToFragment3();
 
+        /*
         BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) bar.getChildAt(0);
         View v = bottomNavigationMenuView.getChildAt(4);
         BottomNavigationItemView itemView = (BottomNavigationItemView) v;
 
-        badge = LayoutInflater.from(this)
-                .inflate(R.layout.bottom_badge, bottomNavigationMenuView, false);
+        if(countOfNotification() > 0)
+        {
+            badge = LayoutInflater.from(this)
+                    .inflate(R.layout.bottom_badge, bottomNavigationMenuView, false);
 
-        itemView.addView(badge);
-
+            itemView.addView(badge);
+            TextView t =  itemView.findViewById(R.id.notifications_badge);
+            t.setText(countOfNotification());
+        }
+        */
+        inflateBottom();
 
         bar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -199,6 +206,24 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
             i += (Integer) value;
         }
         return i;
+    }
+
+    public void inflateBottom() {
+
+        BottomNavigationView bar = findViewById(R.id.bottom_navigation);
+        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) bar.getChildAt(0);
+        View v = bottomNavigationMenuView.getChildAt(4);
+        BottomNavigationItemView itemView = (BottomNavigationItemView) v;
+
+        if(countOfNotification() > 0)
+        {
+            badge = LayoutInflater.from(this)
+                    .inflate(R.layout.bottom_badge, bottomNavigationMenuView, false);
+
+            itemView.addView(badge);
+            TextView t =  itemView.findViewById(R.id.notifications_badge);
+            t.setText(countOfNotification());
+        }
     }
 
     @Override
