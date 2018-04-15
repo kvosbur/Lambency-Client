@@ -348,7 +348,7 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
     protected void onResume() {
         super.onResume();
         isInBottomBar = true;
-        //inflateBottom();
+        inflateBottom();
     }
 
 }
