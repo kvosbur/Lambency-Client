@@ -90,6 +90,14 @@ public class MessageListActivity extends BaseActivity {
         user.put("last", "Lovelace");
         user.put("born", 1815);
 
+        /*
+        Firestore db = FirestoreClient.getFirestore();
+        db.collection("chats").document("" + chatModel.getChatID())
+                .collection("messages")
+                .document("" + msg_id)
+                .set(messageModel);
+                */
+
         // Add a new document with a generated ID
         db.collection("users")
                 .add(user)
@@ -144,6 +152,7 @@ public class MessageListActivity extends BaseActivity {
         mMessageRecycler.setLayoutManager(llm);
         mMessageRecycler.setAdapter(myMessageAdapter);
         myMessageAdapter.notifyDataSetChanged();
+
 
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
