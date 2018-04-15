@@ -10,13 +10,19 @@ public class ChatModel implements Serializable{
     private String recent_msg_text;
     private int userID;
 
-    public ChatModel(int chatID, String name, int recent_msg_id, String recent_msg_text, int userID) {
+    public ChatModel(int chatID, String name){
         this.chatID = chatID;
         this.name = name;
+    }
+
+    public ChatModel(int chatID, String name, int recent_msg_id, String recent_msg_text, int userID) {
+        this(chatID, name);
         this.recent_msg_id = recent_msg_id;
         this.recent_msg_text = recent_msg_text;
         this.userID = userID;
     }
+
+
 
     public int getUserID() {
         return userID;

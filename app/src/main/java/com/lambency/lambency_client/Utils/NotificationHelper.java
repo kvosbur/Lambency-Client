@@ -11,7 +11,9 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.lambency.lambency_client.Activities.AcceptRejectActivity;
+import com.lambency.lambency_client.Activities.LoginActivity;
 import com.lambency.lambency_client.Activities.MessageListActivity;
+import com.lambency.lambency_client.Models.ChatModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Services.MyNotificationServices;
 
@@ -76,14 +78,15 @@ public class NotificationHelper {
         notificationManager.notify(id++, notification);
     }
 
-    public static void sendChatMessageNotification(Context context, String name, String msgId, String chatId)
+    public static void sendChatMessageNotification(Context context, String name, String chatId, String msgID)
     {
         int contentRequestCode = 0, acceptRequestCode = 1, denyRequestCode = 2;
         createNotificationChannel(context, chatMessageChannel);
 
-        Intent intent = new Intent(context, MessageListActivity.class);
-        intent.putExtra("msgId", msgId);
-        intent.putExtra("chatId", chatId);
+        Intent intent = new Intent(context, LoginActivity.class);
+        ChatModel cm = new ChatModel(Integer.parseInt(chatId),name);
+        intent.putExtra("chatModel", cm);
+        intent.putExtra("NextActivity", "MessageListActivity");
         PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, joinRequestChannel.id)
