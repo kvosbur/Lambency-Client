@@ -95,6 +95,11 @@ public class MessageListActivity extends BaseActivity {
         actionBar.setTitle(chatModel.getName());
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        if(BottomBarActivity.notificationOfChat != null)
+        {
+            BottomBarActivity.notificationOfChat.remove(Integer.toString(chatModel.getChatID()));
+        }
+
         /*
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
