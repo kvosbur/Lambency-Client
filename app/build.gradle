@@ -93,7 +93,7 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-messaging:12.0.1'
-    compile 'com.google.firebase:firebase-database:12.0.1'
+    implementation 'com.google.firebase:firebase-database:12.0.1'
     //implementation 'com.firebaseui:firebase-ui:0.6.0'
     // FirebaseUI for Firebase Realtime Database
     implementation 'com.firebaseui:firebase-ui-database:3.3.0'
@@ -111,7 +111,7 @@ dependencies {
     implementation 'com.facebook.android:facebook-login:4.30.0'
 
     //Multidex
-    compile 'com.android.support:multidex:1.0.1'
+    implementation 'com.android.support:multidex:1.0.1'
 
     //Password strength check
     implementation 'com.github.yesterselga:password-strength-checker-android:v1.0'
