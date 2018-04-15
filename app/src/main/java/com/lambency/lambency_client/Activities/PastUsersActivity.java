@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -26,11 +29,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PastUsersActivity extends AppCompatActivity {
+public class PastUsersActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private Context context;
     private int event_id;
     private UserListAdapter userListAdapter;
+
+    List<UserModel> users;
 
     @BindView(R.id.usersRecyclerView)
     RecyclerView usersRecyclerView;
@@ -86,6 +91,8 @@ public class PastUsersActivity extends AppCompatActivity {
                     users.add(model.getUserModel());
                 }
 
+                setUsers(users);
+
                 startAdapter(users);
 
             }
@@ -103,6 +110,49 @@ public class PastUsersActivity extends AppCompatActivity {
         usersRecyclerView.setAdapter(userListAdapter);
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate( R.menu.menu_search_users, menu);
+
+        final MenuItem searchAction = menu.findItem( R.id.search );
+        SearchView searchView = (SearchView) searchAction.getActionView();
+        searchView.setQueryHint("Search users...");
+        searchView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        searchView.setOnQueryTextListener(this);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        final List<UserModel> filteredUsers = filter(users, newText);
+        userListAdapter.replaceAll(new ArrayList<UserModel>(filteredUsers));
+
+        return true;
+    }
+
+    private static List<UserModel> filter(List<UserModel> users, String query){
+        final String lowercaseQuery = query.toLowerCase();
+
+        final  List<UserModel> filteredUserList = new ArrayList<>();
+        for(UserModel user: users){
+            final String firstName = user.getFirstName().toLowerCase();
+            final String lastName = user.getLastName().toLowerCase();
+            final String fullName = firstName + " " + lastName;
+            if(firstName.contains(lowercaseQuery) || lastName.contains(lowercaseQuery) || fullName.contains(lowercaseQuery)){
+                filteredUserList.add(user);
+            }
+        }
+
+        return filteredUserList;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -114,5 +164,7 @@ public class PastUsersActivity extends AppCompatActivity {
         }
     }
 
-
+    public void setUsers(List<UserModel> users) {
+        this.users = users;
+    }
 }
