@@ -350,7 +350,6 @@ public class MessageListActivity extends BaseActivity {
                                     Toast.makeText(view.getContext(), "Response from server said you cant send that message.", Toast.LENGTH_LONG).show();
                                 }
                                 else {
-                                    Toast.makeText(view.getContext(), "Message Sent with chat id " + chatModel.getChatID() + " and ret " + ret, Toast.LENGTH_LONG).show();
                                     //TODO
                                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                                     db.collection("chats").document("" + chatModel.getChatID())

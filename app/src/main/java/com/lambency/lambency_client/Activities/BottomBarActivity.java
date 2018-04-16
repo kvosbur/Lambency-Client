@@ -138,8 +138,14 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
             String value = getIntent().getExtras().getString("msg");
             if(value != null)
             {
-                switchToFragment5();
-                bottomNavigationView.setSelectedItemId(R.id.messagingBot);
+                Bundle args = new Bundle();
+                args.putString("idVal", value);
+                ChatListFragment newFragment = new ChatListFragment();
+                newFragment.setArguments(args);
+                bar.setSelectedItemId(R.id.messagingBot);
+                //switchToFragment5();
+                FragmentManager manager = getSupportFragmentManager();
+                manager.beginTransaction().replace(R.id.fragContainer, newFragment).commit();
             }
             else
             {

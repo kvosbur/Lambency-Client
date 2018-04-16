@@ -68,6 +68,14 @@ public class ChatListFragment extends Fragment {
 
         System.out.println("HERE345");
 
+        Bundle b = getArguments();
+        if(b != null)
+        {
+            String id = b.getString("idVal");
+            System.out.print(id);
+            callOtherRetrofit(Integer.parseInt(id));
+        }
+
         callRetrofit();
 
         ((BottomBarActivity) getActivity())
@@ -216,5 +224,36 @@ public class ChatListFragment extends Fragment {
                 Toast.makeText(getContext(), "Sorry We cant load chat because shit hit the fan fam", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void callOtherRetrofit(final int userId)
+    {
+            LambencyAPIHelper.getInstance().createChat(UserModel.myUserModel.getOauthToken(),userId,false).enqueue(new Callback<ChatModel>() {
+                @Override
+                public void onResponse(Call<ChatModel> call, Response<ChatModel> response) {
+                    if (response == null || response.code() != 200 || response.body() == null) {
+                        Toast.makeText(getActivity(), "Sorry we cant create it", Toast.LENGTH_LONG).show();
+                        System.out.println("It FAILED3");
+                    }else{
+                        ChatModel chatModel = response.body();
+
+                        Intent mIntent = new Intent(getContext(), MessageListActivity.class);
+                        //Bundle mBundle = new Bundle();
+                        mIntent.putExtra("chatModel", chatModel);
+                        //mIntent.putExtras(mBundle);
+                        startActivity(mIntent);
+
+                        System.out.println("It FAILED4");
+                    }
+                    System.out.println("It FAILED5");
+
+                }
+
+                @Override
+                public void onFailure(Call<ChatModel> call, Throwable t) {
+                    System.out.println("It FAILED2");
+                    Toast.makeText(getActivity(), "Sorry it failed ;/", Toast.LENGTH_LONG).show();
+                }
+            });
     }
 }
