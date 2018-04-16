@@ -674,10 +674,10 @@ public class EventDetailsActivity extends BaseActivity implements
                     dateView.setText(currDate); //TimeHelper.dateFromTimestamp(eventModel.getStart()));
                     descriptionView.setText(eventModel.getDescription());
                     timeView.setText(TimeHelper.hourFromTimestamp(eventModel.getStart()) + " - " + TimeHelper.hourFromTimestamp(eventModel.getEnd()));
-                    addressForGmaps = eventModel.getLocation();
+                    addressForGmaps = eventModel.getPrettyAddress();
                     latitude = eventModel.getLattitude();
                     longitude = eventModel.getLongitude();
-                    addressView.setText(eventModel.getLocation());
+                    addressView.setText(eventModel.getPrettyAddress());
 
                     if(eventModel.isPrivateEvent()) {
                         memberOnlyText.setVisibility(View.VISIBLE);

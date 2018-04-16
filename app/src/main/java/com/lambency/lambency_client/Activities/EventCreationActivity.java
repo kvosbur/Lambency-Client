@@ -305,7 +305,7 @@ public class EventCreationActivity extends BaseActivity implements AdapterView.O
                 String city = cityEdit.getText().toString();
                 String state = stateAutocomplete.getText().toString();
                 String zip = zipEdit.getText().toString();
-                final String location = addressOfEvent + " " + city + " " + state + " " + zip;
+                final String location = addressOfEvent + ";" + city + ";" + state + ";" + zip;
 
                 if (editing) {
                     final byte[] imageFile = ImageHelper.getByteArrayFromPath(context, imagePath);
@@ -414,7 +414,17 @@ public class EventCreationActivity extends BaseActivity implements AdapterView.O
 
                     nameEdit.setText(eventModel.getName());
                     descriptionEdit.setText(eventModel.getDescription());
-                    addressEdit.setText(eventModel.getLocation());
+                    String[] split = eventModel.getSplitAddress();
+
+                    if(split.length < 4){
+                        addressEdit.setText(split[0]);
+                    }else {
+                        addressEdit.setText(split[0]);
+                        cityEdit.setText(split[1]);
+                        stateAutocomplete.setText(split[2]);
+                        zipEdit.setText(split[3]);
+                    }
+
 
                     startingTime = eventModel.getStart();
                     endingTime = eventModel.getEnd();

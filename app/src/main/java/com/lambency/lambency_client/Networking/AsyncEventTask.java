@@ -57,7 +57,7 @@ public class AsyncEventTask extends AsyncTask <Void, Void, Void>{
                 //when response is back
                 EventModel createdEvent = response.body();
                 System.out.println("Created Event: " + createdEvent);
-                System.out.println("location send was   !!! " + eventModel.getLocation());
+                System.out.println("location send was   !!! " + eventModel.getPrettyAddress());
 
                 if (createdEvent == null) {
                     Toast.makeText(context, "Event error!", Toast.LENGTH_SHORT).show();
