@@ -2,7 +2,9 @@ package com.lambency.lambency_client.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.AlertDialogLayout;
@@ -25,6 +27,7 @@ import retrofit2.Response;
 
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.OrgUsersActivity;
+import com.lambency.lambency_client.Fragments.ChatListFragment;
 import com.lambency.lambency_client.Fragments.UserListFragment;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
@@ -222,6 +225,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             public void onClick(View view) {
                 //TODO add code for switching here!
                 Toast.makeText(context, "Send Text", Toast.LENGTH_SHORT).show();
+                Intent mIntent = new Intent(context, BottomBarActivity.class);
+                Bundle mBundle = new Bundle();
+                mBundle.putString("msg", "" + userModel.getUserId());
+                mIntent.putExtras(mBundle);
+                context.startActivity(mIntent);
                 alertDialog.dismiss();
             }
         });

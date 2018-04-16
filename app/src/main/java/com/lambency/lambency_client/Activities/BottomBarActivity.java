@@ -130,10 +130,27 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
         sendFirebaseToken(token);
         Log.d("Bottom Bar", "Sent firebase token to server: " + token);
 
-
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
         bar.setSelectedItemId(R.id.lamBot);
-        switchToFragment3();
+
+        if(getIntent().getExtras() != null)
+        {
+            String value = getIntent().getExtras().getString("msg");
+            if(value != null)
+            {
+                switchToFragment5();
+                bottomNavigationView.setSelectedItemId(R.id.messagingBot);
+            }
+            else
+            {
+                switchToFragment3();
+            }
+        }
+        else
+        {
+            switchToFragment3();
+        }
+
 
         /*
         BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) bar.getChildAt(0);
