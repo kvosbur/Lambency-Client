@@ -163,6 +163,7 @@ public class LeaderboardActivity extends BaseActivity {
 
         userList.remove(userList.size()-1);
         mAdapter.notifyDataSetChanged(); // how we update
+        startVal-=1;
 
         LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + startVal+10).enqueue(new Callback<List<UserModel>>() {
             @Override
