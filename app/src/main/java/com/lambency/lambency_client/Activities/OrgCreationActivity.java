@@ -147,7 +147,20 @@ public class OrgCreationActivity extends BaseActivity {
                     nameEdit.setText(orgModel.getName());
                     emailEdit.setText(orgModel.getEmail());
                     descriptionEdit.setText(orgModel.getDescription());
-                    addressEdit.setText(orgModel.getLocation());
+
+                    String[] vals = orgModel.getSplitAddress();
+                    if(vals.length < 4)
+                    {
+                        addressEdit.setText(vals[0]);
+                    }
+                    else
+                    {
+                        addressEdit.setText(vals[0]);
+                        cityEdit.setText(vals[1]);
+                        stateAutocomplete.setText(vals[2]);
+                        zipEdit.setText(vals[3]);
+                    }
+
                     mainLayout.setVisibility(View.VISIBLE);
                     progressLayout.setVisibility(View.GONE);
                     if(orgModel.getImagePath() != null && !orgModel.getImagePath().equals("")){
@@ -178,7 +191,7 @@ public class OrgCreationActivity extends BaseActivity {
                 String city = cityEdit.getText().toString();
                 String state = stateAutocomplete.getText().toString();
                 String zip = zipEdit.getText().toString();
-                String location = address + " " + city + " " + state + " " + zip;
+                String location = address + ";" + city + ";" + state + ";" + zip;
 
                 if (name.matches("") || email.matches("") || description.matches("") || address.matches("") || city.matches("") || state.matches("") || zip.matches("") || zip.matches("")) {
                     Toast.makeText(this, "You did not enter all information", Toast.LENGTH_SHORT).show();

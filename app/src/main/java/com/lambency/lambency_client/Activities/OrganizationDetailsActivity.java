@@ -219,7 +219,7 @@ public class OrganizationDetailsActivity extends BaseActivity {
                     titleOrg.setText(organization.getName());
                     descriptionOrg.setText(organization.getDescription());
                     emailOrg.setText(organization.getEmail());
-                    addressOrg.setText(organization.getLocation());
+                    addressOrg.setText(organization.getPrettyAddress());
 
 
                     //img = organization.getImage();
