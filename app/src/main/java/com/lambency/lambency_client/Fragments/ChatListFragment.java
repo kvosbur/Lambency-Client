@@ -66,24 +66,9 @@ public class ChatListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize dataset, this data would usually come from a local content provider or
-        // remote server.
-        LambencyAPIHelper.getInstance().getAllChats(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<ChatModel>>() {
-            @Override
-            public void onResponse(Call<ArrayList<ChatModel>> call, Response<ArrayList<ChatModel>> response) {
-                if(response == null || response.code() != 200 || !response.isSuccessful()){
-                    Toast.makeText(getContext(), "Sorry We cant load chat", Toast.LENGTH_LONG).show();
-                }
-                else{
-                   initDataset(response.body());
-                }
-            }
+        System.out.println("HERE345");
 
-            @Override
-            public void onFailure(Call<ArrayList<ChatModel>> call, Throwable t) {
-                Toast.makeText(getContext(), "Sorry We cant load chat because shit hit the fan fam", Toast.LENGTH_LONG).show();
-            }
-        });
+        callRetrofit();
 
         ((BottomBarActivity) getActivity())
                 .setActionBarTitle("Messaging");
@@ -96,6 +81,8 @@ public class ChatListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_chat_list, container, false);
         ButterKnife.bind(this, rootView);
         rootView.setTag(TAG);
+
+        System.out.println("HERE34567");
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.chatListRecyclerView);
 
@@ -176,6 +163,13 @@ public class ChatListFragment extends Fragment {
      */
     private void initDataset( ArrayList<ChatModel> c) {
         mDataset = c;
+        for(int i = 0; i < c.size(); i++){
+            if(c.get(i).getRecent_msg_id() == 0){
+                c.remove(i);
+                i--;
+            }
+        }
+
         mAdapter.updateEvents(mDataset);
         mRecyclerView.setVisibility(View.VISIBLE);
         mAdapter.notifyDataSetChanged();
@@ -185,11 +179,7 @@ public class ChatListFragment extends Fragment {
     public void handleOrgFabClick(){
         Intent intent = new Intent(getActivity(), StartChatActivity.class);
         ArrayList<ChatModel> chats = mAdapter.getRooms();
-        ArrayList<Integer> ids = new ArrayList<>();
-        for(ChatModel c: chats){
-            ids.add(c.getUserID());
-        }
-        intent.putExtra("chats", ids);
+        intent.putExtra("chats", chats);
         startActivityForResult(intent,1);
     }
 
@@ -197,11 +187,34 @@ public class ChatListFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         System.out.println("on activity result");
         if (requestCode == 1) {
+            callRetrofit();
             ChatModel chatModel = (ChatModel) data.getExtras().getSerializable("chatModel");
             Intent intent = new Intent(getActivity(), MessageListActivity.class);
             intent.putExtra("chatModel",chatModel);
             startActivity(intent);
 
         }
+    }
+
+    private void callRetrofit(){
+        // Initialize dataset, this data would usually come from a local content provider or
+        // remote server.
+        LambencyAPIHelper.getInstance().getAllChats(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<ChatModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<ChatModel>> call, Response<ArrayList<ChatModel>> response) {
+                if(response == null || response.code() != 200 || !response.isSuccessful()){
+                    Toast.makeText(getContext(), "Sorry We cant load chat", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    System.out.println("HERE3456");
+                    initDataset(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<ChatModel>> call, Throwable t) {
+                Toast.makeText(getContext(), "Sorry We cant load chat because shit hit the fan fam", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

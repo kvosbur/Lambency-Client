@@ -48,6 +48,8 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.Area
 
     private Context context;
 
+    private static ArrayList<ChatModel> emptyChats;
+
     private final SortedList<UserModel> users = new SortedList<UserModel>(UserModel.class, new SortedList.Callback<UserModel>() {
         @Override
         public int compare(UserModel o1, UserModel o2) {
@@ -85,9 +87,10 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.Area
         }
     });
 
-    public StartChatAdapter(Context context, List<UserModel> users)
+    public StartChatAdapter(Context context, List<UserModel> users, ArrayList<ChatModel> emptyChats)
     {
         this.context = context;
+        StartChatAdapter.emptyChats = emptyChats;
         add(users);
     }
 
@@ -182,31 +185,40 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.Area
 
 
             //FirebaseDatabase.getInstance().getReference().child("messages").child("1").setValue("EMPTY");
-            LambencyAPIHelper.getInstance().createChat(UserModel.myUserModel.getOauthToken(),users.get( getAdapterPosition()).getUserId(),false).enqueue(new Callback<ChatModel>() {
-                @Override
-                public void onResponse(Call<ChatModel> call, Response<ChatModel> response) {
-                    if (response == null || response.code() != 200 || response.body() == null) {
-                        Toast.makeText(user_card.getContext(), "Sorry we cant create it", Toast.LENGTH_LONG).show();
-                        System.out.println("It FAILED3");
-                    }else{
-                        ChatModel chatModel = response.body();
-                        Intent intent = new Intent();
-                        intent.putExtra("chatModel", chatModel);
-                        StartChatActivity c = (StartChatActivity)user_card.getContext();
-                        c.setResult(RESULT_OK, intent);
-                        c.finish();
-                        System.out.println("It FAILED4");
+            ChatModel chatModel = StartChatActivity.containsEmptyChat(emptyChats, users.get(getAdapterPosition()).getUserId());
+            if(chatModel == null){
+                LambencyAPIHelper.getInstance().createChat(UserModel.myUserModel.getOauthToken(),users.get( getAdapterPosition()).getUserId(),false).enqueue(new Callback<ChatModel>() {
+                    @Override
+                    public void onResponse(Call<ChatModel> call, Response<ChatModel> response) {
+                        if (response == null || response.code() != 200 || response.body() == null) {
+                            Toast.makeText(user_card.getContext(), "Sorry we cant create it", Toast.LENGTH_LONG).show();
+                            System.out.println("It FAILED3");
+                        }else{
+                            ChatModel chatModel = response.body();
+                            Intent intent = new Intent();
+                            intent.putExtra("chatModel", chatModel);
+                            StartChatActivity c = (StartChatActivity)user_card.getContext();
+                            c.setResult(RESULT_OK, intent);
+                            c.finish();
+                            System.out.println("It FAILED4");
+                        }
+                        System.out.println("It FAILED5");
+
                     }
-                    System.out.println("It FAILED5");
 
-                }
-
-                @Override
-                public void onFailure(Call<ChatModel> call, Throwable t) {
-                    System.out.println("It FAILED2");
-                    Toast.makeText(user_card.getContext(), "Sorry it failed ;/", Toast.LENGTH_LONG).show();
-                }
-            });
+                    @Override
+                    public void onFailure(Call<ChatModel> call, Throwable t) {
+                        System.out.println("It FAILED2");
+                        Toast.makeText(user_card.getContext(), "Sorry it failed ;/", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                Intent intent = new Intent();
+                intent.putExtra("chatModel", chatModel);
+                StartChatActivity c = (StartChatActivity)user_card.getContext();
+                c.setResult(RESULT_OK, intent);
+                c.finish();
+            }
         }
 
 
