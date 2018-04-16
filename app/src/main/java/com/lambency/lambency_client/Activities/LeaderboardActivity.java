@@ -6,6 +6,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,10 +32,10 @@ import retrofit2.Response;
 public class LeaderboardActivity extends BaseActivity {
 
     private RecyclerView mRecyclerView;
-    private LeaderboardAdapter mAdapter;
+    private static LeaderboardAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    List<UserModel> userList = new ArrayList<>();
+    static List<UserModel> userList = new ArrayList<>();
 
     @BindView(R.id.leaderboardPos)
     TextView leaderboardPos;
@@ -45,6 +47,9 @@ public class LeaderboardActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
         mRecyclerView = (RecyclerView) findViewById(R.id.leaderboardRecycle);
+
+        startVal = 1;
+        userList = new ArrayList<>();
 
         ButterKnife.bind(this);
 
@@ -62,7 +67,7 @@ public class LeaderboardActivity extends BaseActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + startVal+10).enqueue(new Callback<List<UserModel>>() {
+        LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + startVal).enqueue(new Callback<List<UserModel>>() {
                 @Override
                 public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
                     if (response.body() == null || response.code() != 200) {
@@ -152,6 +157,46 @@ public class LeaderboardActivity extends BaseActivity {
     //TODO retrofit here
     private void callRetrofit(int event_id){
 
+    }
+
+    public static void update() {
+
+        userList.remove(userList.size()-1);
+        mAdapter.notifyDataSetChanged(); // how we update
+
+        LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + startVal+10).enqueue(new Callback<List<UserModel>>() {
+            @Override
+            public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred");
+                    return;
+                }
+                //when response is back
+                List<UserModel> ret = response.body();
+                if (ret == null || ret.size() == 0) {
+                    System.out.println("An error has occurred");
+                } else {
+                    UserModel userModel = ret.get(0);
+                    int rank = Integer.parseInt(userModel.getOauthToken());
+                    //Toast.makeText(LeaderboardActivity.this, "" + ret.size(), Toast.LENGTH_SHORT).show();
+                    // I will set the oAuthToken to the users rank
+                    startVal += ret.size();
+
+                    for (int i = 0; i < ret.size(); i++) {
+                        userList.add(ret.get(i));
+                    }
+
+                    userList.add(new UserModel("...", null, null, null, null, null, null, 0, 0, null));
+
+                    mAdapter.notifyDataSetChanged(); // how we update
+                }
+            }
+            @Override
+            public void onFailure(Call<List<UserModel>> call, Throwable throwable) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
     }
 
     @Override
