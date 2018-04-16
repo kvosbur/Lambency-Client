@@ -615,6 +615,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 ));
                 break;
 
+            case "AcceptRejectActivity":
+                myIntent = new Intent(this, AcceptRejectActivity.class);
+                myIntent.putExtra("org_id", getIntent().getExtras().getString("org_id", "-1"));
+                break;
+
+            case "UserAcceptRejectActivity":
+                myIntent = new Intent(this, UserAcceptRejectActivity.class);
+                break;
+
             default:
                 myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
         }

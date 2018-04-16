@@ -51,6 +51,11 @@ public class NotificationHelper {
         createNotificationChannel(context, joinRequestChannel);
 
         Intent intent = new Intent(context, LoginActivity.class);
+        Bundle b = new Bundle();
+        b.putString("NextActivity", "AcceptRejectActivity");
+        b.putString("org_id", org_id);
+        intent.putExtras(b);
+
         PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Accepting the user who wants to join
@@ -126,6 +131,7 @@ public class NotificationHelper {
         createNotificationChannel(context, inviteChannel);
 
         Intent intent = new Intent(context, LoginActivity.class);
+        intent.putExtra("NextActivity", "UserAcceptRejectActivity");
         PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Accepting the invite notification
