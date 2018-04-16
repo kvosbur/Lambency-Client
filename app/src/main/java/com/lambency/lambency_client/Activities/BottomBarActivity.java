@@ -135,7 +135,7 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
         bar.setSelectedItemId(R.id.lamBot);
 
-        if(getIntent().getExtras() != null)
+        if(getIntent() != null && getIntent().getExtras() != null)
         {
             String value = getIntent().getExtras().getString("msg");
             if(value != null)
@@ -215,12 +215,15 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
-        Bundle b = getIntent().getExtras();
-        if(b != null)
+        if(getIntent() != null)
         {
-            if(b.getString("bottomView") != null && b.getString("bottomView").equals("feed"))
+            Bundle b = getIntent().getExtras();
+            if(b != null)
             {
-                bar.setSelectedItemId(R.id.feedBot);
+                if(b.getString("bottomView") != null && b.getString("bottomView").equals("feed"))
+                {
+                    bar.setSelectedItemId(R.id.feedBot);
+                }
             }
         }
     }

@@ -160,7 +160,6 @@ public class LeaderboardActivity extends BaseActivity {
     }
 
     public static void update() {
-
         userList.remove(userList.size()-1);
         mAdapter.notifyDataSetChanged(); // how we update
         startVal-=1;
@@ -189,6 +188,16 @@ public class LeaderboardActivity extends BaseActivity {
 
                     userList.add(new UserModel("...", null, null, null, null, null, null, 0, 0, null));
 
+                    for(int i = 0; i < userList.size(); i++)
+                    {
+                        UserModel u = userList.get(i);
+                        if(u.getFirstName().compareTo("...") == 0 && i != userList.size()-1)
+                        {
+                            userList.remove(i);
+                            i--;
+                        }
+                    }
+
                     mAdapter.notifyDataSetChanged(); // how we update
                 }
             }
@@ -198,6 +207,16 @@ public class LeaderboardActivity extends BaseActivity {
                 System.out.println("FAILED CALL");
             }
         });
+
+        for(int i = 0; i < userList.size(); i++)
+        {
+            UserModel u = userList.get(i);
+            if(u.getFirstName().compareTo("...") == 0 && i != userList.size()-1)
+            {
+                userList.remove(i);
+                i--;
+            }
+        }
     }
 
     @Override
