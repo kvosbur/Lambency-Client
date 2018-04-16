@@ -194,6 +194,7 @@ public class ChatListFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         System.out.println("on activity result");
+        // fixed crash here
         if (requestCode == 1 && data != null && data.getExtras() != null) {
             callRetrofit();
             ChatModel chatModel = (ChatModel) data.getExtras().getSerializable("chatModel");
