@@ -38,13 +38,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by Evan on 2/12/2018.
  */
 
-public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.ViewHolder> {
+public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.AreaViewHolder> {
 
     private Context context;
+
+    private static ArrayList<ChatModel> emptyChats;
 
     private final SortedList<UserModel> users = new SortedList<UserModel>(UserModel.class, new SortedList.Callback<UserModel>() {
         @Override
@@ -83,22 +87,23 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
         }
     });
 
-    public StartChatAdapter(Context context, List<UserModel> users)
+    public StartChatAdapter(Context context, List<UserModel> users, ArrayList<ChatModel> emptyChats)
     {
         this.context = context;
+        StartChatAdapter.emptyChats = emptyChats;
         add(users);
     }
 
 
 
     @Override
-    public StartChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StartChatAdapter.AreaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.card_user, parent, false);
-        return new ViewHolder(v);
+        return new AreaViewHolder(v, users);
     }
 
     @Override
-    public void onBindViewHolder(StartChatAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(StartChatAdapter.AreaViewHolder holder, int position) {
 
         final UserModel userModel = users.get(position);
 
@@ -132,7 +137,7 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
         return users.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class AreaViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.name)
         TextView nameView;
@@ -158,10 +163,15 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
         @BindView(R.id.user_card)
         CardView user_card;
 
-        public ViewHolder(View itemView) {
+        SortedList<UserModel> users;
+
+
+        public AreaViewHolder(View itemView, SortedList<UserModel> users) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.users = users;
         }
+
 
         @OnClick(R.id.user_card)
         public void CreateChat(){
@@ -169,11 +179,48 @@ public class StartChatAdapter extends RecyclerView.Adapter<StartChatAdapter.View
             //get current user token
             String token = FirebaseInstanceId.getInstance().getToken();
 
-            ((Activity)user_card.getContext()).finish();
+            //((Activity)user_card.getContext()).finish();
+
+
 
 
             //FirebaseDatabase.getInstance().getReference().child("messages").child("1").setValue("EMPTY");
+            ChatModel chatModel = StartChatActivity.containsEmptyChat(emptyChats, users.get(getAdapterPosition()).getUserId());
+            if(chatModel == null){
+                LambencyAPIHelper.getInstance().createChat(UserModel.myUserModel.getOauthToken(),users.get( getAdapterPosition()).getUserId(),false).enqueue(new Callback<ChatModel>() {
+                    @Override
+                    public void onResponse(Call<ChatModel> call, Response<ChatModel> response) {
+                        if (response == null || response.code() != 200 || response.body() == null) {
+                            Toast.makeText(user_card.getContext(), "Sorry we cant create it", Toast.LENGTH_LONG).show();
+                            System.out.println("It FAILED3");
+                        }else{
+                            ChatModel chatModel = response.body();
+                            Intent intent = new Intent();
+                            intent.putExtra("chatModel", chatModel);
+                            StartChatActivity c = (StartChatActivity)user_card.getContext();
+                            c.setResult(RESULT_OK, intent);
+                            c.finish();
+                            System.out.println("It FAILED4");
+                        }
+                        System.out.println("It FAILED5");
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ChatModel> call, Throwable t) {
+                        System.out.println("It FAILED2");
+                        Toast.makeText(user_card.getContext(), "Sorry it failed ;/", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                Intent intent = new Intent();
+                intent.putExtra("chatModel", chatModel);
+                StartChatActivity c = (StartChatActivity)user_card.getContext();
+                c.setResult(RESULT_OK, intent);
+                c.finish();
+            }
         }
+
 
 
     }

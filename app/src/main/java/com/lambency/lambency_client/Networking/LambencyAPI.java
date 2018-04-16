@@ -7,6 +7,7 @@ import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.Models.EventAttendanceModel;
 
 import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.MessageModel;
 import com.lambency.lambency_client.Models.MyLambencyModel;
 import com.lambency.lambency_client.Models.OrganizationFilterModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
@@ -204,6 +205,9 @@ public interface LambencyAPI {
     @GET("Chat/getAllChats")
     Call<ArrayList<ChatModel>> getAllChats(@Query("oAuthCode") String oAuthCode);
 
+    @POST("Chat/sendMessage")
+    Call<Integer> sendMessage(@Query("oAuthCode") String oAuthCode, @Query("chatID") int chatID, @Body MessageModel messageModel);
+
     @GET("Organization/pastEvents")
     Call<ArrayList<EventModel>> getPastEvents(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
 
@@ -218,6 +222,7 @@ public interface LambencyAPI {
 
     @GET("User/pastEventsInOrg")
     Call<ArrayList<EventModel>> getPastEventsInOrg(@Query("oAuthCode") String oAuthCode, @Query("userID") String userID, @Query("orgID") String orgID);
+
 
 }
 

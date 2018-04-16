@@ -10,11 +10,12 @@ import android.widget.TextView;
 
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
-import com.lambency.lambency_client.Utils.Message;
+import com.lambency.lambency_client.Models.MessageModel;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-
-import butterknife.internal.Utils;
 
 /**
  * Created by Evan on 3/31/2018.
@@ -26,7 +27,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
     private Context mContext;
-    private List<Message> mMessageList;
+    private List<MessageModel> mMessageModelList;
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
@@ -38,12 +39,18 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             timeText = (TextView) itemView.findViewById(R.id.text_message_time);
         }
 
-        void bind(Message message) {
-            messageText.setText(message.getMessage());
-            timeText.setText(message.createdAt);
+        void bind(MessageModel messageModel) {
+            messageText.setText(messageModel.getMessageText());
+
+            Timestamp ts = new Timestamp(Long.parseLong(messageModel.createdAt));
+            Date date = new Date();
+            date.setTime(ts.getTime());
+            String formattedDate = new SimpleDateFormat("h:mm a").format(date);
+
+            timeText.setText(formattedDate);
 
             // Format the stored timestamp into a readable String using method.
-            //timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
+            //timeText.setText(Utils.formatDateTime(messageModel.getCreatedAt()));
         }
     }
 
@@ -59,39 +66,46 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             profileImage = (ImageView) itemView.findViewById(R.id.image_message_profile);
         }
 
-        void bind(Message message) {
-            messageText.setText(message.getMessage());
+        void bind(MessageModel messageModel) {
+            messageText.setText(messageModel.getMessageText());
 
             // Format the stored timestamp into a readable String using method.
-            //timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
-            nameText.setText(message.getSender());
-            timeText.setText(message.createdAt);
+            //timeText.setText(Utils.formatDateTime(messageModel.getCreatedAt()));
+            nameText.setText(messageModel.getSender());
+
+            Timestamp ts = new Timestamp(Long.parseLong(messageModel.createdAt));
+            Date date = new Date();
+            date.setTime(ts.getTime());
+            String formattedDate = new SimpleDateFormat("h:mm a").format(date);
+
+            timeText.setText(formattedDate);
 
             // Insert the profile image from the URL into the ImageView.
-            //Utils.displayRoundImageFromUrl(mContext, message.getSender().getProfileUrl(), profileImage);
+            //Utils.displayRoundImageFromUrl(mContext, messageModel.getSender().getProfileUrl(), profileImage);
         }
     }
 
-    public MessageListAdapter(Context context, List<Message> messageList) {
+    public MessageListAdapter(Context context, List<MessageModel> messageModelList) {
         mContext = context;
-        mMessageList = messageList;
+        mMessageModelList = messageModelList;
     }
 
     @Override
     public int getItemCount() {
-        return mMessageList.size();
+        return mMessageModelList.size();
     }
 
 
     @Override
     public int getItemViewType(int position) {
-        Message message = (Message) mMessageList.get(position);
+        MessageModel messageModel = (MessageModel) mMessageModelList.get(position);
+        String name = UserModel.myUserModel.getFirstName() + " " + UserModel.myUserModel.getLastName();
 
-        if (message.getSender().equals(UserModel.myUserModel.getFirstName())) {
-            // If the current user is the sender of the message
+        if (messageModel.getSender().equals(name)) {
+            // If the current user is the sender of the messageModel
             return VIEW_TYPE_MESSAGE_SENT;
         } else {
-            // If some other user sent the message
+            // If some other user sent the messageModel
             return VIEW_TYPE_MESSAGE_RECEIVED;
         }
     }
@@ -116,14 +130,14 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     // Passes the message object to a ViewHolder so that the contents can be bound to UI.
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Message message = (Message) mMessageList.get(position);
+        MessageModel messageModel = (MessageModel) mMessageModelList.get(position);
 
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_MESSAGE_SENT:
-                ((SentMessageHolder) holder).bind(message);
+                ((SentMessageHolder) holder).bind(messageModel);
                 break;
             case VIEW_TYPE_MESSAGE_RECEIVED:
-                ((ReceivedMessageHolder) holder).bind(message);
+                ((ReceivedMessageHolder) holder).bind(messageModel);
         }
     }
 }

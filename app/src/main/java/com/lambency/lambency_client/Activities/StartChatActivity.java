@@ -36,6 +36,7 @@ public class StartChatActivity extends AppCompatActivity{
     private Context context;
     private int event_id;
     private StartChatAdapter startChatAdapter;
+    private ArrayList<ChatModel> chats;
 
     @BindView(R.id.relatedUsersRecyclerView)
     RecyclerView relatedUsersRecyclerView;
@@ -50,35 +51,14 @@ public class StartChatActivity extends AppCompatActivity{
 
         context = this;
 
+        Bundle bund = getIntent().getExtras();
+        chats = (ArrayList<ChatModel>)bund.getSerializable("chats");
+        if(chats == null){
+            chats = new ArrayList<>();
+        }
+
         getUsers();
-        relatedUsersRecyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final View v = view;
-                UserModel target = startChatAdapter.getUsers().get((Integer)view.getTag());
-                Toast.makeText(view.getContext(), target.getFirstName(), Toast.LENGTH_LONG).show();
-                LambencyAPIHelper.getInstance().createChat(UserModel.myUserModel.getOauthToken(),target.getUserId(),false).enqueue(new Callback<ChatModel>() {
-                    @Override
-                    public void onResponse(Call<ChatModel> call, Response<ChatModel> response) {
-                        if(response == null || response.code() != 200 || response.body() == null)
-                            Toast.makeText(v.getContext(), "Sorry we cant create it", Toast.LENGTH_LONG).show();
-                        else{
-                            ChatModel chatModel = response.body();
-                            Intent intent = new Intent();
-                            intent.putExtra("chatModel", chatModel);
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
 
-                    }
-
-                    @Override
-                    public void onFailure(Call<ChatModel> call, Throwable t) {
-                        Toast.makeText(v.getContext(), "Sorry it failed ;/", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
     }
 
 
@@ -93,8 +73,22 @@ public class StartChatActivity extends AppCompatActivity{
                 }
 
                 ArrayList<UserModel> users = response.body();
+                ArrayList<ChatModel> emptyChats = new ArrayList<>();
+                for(int i = 0; i < chats.size(); i++){
+                    if(chats.get(i).getRecent_msg_id() != 0) {
+                        int id = chats.get(i).getUserID();
+                        for (int j = 0; j < users.size(); j++) {
+                            if (id == users.get(j).getUserId()) {
+                                users.remove(j);
+                                break;
+                            }
+                        }
+                    }else{
+                        emptyChats.add(chats.get(i));
+                    }
+                }
 
-                startAdapter(users);
+                startAdapter(users, emptyChats);
 
             }
 
@@ -105,10 +99,19 @@ public class StartChatActivity extends AppCompatActivity{
         });
     }
 
-    private void startAdapter(ArrayList<UserModel> users){
-        startChatAdapter = new StartChatAdapter(context, users);
+    private void startAdapter(ArrayList<UserModel> users, ArrayList<ChatModel> emptyChats){
+        startChatAdapter = new StartChatAdapter(context, users, emptyChats);
         relatedUsersRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         relatedUsersRecyclerView.setAdapter(startChatAdapter);
     }
-}
 
+    public static ChatModel containsEmptyChat(ArrayList<ChatModel> emptyChats, int userID){
+
+        for(ChatModel cm : emptyChats){
+            if(cm.getUserID() == userID){
+                return cm;
+            }
+        }
+        return null;
+    }
+}

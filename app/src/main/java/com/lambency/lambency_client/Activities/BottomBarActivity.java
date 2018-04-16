@@ -67,6 +67,9 @@ import com.lambency.lambency_client.Utils.MyLifecycleHandler;
 import com.lambency.lambency_client.Utils.NotificationHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
@@ -86,6 +89,9 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
 //Key is 406595282653-cc9eb7143bvpgfe5da941r3jq174b4dq
 //this goes in src/main/resources/client_secret.json
 
+    static boolean isInBottomBar;
+
+    public static HashMap<String, Integer> notificationOfChat = new HashMap<>();
 
     public void onProfileFragmentInteraction(Uri uri)
     {
@@ -126,21 +132,50 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
         sendFirebaseToken(token);
         Log.d("Bottom Bar", "Sent firebase token to server: " + token);
 
-
         BottomNavigationView bar = findViewById(R.id.bottom_navigation);
         bar.setSelectedItemId(R.id.lamBot);
-        switchToFragment3();
 
-        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) bar.getChildAt(0);
-        View v = bottomNavigationMenuView.getChildAt(1);
-        BottomNavigationItemView itemView = (BottomNavigationItemView) v;
+        if(getIntent().getExtras() != null)
+        {
+            String value = getIntent().getExtras().getString("msg");
+            if(value != null)
+            {
+                Bundle args = new Bundle();
+                args.putString("idVal", value);
+                ChatListFragment newFragment = new ChatListFragment();
+                newFragment.setArguments(args);
+                bar.setSelectedItemId(R.id.messagingBot);
+                //switchToFragment5();
+                FragmentManager manager = getSupportFragmentManager();
+                manager.beginTransaction().replace(R.id.fragContainer, newFragment).commit();
+            }
+            else
+            {
+                switchToFragment3();
+            }
+        }
+        else
+        {
+            switchToFragment3();
+        }
+
 
         /*
-        badge = LayoutInflater.from(this)
-                .inflate(R.layout.bottom_badge, bottomNavigationMenuView, false);
+        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) bar.getChildAt(0);
+        View v = bottomNavigationMenuView.getChildAt(4);
+        BottomNavigationItemView itemView = (BottomNavigationItemView) v;
 
-        itemView.addView(badge);
+        if(countOfNotification() > 0)
+        {
+            badge = LayoutInflater.from(this)
+                    .inflate(R.layout.bottom_badge, bottomNavigationMenuView, false);
+
+            itemView.addView(badge);
+            TextView t =  itemView.findViewById(R.id.notifications_badge);
+            t.setText(countOfNotification());
+        }
         */
+        //inflateBottom();
 
         bar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -190,7 +225,40 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
         }
     }
 
+    public int countOfNotification(){
+        int i = 0;
+        for (Object value : notificationOfChat.values()) {
+            i += (Integer) value;
+        }
+        return i;
+    }
 
+    public void inflateBottom() {
+
+        BottomNavigationView bar = findViewById(R.id.bottom_navigation);
+        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) bar.getChildAt(0);
+        View v = bottomNavigationMenuView.getChildAt(4);
+        BottomNavigationItemView itemView = (BottomNavigationItemView) v;
+
+
+        if(countOfNotification() > 0)
+        {
+            badge = LayoutInflater.from(this)
+                    .inflate(R.layout.bottom_badge, bottomNavigationMenuView, false);
+
+            itemView.addView(badge);
+            TextView t =  itemView.findViewById(R.id.notifications_badge);
+            t.setVisibility(View.VISIBLE);
+            t.setText("" + countOfNotification());
+        } else {
+            TextView t =  itemView.findViewById(R.id.notifications_badge);
+            if(t != null)
+            {
+                t.setVisibility(View.GONE);
+            }
+        }
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -295,6 +363,26 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
                 Log.e("Firebase", "Error sending new firebase token to the server.");
             }
         });
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isInBottomBar = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        inflateBottom();
+        isInBottomBar = true;
+    }
+
+    @Override
+    protected  void onPause(){
+        super.onPause();
+        isInBottomBar = false;
     }
 
 }

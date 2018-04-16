@@ -30,6 +30,8 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.lambency.lambency_client.Activities.BottomBarActivity;
+import com.lambency.lambency_client.Activities.MessageListActivity;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.NotificationHelper;
 
@@ -74,7 +76,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            Log.d(TAG, "MessageModel data payload: " + remoteMessage.getData());
 
             if (/* Check if data needs to be processed by long running job */ false) {
                 // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
@@ -88,7 +90,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            Log.d(TAG, "MessageModel Notification Body: " + remoteMessage.getNotification().getBody());
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -124,10 +126,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     break;
 
                 case "chatMessage":
-                    NotificationHelper.sendChatMessageNotification(this,
-                            data.get("name"),
-                            data.get("chatId"),
-                            data.get("msgId"));
+
+
+
+                    if(!MessageListActivity.isInMessaging)
+                    {
+                        String chatId = data.get("chatId");
+                        if(BottomBarActivity.notificationOfChat.containsKey(chatId))
+                        {
+                            Integer i = BottomBarActivity.notificationOfChat.get(chatId);
+                            i++;
+                            BottomBarActivity.notificationOfChat.put(chatId, i);
+                        }
+                        else
+                        {
+                            BottomBarActivity.notificationOfChat.put(chatId, 1);
+                        }
+
+                        NotificationHelper.sendChatMessageNotification(this,
+                                data.get("name"),
+                                data.get("chatId"),
+                                data.get("msgId"));
+                    }
                     break;
 
                 case "orgInvite":
@@ -141,7 +161,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             data.get("event_id"),
                             data.get("name"));
                     break;
-
                 default:
                     Log.e("FirebaseMessaging", "No data type specified");
                     break;

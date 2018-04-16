@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.MessageListActivity;
 import com.lambency.lambency_client.Activities.StartChatActivity;
 import com.lambency.lambency_client.Adapters.ChatRoomAdapter;
@@ -65,24 +66,21 @@ public class ChatListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize dataset, this data would usually come from a local content provider or
-        // remote server.
-        LambencyAPIHelper.getInstance().getAllChats(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<ChatModel>>() {
-            @Override
-            public void onResponse(Call<ArrayList<ChatModel>> call, Response<ArrayList<ChatModel>> response) {
-                if(response == null || response.code() != 200 || !response.isSuccessful()){
-                    Toast.makeText(getContext(), "Sorry We cant load chat", Toast.LENGTH_LONG).show();
-                }
-                else{
-                   initDataset(response.body());
-                }
-            }
+        System.out.println("HERE345");
 
-            @Override
-            public void onFailure(Call<ArrayList<ChatModel>> call, Throwable t) {
-                Toast.makeText(getContext(), "Sorry We cant load chat because shit hit the fan fam", Toast.LENGTH_LONG).show();
-            }
-        });
+        Bundle b = getArguments();
+        if(b != null)
+        {
+            String id = b.getString("idVal");
+            System.out.print(id);
+            callOtherRetrofit(Integer.parseInt(id));
+        }
+
+        callRetrofit();
+
+        ((BottomBarActivity) getActivity())
+                .setActionBarTitle("Messaging");
+        ((BottomBarActivity) getActivity()).getSupportActionBar().setElevation(0);
     }
 
     @Override
@@ -91,6 +89,8 @@ public class ChatListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_chat_list, container, false);
         ButterKnife.bind(this, rootView);
         rootView.setTag(TAG);
+
+        System.out.println("HERE34567");
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.chatListRecyclerView);
 
@@ -117,6 +117,7 @@ public class ChatListFragment extends Fragment {
         mRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("adapter onclick");
                 Toast.makeText(view.getContext(), mAdapter.getRooms().get((Integer)view.getTag()).getName(), Toast.LENGTH_LONG).show();
             }
         });
@@ -170,6 +171,13 @@ public class ChatListFragment extends Fragment {
      */
     private void initDataset( ArrayList<ChatModel> c) {
         mDataset = c;
+        for(int i = 0; i < c.size(); i++){
+            if(c.get(i).getRecent_msg_id() == 0){
+                c.remove(i);
+                i--;
+            }
+        }
+
         mAdapter.updateEvents(mDataset);
         mRecyclerView.setVisibility(View.VISIBLE);
         mAdapter.notifyDataSetChanged();
@@ -177,23 +185,75 @@ public class ChatListFragment extends Fragment {
 
     @OnClick(R.id.chatFab)
     public void handleOrgFabClick(){
-        System.out.println("CLICKED THE BUTTON");
         Intent intent = new Intent(getActivity(), StartChatActivity.class);
+        ArrayList<ChatModel> chats = mAdapter.getRooms();
+        intent.putExtra("chats", chats);
         startActivityForResult(intent,1);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("on activity result");
         if (requestCode == 1) {
-            if(resultCode == RESULT_OK) {
-                ChatModel chatModel = (ChatModel) data.getExtras().getSerializable("chatModel");
-                Intent intent = new Intent(getActivity(), MessageListActivity.class);
-                intent.putExtra("chatModel",chatModel);
-                startActivity(intent);
-            }
-            else{
-                Toast.makeText(getContext(),"Sorry it failed",Toast.LENGTH_LONG).show();
-            }
+            callRetrofit();
+            ChatModel chatModel = (ChatModel) data.getExtras().getSerializable("chatModel");
+            Intent intent = new Intent(getActivity(), MessageListActivity.class);
+            intent.putExtra("chatModel",chatModel);
+            startActivity(intent);
+
         }
+    }
+
+    private void callRetrofit(){
+        // Initialize dataset, this data would usually come from a local content provider or
+        // remote server.
+        LambencyAPIHelper.getInstance().getAllChats(UserModel.myUserModel.getOauthToken()).enqueue(new Callback<ArrayList<ChatModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<ChatModel>> call, Response<ArrayList<ChatModel>> response) {
+                if(response == null || response.code() != 200 || !response.isSuccessful()){
+                    Toast.makeText(getContext(), "Sorry We cant load chat", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    System.out.println("HERE3456");
+                    initDataset(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<ChatModel>> call, Throwable t) {
+                Toast.makeText(getContext(), "Sorry We cant load chat because shit hit the fan fam", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void callOtherRetrofit(final int userId)
+    {
+            LambencyAPIHelper.getInstance().createChat(UserModel.myUserModel.getOauthToken(),userId,false).enqueue(new Callback<ChatModel>() {
+                @Override
+                public void onResponse(Call<ChatModel> call, Response<ChatModel> response) {
+                    if (response == null || response.code() != 200 || response.body() == null) {
+                        Toast.makeText(getActivity(), "Sorry we cant create it", Toast.LENGTH_LONG).show();
+                        System.out.println("It FAILED3");
+                    }else{
+                        ChatModel chatModel = response.body();
+
+                        Intent mIntent = new Intent(getContext(), MessageListActivity.class);
+                        //Bundle mBundle = new Bundle();
+                        mIntent.putExtra("chatModel", chatModel);
+                        //mIntent.putExtras(mBundle);
+                        startActivity(mIntent);
+
+                        System.out.println("It FAILED4");
+                    }
+                    System.out.println("It FAILED5");
+
+                }
+
+                @Override
+                public void onFailure(Call<ChatModel> call, Throwable t) {
+                    System.out.println("It FAILED2");
+                    Toast.makeText(getActivity(), "Sorry it failed ;/", Toast.LENGTH_LONG).show();
+                }
+            });
     }
 }
