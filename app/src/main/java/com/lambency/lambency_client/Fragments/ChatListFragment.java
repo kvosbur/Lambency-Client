@@ -194,7 +194,7 @@ public class ChatListFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         System.out.println("on activity result");
-        if (requestCode == 1) {
+        if (requestCode == 1 && data != null && data.getExtras() != null) {
             callRetrofit();
             ChatModel chatModel = (ChatModel) data.getExtras().getSerializable("chatModel");
             Intent intent = new Intent(getActivity(), MessageListActivity.class);
