@@ -84,7 +84,6 @@ public class UserAcceptRejectActivity  extends BaseActivity {
                     }
 
                     mAdapter.notifyDataSetChanged(); // how we update
-                    Toast.makeText(UserAcceptRejectActivity.this, ""+organizationModelList.size(), Toast.LENGTH_SHORT).show();
                     if(organizationModelList.size() == 0) {
                         currRequests.setVisibility(View.VISIBLE);
                     }
@@ -104,6 +103,7 @@ public class UserAcceptRejectActivity  extends BaseActivity {
             public void onRightClicked(int position) {
                 callRetrofit(true,position);
                 Toast.makeText(getApplicationContext(), "Accepted invite!", Toast.LENGTH_LONG).show();
+
             }
 
             public void onLeftClicked(int position) {
@@ -120,7 +120,7 @@ public class UserAcceptRejectActivity  extends BaseActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new UserAcceptRejectAdapter(organizationModelList);
+        mAdapter = new UserAcceptRejectAdapter(organizationModelList, this);
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.notifyDataSetChanged(); // how we update
@@ -132,8 +132,7 @@ public class UserAcceptRejectActivity  extends BaseActivity {
         return this.position;
     }
 
-    //TODO Update retrofit here for adding accept and reject
-    private void callRetrofit(final boolean accepted, int position){
+    private void callRetrofit(final boolean accepted, final int position){
         int orgId = organizationModelList.get(position).getOrgID();
         LambencyAPIHelper.getInstance().getUserRespondToJoinRequest("" + UserModel.myUserModel.getOauthToken(), "" + orgId, "" + accepted).enqueue(new Callback<Integer>() {
             @Override
@@ -149,9 +148,13 @@ public class UserAcceptRejectActivity  extends BaseActivity {
                 }
                 else if (ret == 0) {
                     Toast.makeText(UserAcceptRejectActivity.this, "Successfully joined.", Toast.LENGTH_SHORT).show();
+                    organizationModelList.remove(position);
+                    mAdapter.notifyDataSetChanged();
                 }
                 else if (ret == 1) {
                     Toast.makeText(UserAcceptRejectActivity.this, "Successfully rejected.", Toast.LENGTH_SHORT).show();
+                    organizationModelList.remove(position);
+                    mAdapter.notifyDataSetChanged();
                 }
 
             }

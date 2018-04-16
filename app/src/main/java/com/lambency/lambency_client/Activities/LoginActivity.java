@@ -105,7 +105,39 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
                 UserAuthenticatorModel.myAuth = myauth;
                 System.out.println("My auth is : " + myauth);
+
                 retrofitUserSearch();
+
+                LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
+                    @Override
+                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                        if (response.body() == null || response.code() != 200) {
+                            System.out.println("ERROR2!!!!!");
+                            return;
+                        }
+                        //when response is back
+                        UserModel.myUserModel = response.body();
+                        if (response.body() == null) {
+                            System.out.println("ERROR NULLED!!!!");
+                            Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        System.out.println("got the user object");
+
+                        //System.out.println("SUCCESS");
+                        Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
+                        startActivity(myIntent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserModel> call, Throwable throwable) {
+                        //when failure
+                        System.out.println("FAILED CALL1");
+                        Toast.makeText(getApplicationContext(), "Login error... Please try again", Toast.LENGTH_LONG).show();
+
+                    }
+                });
             }
 
 
@@ -195,7 +227,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                     editor.putString("myauth", UserAuthenticatorModel.myAuth);
                                     editor.apply();
 
+
                                     retrofitUserSearch();
+
                                 }
                                 else if (userAuthenticatorModel.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
                                     Toast.makeText(getApplicationContext(), "Email has yet to be verified", Toast.LENGTH_LONG).show();
@@ -356,6 +390,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                                             editor.apply();
 
                                                             retrofitUserSearch();
+
                                                         } else if (ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR) {
                                                             //System.out.println("NON_DETERMINANT_ERROR");
                                                             Toast.makeText(getApplicationContext(), "NON_DETERMINANT_ERROR", Toast.LENGTH_LONG).show();
@@ -372,7 +407,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                                     @Override
                                                     public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
                                                         //when failure
-                                                        System.out.println("FAILED CALL5");
+
                                                         System.out.println(throwable.getMessage());
 
                                                         Toast.makeText(getApplicationContext(), "Failed to Communicate with Server please try again.", Toast.LENGTH_LONG).show();
@@ -509,6 +544,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         editor.apply();
 
                         retrofitUserSearch();
+
                     }
                     else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR){
                         //System.out.println("NON_DETERMINANT_ERROR");
@@ -527,7 +563,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 @Override
                 public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
                     //when failure
-                    System.out.println("FAILED CALL7");
+
                     Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
 
                 }

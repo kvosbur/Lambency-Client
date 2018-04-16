@@ -13,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import com.lambency.lambency_client.Activities.LeaderboardActivity;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 
@@ -30,7 +31,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         this.context = context;
     }
 
-    List<UserModel> users;
+    static List<UserModel> users;
     static Context context;
 
     @Override
@@ -55,9 +56,10 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         holder.leaderboardName.setText(title);
 
         double desc = organizationModel.getHoursWorked();
-        holder.leaderboardHours.setText(desc + " hours");
+        double roundOff = Math.round(desc * 100.0) / 100.0;
+        holder.leaderboardHours.setText(roundOff + " hours");
 
-        holder.leaderboardRank.setText(position+1  + ".");
+        holder.leaderboardRank.setText(organizationModel.getOauthToken() + ".");
     }
 
     @Override
@@ -87,17 +89,22 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
             ButterKnife.bind(this, itemView);
         }
 
+
         @OnClick(R.id.leaderboard_card)
         public void onClickCard() {
             if(seeMore.getVisibility() == View.GONE) {
                 //TODO Transition to user page
-                Toast.makeText(LeaderboardAdapter.context, "Go to user page", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(LeaderboardAdapter.context, "Go to user page", Toast.LENGTH_SHORT).show();
             }
             else {
                 //TODO Retrofit call here for adding more users
-                Toast.makeText(LeaderboardAdapter.context, "Add Retrofit", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(LeaderboardAdapter.context, "Add Retrofit", Toast.LENGTH_SHORT).show();
+                //users.add(UserModel.myUserModel);
+                LeaderboardActivity.update();
             }
         }
+
+
     }
 
     public void updateUserList(ArrayList<UserModel> users){

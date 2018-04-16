@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Activities;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
@@ -109,6 +110,7 @@ public class BottomBarActivity extends BaseActivity implements EventsMainFragmen
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+
 
         final Handler handler = new Handler();
         final int delay = 10000; //milliseconds

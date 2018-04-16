@@ -124,7 +124,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             data.get("org"),
                             data.get("org_id"));
                     break;
+
                 case "chatMessage":
+
 
 
                     if(!MessageListActivity.isInMessaging)
@@ -146,7 +148,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 data.get("chatId"),
                                 data.get("msgId"));
                     }
+                    break;
 
+                case "orgInvite":
+                    NotificationHelper.sendInviteNotification(this,
+                            data.get("org"),
+                            data.get("org_id"));
+                    break;
+
+                case "eventUpdate":
+                    NotificationHelper.sendEventUpdateNotification(this,
+                            data.get("event_id"),
+                            data.get("name"));
+                    break;
                 default:
                     Log.e("FirebaseMessaging", "No data type specified");
                     break;

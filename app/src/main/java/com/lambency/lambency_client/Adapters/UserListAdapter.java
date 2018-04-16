@@ -26,6 +26,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import com.lambency.lambency_client.Activities.BottomBarActivity;
+import com.lambency.lambency_client.Activities.CardViewActivity;
 import com.lambency.lambency_client.Activities.OrgUsersActivity;
 import com.lambency.lambency_client.Fragments.ChatListFragment;
 import com.lambency.lambency_client.Fragments.UserListFragment;
@@ -110,6 +111,17 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         String name = userModel.getFirstName() + " " + userModel.getLastName();
         holder.nameView.setText(name);
 
+        //on click of nameView
+        holder.nameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context,CardViewActivity.class);
+                intent.putExtra("userIdKey",userModel.getUserId());
+                intent.putExtra("orgIdKey",org_id);
+                context.startActivity(intent);
+            }
+        });
+
         holder.emailView.setText(userModel.getEmail());
 
         holder.editButton.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +183,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         } else {
             holder.offlineCircle.setVisibility(View.GONE);
             holder.offlineCircle.setVisibility(View.GONE);
+        }
+
+        if(userModel.getPastEventHours() > 0){
+            String hoursStr = userModel.getPastEventHours() + " hrs";
+            holder.hoursTextView.setText(hoursStr);
+            holder.hoursTextView.setVisibility(View.VISIBLE);
         }
 
         holder.emailLayout.setOnClickListener(new View.OnClickListener() {
@@ -355,6 +373,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         @BindView(R.id.onlineStatusOnline)
         LinearLayout onlineCircle;
+
+        @BindView(R.id.hoursText)
+        TextView hoursTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);

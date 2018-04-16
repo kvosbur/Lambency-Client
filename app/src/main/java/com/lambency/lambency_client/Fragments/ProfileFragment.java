@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,11 +35,16 @@ import com.lambency.lambency_client.Activities.MessageListActivity;
 import com.lambency.lambency_client.Activities.UserAcceptRejectActivity;
 import com.lambency.lambency_client.Adapters.LeaderboardAdapter;
 import com.lambency.lambency_client.Adapters.UserAcceptRejectAdapter;
+import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SharedPrefsHelper;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,6 +84,15 @@ public class ProfileFragment extends Fragment {
 
     @BindView(R.id.clicktoseehours)
     LinearLayout clicktoseeHours;
+
+    @BindView(R.id.hoursText)
+    TextView hoursText;
+
+    @BindView(R.id.totalSumOrgs)
+    TextView totalOrgs;
+
+    @BindView(R.id.totalEventsSum)
+    TextView totalEvents;
 
     boolean edit = false;
 
@@ -150,6 +165,47 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(ProfileFragment.this.getActivity(), CardViewActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        // total of orgs
+        int totalOfOrgs;
+        totalOfOrgs = UserModel.myUserModel.getMyOrgs().size() + UserModel.myUserModel.getJoinedOrgs().size();
+        System.out.println("orgs are " + totalOfOrgs);
+        totalOrgs.setText(totalOfOrgs +"");
+
+        // total of events
+        int totalOfEvents = 0;
+        totalOfEvents = UserModel.myUserModel.getEventsAttending().size();
+        totalEvents.setText(totalOfEvents+"");
+
+
+        LambencyAPIHelper.getInstance().getPastEvents(UserAuthenticatorModel.myAuth).enqueue(new Callback<ArrayList<EventModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<EventModel>> call, Response<ArrayList<EventModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred or the user has no past events");
+                    // if null is given show that the user has no past events
+                    hoursText.setText("0");
+                    return;
+                }
+                //when response is back
+                double hoursSum = 0;
+                ArrayList<EventModel> events = response.body();
+                for (EventModel eventModel : events) {
+                    // i set hours in description
+                    double hours = Double.parseDouble(eventModel.getDescription());
+                    hoursSum += hours;
+                    System.out.println("User worked " + hours + " hours at " + eventModel.getName());
+                }
+                DecimalFormat df = new DecimalFormat("0.00");
+                hoursText.setText(df.format(hoursSum));
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<EventModel>> call, Throwable t) {
+                //when failure
+                System.out.println("FAILED CALL");
             }
         });
 

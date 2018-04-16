@@ -193,6 +193,8 @@ public class EventDetailsActivity extends BaseActivity implements
     @BindView(R.id.clockOutButton)
     Button clockOutButton;
 
+    @BindView(R.id.whoCameButton)
+    Button whoCameButton;
 
     private EventModel event,eventModel;
 
@@ -566,9 +568,9 @@ public class EventDetailsActivity extends BaseActivity implements
                         String event_string = data.getQueryParameter("eventid");
                         event_id = Integer.parseInt(event_string);
                     }
+
                     callRetrofit(event_id);
                 }
-
 
 
 
@@ -602,6 +604,7 @@ public class EventDetailsActivity extends BaseActivity implements
                     startActivity(intent);
                 }
             });
+
 
         }
     }
@@ -837,9 +840,9 @@ public class EventDetailsActivity extends BaseActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                //finish();
-                  Intent intent = new Intent(context, SearchActivity.class);
-                  startActivity(intent);
+                finish();
+                  //Intent intent = new Intent(context, SearchActivity.class);
+                  //startActivity(intent);
                 return true;
             default:
                 return true;
@@ -878,6 +881,10 @@ public class EventDetailsActivity extends BaseActivity implements
         context.startActivity(intent);
     }
 
+    @OnClick(R.id.whoCameButton)
+    public void handleWhoCame() {
+
+    }
 
     @OnClick(R.id.clockInButton)
     public void handleCheckInClick(){

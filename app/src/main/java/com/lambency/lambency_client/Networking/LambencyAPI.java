@@ -16,6 +16,7 @@ import com.lambency.lambency_client.Models.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -42,6 +43,7 @@ public interface LambencyAPI {
 
     @GET("User/search")
     Call<UserModel> userSearch(@Query("oAuthCode") String oAuthToken, @Query("id") String userID);
+
 
 
     @GET("Organization/search")
@@ -187,6 +189,7 @@ public interface LambencyAPI {
     @POST("Organization/searchWithFilter")
     Call<ArrayList<OrganizationModel>> getOrganizationsWithFilter(@Body OrganizationFilterModel organizationFilterModel);
 
+
     @GET("User/joinRequests")
     Call<List<OrganizationModel>> getUserJoinRequests(@Query("oAuthCode") String oAuthCode);
 
@@ -204,6 +207,22 @@ public interface LambencyAPI {
 
     @POST("Chat/sendMessage")
     Call<Integer> sendMessage(@Query("oAuthCode") String oAuthCode, @Query("chatID") int chatID, @Body MessageModel messageModel);
+
+    @GET("Organization/pastEvents")
+    Call<ArrayList<EventModel>> getPastEvents(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
+
+    @GET("Organization/pastEventAttandence")
+    Call<ArrayList<EventAttendanceModel>> getPastEventAttendence(@Query("oAuthCode") String oAuthCode, @Query("eventID") int eventID);
+
+    @GET("User/setNotificationPreference")
+    Call<Integer> updateNotificationPreference(@Query("oAuthCode") String oAuthCode, @Query("preference") int preference);
+
+    @GET("User/pastEvents")
+    Call<ArrayList<EventModel>> getPastEvents(@Query("oAuthCode") String oAuthCode);
+
+    @GET("User/pastEventsInOrg")
+    Call<ArrayList<EventModel>> getPastEventsInOrg(@Query("oAuthCode") String oAuthCode, @Query("userID") String userID, @Query("orgID") String orgID);
+
 
 }
 
