@@ -101,6 +101,16 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
                 //Toast.makeText(LeaderboardAdapter.context, "Add Retrofit", Toast.LENGTH_SHORT).show();
                 //users.add(UserModel.myUserModel);
                 LeaderboardActivity.update();
+
+                for(int i = 0; i < users.size(); i++)
+                {
+                    UserModel u = users.get(i);
+                    if(u.getFirstName().compareTo("...") == 0 && i != users.size()-1)
+                    {
+                        users.remove(i);
+                        i--;
+                    }
+                }
             }
         }
 
