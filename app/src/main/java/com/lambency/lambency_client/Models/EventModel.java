@@ -116,8 +116,17 @@ public class EventModel {
         this.description = description;
     }
 
-    public String getLocation() {
+    private String getLocation() {
         return location;
+    }
+
+    public String getPrettyAddress(){
+        String prettyAddress = this.location.replace(';', ' ');
+        return prettyAddress;
+    }
+
+    public String[] getSplitAddress(){
+        return this.location.split(";");
     }
 
     public void setLocation(String location) {

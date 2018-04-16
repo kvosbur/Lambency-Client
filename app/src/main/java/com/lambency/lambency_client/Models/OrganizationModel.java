@@ -6,7 +6,7 @@ public class OrganizationModel {
     public UserModel owner;
     public String name;
     public ArrayList<UserModel> members;
-    public String location;
+    private String location;
     public int orgID;
     public ArrayList<Object> events;
     public String description;
@@ -75,7 +75,7 @@ public class OrganizationModel {
         this.members = members;
     }
 
-    public String getLocation() {
+    private String getLocation() {
         return location;
     }
 
@@ -174,5 +174,15 @@ public class OrganizationModel {
 
         return 0;
 
+    }
+
+    public String getPrettyAddress()
+    {
+        return location.replace(";", " ");
+    }
+
+    public String[] getSplitAddress()
+    {
+        return this.location.split(";");
     }
 }
