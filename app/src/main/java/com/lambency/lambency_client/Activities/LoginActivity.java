@@ -108,36 +108,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
                 retrofitUserSearch();
 
-                LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
-                    @Override
-                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                        if (response.body() == null || response.code() != 200) {
-                            System.out.println("ERROR2!!!!!");
-                            return;
-                        }
-                        //when response is back
-                        UserModel.myUserModel = response.body();
-                        if (response.body() == null) {
-                            System.out.println("ERROR NULLED!!!!");
-                            Toast.makeText(getApplicationContext(), "USER NULL", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        System.out.println("got the user object");
-
-                        //System.out.println("SUCCESS");
-                        Intent myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
-                        startActivity(myIntent);
-                        finish();
-                    }
-
-                    @Override
-                    public void onFailure(Call<UserModel> call, Throwable throwable) {
-                        //when failure
-                        System.out.println("FAILED CALL1");
-                        Toast.makeText(getApplicationContext(), "Login error... Please try again", Toast.LENGTH_LONG).show();
-
-                    }
-                });
             }
 
 
@@ -208,6 +178,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         check = false;
                     }
                     if (check){
+                        progressLayout.setVisibility(View.VISIBLE);
+                        mainLayout.setVisibility(View.GONE);
                         LambencyAPIHelper.getInstance().loginUser(emailAddr.getText().toString(),passWord.getText().toString()).enqueue(new Callback<UserAuthenticatorModel>() {
                             @Override
                             public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
@@ -366,7 +338,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                                 String email = (String) object.get("email");
 
                                                 System.out.println("Hello " + firstName + " " + lastName + " with email " + email + " id: " + id);
-
+                                                progressLayout.setVisibility(View.VISIBLE);
+                                                mainLayout.setVisibility(View.GONE);
                                                 LambencyAPIHelper.getInstance().getFacebookLogin(id, firstName, lastName, email).enqueue(new Callback<UserAuthenticatorModel>() {
                                                     @Override
                                                     public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
@@ -520,6 +493,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
             String idToken = account.getIdToken();
             // Signed in successfully, show authenticated UI.
+            progressLayout.setVisibility(View.VISIBLE);
+            mainLayout.setVisibility(View.GONE);
             LambencyAPIHelper.getInstance().getGoogleLogin(idToken).enqueue(new Callback<UserAuthenticatorModel>() {
                 @Override
                 public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
@@ -588,6 +563,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         LambencyAPIHelper.getInstance().userSearch(UserAuthenticatorModel.myAuth, null).enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                progressLayout.setVisibility(View.GONE);
+                mainLayout.setVisibility(View.VISIBLE);
                 if (response.body() == null || response.code() != 200) {
                     System.out.println("ERROR2!!!!!");
                     return;
@@ -609,6 +586,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public void onFailure(Call<UserModel> call, Throwable throwable) {
                 //when failure
+                progressLayout.setVisibility(View.GONE);
+                mainLayout.setVisibility(View.VISIBLE);
                 System.out.println("FAILED CALL2");
                 Toast.makeText(getApplicationContext(), "Login error... Please try again", Toast.LENGTH_LONG).show();
 
