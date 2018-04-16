@@ -597,7 +597,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     public void startNextActivity(String activityName){
         Intent myIntent = null;
-        //if their is no specified activity then set null string to empty so doesn't crash on switch
+        //if there is no specified activity then set null string to empty so doesn't crash on switch
         if(activityName == null){
             activityName = "";
         }
@@ -607,9 +607,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 ChatModel cm = (ChatModel) getIntent().getSerializableExtra("chatModel");
                 myIntent.putExtra("chatModel",cm);
                 break;
+
+            case "EventDetailsActivity":
+                myIntent = new Intent(this, EventDetailsActivity.class);
+                myIntent.putExtra("event_id", Integer.parseInt(
+                        getIntent().getExtras().getString("event_id", "-1")
+                ));
+                break;
+
             default:
                 myIntent = new Intent(LoginActivity.this, BottomBarActivity.class);
         }
+
         startActivity(myIntent);
         finish();
     }

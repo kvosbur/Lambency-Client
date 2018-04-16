@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -168,6 +169,10 @@ public class NotificationHelper {
         createNotificationChannel(context, eventUpdateChannel);
 
         Intent intent = new Intent(context, LoginActivity.class);
+        Bundle b = new Bundle();
+        b.putString("NextActivity", "EventDetailsActivity");
+        b.putString("event_id", event_id);
+        intent.putExtras(b);
         PendingIntent contentIntent = PendingIntent.getActivity(context, contentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, joinRequestChannel.id)
