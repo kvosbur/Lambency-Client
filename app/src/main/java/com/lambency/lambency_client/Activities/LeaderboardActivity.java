@@ -165,14 +165,17 @@ public class LeaderboardActivity extends BaseActivity {
     }
 
     public static void update() {
+        for(UserModel userModel: userList){
+            System.out.println(userModel.getOauthToken() + ": " + userModel.getFirstName() + " " + userModel.getLastName());
+        }
         userList.remove(userList.size()-1);
         //userList = new ArrayList<>();
         //mAdapter.notifyDataSetChanged(); // how we update
         //mAdapter = new LeaderboardAdapter(userList, context);
         mAdapter.updateUserList((ArrayList) userList);
-        startVal-=1;
+        // startVal-=1;
 
-        LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + startVal+10).enqueue(new Callback<List<UserModel>>() {
+        LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + (startVal+10)).enqueue(new Callback<List<UserModel>>() {
             @Override
             public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
                 if (response.body() == null || response.code() != 200) {
@@ -196,7 +199,9 @@ public class LeaderboardActivity extends BaseActivity {
                     }
 
                     userList.add(new UserModel("...", null, null, null, null, null, null, 0, 0, null));
-
+                    for(UserModel user: userList){
+                        System.out.println(user.getOauthToken() + ": " + user.getFirstName() + " " + user.getLastName());
+                    }
                     mAdapter.notifyDataSetChanged(); // how we update
                 }
             }
