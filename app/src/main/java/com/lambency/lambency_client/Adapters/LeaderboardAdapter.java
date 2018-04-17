@@ -106,6 +106,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
                 //TODO Retrofit call here for adding more users
                 //Toast.makeText(LeaderboardAdapter.context, "Add Retrofit", Toast.LENGTH_SHORT).show();
                 //users.add(UserModel.myUserModel);
+
                 LeaderboardActivity.update();
 
                 for(int i = 0; i < users.size(); i++)

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.data.model.User;
 import com.lambency.lambency_client.Adapters.LeaderboardAdapter;
 import com.lambency.lambency_client.Adapters.UserListAdapter;
 import com.lambency.lambency_client.Models.UserModel;
@@ -126,7 +127,7 @@ public class LeaderboardActivity extends BaseActivity {
                                         {
                                             userList.add(ret.get(i));
                                         }
-
+                                        mAdapter.notifyDataSetChanged(); // how we update
                                     }
                                 }
 
@@ -165,10 +166,26 @@ public class LeaderboardActivity extends BaseActivity {
     }
 
     public static void update() {
+        int pos = -1;
         for(UserModel userModel: userList){
             System.out.println(userModel.getOauthToken() + ": " + userModel.getFirstName() + " " + userModel.getLastName());
         }
-        userList.remove(userList.size()-1);
+
+        for(int i = 0; i < userList.size(); i++)
+        {
+            UserModel u = userList.get(i);
+            if(u.getFirstName().compareTo("...") == 0)
+            {
+                userList.remove(i);
+                i--;
+            }
+        }
+
+        if(userList.contains(UserModel.myUserModel) && userList.get(userList.size()-1).equals(UserModel.myUserModel))
+        {
+            userList.remove(userList.size()-1);
+        }
+
         //userList = new ArrayList<>();
         //mAdapter.notifyDataSetChanged(); // how we update
         //mAdapter = new LeaderboardAdapter(userList, context);
