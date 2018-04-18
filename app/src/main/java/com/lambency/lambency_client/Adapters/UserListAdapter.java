@@ -109,6 +109,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         final UserModel userModel = users.get(position);
 
         String name = userModel.getFirstName() + " " + userModel.getLastName();
+        final String name2 = name;
         holder.nameView.setText(name);
 
         //on click of nameView
@@ -118,6 +119,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 Intent intent = new Intent(context,CardViewActivity.class);
                 intent.putExtra("userIdKey",userModel.getUserId());
                 intent.putExtra("orgIdKey",org_id);
+                intent.putExtra("userName",name2);
                 context.startActivity(intent);
             }
         });
