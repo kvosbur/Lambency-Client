@@ -682,7 +682,7 @@ public class EventDetailsActivity extends BaseActivity implements
 
                     if(eventModel.isPrivateEvent()) {
                         memberOnlyText.setVisibility(View.VISIBLE);
-                        joinButton.setEnabled(UserModel.myUserModel.canSeePrivateEventFromOrg(event.getOrg_id()));
+                        joinButton.setEnabled(UserModel.myUserModel.canSeePrivateEventFromOrg(eventModel.getOrg_id()));
                     }
 
                     //setting the codes
