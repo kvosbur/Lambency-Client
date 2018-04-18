@@ -73,7 +73,7 @@ public class LeaderboardActivity extends BaseActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + startVal).enqueue(new Callback<List<UserModel>>() {
+        LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + (startVal+4)).enqueue(new Callback<List<UserModel>>() {
                 @Override
                 public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
                     if (response.body() == null || response.code() != 200) {
@@ -112,7 +112,7 @@ public class LeaderboardActivity extends BaseActivity {
                                         System.out.println("An error has occurred");
                                         return;
                                     }
-                                    //when response is back
+                                    //when response is back //
                                     List<UserModel> ret = response.body();
                                     if(ret == null ) {
                                         System.out.println("An error has occurred");
@@ -181,10 +181,12 @@ public class LeaderboardActivity extends BaseActivity {
             }
         }
 
+        /*
         if(userList.contains(UserModel.myUserModel) && userList.get(userList.size()-1).equals(UserModel.myUserModel))
         {
             userList.remove(userList.size()-1);
         }
+        */
 
         //userList = new ArrayList<>();
         //mAdapter.notifyDataSetChanged(); // how we update
@@ -201,9 +203,16 @@ public class LeaderboardActivity extends BaseActivity {
                 }
                 //when response is back
                 List<UserModel> ret = response.body();
+
                 if (ret == null || ret.size() == 0) {
                     System.out.println("An error has occurred");
                 } else {
+
+                    if(userList.contains(UserModel.myUserModel) && userList.get(userList.size()-1).equals(UserModel.myUserModel))
+                    {
+                        userList.remove(userList.size()-1);
+                    }
+
                     UserModel userModel = ret.get(0);
                     int rank = Integer.parseInt(userModel.getOauthToken());
                     Toast.makeText(context, "" + ret.size(), Toast.LENGTH_SHORT).show();
@@ -221,6 +230,7 @@ public class LeaderboardActivity extends BaseActivity {
                     }
                     mAdapter.notifyDataSetChanged(); // how we update
                 }
+
             }
             @Override
             public void onFailure(Call<List<UserModel>> call, Throwable throwable) {
