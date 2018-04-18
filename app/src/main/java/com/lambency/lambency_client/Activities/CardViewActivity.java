@@ -53,6 +53,10 @@ public class CardViewActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        final TextView noEventsText = findViewById(R.id.noEventsText);
+        noEventsText.setVisibility(View.GONE);
+        final TextView topTextView = findViewById(R.id.topTextView);
+
         Intent myIntent = getIntent();
         userIdKey = myIntent.getIntExtra("userIdKey", 0);
         orgIdKey = myIntent.getStringExtra("orgIdKey");
@@ -61,6 +65,7 @@ public class CardViewActivity extends AppCompatActivity {
         //TODO: call retrofit and give correct things to getdataset some way to differentiate to retrofits
 
         if (orgIdKey != null) {
+            System.out.println("I was in this one this time");
             LambencyAPIHelper.getInstance().getPastEventsInOrg(UserAuthenticatorModel.myAuth, userIdKey + "", orgIdKey).enqueue(new Callback<ArrayList<EventModel>>() {
                 @Override
                 public void onResponse(Call<ArrayList<EventModel>> call, Response<ArrayList<EventModel>> response) {
@@ -68,6 +73,8 @@ public class CardViewActivity extends AppCompatActivity {
                         System.out.println("An error has occurred or the user has no past events or user is not admin of org");
                         // if null is given show that the user has no past events
                         eventCheck = false;
+                        topTextView.setVisibility(View.GONE);
+                        noEventsText.setVisibility(View.VISIBLE);
                         return;
                     }
                     //when response is back
@@ -80,8 +87,6 @@ public class CardViewActivity extends AppCompatActivity {
                         System.out.println("User worked " + hours + " hours at " + eventModel.getName());
                     }
 
-                    TextView topView = findViewById(R.id.topTextView);
-                    topView.setText("Events attended by member are");
                     mAdapter = new MyRecyclerViewAdapter(getDataSet());
                     mRecyclerView.setAdapter(mAdapter);
                     ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
@@ -108,6 +113,8 @@ public class CardViewActivity extends AppCompatActivity {
                         System.out.println("An error has occurred or the user has no past events");
                         // if null is given show that the user has no past events
                         eventCheck = false;
+                        topTextView.setVisibility(View.GONE);
+                        noEventsText.setVisibility(View.VISIBLE);
                         return;
                     }
                     //when response is back
