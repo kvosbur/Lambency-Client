@@ -96,27 +96,30 @@ public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     if (newValue instanceof Boolean) {
                         boolean isChecked = (boolean) newValue;
+                        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
                         if (isChecked) {
+
                             if (emailNotifications.isEnabled()){
                                 updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 0);
+                                editor.putInt("NOTIFICATION_PREFERENCE", 0);
+                                editor.commit();
                             } else {
-                                SharedPreferences sharedPref = getActivity().getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putInt("NOTIFICATION_PREFERENCE", 2);
 
+                                editor.putInt("NOTIFICATION_PREFERENCE", 2);
                                 editor.commit();
                                 updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 2);
                             }
                         } else {
                             if (!emailNotifications.isEnabled()) {
                                 updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 3);
-                                SharedPreferences sharedPref = getActivity().getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPref.edit();
                                 editor.putInt("NOTIFICATION_PREFERENCE", 3);
                                 editor.commit();
                             }
                             else {
                                 updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 1);
+                                editor.putInt("NOTIFICATION_PREFERENCE", 1);
+                                editor.commit();
                             }
                         }
                     }
@@ -129,18 +132,28 @@ public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     if (newValue instanceof Boolean) {
                         boolean isChecked = (boolean) newValue;
+                        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
                         if (isChecked) {
                             if (pushNotifications.isEnabled()){
                                 updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 0);
+                                editor.putInt("NOTIFICATION_PREFERENCE", 0);
+                                editor.commit();
                             } else {
                                 updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 1);
+                                editor.putInt("NOTIFICATION_PREFERENCE", 1);
+                                editor.commit();
                             }
                         } else {
                             if (!pushNotifications.isEnabled()){
                                 updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 3);
+                                editor.putInt("NOTIFICATION_PREFERENCE", 3);
+                                editor.commit();
                             }
                             else {
                                 updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 2);
+                                editor.putInt("NOTIFICATION_PREFERENCE", 2);
+                                editor.commit();
                             }
                         }
                     }
