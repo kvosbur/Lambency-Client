@@ -107,6 +107,13 @@ public class CardViewActivity extends AppCompatActivity {
                     }
                     //when response is back
                     ArrayList<EventModel> events = response.body();
+                    if(events.size() == 0){
+                        eventCheck = false;
+                        topTextView.setVisibility(View.GONE);
+                        noEventsText.setText(user_name + " has no attended events!");
+                        noEventsText.setVisibility(View.VISIBLE);
+                        return;
+                    }
                     for (EventModel eventModel : events) {
                         // i set hours in description
                         eventModels.add(eventModel);
