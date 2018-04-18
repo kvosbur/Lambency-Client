@@ -51,6 +51,12 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
             holder.leaderboardName.setVisibility(View.GONE);
             holder.leaderboardRank.setVisibility(View.GONE);
         }
+        else {
+            holder.seeMore.setVisibility(View.GONE);
+            holder.leaderboardHours.setVisibility(View.VISIBLE);
+            holder.leaderboardName.setVisibility(View.VISIBLE);
+            holder.leaderboardRank.setVisibility(View.VISIBLE);
+        }
 
         String title = organizationModel.getFirstName() + " "+ organizationModel.getLastName();
         holder.leaderboardName.setText(title);
@@ -100,6 +106,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
                 //TODO Retrofit call here for adding more users
                 //Toast.makeText(LeaderboardAdapter.context, "Add Retrofit", Toast.LENGTH_SHORT).show();
                 //users.add(UserModel.myUserModel);
+
                 LeaderboardActivity.update();
 
                 for(int i = 0; i < users.size(); i++)

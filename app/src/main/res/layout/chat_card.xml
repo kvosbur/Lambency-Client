@@ -25,7 +25,7 @@
             android:scaleType="centerCrop"
 
 
-            android:src="@drawable/ic_books" />
+            android:src="@drawable/ic_default_avatar_square" />
 
         <RelativeLayout
             android:layout_width="wrap_content"

@@ -1,5 +1,6 @@
 package com.lambency.lambency_client.Activities;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.data.model.User;
 import com.lambency.lambency_client.Adapters.LeaderboardAdapter;
 import com.lambency.lambency_client.Adapters.UserListAdapter;
 import com.lambency.lambency_client.Models.UserModel;
@@ -42,6 +44,8 @@ public class LeaderboardActivity extends BaseActivity {
 
     static int startVal = 1;
 
+    static Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +56,8 @@ public class LeaderboardActivity extends BaseActivity {
         userList = new ArrayList<>();
 
         ButterKnife.bind(this);
+
+        context = this;
 
         getSupportActionBar().setTitle("Leaderboard");
 
@@ -121,7 +127,7 @@ public class LeaderboardActivity extends BaseActivity {
                                         {
                                             userList.add(ret.get(i));
                                         }
-
+                                        mAdapter.notifyDataSetChanged(); // how we update
                                     }
                                 }
 
@@ -160,11 +166,33 @@ public class LeaderboardActivity extends BaseActivity {
     }
 
     public static void update() {
-        userList.remove(userList.size()-1);
-        mAdapter.notifyDataSetChanged(); // how we update
-        startVal-=1;
+        int pos = -1;
+        for(UserModel userModel: userList){
+            System.out.println(userModel.getOauthToken() + ": " + userModel.getFirstName() + " " + userModel.getLastName());
+        }
 
-        LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + startVal+10).enqueue(new Callback<List<UserModel>>() {
+        for(int i = 0; i < userList.size(); i++)
+        {
+            UserModel u = userList.get(i);
+            if(u.getFirstName().compareTo("...") == 0)
+            {
+                userList.remove(i);
+                i--;
+            }
+        }
+
+        if(userList.contains(UserModel.myUserModel) && userList.get(userList.size()-1).equals(UserModel.myUserModel))
+        {
+            userList.remove(userList.size()-1);
+        }
+
+        //userList = new ArrayList<>();
+        //mAdapter.notifyDataSetChanged(); // how we update
+        //mAdapter = new LeaderboardAdapter(userList, context);
+        mAdapter.updateUserList((ArrayList) userList);
+        // startVal-=1;
+
+        LambencyAPIHelper.getInstance().getLeaderboardRange("" + startVal, "" + (startVal+10)).enqueue(new Callback<List<UserModel>>() {
             @Override
             public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
                 if (response.body() == null || response.code() != 200) {
@@ -178,6 +206,7 @@ public class LeaderboardActivity extends BaseActivity {
                 } else {
                     UserModel userModel = ret.get(0);
                     int rank = Integer.parseInt(userModel.getOauthToken());
+                    Toast.makeText(context, "" + ret.size(), Toast.LENGTH_SHORT).show();
                     //Toast.makeText(LeaderboardActivity.this, "" + ret.size(), Toast.LENGTH_SHORT).show();
                     // I will set the oAuthToken to the users rank
                     startVal += ret.size();
@@ -187,17 +216,9 @@ public class LeaderboardActivity extends BaseActivity {
                     }
 
                     userList.add(new UserModel("...", null, null, null, null, null, null, 0, 0, null));
-
-                    for(int i = 0; i < userList.size(); i++)
-                    {
-                        UserModel u = userList.get(i);
-                        if(u.getFirstName().compareTo("...") == 0 && i != userList.size()-1)
-                        {
-                            userList.remove(i);
-                            i--;
-                        }
+                    for(UserModel user: userList){
+                        System.out.println(user.getOauthToken() + ": " + user.getFirstName() + " " + user.getLastName());
                     }
-
                     mAdapter.notifyDataSetChanged(); // how we update
                 }
             }
@@ -208,6 +229,7 @@ public class LeaderboardActivity extends BaseActivity {
             }
         });
 
+        /*
         for(int i = 0; i < userList.size(); i++)
         {
             UserModel u = userList.get(i);
@@ -217,6 +239,7 @@ public class LeaderboardActivity extends BaseActivity {
                 i--;
             }
         }
+        */
     }
 
     @Override

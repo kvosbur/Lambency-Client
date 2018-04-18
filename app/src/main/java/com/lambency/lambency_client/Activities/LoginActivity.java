@@ -191,6 +191,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                             public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
                                 if (response.body() == null || response.code() != 200) {
                                     Toast.makeText(getApplicationContext(), "Server error!", Toast.LENGTH_SHORT).show();
+                                    progressLayout.setVisibility(View.GONE);
+                                    mainLayout.setVisibility(View.VISIBLE);
                                     return;
                                 }
 
@@ -207,7 +209,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
 
                                     retrofitUserSearch();
-
+                                    return;
                                 }
                                 else if (userAuthenticatorModel.getStatus() == UserAuthenticatorModel.Status.NON_UNIQUE_EMAIL){
                                     Toast.makeText(getApplicationContext(), "Email has yet to be verified", Toast.LENGTH_LONG).show();
@@ -219,12 +221,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                     System.out.println("non deterministic error occurred in login");
                                     Toast.makeText(getApplicationContext(), "An error occured", Toast.LENGTH_LONG).show();
                                 }
-
+                                progressLayout.setVisibility(View.GONE);
+                                mainLayout.setVisibility(View.VISIBLE);
                             }
 
                             @Override
                             public void onFailure(Call<UserAuthenticatorModel> call, Throwable t) {
                                 System.out.println("Server Error occurred in login");
+                                progressLayout.setVisibility(View.GONE);
+                                mainLayout.setVisibility(View.VISIBLE);
                             }
                         });
                     }
@@ -353,6 +358,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                                     public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
                                                         if (response.body() == null || response.code() != 200) {
                                                             System.out.println("ERROR5!!!!!");
+                                                            progressLayout.setVisibility(View.GONE);
+                                                            mainLayout.setVisibility(View.VISIBLE);
                                                             return;
                                                         }
                                                         //when response is back
@@ -371,7 +378,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                                             editor.apply();
 
                                                             retrofitUserSearch();
-
+                                                            return;
                                                         } else if (ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR) {
                                                             //System.out.println("NON_DETERMINANT_ERROR");
                                                             Toast.makeText(getApplicationContext(), "NON_DETERMINANT_ERROR", Toast.LENGTH_LONG).show();
@@ -383,12 +390,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                                             Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
 
                                                         }
+                                                        progressLayout.setVisibility(View.GONE);
+                                                        mainLayout.setVisibility(View.VISIBLE);
                                                     }
 
                                                     @Override
                                                     public void onFailure(Call<UserAuthenticatorModel> call, Throwable throwable) {
                                                         //when failure
-
+                                                        progressLayout.setVisibility(View.GONE);
+                                                        mainLayout.setVisibility(View.VISIBLE);
                                                         System.out.println(throwable.getMessage());
 
                                                         Toast.makeText(getApplicationContext(), "Failed to Communicate with Server please try again.", Toast.LENGTH_LONG).show();
@@ -508,6 +518,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 public void onResponse(Call<UserAuthenticatorModel> call, Response<UserAuthenticatorModel> response) {
                     if (response.body() == null || response.code() != 200) {
                         System.out.println("ERROR7!!!!!");
+                        progressLayout.setVisibility(View.GONE);
+                        mainLayout.setVisibility(View.VISIBLE);
                         return;
                     }
                     //when response is back
@@ -527,7 +539,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         editor.apply();
 
                         retrofitUserSearch();
-
+                        return;
                     }
                     else if(ua.getStatus() == UserAuthenticatorModel.Status.NON_DETERMINANT_ERROR){
                         //System.out.println("NON_DETERMINANT_ERROR");
@@ -541,6 +553,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         Toast.makeText(getApplicationContext(), "non unique email.", Toast.LENGTH_LONG).show();
                         Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
                     }
+                    progressLayout.setVisibility(View.GONE);
+                    mainLayout.setVisibility(View.VISIBLE);
                 }
 
                 @Override
@@ -548,7 +562,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                     //when failure
 
                     Toast.makeText(getApplicationContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
-
+                    progressLayout.setVisibility(View.GONE);
+                    mainLayout.setVisibility(View.VISIBLE);
                 }
             });
 
