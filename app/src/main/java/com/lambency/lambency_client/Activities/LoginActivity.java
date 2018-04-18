@@ -7,6 +7,8 @@ import android.content.Intent;
 
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -30,6 +33,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 
 
@@ -54,6 +58,8 @@ import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 
 import butterknife.BindView;
@@ -338,6 +344,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
                                             try {
                                                 String id = (String) object.get("id");
+                                                System.out.println("id was : "+id);
                                                 String firstName = (String) object.get("first_name");
                                                 String lastName = (String) object.get("last_name");
                                                 String email = (String) object.get("email");
