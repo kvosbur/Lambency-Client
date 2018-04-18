@@ -3,6 +3,7 @@ package com.lambency.lambency_client.Activities;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
@@ -43,6 +44,8 @@ import retrofit2.Response;
 
 public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
     private static final String TAG = ProfileSettingsActivity.class.getSimpleName();
+    private static boolean pref;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +95,19 @@ public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
                     if (newValue instanceof Boolean) {
                         boolean isChecked = (boolean) newValue;
                         if (isChecked) {
+                            SharedPreferences sharedPref = getActivity().getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE",MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putInt("NOTIFICATION_PREFERENCE", 2);
+
+                            editor.commit();
                             updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 2);
-                        } else updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 3);
+                        } else{
+                            updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 3);
+                            SharedPreferences sharedPref = getActivity().getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE",MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putInt("NOTIFICATION_PREFERENCE", 3);
+                            editor.commit();
+                        }
                     }
                     return true;
                 }
