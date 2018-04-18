@@ -32,6 +32,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
 import com.lambency.lambency_client.Activities.MessageListActivity;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.NotificationHelper;
 
@@ -114,8 +115,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Map<String, String> data = remoteMessage.getData();
         String messageType = data.get("type");
-
-        if(messageType != null){
+        int pref = UserModel.myUserModel.getNotification_preference();
+        if(messageType != null && (pref == 0 || pref == 2) ){
             switch(messageType){
                 case "joinRequest":
                     NotificationHelper.sendJoinRequestNotification(this,
