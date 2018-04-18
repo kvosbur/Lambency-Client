@@ -115,8 +115,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Map<String, String> data = remoteMessage.getData();
         String messageType = data.get("type");
-        int pref = UserModel.myUserModel.getNotification_preference();
-        if(messageType != null && (pref == 0 || pref == 2) ){
+        //int pref = UserModel.myUserModel.getNotification_preference();
+        //if(messageType != null && (pref == 0 || pref == 2) ){
             switch(messageType){
                 case "joinRequest":
                     NotificationHelper.sendJoinRequestNotification(this,
@@ -166,7 +166,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Log.e("FirebaseMessaging", "No data type specified");
                     break;
             }
-        }
+        //}
 
         Log.d(TAG, "Short lived task is done.");
     }
