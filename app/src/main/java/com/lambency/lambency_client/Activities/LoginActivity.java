@@ -325,7 +325,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             });
 
 
-            final ImageView profilePic = findViewById(R.id.profilePic);
             loginButton.registerCallback(callbackManager,
                     new FacebookCallback<LoginResult>() {
                         @Override

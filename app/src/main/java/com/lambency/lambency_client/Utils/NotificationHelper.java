@@ -92,6 +92,7 @@ public class NotificationHelper {
 
         Notification notification = mBuilder.build();
         // Cancel the notification after its selected
+        notification.defaults |= Notification.DEFAULT_SOUND;
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(id++, notification);
     }
@@ -121,6 +122,7 @@ public class NotificationHelper {
 
         Notification notification = mBuilder.build();
         // Cancel the notification after its selected
+        notification.defaults |= Notification.DEFAULT_SOUND;
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(id++, notification);
     }
@@ -165,6 +167,7 @@ public class NotificationHelper {
 
         Notification notification = mBuilder.build();
         // Cancel the notification after its selected
+        notification.defaults |= Notification.DEFAULT_SOUND;
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(id++, notification);
     }
@@ -193,6 +196,7 @@ public class NotificationHelper {
 
         Notification notification = mBuilder.build();
         // Cancel the notification after its selected
+        notification.defaults |= Notification.DEFAULT_SOUND;
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(id++, notification);
     }
