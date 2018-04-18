@@ -21,6 +21,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -115,8 +116,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Map<String, String> data = remoteMessage.getData();
         String messageType = data.get("type");
-        //int pref = UserModel.myUserModel.getNotification_preference();
-        //if(messageType != null && (pref == 0 || pref == 2) ){
+        SharedPreferences sharedPref = this.getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE",MODE_PRIVATE);
+        int pref = sharedPref.getInt("NOTIFICATION_PREFERENCE",0);
+        System.out.println("Pref: "+pref);
+        if(messageType != null && (pref == 0 || pref == 2) ){
             switch(messageType){
                 case "joinRequest":
                     NotificationHelper.sendJoinRequestNotification(this,
