@@ -50,6 +50,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -681,6 +682,7 @@ public class EventDetailsActivity extends BaseActivity implements
 
                     if(eventModel.isPrivateEvent()) {
                         memberOnlyText.setVisibility(View.VISIBLE);
+                        joinButton.setEnabled(UserModel.myUserModel.canSeePrivateEventFromOrg(event.getOrg_id()));
                     }
 
                     //setting the codes

@@ -346,6 +346,10 @@ public class UserModel {
         return result;
     }
 
+    public boolean canSeePrivateEventFromOrg(int orgid){
+        return myOrgs.contains(orgid) || joinedOrgs.contains(orgid);
+    }
+
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
@@ -474,5 +478,7 @@ public class UserModel {
     public interface UpdateActiveStatusCallback {
         void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive);
     }
+
+
 
 }
