@@ -113,16 +113,16 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         holder.nameView.setText(name);
 
         //on click of nameView
-        holder.nameView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context,CardViewActivity.class);
-                intent.putExtra("userIdKey",userModel.getUserId());
-                intent.putExtra("orgIdKey",org_id);
-                intent.putExtra("userName",name2);
-                context.startActivity(intent);
-            }
-        });
+//        holder.nameView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(context,CardViewActivity.class);
+//                intent.putExtra("userIdKey",userModel.getUserId());
+//                intent.putExtra("orgIdKey",org_id);
+//                intent.putExtra("userName",name2);
+//                context.startActivity(intent);
+//            }
+//        });
 
         holder.emailView.setText(userModel.getEmail());
 
@@ -144,6 +144,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             holder.permissionButton.setText("ORGANIZER");
             holder.permissionButton.setTextColor(context.getResources().getColor(R.color.colorAccent));
         }
+
 
         //TODO Add retrofit here for getting online status of other users, own call
         //TODO is done in BottomBarActivity (by default user is offline)
@@ -203,6 +204,17 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         if(userModel.isEditable()){
             holder.editButton.setVisibility(View.VISIBLE);
+            //on click of nameView
+            holder.nameView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context,CardViewActivity.class);
+                    intent.putExtra("userIdKey",userModel.getUserId());
+                    intent.putExtra("orgIdKey",org_id);
+                    intent.putExtra("userName",name2);
+                    context.startActivity(intent);
+                }
+            });
         }
 
 
