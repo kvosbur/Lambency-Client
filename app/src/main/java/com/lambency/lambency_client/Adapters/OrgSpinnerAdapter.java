@@ -61,9 +61,11 @@ public class OrgSpinnerAdapter extends BaseAdapter{
 
 
         CircleImageView orgImage = view.findViewById(R.id.orgImage);
-        ImageHelper.loadWithGlide(context,
-                orgs.get(i).getImagePath(),
-                orgImage);
+        if(orgs.get(i).getImagePath() != null) {
+            ImageHelper.loadWithGlide(context,
+                    orgs.get(i).getImagePath(),
+                    orgImage);
+        }
 
 
         return view;

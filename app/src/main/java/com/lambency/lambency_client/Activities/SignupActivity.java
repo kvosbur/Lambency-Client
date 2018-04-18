@@ -111,6 +111,8 @@ public class SignupActivity extends AppCompatActivity implements TextWatcher {
                     System.out.println("wrong verification code for user");
                     Toast.makeText(getApplicationContext(), "There was an error on Server", Toast.LENGTH_LONG).show();
                 }
+
+                _signupButton.setEnabled(true);
             }
 
             @Override

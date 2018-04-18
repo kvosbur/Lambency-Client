@@ -116,7 +116,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Map<String, String> data = remoteMessage.getData();
         String messageType = data.get("type");
-
         SharedPreferences sharedPref = this.getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE",MODE_PRIVATE);
         int pref = sharedPref.getInt("NOTIFICATION_PREFERENCE",0);
         System.out.println("Pref: "+pref);
@@ -170,7 +169,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Log.e("FirebaseMessaging", "No data type specified");
                     break;
             }
-        }
+        //}
 
         Log.d(TAG, "Short lived task is done.");
     }
