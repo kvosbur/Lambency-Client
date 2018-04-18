@@ -88,40 +88,61 @@ public class ProfileSettingsActivity extends AppCompatPreferenceActivity {
                 }
             });
 
-            Preference pushNotifications = findPreference(getString(R.string.notifications_new_message));
+            final Preference pushNotifications = findPreference(getString(R.string.notifications_new_message));
+            final Preference emailNotifications = findPreference(getString(R.string.notifications_new_email));
+
             pushNotifications.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     if (newValue instanceof Boolean) {
                         boolean isChecked = (boolean) newValue;
                         if (isChecked) {
-                            SharedPreferences sharedPref = getActivity().getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE",MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putInt("NOTIFICATION_PREFERENCE", 2);
+                            if (emailNotifications.isEnabled()){
+                                updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 0);
+                            } else {
+                                SharedPreferences sharedPref = getActivity().getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putInt("NOTIFICATION_PREFERENCE", 2);
 
-                            editor.commit();
-                            updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 2);
-                        } else{
-                            updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 3);
-                            SharedPreferences sharedPref = getActivity().getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE",MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putInt("NOTIFICATION_PREFERENCE", 3);
-                            editor.commit();
+                                editor.commit();
+                                updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 2);
+                            }
+                        } else {
+                            if (!emailNotifications.isEnabled()) {
+                                updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 3);
+                                SharedPreferences sharedPref = getActivity().getSharedPreferences("com.lambency.NOTIFICATION_PREFERENCE", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putInt("NOTIFICATION_PREFERENCE", 3);
+                                editor.commit();
+                            }
+                            else {
+                                updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 1);
+                            }
                         }
                     }
                     return true;
                 }
             });
 
-            Preference emailNotifications = findPreference(getString(R.string.notifications_new_email));
             emailNotifications.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     if (newValue instanceof Boolean) {
                         boolean isChecked = (boolean) newValue;
                         if (isChecked) {
-                            updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 1);
-                        } else updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 3);
+                            if (pushNotifications.isEnabled()){
+                                updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 0);
+                            } else {
+                                updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 1);
+                            }
+                        } else {
+                            if (!pushNotifications.isEnabled()){
+                                updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 3);
+                            }
+                            else {
+                                updateNotifyPreference(UserModel.myUserModel.getOauthToken(), 2);
+                            }
+                        }
                     }
                     return true;
                 }
