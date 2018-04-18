@@ -84,9 +84,6 @@ public class UserAcceptRejectActivity  extends BaseActivity {
                     }
 
                     mAdapter.notifyDataSetChanged(); // how we update
-                    if(organizationModelList.size() == 0) {
-                        currRequests.setVisibility(View.VISIBLE);
-                    }
                 }
             }
             @Override
@@ -109,6 +106,9 @@ public class UserAcceptRejectActivity  extends BaseActivity {
             public void onLeftClicked(int position) {
                 callRetrofit(false,position);
                 Toast.makeText(getApplicationContext(), "Rejected invite!", Toast.LENGTH_LONG).show();
+                if(organizationModelList.size() == 0) {
+                    currRequests.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -155,6 +155,11 @@ public class UserAcceptRejectActivity  extends BaseActivity {
                     Toast.makeText(UserAcceptRejectActivity.this, "Successfully rejected.", Toast.LENGTH_SHORT).show();
                     organizationModelList.remove(position);
                     mAdapter.notifyDataSetChanged();
+                }
+
+                Toast.makeText(UserAcceptRejectActivity.this, "" + organizationModelList.size(), Toast.LENGTH_SHORT).show();
+                if(organizationModelList.size() == 0) {
+                    currRequests.setVisibility(View.VISIBLE);
                 }
 
             }

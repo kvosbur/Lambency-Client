@@ -113,7 +113,7 @@ public class NotificationHelper {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, joinRequestChannel.id)
                 .setSmallIcon(R.drawable.ic_notification_lambency)
                 .setContentTitle("Chat message")
-                .setContentText(name + "sent you a message.")
+                .setContentText(name + " sent you a message.")
                 .setColor(context.getResources().getColor(R.color.colorPrimary))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(contentIntent);
