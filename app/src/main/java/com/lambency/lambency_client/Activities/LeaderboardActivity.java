@@ -112,7 +112,7 @@ public class LeaderboardActivity extends BaseActivity {
                                         System.out.println("An error has occurred");
                                         return;
                                     }
-                                    //when response is back
+                                    //when response is back //
                                     List<UserModel> ret = response.body();
                                     if(ret == null ) {
                                         System.out.println("An error has occurred");
