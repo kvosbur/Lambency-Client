@@ -169,7 +169,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Log.e("FirebaseMessaging", "No data type specified");
                     break;
             }
-        //}
+        }
 
         Log.d(TAG, "Short lived task is done.");
     }
