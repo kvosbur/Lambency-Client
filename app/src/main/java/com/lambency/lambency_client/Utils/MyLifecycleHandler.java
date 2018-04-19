@@ -46,6 +46,9 @@ public class MyLifecycleHandler implements Application.ActivityLifecycleCallback
     public void onActivityPaused(Activity activity) {
         ++paused;
         android.util.Log.w("test", "application is in foreground: " + (resumed > paused));
+        if (!isApplicationVisible()) {
+            UserModel.myUserModel.setActiveForModelAndDatabase(false);
+        }
     }
 
     @Override
@@ -61,6 +64,9 @@ public class MyLifecycleHandler implements Application.ActivityLifecycleCallback
     public void onActivityStopped(Activity activity) {
         ++stopped;
         android.util.Log.w("test", "application is visible: " + (started > stopped));
+        if (!isApplicationVisible()) {
+            UserModel.myUserModel.setActiveForModelAndDatabase(false);
+        }
     }
 
 // If you want a static function you can use to check if your application is
