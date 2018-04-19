@@ -83,6 +83,10 @@ public class UserAcceptRejectActivity  extends BaseActivity {
                         organizationModelList.add(ret.get(i));
                     }
 
+                    if(organizationModelList.size() == 0) {
+                        currRequests.setVisibility(View.VISIBLE);
+                    }
+
                     mAdapter.notifyDataSetChanged(); // how we update
                 }
             }
@@ -139,6 +143,9 @@ public class UserAcceptRejectActivity  extends BaseActivity {
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response.body() == null || response.code() != 200) {
                     System.out.println("An error has occurred");
+                    if(organizationModelList.size() == 0) {
+                        currRequests.setVisibility(View.VISIBLE);
+                    }
                     return;
                 }
                 //when response is back
@@ -157,7 +164,7 @@ public class UserAcceptRejectActivity  extends BaseActivity {
                     mAdapter.notifyDataSetChanged();
                 }
 
-                Toast.makeText(UserAcceptRejectActivity.this, "" + organizationModelList.size(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(UserAcceptRejectActivity.this, "" + organizationModelList.size(), Toast.LENGTH_SHORT).show();
                 if(organizationModelList.size() == 0) {
                     currRequests.setVisibility(View.VISIBLE);
                 }
