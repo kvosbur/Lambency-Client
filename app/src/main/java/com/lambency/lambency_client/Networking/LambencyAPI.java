@@ -1,18 +1,22 @@
 package com.lambency.lambency_client.Networking;
 
 
+import com.lambency.lambency_client.Models.ChatModel;
 import com.lambency.lambency_client.Models.EventFilterModel;
 
 import com.lambency.lambency_client.Models.EventAttendanceModel;
 
 import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.MessageModel;
 import com.lambency.lambency_client.Models.MyLambencyModel;
+import com.lambency.lambency_client.Models.OrganizationFilterModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -38,7 +42,8 @@ public interface LambencyAPI {
     Call<OrganizationModel> postCreateOrganization(@Body OrganizationModel org);
 
     @GET("User/search")
-    Call<UserModel> userSearch(@Query("oAuthToken") String oAuthToken, @Query("id") String userID);
+    Call<UserModel> userSearch(@Query("oAuthCode") String oAuthToken, @Query("id") String userID);
+
 
 
     @GET("Organization/search")
@@ -79,7 +84,7 @@ public interface LambencyAPI {
     Call<ArrayList<UserModel>> getListOfUsers(@Query("oauthcode") String oAuthCode, @Query("event_id") int eventId);
 
     @POST("Event/update")
-    Call<Integer> postUpdateEvent(@Body EventModel event);
+    Call<Integer> postUpdateEvent(@Body EventModel event, @Query("message") String message);
 
     @GET("/User/registerForEvent")
     Call<Integer> getRegisterEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID);
@@ -109,7 +114,7 @@ public interface LambencyAPI {
     Call<MyLambencyModel> getMyLambencyModel(@Query("oAuthCode") String oAuthCode);
 
     @POST("Event/searchWithFilter")
-    Call<List<EventModel>> getEventsFromFilter(@Body EventFilterModel efm);
+    Call<List<EventModel>> getEventsFromFilter(@Body EventFilterModel efm, @Query("oAuthCode") String oAuthCode);
 
     @GET("Organization/getMembersAndOrganizers")
     Call<ArrayList<UserModel>[]> getMembersAndOrganizers(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
@@ -132,6 +137,91 @@ public interface LambencyAPI {
 
     @POST("/User/ClockInOut")
     Call<Integer> sendClockInCode(@Query("oAuthCode") String oAuthCode, @Body EventAttendanceModel eventAttendanceModel);
+
+    @POST("Organization/edit")
+    Call<OrganizationModel> getEditOrganization(@Query("oAuthCode") String oAuthCode, @Body OrganizationModel organizationModel);
+
+    @GET("/User/register")
+    Call<Integer> registerUser(@Query("email") String email, @Query("first") String firstName, @Query("last") String LastName,
+                               @Query("passwd") String password);
+
+    @POST("/User/verifyEmail")
+    Call<Integer> verifyEmail(@Query("userID") int userid, @Query("code") String verificationCode);
+
+    @GET("/User/login/lambency")
+    Call<UserAuthenticatorModel> loginUser(@Query("email") String email, @Query("password") String password);
+
+    @POST("/User/changePassword")
+    Call<Integer> changePassword(@Query("newPassword") String password, @Query("confirmPassword") String confirmPass,
+                                 @Query("oAuthToken") String oAuthToken, @Query("oldPassword") String oldPassword);
+
+    @POST("/User/beginRecovery")
+    Call<Integer> beginPasswordRecovery(@Query("email") String email);
+
+    @POST("/User/endRecovery")
+    Call<Integer> endPasswordRecovery(@Query("newPassword") String password, @Query("confirmPassword") String confirmPass,
+                                 @Query("verification") String oAuthToken, @Query("userID") int userID);
+
+
+
+    @GET("Event/deleteEvent")
+    Call<Integer> getDeleteEvent(@Query("oAuthCode") String oAuthCode, @Query("eventID") String eventID, @Query("message") String message);
+
+    @POST("User/setFirebase")
+    Call<Integer> setFirebaseCode(@Query("oAuthCode") String oAuthCode, @Query("firebase") String fireBaseCode);
+
+
+    @GET("User/leaderboardRange")
+    Call<List<UserModel>> getLeaderboardRange(@Query("start") String start, @Query("end") String end);
+
+    @GET("User/leaderboardAroundUser")
+    Call<List<UserModel>> getLeaderboardAroundUser(@Query("oAuthCode") String oAuthCode);
+
+    @GET("User/setActiveStatus")
+    Call<Integer> setActiveStatus(@Query("oAuthCode") String oAuthCode, @Query("isActive") boolean isActive);
+
+    @GET("User/getActiveStatus")
+    Call<Integer> getActiveStatus(@Query("oAuthCode") String oAuthCode, @Query("userID") int userID);
+
+    @GET("Organization/delete")
+    Call<Integer> getDeleteOrganization(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID);
+
+    @POST("Organization/searchWithFilter")
+    Call<ArrayList<OrganizationModel>> getOrganizationsWithFilter(@Body OrganizationFilterModel organizationFilterModel);
+
+
+    @GET("User/joinRequests")
+    Call<List<OrganizationModel>> getUserJoinRequests(@Query("oAuthCode") String oAuthCode);
+
+    @GET("User/respondToJoinRequest")
+    Call<Integer> getUserRespondToJoinRequest(@Query("oAuthCode") String oAuthCode, @Query("orgID") String orgID, @Query("accept") String accept);
+
+    @GET("Chat/relatedUsers")
+    Call<ArrayList<UserModel>> getRelatedUsers(@Query("oAuthCode") String oAuthCode);
+
+    @GET("Chat/create")
+    Call<ChatModel> createChat(@Query("oAuthCode") String oAuthCode, @Query("ID2") int id2, @Query("isGroup") boolean isGroup);
+
+    @GET("Chat/getAllChats")
+    Call<ArrayList<ChatModel>> getAllChats(@Query("oAuthCode") String oAuthCode);
+
+    @POST("Chat/sendMessage")
+    Call<Integer> sendMessage(@Query("oAuthCode") String oAuthCode, @Query("chatID") int chatID, @Body MessageModel messageModel);
+
+    @GET("Organization/pastEvents")
+    Call<ArrayList<EventModel>> getPastEvents(@Query("oAuthCode") String oAuthCode, @Query("orgID") int orgID);
+
+    @GET("Organization/pastEventAttandence")
+    Call<ArrayList<EventAttendanceModel>> getPastEventAttendence(@Query("oAuthCode") String oAuthCode, @Query("eventID") int eventID);
+
+    @GET("User/setNotificationPreference")
+    Call<Integer> updateNotificationPreference(@Query("oAuthCode") String oAuthCode, @Query("preference") int preference);
+
+    @GET("User/pastEvents")
+    Call<ArrayList<EventModel>> getPastEvents(@Query("oAuthCode") String oAuthCode);
+
+    @GET("User/pastEventsInOrg")
+    Call<ArrayList<EventModel>> getPastEventsInOrg(@Query("oAuthCode") String oAuthCode, @Query("userID") String userID, @Query("orgID") String orgID);
 
 
 }

@@ -28,7 +28,9 @@ import com.lambency.lambency_client.Adapters.SearchTabsAdapter;
 import com.lambency.lambency_client.Fragments.FilterDistanceFragment;
 import com.lambency.lambency_client.Models.EventFilterModel;
 import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.OrganizationFilterModel;
 import com.lambency.lambency_client.Models.OrganizationModel;
+import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 
@@ -45,7 +47,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class SearchActivity extends AppCompatActivity   {
+public class SearchActivity extends BaseActivity   {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -60,6 +62,9 @@ public class SearchActivity extends AppCompatActivity   {
     Context context;
     private FusedLocationProviderClient mFusedLocationClient;
     private int MY_PERMISSIONS_ACCESS_COARSE_LOCATION;
+
+    static double longStored = 0.0;
+    static double latStoted = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +112,18 @@ public class SearchActivity extends AppCompatActivity   {
             }
         });
 
+        EventFilterModel.currentFilter.setTitle("");
         searchByLocation();
+
+        Intent intent = getIntent();
+        if (null != intent) { //Null Checking
+            String StrData= intent.getStringExtra("org");
+           if(StrData != null && StrData.compareTo("true") == 0) {
+               TabLayout.Tab tab = tabLayout.getTabAt(1);
+               tab.select();
+               applyOrgSearch();
+           }
+        }
     }
 
 
@@ -133,7 +149,12 @@ public class SearchActivity extends AppCompatActivity   {
                     {
                         searchTabsAdapter.setOrgVisiblity(View.VISIBLE, View.GONE);
 
-                        LambencyAPIHelper.getInstance().getOrganizationSearch(query).enqueue(new Callback<ArrayList<OrganizationModel>>() {
+                        if(OrganizationFilterModel.currentFilter == null) {
+                            OrganizationFilterModel.currentFilter = new OrganizationFilterModel();
+                        }
+
+                        OrganizationFilterModel.currentFilter.setTitle(query);
+                        LambencyAPIHelper.getInstance().getOrganizationsWithFilter(OrganizationFilterModel.currentFilter).enqueue(new Callback<ArrayList<OrganizationModel>>() {
                             @Override
                             public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
                                 searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
@@ -155,8 +176,6 @@ public class SearchActivity extends AppCompatActivity   {
                                     searchTabsAdapter.updateOrgs(orgList);
                                 } else {
                                     //results found
-                                    System.out.println("Orgs found!");
-
 
                                     if (searchTabsAdapter == null) {
                                         searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
@@ -169,15 +188,14 @@ public class SearchActivity extends AppCompatActivity   {
                             @Override
                             public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
                                 //when failure
-                                System.out.println("FAILED CALL");
-
                                 searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
                             }
                         });
+
                     } else {
                         EventFilterModel.currentFilter.setTitle(query);
 
-                        LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter).enqueue(new Callback<List<EventModel>>() {
+                        LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter, UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<EventModel>>() {
                             @Override
                             public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
                                 List<EventModel> events = response.body();
@@ -208,6 +226,52 @@ public class SearchActivity extends AppCompatActivity   {
         return super.onCreateOptionsMenu(menu);
     }
 
+    private void applyOrgSearch() {
+
+        if(OrganizationFilterModel.currentFilter.getLocation() == null || OrganizationFilterModel.currentFilter.getLocation().compareTo("") == 0)
+        {
+            OrganizationFilterModel.currentFilter.setLatitude(latStoted);
+            OrganizationFilterModel.currentFilter.setLongitude(longStored);
+        }
+
+        LambencyAPIHelper.getInstance().getOrganizationsWithFilter(OrganizationFilterModel.currentFilter).enqueue(new Callback<ArrayList<OrganizationModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<OrganizationModel>> call, Response<ArrayList<OrganizationModel>> response) {
+                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
+
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("ERROR!!!!!");
+                }
+                //when response is back
+                ArrayList<OrganizationModel> orgList = response.body();
+                if (orgList == null || orgList.size() == 0) {
+                    //no results found
+                    if (orgList == null) {
+                        orgList = new ArrayList<OrganizationModel>();
+                    }
+
+                    if (searchTabsAdapter == null) {
+                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                    }
+                    searchTabsAdapter.updateOrgs(orgList);
+                } else {
+                    //results found
+
+                    if (searchTabsAdapter == null) {
+                        searchTabsAdapter = new SearchTabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), context);
+                    }
+                    //OrgSearchResultFragment orgSearchResultFragment = (OrgSearchResultFragment) getSupportFragmentManager().findFragmentById(R.id.orgSearchResultFragment);
+                    searchTabsAdapter.updateOrgs(orgList);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<OrganizationModel>> call, Throwable throwable) {
+                //when failure
+                searchTabsAdapter.setOrgVisiblity(View.GONE, View.VISIBLE);
+            }
+        });
+    }
 
     private void searchByLocation(){
 
@@ -233,7 +297,10 @@ public class SearchActivity extends AppCompatActivity   {
                                     EventFilterModel.currentFilter.setLongitude(location.getLongitude());
                                     EventFilterModel.currentFilter.setLatitude(location.getLatitude());
 
-                                    LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter).enqueue(new Callback<List<EventModel>>() {
+                                    longStored = EventFilterModel.currentFilter.getLongitude();
+                                    latStoted = EventFilterModel.currentFilter.getLatitude();
+
+                                    LambencyAPIHelper.getInstance().getEventsFromFilter(EventFilterModel.currentFilter, UserModel.myUserModel.getOauthToken()).enqueue(new Callback<List<EventModel>>() {
                                         @Override
                                         public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
                                             List<EventModel> events = response.body();
@@ -302,17 +369,26 @@ public class SearchActivity extends AppCompatActivity   {
         switch(item.getItemId()){
 
             case android.R.id.home:
+                EventFilterModel.currentFilter = new EventFilterModel();
+                OrganizationFilterModel.currentFilter = new OrganizationFilterModel();
                 Intent intent = new Intent(context, BottomBarActivity.class);
                 startActivity(intent);
                 break;
 
             case R.id.location:
-                System.out.println("Location Pressed");
-                Intent i = new Intent(context,FilterActivity.class);
-                startActivity(i);
-
+                if(tabLayout.getSelectedTabPosition() == 1) {
+                    Toast.makeText(context, "Org Filter", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(context, FilterActivity.class);
+                    Bundle mBundle = new Bundle();
+                    mBundle.putString("OrgFilter", "true");
+                    i.putExtras(mBundle);
+                    startActivity(i);
+                } else {
+                    Intent i = new Intent(context, FilterActivity.class);
+                    startActivity(i);
+                }
                 EventFilterModel.currentFilter = new EventFilterModel();
-
+                OrganizationFilterModel.currentFilter = new OrganizationFilterModel();
                 //FragmentManager manager = getSupportFragmentManager();
                 //manager.beginTransaction().replace(R.id.fragContainer, new FilterDistanceFragment()).commit();
                 return true;

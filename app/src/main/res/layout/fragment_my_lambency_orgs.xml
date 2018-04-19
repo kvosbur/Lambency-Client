@@ -52,17 +52,18 @@
                     android:layout_height="wrap_content"
                     android:text="You Haven't Joined Any Organizations"
                     android:layout_centerHorizontal="true"
-                    android:layout_below="@id/memberOrgsTitleLayout"
                     android:visibility="gone"
+                    android:layout_below="@+id/memberOrgsTitleLayout"
                     />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/memberOrgsRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/memberOrgsTitleLayout"
+                    android:layout_below="@+id/noJoinedOrgsText"
                     android:nestedScrollingEnabled="false"
-                    android:focusable="false"/>
+                    android:focusable="false"
+                    android:visibility="visible"/>
 
                 <LinearLayout
                     android:id="@+id/organizerOrgsTitleLayout"
@@ -71,7 +72,8 @@
                     android:orientation="horizontal"
                     android:layout_margin="10dp"
                     android:clickable="true"
-                    android:layout_below="@id/memberOrgsRecyclerView">
+                    android:layout_below="@id/memberOrgsRecyclerView"
+                    >
 
                     <TextView
                         android:id="@+id/organizerOrgsTitle"

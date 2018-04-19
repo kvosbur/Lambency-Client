@@ -35,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class OrgUsersActivity extends AppCompatActivity implements UserListFragment.OnFragmentInteractionListener, SearchView.OnQueryTextListener {
+public class OrgUsersActivity extends BaseActivity implements UserListFragment.OnFragmentInteractionListener, SearchView.OnQueryTextListener {
 
     @BindView(R.id.tabLayout)
     TabLayout tabLayout;

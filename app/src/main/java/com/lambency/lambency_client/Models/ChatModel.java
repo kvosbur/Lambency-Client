@@ -1,0 +1,79 @@
+package com.lambency.lambency_client.Models;
+
+import java.io.Serializable;
+
+public class ChatModel implements Serializable{
+
+    private int chatID;
+    private String name;
+    private int recent_msg_id;
+    private String recent_msg_text;
+    private int userID;
+
+    public ChatModel(int chatID, String name){
+        this.chatID = chatID;
+        this.name = name;
+    }
+
+    public ChatModel(int chatID, String name, int recent_msg_id, String recent_msg_text, int userID) {
+        this(chatID, name);
+        this.recent_msg_id = recent_msg_id;
+        this.recent_msg_text = recent_msg_text;
+        this.userID = userID;
+    }
+
+
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public int getChatID() {
+        return chatID;
+    }
+
+    public int getRecent_msg_id() {
+        return recent_msg_id;
+    }
+
+    public void setRecent_msg_id(int recent_msg_id) {
+        this.recent_msg_id = recent_msg_id;
+    }
+
+    public String getRecent_msg_text() {
+        return recent_msg_text;
+    }
+
+    public void setRecent_msg_text(String recent_msg_text) {
+        this.recent_msg_text = recent_msg_text;
+    }
+
+    public void setChatID(int chatID) {
+        this.chatID = chatID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChatModel chat = (ChatModel) o;
+
+        if(chat.getChatID() == chatID && chat.getRecent_msg_id() == recent_msg_id){
+            return true;
+        }
+        return false;
+    }
+}

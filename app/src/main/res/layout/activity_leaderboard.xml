@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <TextView
+        android:layout_marginTop="3dp"
+        android:layout_width="match_parent"
+        android:id="@+id/leaderboardPos"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:text="Start volunteering to gain hours!"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:id="@+id/lineSeparateL"
+        android:layout_below="@+id/leaderboardPos"
+        android:background="@color/colorPrimary"
+        android:layout_marginBottom="3dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/leaderboardRecycle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/lineSeparateL">
+
+
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

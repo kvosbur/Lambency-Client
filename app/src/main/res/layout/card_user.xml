@@ -14,20 +14,51 @@
         android:paddingBottom="5dp"
         android:paddingTop="5dp">
 
-        <TextView
-            android:id="@+id/name"
+        <LinearLayout
+            android:id="@+id/nameLayout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:text="Evan M. Honeysett"/>
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:id="@+id/onlineStatusOnline"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/online_circle"
+                android:paddingTop="5dp"
+                android:layout_marginRight="13dp"
+                />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/onlineStatusOffline"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/offline_circle"
+                android:paddingTop="5dp"
+                android:layout_marginRight="13dp"
+                android:visibility="visible"
+                />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                android:text="Evan M. Honeysett"/>
+
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/emailLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@+id/name"
+            android:layout_below="@+id/nameLayout"
             android:gravity="center_vertical"
             android:clickable="true">
 
@@ -51,29 +82,41 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
+
             <Button
-                android:visibility="gone"
                 android:id="@+id/permissionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/editButton"
-                android:textAlignment="center"
                 android:background="@android:color/transparent"
                 android:text="member"
+                android:textAlignment="center"
                 android:textColor="@android:color/holo_green_light"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:visibility="invisible" />
 
             <ImageButton
-                android:visibility="gone"
                 android:id="@+id/editButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_edit_gray_24dp"
-                android:background="@android:color/transparent"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
+                android:background="@android:color/transparent"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/ic_edit_gray_24dp" />
+
+            <TextView
+                android:id="@+id/hoursText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3 hrs"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
                 />
 
         </RelativeLayout>

@@ -1,11 +1,13 @@
 package com.lambency.lambency_client.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,19 +15,40 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lambency.lambency_client.Activities.AcceptRejectActivity;
 import com.lambency.lambency_client.Activities.BottomBarActivity;
+import com.lambency.lambency_client.Activities.CardViewActivity;
 import com.lambency.lambency_client.Activities.LoginActivity;
+import com.lambency.lambency_client.Activities.MyRecyclerViewAdapter;
+import com.lambency.lambency_client.Activities.ProfileSettingsActivity;
+
+import com.lambency.lambency_client.Activities.LeaderboardActivity;
+
+import com.lambency.lambency_client.Activities.ListUserActivity;
+
+import com.lambency.lambency_client.Activities.LoginActivity;
+import com.lambency.lambency_client.Activities.MessageListActivity;
+import com.lambency.lambency_client.Activities.UserAcceptRejectActivity;
+import com.lambency.lambency_client.Adapters.LeaderboardAdapter;
+import com.lambency.lambency_client.Adapters.UserAcceptRejectAdapter;
+import com.lambency.lambency_client.Models.EventModel;
+import com.lambency.lambency_client.Models.OrganizationModel;
 import com.lambency.lambency_client.Models.UserAuthenticatorModel;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.SharedPrefsHelper;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,6 +81,18 @@ public class ProfileFragment extends Fragment {
 
     @BindView(R.id.editEmail)
     EditText editEmail;
+
+    @BindView(R.id.clicktoseehours)
+    LinearLayout clicktoseeHours;
+
+    @BindView(R.id.hoursText)
+    TextView hoursText;
+
+    @BindView(R.id.totalSumOrgs)
+    TextView totalOrgs;
+
+    @BindView(R.id.totalEventsSum)
+    TextView totalEvents;
 
     boolean edit = false;
 
@@ -125,6 +160,55 @@ public class ProfileFragment extends Fragment {
         lastNameText.setText(myModel.getLastName());
         emailOfUser.setText(myModel.getEmail());
 
+        clicktoseeHours.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileFragment.this.getActivity(), CardViewActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // total of orgs
+        int totalOfOrgs;
+        totalOfOrgs = UserModel.myUserModel.getMyOrgs().size() + UserModel.myUserModel.getJoinedOrgs().size();
+        System.out.println("orgs are " + totalOfOrgs);
+        totalOrgs.setText(totalOfOrgs +"");
+
+        // total of events
+        int totalOfEvents = 0;
+        totalOfEvents = UserModel.myUserModel.getEventsAttending().size();
+        totalEvents.setText(totalOfEvents+"");
+
+
+        LambencyAPIHelper.getInstance().getPastEvents(UserAuthenticatorModel.myAuth).enqueue(new Callback<ArrayList<EventModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<EventModel>> call, Response<ArrayList<EventModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    System.out.println("An error has occurred or the user has no past events");
+                    // if null is given show that the user has no past events
+                    hoursText.setText("0");
+                    return;
+                }
+                //when response is back
+                double hoursSum = 0;
+                ArrayList<EventModel> events = response.body();
+                for (EventModel eventModel : events) {
+                    // i set hours in description
+                    double hours = Double.parseDouble(eventModel.getDescription());
+                    hoursSum += hours;
+                    System.out.println("User worked " + hours + " hours at " + eventModel.getName());
+                }
+                DecimalFormat df = new DecimalFormat("0.00");
+                hoursText.setText(df.format(hoursSum));
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<EventModel>> call, Throwable t) {
+                //when failure
+                System.out.println("FAILED CALL");
+            }
+        });
+
         return view;
     }
 
@@ -134,6 +218,7 @@ public class ProfileFragment extends Fragment {
             mListener.onProfileFragmentInteraction(uri);
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -154,7 +239,7 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.menu_edit, menu);
+        menuInflater.inflate(R.menu.menu_profile, menu);
     }
 
     @Override
@@ -179,6 +264,22 @@ public class ProfileFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
+                break;
+
+            case R.id.action_seeRequests:
+                Intent i = new Intent(getActivity(), UserAcceptRejectActivity.class);
+                startActivity(i);
+                //((Activity) getActivity()).overridePendingTransition(0,0);
+                break;
+
+            case R.id.action_settings:
+                Intent settingPage = new Intent(getActivity(), ProfileSettingsActivity.class);
+                startActivity(settingPage);
+                break;
+
+            case R.id.action_leaderboard:
+                Intent j = new Intent(getActivity(), LeaderboardActivity.class);
+                startActivity(j);
                 break;
         }
 

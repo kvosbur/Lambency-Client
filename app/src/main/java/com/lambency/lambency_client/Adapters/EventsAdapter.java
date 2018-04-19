@@ -2,6 +2,7 @@ package com.lambency.lambency_client.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -9,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.lambency.lambency_client.Activities.EventDetailsActivity;
+import com.lambency.lambency_client.Activities.PastUsersActivity;
 import com.lambency.lambency_client.Models.EventModel;
 import com.lambency.lambency_client.R;
 import com.lambency.lambency_client.Utils.ImageHelper;
@@ -56,7 +59,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
 
         holder.cardView.setTag(position);
 
-        EventModel eventModel = events.get(position);
+        final EventModel eventModel = events.get(position);
 
         if(eventModel == null){
             return;
@@ -81,11 +84,22 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
             holder.timeView.setText(time);
         }
 
-        if(eventModel.getImageFile() != null){
+        if(eventModel.getImage_path() != null){
             //holder.eventImageView.setImageBitmap(ImageHelper.stringToBitmap(eventModel.getImageFile()));
             ImageHelper.loadWithGlide(context,
-                    ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()),
+                    eventModel.getImage_path(),
                     holder.eventImageView);
+        }
+
+        if(eventModel.isPastEvent()){
+            holder.pastEventLayout.setVisibility(View.VISIBLE);
+        }else{
+            holder.pastEventLayout.setVisibility(View.GONE);
+        }
+
+        //TODO Add check here if event is member only, if so set memberOnlyText visibility to visible & color
+        if(eventModel.isPrivateEvent()) {
+            holder.memberOnlyText.setVisibility(View.VISIBLE);
         }
 
         holder.orgTitleView.setText(eventModel.getOrgName());
@@ -93,16 +107,25 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, EventDetailsActivity.class);
+                Intent intent;
+                if(eventModel.isPastEvent()){
+                    if(!eventModel.isClickable()) {
+                        return;
+                    }
+                    intent = new Intent(context, PastUsersActivity.class);
+                }else{
+                    intent = new Intent(context, EventDetailsActivity.class);
+                }
+
                 Bundle bundle = new Bundle();
 
-                Integer taggedPosition = (Integer) view.getTag();
-                bundle.putInt("event_id", events.get(taggedPosition).getEvent_id());
+                //Integer taggedPosition = (Integer) view.getTag();
+                bundle.putInt("event_id", eventModel.getEvent_id());
+
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }
         });
-
 
 
     }
@@ -139,10 +162,16 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.AreaViewHo
         @BindView(R.id.orgTitle)
         TextView orgTitleView;
 
+        @BindView(R.id.memberOnlyText)
+        TextView memberOnlyText;
+
+        @BindView(R.id.pastEventLayout)
+        LinearLayout pastEventLayout;
+
+
         public AreaViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
         }
 
     }

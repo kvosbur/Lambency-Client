@@ -21,6 +21,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -63,7 +65,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class OrganizationDetailsActivity extends AppCompatActivity {
+public class OrganizationDetailsActivity extends BaseActivity {
 
     /*
     @BindView(R.id.LeaveOrgImg)
@@ -112,12 +114,14 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     @BindView(R.id.showAllButton)
     Button showAllButton;
 
+    @BindView(R.id.pastEventsButton)
+    Button pastEventsButton;
+
     @BindView(R.id.noEventsText)
     TextView noEventsTextView;
 
     @BindView(R.id.notificationNumTextDetails)
     TextView notificationNum;
-
 
     @BindView(R.id.inviteUsersToJoin)
     Button inviteUsers;
@@ -131,6 +135,8 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     private OrganizationModel organizationModel;
     private EventsAdapter eventsAdapter;
     private String usersEmail = "";
+
+    private MenuItem editOrgButton;
 
 
     @Override
@@ -189,8 +195,13 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     //hiding or showing invite button
                     if (UserModel.myUserModel.getMyOrgs().contains(organizationModel.getOrgID())){
                         inviteUsers.setVisibility(View.VISIBLE);
+                        editOrgButton.setVisible(true);
                     }
-                    else inviteUsers.setVisibility(View.GONE);
+
+                    else {
+                        inviteUsers.setVisibility(View.GONE);
+                        editOrgButton.setVisible(false);
+                    }
 
                     getUpcomingEvents();
 
@@ -200,8 +211,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         return;
                     }
 
-                    Toast.makeText(getApplicationContext(), "Got Organization Object", Toast.LENGTH_LONG).show();
-
                     if(organization.checkPermissions(UserModel.myUserModel) == 0){
                         seeMembersButton.setVisibility(View.GONE);
                     }
@@ -210,11 +219,10 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     titleOrg.setText(organization.getName());
                     descriptionOrg.setText(organization.getDescription());
                     emailOrg.setText(organization.getEmail());
-                    addressOrg.setText(organization.getLocation());
+                    addressOrg.setText(organization.getPrettyAddress());
 
 
-                    img = organization.getImage();
-
+                    //img = organization.getImage();
 
 
                     //This is the case where the user model is out of date and thinks that there is still a request, but in reality they are offically members
@@ -243,18 +251,10 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         }
                     }
 
-                    ImageHelper.loadWithGlide(context,
-                            ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
-                            orgImage);
-                    /*
-                    ImageHelper.loadWithGlide(context,
-                            ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
-                            leaveOrgImg);
-                            */
 
-                    if(organization.getImage() != null) {
+                    if(organization.getImagePath() != null && organization.getImagePath().length() != 0) {
                         ImageHelper.loadWithGlide(context,
-                                ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                                organization.getImagePath(),
                                 orgImage);
                     }
 
@@ -316,7 +316,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                                 Integer ret = response.body();
                                 if(ret == 0){
                                     System.out.println("successfully followed organization");
-                                    Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
                                     checkBox.setText("Unfollow");
                                 }
                                 else if (ret == 1){
@@ -340,7 +339,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         });
                     }
                     else {
-                        Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
                         LambencyAPIHelper.getInstance().getUnfollowOrg(UserModel.myUserModel.getOauthToken(), Integer.toString(currentOrgId)).enqueue(new Callback<Integer>() {
                             @Override
                             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -389,7 +387,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
 
         showAllButton.setVisibility(View.GONE);
         upcomingEventsContainer.setVisibility(View.GONE);
-        upcomingEventsContainer.setVisibility(View.VISIBLE);
+        //upcomingEventsContainer.setVisibility(View.VISIBLE);
 
         LambencyAPIHelper.getInstance().getEventsByOrg(UserModel.myUserModel.getOauthToken(), organizationModel.getOrgID() + "").enqueue(new Callback<List<EventModel>>() {
             @Override
@@ -400,7 +398,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                 }
                 //when response is back
                 List<EventModel> list = response.body();
-                if(list == null){
+                if(list == null || list.size() == 0){
                     System.out.println("Org has no events or error has occurred");
                     noEventsTextView.setVisibility(View.VISIBLE);
                     upcomingEventsProgress.setVisibility(View.GONE);
@@ -494,7 +492,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     Integer ret = response.body();
                     if(ret == 0){
                         System.out.println("successfully followed organization");
-                        Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
                         checkBox.setText("Unfollow");
                     }
                     else if (ret == 1){
@@ -518,7 +515,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             });
         }
         else {
-            Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
             LambencyAPIHelper.getInstance().getUnfollowOrg(UserModel.myUserModel.getOauthToken(), Integer.toString(currentOrgId)).enqueue(new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -554,15 +550,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-            default:
-                return true;
-        }
-    }
 
     @OnClick(R.id.followUnFollow)
     public void onClickFollow(){
@@ -579,7 +566,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     Integer ret = response.body();
                     if(ret == 0){
                         System.out.println("successfully followed organization");
-                        Toast.makeText(getApplicationContext(), "You are now following the organization", Toast.LENGTH_LONG).show();
                     }
                     else if (ret == 1){
                         System.out.println("failed to find user or organization");
@@ -633,7 +619,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     checkBox.setChecked(true);
                 }
             });
-            Toast.makeText(getApplicationContext(), "You un followed the organization", Toast.LENGTH_LONG).show();
+
         }
     }
 
@@ -666,7 +652,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                         Integer ret = response.body();
                         if(ret == 0){
                             System.out.println("Success in sending email");
-                            Toast.makeText(getApplicationContext(), "Email was sent successfully ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Invite Sent", Toast.LENGTH_SHORT).show();
                         }
                         else if(ret == -1){
                             System.out.println("an error has occurred");
@@ -741,7 +727,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
             CircleImageView leaveOrgImg = view.findViewById(R.id.LeaveOrgImg);
 
             ImageHelper.loadWithGlide(context,
-                    ImageHelper.saveImage(context, img, "orgImage" + currentOrgId),
+                    organizationModel.getImagePath(),
                     leaveOrgImg);
 
             alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Leave",
@@ -821,7 +807,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
                     Integer status = response.body();
                     System.out.println(status);
                     if(status == 0){
-                        Toast.makeText(getApplicationContext(), "Successfully requested to join", Toast.LENGTH_LONG).show();
                         UserModel.myUserModel.requestToJoinOrganization(currentOrgId);
                         requestJoin.setText("Cancel Request");
                     }
@@ -844,6 +829,15 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
     public void handleShowAllClick(){
         Intent intent = new Intent(context, ListEventsActivity.class);
         intent.putExtra("org_id", organizationModel.getOrgID());
+        intent.putExtra("eventType", "upcomingEvents");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.pastEventsButton)
+    public void handlePastEventsClick(){
+        Intent intent = new Intent(context, ListEventsActivity.class);
+        intent.putExtra("org_id", organizationModel.getOrgID());
+        intent.putExtra("eventType", "pastEvents");
         startActivity(intent);
     }
 
@@ -853,4 +847,37 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         intent.putExtra("org_id", organizationModel.getOrgID());
         startActivity(intent);
     }
+
+    private void handleEditClick(){
+        Bundle bundle = new Bundle();
+        bundle.putInt("org_id", organizationModel.getOrgID());
+        Intent intent = new Intent(this, OrgCreationActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = new MenuInflater(this);
+        menuInflater.inflate(R.menu.menu_org, menu);
+
+        editOrgButton = menu.findItem(R.id.action_edit);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_edit:
+                handleEditClick();
+            default:
+                return true;
+        }
+    }
+
 }

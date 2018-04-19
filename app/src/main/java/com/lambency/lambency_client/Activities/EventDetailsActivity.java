@@ -3,16 +3,20 @@ package com.lambency.lambency_client.Activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -26,6 +30,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,10 +50,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.lambency.lambency_client.Adapters.OrgSpinnerAdapter;
 import com.lambency.lambency_client.Adapters.OrganizationAdapter;
 import com.lambency.lambency_client.Models.EventModel;
@@ -65,8 +75,11 @@ import com.lambency.lambency_client.Utils.TimeHelper;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,10 +89,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EventDetailsActivity extends AppCompatActivity implements
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
+
+public class EventDetailsActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     String eventName = "";
 
+    private final int WRITE_EXTERNAL_STORAGE = 0;
 
     private int event_id;
     private TextView text;
@@ -166,6 +183,19 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
     @BindView(R.id.checkoutCodeDisp)
     TextView checkoutCodeDisp;
+
+
+    @BindView(R.id.memberOnlyTextDetails)
+    TextView memberOnlyText;
+
+    @BindView(R.id.clockInButton)
+    Button clockInButton;
+
+    @BindView(R.id.clockOutButton)
+    Button clockOutButton;
+
+    @BindView(R.id.whoCameButton)
+    Button whoCameButton;
 
     private EventModel event,eventModel;
 
@@ -262,7 +292,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                     UserModel.myUserModel.registerForEvent(event_id);
                                     System.out.println("REgistering for an event: " + event_id);
                                     System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
-                                    Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG).show();
                                     text.setText("Joined");
                                     checkMark.setVisibility(View.VISIBLE);
 
@@ -310,7 +339,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                     UserModel.myUserModel.unregisterForEvent(event_id);
                                     System.out.println("Unregistering for an event: " + event_id);
                                     System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
-                                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
                                     text.setText("Join Event");
                                     checkMark.setVisibility(View.INVISIBLE);
 
@@ -327,10 +355,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                     Toast.makeText(getApplicationContext(), "Unknown Error", Toast.LENGTH_LONG).show();
                                 } else if (ret == 3) {
                                     UserModel.myUserModel.unregisterForEvent(event_id);
-                                    System.out.println("UnREgistering for an event: " + event_id);
+                                    System.out.println("Unregistering for an event: " + event_id);
                                     System.out.println("Is it joined: " + UserModel.myUserModel.isRegisterdForEvent(event_id));
                                     System.out.println("Technically they were not registered for the event, but I guess the user object was not updated... so oops. Fail quietly.");
-                                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
                                 }
                             }
 
@@ -412,7 +439,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                                                         endorseButton.setText("Revoke");
                                                         endorseText.setText("\nClick to no longer endorse this event! ");
-                                                        Toast.makeText(getApplicationContext(), "Successfully endorsed!", Toast.LENGTH_LONG).show();
 
                                                         getAllOrgs();
 
@@ -486,7 +512,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                                                     if (ret == 0) {
                                                         endorseText.setText("\nEndorse this event as organization! ");
                                                         endorseButton.setText("Endorse");
-                                                        Toast.makeText(getApplicationContext(), "Successfully unendorsed!", Toast.LENGTH_LONG).show();
 
                                                         getAllOrgs();
                                                     } else if (ret == -1) {
@@ -544,9 +569,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
                         String event_string = data.getQueryParameter("eventid");
                         event_id = Integer.parseInt(event_string);
                     }
+
                     callRetrofit(event_id);
                 }
-
 
 
 
@@ -581,6 +606,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
                 }
             });
 
+
         }
     }
 
@@ -609,7 +635,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                         System.out.println("Error has occurred");
                     } else {
                         System.out.println("the number of users attending this event is" + ret);
-                        Toast.makeText(getApplicationContext(), "number people attending is" + ret, Toast.LENGTH_LONG).show();
                         numberOfPeopleAttending.setText(ret + "");
                     }
                 }
@@ -631,7 +656,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     System.out.println("4");
                 }
                 //when response is back
-                Toast.makeText(getApplicationContext(), "the event id was   " + event_id, Toast.LENGTH_LONG).show();
                 eventModel = response.body();
                 if (eventModel == null) {
                     System.out.println("failed to event");
@@ -647,16 +671,19 @@ public class EventDetailsActivity extends AppCompatActivity implements
                     currDate = currDate.substring(0, currDate.length() - 4);
                     currDate += "18";
 
-                    Toast.makeText(getApplicationContext(), eventModel.getName(), Toast.LENGTH_LONG).show();
-
 
                     dateView.setText(currDate); //TimeHelper.dateFromTimestamp(eventModel.getStart()));
                     descriptionView.setText(eventModel.getDescription());
                     timeView.setText(TimeHelper.hourFromTimestamp(eventModel.getStart()) + " - " + TimeHelper.hourFromTimestamp(eventModel.getEnd()));
-                    addressForGmaps = eventModel.getLocation();
+                    addressForGmaps = eventModel.getPrettyAddress();
                     latitude = eventModel.getLattitude();
                     longitude = eventModel.getLongitude();
-                    addressView.setText(eventModel.getLocation());
+                    addressView.setText(eventModel.getPrettyAddress());
+
+                    if(eventModel.isPrivateEvent()) {
+                        memberOnlyText.setVisibility(View.VISIBLE);
+                        joinButton.setEnabled(UserModel.myUserModel.canSeePrivateEventFromOrg(eventModel.getOrg_id()));
+                    }
 
                     //setting the codes
                     if(eventModel.getClockInCode() != null && eventModel.getClockOutCode() != null
@@ -668,12 +695,16 @@ public class EventDetailsActivity extends AppCompatActivity implements
                         checkOutCode.setVisibility(View.GONE);
                         checkinCodeDisp.setVisibility(View.GONE);
                         checkoutCodeDisp.setVisibility(View.GONE);
+                        clockOutButton.setVisibility(View.GONE);
+                        clockInButton.setVisibility(View.GONE);
+
                     }
 
                     RequestOptions requestOptions = new RequestOptions();
 
 
-                    ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
+                    //ImageHelper.loadWithGlide(context, ImageHelper.saveImage(context, eventModel.getImageFile(), "eventImage" + eventModel.getEvent_id()), eventImageView);
+                    ImageHelper.loadWithGlide(context, eventModel.getImage_path(), eventImageView);
 
                     getOrgInfo(eventModel.getOrg_id());
 
@@ -779,7 +810,7 @@ public class EventDetailsActivity extends AppCompatActivity implements
 
                 orgTitleView.setText("Host Organization: " + organization.getName());
                 ImageHelper.loadWithGlide(context,
-                        ImageHelper.saveImage(context, organization.getImage(), "orgImage" + organization.getOrgID()),
+                        organization.getImagePath(),
                         orgImageView);
 
                 isLoading(false);
@@ -811,9 +842,9 @@ public class EventDetailsActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                //finish();
-                  Intent intent = new Intent(context, SearchActivity.class);
-                  startActivity(intent);
+                finish();
+                  //Intent intent = new Intent(context, SearchActivity.class);
+                  //startActivity(intent);
                 return true;
             default:
                 return true;
@@ -852,6 +883,104 @@ public class EventDetailsActivity extends AppCompatActivity implements
         context.startActivity(intent);
     }
 
+    @OnClick(R.id.whoCameButton)
+    public void handleWhoCame() {
+
+    }
+
+    @OnClick(R.id.clockInButton)
+    public void handleCheckInClick(){
+        handleCodes(event.getClockInCode());
+    }
+
+    @OnClick(R.id.clockOutButton)
+    public void handleCheckOut(){
+        handleCodes(event.getClockOutCode());
+    }
+
+    public void handleCodes(String textCode){
+        final android.support.v7.app.AlertDialog.Builder alertDialog = new android.support.v7.app.AlertDialog.Builder(context);
+
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        final View dialogView = layoutInflater.inflate(R.layout.dialog_qr_code, null);
+
+        try{
+            Bitmap bitmap = encodeAsBitmap(textCode, 250, 250);
+            ImageView qrCode = dialogView.findViewById(R.id.qrCode);
+            qrCode.setImageBitmap(bitmap);
+        } catch (WriterException e){
+            e.printStackTrace();
+        }
+
+        TextView textCodeView = dialogView.findViewById(R.id.textCode);
+        textCodeView.setText(textCode);
+
+        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+
+
+        alertDialog.setPositiveButton("Save to Device", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_DENIED){
+                    ActivityCompat.requestPermissions(EventDetailsActivity.this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
+                }else{
+                    saveQR();
+                }
+
+            }
+        });
+
+        alertDialog.setView(dialogView);
+
+        Dialog dialog = alertDialog.create();
+        dialog.show();
+
+    }
+
+    private void saveQR(){
+        try{
+
+            Bitmap bitmap = encodeAsBitmap(event.getClockInCode(), 250, 250);
+            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "QR-" + event.getClockInCode() , "A QR code for a Lambency event.");
+            Toast.makeText(context, "QR Saved to Device Photos", Toast.LENGTH_SHORT).show();
+
+        } catch (WriterException e){
+
+            e.printStackTrace();
+
+        }
+    }
+
+    private Bitmap encodeAsBitmap(String str, int width, int height) throws WriterException {
+        BitMatrix result;
+        try {
+            result = new MultiFormatWriter().encode(str,
+                    BarcodeFormat.QR_CODE, width, height, null);
+        } catch (IllegalArgumentException iae) {
+            // Unsupported format
+            return null;
+        }
+        int w = result.getWidth();
+        int h = result.getHeight();
+        int[] pixels = new int[w * h];
+        for (int y = 0; y < h; y++) {
+            int offset = y * w;
+            for (int x = 0; x < w; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, w, h);
+        return bitmap;
+    }
+
 
     private void isLoading(boolean loading){
         if(loading){
@@ -881,8 +1010,6 @@ public class EventDetailsActivity extends AppCompatActivity implements
     public void onLocationChanged(Location location) {
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
-
-        Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -913,13 +1040,13 @@ public class EventDetailsActivity extends AppCompatActivity implements
         currentLatitude = location.getLatitude();
         currentLongitude = location.getLongitude();
 
-        Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
 
     }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -951,4 +1078,29 @@ public class EventDetailsActivity extends AppCompatActivity implements
     }
     //end methods for getting current location
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case WRITE_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+                    saveQR();
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
 }

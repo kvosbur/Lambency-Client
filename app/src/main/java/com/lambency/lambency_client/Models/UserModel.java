@@ -1,8 +1,17 @@
 package com.lambency.lambency_client.Models;
 
+import android.widget.Toast;
+
+import com.lambency.lambency_client.Networking.LambencyAPI;
+import com.lambency.lambency_client.Networking.LambencyAPIHelper;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserModel {
 
@@ -18,16 +27,22 @@ public class UserModel {
     private List<Integer> joinedOrgs;
     private List<Integer> requestedJoinOrgIds; // orgIDs for all join requests that are still unconfirmed
     private int userId;
-    private int hoursWorked;
+    private double hoursWorked;
     private String oauthToken;
     private int orgStatus;
     private boolean editable = false;
+
+
+    private int notification_preference;
+    private boolean isActive;
+    private double pastEventHours = -1;
+
 
     public static UserModel myUserModel;
 
 
     public UserModel(String firstName, String lastName, String email, List<Integer> myOrgs, List<Integer> eventsAttending,
-                List<Integer> followingOrgs, List<Integer> joinedOrgs, int userId, int hoursWorked, String oauthToken) {
+                List<Integer> followingOrgs, List<Integer> joinedOrgs, int userId, double hoursWorked, String oauthToken) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -53,6 +68,36 @@ public class UserModel {
 
         orgStatus = 0;
 
+    }
+
+    public UserModel(String firstName, String lastName, String email, List<Integer> myOrgs, List<Integer> eventsAttending,
+                     List<Integer> followingOrgs, List<Integer> joinedOrgs, List<Integer> orgJoinRequests, int userId, int hoursWorked, String oauthToken, int notification_preference, boolean isActive) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.myOrgs = myOrgs;
+        this.eventsAttending = eventsAttending;
+        this.followingOrgs = followingOrgs;
+        this.joinedOrgs = joinedOrgs;
+        this.userId = userId;
+        this.hoursWorked = hoursWorked;
+        this.oauthToken = oauthToken;
+        this.requestedJoinOrgIds = orgJoinRequests;
+        this.notification_preference = notification_preference;
+        this.isActive = isActive;
+    }
+
+    public int getNotification_preference() {
+        return notification_preference;
+    }
+
+    public void setNotification_preference(int notification_preference) {
+        this.notification_preference = notification_preference;
+    }
+
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public void setOauthToken(String oauthToken) {
@@ -98,7 +143,7 @@ public class UserModel {
         this.userId = userId;
     }
 
-    public void setHoursWorked(int hoursWorked) {
+    public void setHoursWorked(double hoursWorked) {
         this.hoursWorked = hoursWorked;
     }
 
@@ -153,7 +198,7 @@ public class UserModel {
         return userId;
     }
 
-    public int getHoursWorked() {
+    public double getHoursWorked() {
         return hoursWorked;
     }
 
@@ -240,7 +285,7 @@ public class UserModel {
         result = 31 * result + (getFollowingOrgs() != null ? getFollowingOrgs().hashCode() : 0);
         result = 31 * result + (getJoinedOrgs() != null ? getJoinedOrgs().hashCode() : 0);
         result = 31 * result + getUserId();
-        result = 31 * result + getHoursWorked();
+        result = 31 * result + (int)getHoursWorked();
         result = 31 * result + getOrgStatus();
         return result;
     }
@@ -301,6 +346,10 @@ public class UserModel {
         return result;
     }
 
+    public boolean canSeePrivateEventFromOrg(int orgid){
+        return myOrgs.contains(orgid) || joinedOrgs.contains(orgid);
+    }
+
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
@@ -309,6 +358,13 @@ public class UserModel {
         return editable;
     }
 
+    public void setPastEventHours(double pastEventHours) {
+        this.pastEventHours = pastEventHours;
+    }
+
+    public double getPastEventHours() {
+        return pastEventHours;
+    }
 
     /**
      *
@@ -341,4 +397,88 @@ public class UserModel {
 //            return 2;
 //        }
 //    }
+
+
+    /**
+     * check if this is active or not.
+     *
+     * NOTE: you should check the SERVER first
+     * @return      boolean is active
+     */
+    public boolean isActive() {
+        return isActive;
+    }
+
+
+    /**
+     * calls server and updates local variable if they are active or not
+     *
+     * @param youroAuthCode your oAuthCode
+     * @param func      function to call when the server has retrurned if they are active or not
+     */
+
+    public void checkServerForIsActive(String youroAuthCode,final UpdateActiveStatusCallback func){
+        LambencyAPIHelper.getInstance().getActiveStatus(youroAuthCode,userId).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if(response.code() != 200 || response.body() == null){
+                    System.out.println("FAILED TO SET ACTIVE STATUS");
+                }
+                else{
+                    int ret = response.body();
+                    if(ret == 0) {
+                        isActive = false;
+                        func.whatToDoWhenTheStatusIsRetrieved(false);
+                    }
+                    else if(ret == 1){
+                        isActive = true;
+                        func.whatToDoWhenTheStatusIsRetrieved(true);
+                    }
+                    else{
+                        System.out.println("ERROR WITH RESPONSE CODE: "+ret);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                System.out.println("ERROR DUE TO CALL FAILURE. CAN NOT SET ACTIVE");
+            }
+        });
+    }
+
+    public void setActiveForModelAndDatabase(final boolean active) {
+        LambencyAPIHelper.getInstance().setActiveStatus(this.oauthToken,active).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if(response.code() != 200 || response.body() == null){
+                    System.out.println("FAILED TO SET ACTIVE STATUS");
+                }
+                else{
+                    int ret = response.body();
+                    if(ret == 0) {
+                        isActive = active;
+                    }
+                    else{
+                        System.out.println("ERROR WITH RESPONSE CODE: "+ret);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                System.out.println("ERROR DUE TO CALL FAILURE. CAN NOT SET ACTIVE");
+            }
+        });
+    }
+
+    /**
+     * A function interface for when the user has asked the database to get the active status of a user
+     */
+    public interface UpdateActiveStatusCallback {
+        void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive);
+    }
+
+
+
 }

@@ -2,6 +2,9 @@ package com.lambency.lambency_client.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.AlertDialogLayout;
@@ -22,11 +25,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.lambency.lambency_client.Activities.BottomBarActivity;
+import com.lambency.lambency_client.Activities.CardViewActivity;
 import com.lambency.lambency_client.Activities.OrgUsersActivity;
+import com.lambency.lambency_client.Fragments.ChatListFragment;
 import com.lambency.lambency_client.Fragments.UserListFragment;
 import com.lambency.lambency_client.Models.UserModel;
 import com.lambency.lambency_client.Networking.LambencyAPIHelper;
 import com.lambency.lambency_client.R;
+import com.lambency.lambency_client.Utils.MyLifecycleHandler;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -90,8 +97,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         add(users);
     }
 
-
-
     @Override
     public UserListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.card_user, parent, false);
@@ -99,12 +104,25 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(UserListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final UserListAdapter.ViewHolder holder, int position) {
 
         final UserModel userModel = users.get(position);
 
         String name = userModel.getFirstName() + " " + userModel.getLastName();
+        final String name2 = name;
         holder.nameView.setText(name);
+
+        //on click of nameView
+//        holder.nameView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(context,CardViewActivity.class);
+//                intent.putExtra("userIdKey",userModel.getUserId());
+//                intent.putExtra("orgIdKey",org_id);
+//                intent.putExtra("userName",name2);
+//                context.startActivity(intent);
+//            }
+//        });
 
         holder.emailView.setText(userModel.getEmail());
 
@@ -128,15 +146,75 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         }
 
 
+        //TODO Add retrofit here for getting online status of other users, own call
+        //TODO is done in BottomBarActivity (by default user is offline)
+
+        if(!(UserModel.myUserModel.getUserId() == userModel.getUserId())) {
+            userModel.checkServerForIsActive(userModel.getOauthToken(), new UserModel.UpdateActiveStatusCallback() {
+                @Override
+                public void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive) {
+                    if(retrievedIsActive) {
+                        holder.onlineCircle.setVisibility(View.VISIBLE);
+                        holder.offlineCircle.setVisibility(View.GONE);
+                    } else {
+                        holder.offlineCircle.setVisibility(View.VISIBLE);
+                        holder.onlineCircle.setVisibility(View.GONE);
+                    }
+                }
+            });
+
+            final Handler handler = new Handler();
+            final int delay = 10000; //milliseconds
+
+            handler.postDelayed(new Runnable(){
+                public void run(){
+                    userModel.checkServerForIsActive(userModel.getOauthToken(), new UserModel.UpdateActiveStatusCallback() {
+                        @Override
+                        public void whatToDoWhenTheStatusIsRetrieved(boolean retrievedIsActive) {
+                            if(retrievedIsActive) {
+                                holder.onlineCircle.setVisibility(View.VISIBLE);
+                                holder.offlineCircle.setVisibility(View.GONE);
+                            } else {
+                                holder.offlineCircle.setVisibility(View.VISIBLE);
+                                holder.onlineCircle.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+                    handler.postDelayed(this, delay);
+                }
+            }, delay);
+        } else {
+            holder.offlineCircle.setVisibility(View.GONE);
+            holder.offlineCircle.setVisibility(View.GONE);
+        }
+
+        if(userModel.getPastEventHours() > 0){
+            String hoursStr = userModel.getPastEventHours() + " hrs";
+            holder.hoursTextView.setText(hoursStr);
+            holder.hoursTextView.setVisibility(View.VISIBLE);
+        }
+
         holder.emailLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendEmail(userModel);
+                //sendEmail(userModel);
+                showChatOptions(userModel);
             }
         });
 
         if(userModel.isEditable()){
             holder.editButton.setVisibility(View.VISIBLE);
+            //on click of nameView
+            holder.nameView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context,CardViewActivity.class);
+                    intent.putExtra("userIdKey",userModel.getUserId());
+                    intent.putExtra("orgIdKey",org_id);
+                    intent.putExtra("userName",name2);
+                    context.startActivity(intent);
+                }
+            });
         }
 
 
@@ -154,6 +232,48 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(context, "No email clients installed", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showChatOptions(final UserModel userModel)
+    {
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        final View dialogView = layoutInflater.inflate(R.layout.dialog_chat_options, null);
+
+        alertDialog.setTitle("Messaging");
+        alertDialog.setMessage("How would you like to chat?");
+        alertDialog.setView(dialogView);
+
+        dialogView.getRootView().findViewById(R.id.sendViaEmail).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                sendEmail(userModel);
+            }
+        });
+
+        dialogView.getRootView().findViewById(R.id.sendViaChat).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO add code for switching here!
+                Toast.makeText(context, "Send Text", Toast.LENGTH_SHORT).show();
+                Intent mIntent = new Intent(context, BottomBarActivity.class);
+                Bundle mBundle = new Bundle();
+                mBundle.putString("msg", "" + userModel.getUserId());
+                mIntent.putExtras(mBundle);
+                context.startActivity(mIntent);
+                alertDialog.dismiss();
+            }
+        });
+
+        dialogView.getRootView().findViewById(R.id.cancelChatButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
     }
 
     private void editPermissions(final UserModel userModel){
@@ -261,6 +381,15 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         @BindView(R.id.editButton)
         ImageButton editButton;
+
+        @BindView(R.id.onlineStatusOffline)
+        LinearLayout offlineCircle;
+
+        @BindView(R.id.onlineStatusOnline)
+        LinearLayout onlineCircle;
+
+        @BindView(R.id.hoursText)
+        TextView hoursTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);

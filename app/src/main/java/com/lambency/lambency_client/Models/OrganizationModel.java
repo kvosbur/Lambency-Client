@@ -6,24 +6,26 @@ public class OrganizationModel {
     public UserModel owner;
     public String name;
     public ArrayList<UserModel> members;
-    public String location;
+    private String location;
     public int orgID;
     public ArrayList<Object> events;
     public String description;
     public String email;
     public UserModel contact;
-    public String image;
+    public String imagePath;
+    public byte[] imageFile;
     public ArrayList<UserModel> organizers;
+    public double lattitude;
+    public double longitude;
 
     public static OrganizationModel myOrgModel;
-
 
 
     public OrganizationModel(){
         //Empty constructor for testing
     }
 
-    public OrganizationModel(UserModel owner, String name, String location, int orgID, String description, String email, UserModel contact, String image) {
+    public OrganizationModel(UserModel owner, String name, String location, int orgID, String description, String email, UserModel contact, byte[] imageFile) {
         this.owner = owner;
         this.name = name;
         this.location = location;
@@ -31,7 +33,7 @@ public class OrganizationModel {
         this.description = description;
         this.email = email;
         this.contact = contact;
-        this.image = image;
+        this.imageFile = imageFile;
         members = new ArrayList<UserModel>();
         members.add(owner);
         events = new ArrayList<>();
@@ -41,6 +43,21 @@ public class OrganizationModel {
 
     public int numFollowing;
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public byte[] getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(byte[] imageFile) {
+        this.imageFile = imageFile;
+    }
 
     public String getName() {
         return name;
@@ -58,7 +75,7 @@ public class OrganizationModel {
         this.members = members;
     }
 
-    public String getLocation() {
+    private String getLocation() {
         return location;
     }
 
@@ -106,20 +123,28 @@ public class OrganizationModel {
         this.contact = contact;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public ArrayList<UserModel> getOrganizers() {
         return organizers;
     }
 
     public void setOrganizers(ArrayList<UserModel> organizers) {
         this.organizers = organizers;
+    }
+
+    public double getLattitude() {
+        return lattitude;
+    }
+
+    public void setLattitude(double lattitude) {
+        this.lattitude = lattitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public int getNumFollowing(){
@@ -149,5 +174,15 @@ public class OrganizationModel {
 
         return 0;
 
+    }
+
+    public String getPrettyAddress()
+    {
+        return location.replace(";", " ");
+    }
+
+    public String[] getSplitAddress()
+    {
+        return this.location.split(";");
     }
 }
